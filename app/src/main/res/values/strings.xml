@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">Bakalari extension</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+
+    <string name="no_internet">No internet available</string>
+    <string name="no_internet_or_url">No internet available of bad url</string>
+
+    <string name="title_activity_login">Login to Bakalari</string>
+    <string name="prompt_url">School\'s Bakalari URL</string>
+    <string name="prompt_username">Username</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Login</string>
+    <string name="action_sign_in_short">Login</string>
+    <string name="welcome">"Welcome!"</string>
+    <string name="login_town">Choose town:</string>
+    <string name="login_school">Choose school:</string>
+    <string name="login_loading">Loading towns…</string>
+    <string name="login_loading_failed">Cannot load now, try again later</string>
+    <string name="login_connecting">Connection to school server…</string>
+    <string name="login_succeed">Succeeded to login!</string>
+    <string name="login_failed">"Login failed, wrong username or password"</string>
+
+
+</resources>
