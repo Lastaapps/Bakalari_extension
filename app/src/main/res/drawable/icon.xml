@@ -5,13 +5,24 @@
     android:viewportWidth="100.0"
     android:viewportHeight="100.0">
 
+    <!--for icons of 24 and 512 size
+    <path
+        android:fillColor="#3AF"
+        android:pathData="M12,0 L1.68,6 1.68,18 12,24 22.32,18 22.32,6 z"
+        />
+    <path
+        android:fillColor="#3AF"
+        android:pathData="M256,0 L46,128 46,384 256,512 476,384 476,128 z"
+        />
+    /-->
+
     <path
         android:fillColor="#3AF"
         android:pathData="M50,0 L7,25 7,75 50,100 93,75 93,25 z"
         />
     <path
         android:strokeColor="@android:color/white"
-        android:strokeWidth="1"
+        android:strokeWidth="3"
         android:pathData="M30,50 L70,50 M50,30 L50,70"
         />
 </vector>

@@ -15,13 +15,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/login_margin_sides"
 
-        android:layout_marginLeft="@dimen/login_margin_sides"
         android:layout_marginTop="@dimen/login_margin_top"
         android:layout_marginEnd="@dimen/login_margin_sides"
 
-        android:layout_marginRight="@dimen/login_margin_sides"
         android:fontFamily="sans-serif-light"
-        android:text="@string/title_activity_login"
+        android:text="@string/login_activity_title"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -30,17 +29,15 @@
         android:id="@+id/town_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-
-        app:layout_constraintTop_toBottomOf="@+id/label"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-
         android:layout_marginStart="@dimen/login_margin_sides"
-        android:layout_marginLeft="@dimen/login_margin_sides"
+
         android:layout_marginTop="@dimen/login_margin_between"
         android:layout_marginEnd="@dimen/login_margin_sides"
-        android:layout_marginRight="@dimen/login_margin_sides">
+
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/label">
 
         <TextView
             android:layout_width="match_parent"
@@ -57,17 +54,15 @@
         android:id="@+id/school_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-
-        app:layout_constraintTop_toBottomOf="@+id/town_container"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-
         android:layout_marginStart="@dimen/login_margin_sides"
-        android:layout_marginLeft="@dimen/login_margin_sides"
+
         android:layout_marginTop="@dimen/login_margin_between"
         android:layout_marginEnd="@dimen/login_margin_sides"
-        android:layout_marginRight="@dimen/login_margin_sides">
+
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/town_container">
 
         <TextView
             android:layout_width="match_parent"
@@ -85,10 +80,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/login_margin_sides"
-        android:layout_marginEnd="@dimen/login_margin_sides"
         android:layout_marginTop="@dimen/login_margin_between"
+        android:layout_marginEnd="@dimen/login_margin_sides"
 
-        android:hint="@string/prompt_url"
+        android:hint="@string/login_prompt_url"
         android:inputType="textUri"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -100,10 +95,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/login_margin_sides"
-        android:layout_marginEnd="@dimen/login_margin_sides"
         android:layout_marginTop="@dimen/login_margin_between"
+        android:layout_marginEnd="@dimen/login_margin_sides"
 
-        android:hint="@string/prompt_username"
+        android:hint="@string/login_prompt_username"
         android:inputType="text"
         android:selectAllOnFocus="true"
         app:layout_constraintEnd_toEndOf="parent"
@@ -118,8 +113,7 @@
         android:layout_marginTop="@dimen/login_margin_between"
         android:layout_marginEnd="@dimen/login_margin_sides"
 
-        android:hint="@string/prompt_password"
-        android:imeActionLabel="@string/action_sign_in_short"
+        android:hint="@string/login_prompt_password"
         android:imeOptions="actionDone"
         android:inputType="textPassword"
         android:selectAllOnFocus="true"
@@ -135,7 +129,7 @@
         android:layout_marginStart="@dimen/login_margin_sides_button"
         android:layout_marginTop="@dimen/login_margin_between_button"
         android:layout_marginEnd="@dimen/login_margin_sides_button"
-        android:text="@string/action_sign_in"
+        android:text="@string/login_login"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

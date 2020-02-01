@@ -1,0 +1,123 @@
+package cz.lastaapps.bakalariextension.send
+
+import android.os.Build
+import android.os.Bundle
+import android.provider.Settings
+import android.text.TextUtils
+import android.widget.EditText
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.IgnoreExtraProperties
+import cz.lastaapps.bakalariextension.BuildConfig
+import cz.lastaapps.bakalariextension.R
+import cz.lastaapps.bakalariextension.apimodules.Login
+import cz.lastaapps.bakalariextension.data.LoginData
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
+
+
+class ReportIssueActivity : AppCompatActivity() {
+
+    private lateinit var database: DatabaseReference
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_report)
+
+        database = FirebaseDatabase.getInstance().reference
+
+        val fab = findViewById<FloatingActionButton>(R.id.report_fab)
+        fab.setOnClickListener {
+            send()
+        }
+
+    }
+
+    private fun send() {
+        val email = findViewById<EditText>(R.id.email).text.trim().toString()
+        val message = findViewById<EditText>(R.id.message).text.trim().toString()
+
+        if (message != "") {
+            try {
+                val id = database.push().key.toString()
+                val obj = Message(
+                    date = SimpleDateFormat("HH:mm dd.MM.YYYY z")
+                        .format(Calendar.getInstance(TimeZone.getTimeZone("UTC")).time),
+                    messageId = id,
+                    email = email,
+                    message = message,
+                    phoneId = Settings.Secure.getString(
+                        contentResolver,
+                        Settings.Secure.ANDROID_ID),
+                    phoneType = getDeviceName(),
+                    androidVersion = packageManager.getPackageInfo(packageName, 0).versionName,
+                    appVersionCode = BuildConfig.VERSION_CODE.toString(),
+                    appVersionName = BuildConfig.VERSION_NAME,
+                    school = LoginData.getSchool(),
+                    town = LoginData.getTown(),
+                    url = LoginData.getUrl(),
+                    bakalariVersion = Login.get(Login.VERSION),
+                    accountType = Login.get(Login.ROLE)
+                    )
+                database.child("report").child(id).setValue(obj)
+
+                Toast.makeText(this, R.string.idea_thanks, Toast.LENGTH_LONG).show()
+                finish()
+            } catch (e: IOException) {
+                Toast.makeText(this, R.string.error_no_internet, Toast.LENGTH_LONG).show()
+            }
+        } else {
+            Toast.makeText(this, R.string.idea_empty, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    @IgnoreExtraProperties
+    data class Message(
+        var date: String? = "",
+        var messageId: String? = "",
+        var email: String? = "",
+        var message: String? = "",
+        var phoneId: String? = "",
+        var phoneType: String? = "",
+        var androidVersion: String? = "",
+        var appVersionCode: String? = "",
+        var appVersionName: String? = "",
+        var school: String? = "",
+        var town: String? = "",
+        var url: String? = "",
+        var bakalariVersion: String? = "",
+        var accountType: String? = ""
+    )
+
+    private fun getDeviceName(): String? {
+        val manufacturer = Build.MANUFACTURER
+        val model = Build.MODEL
+        return if (model.startsWith(manufacturer)) {
+            capitalize(model)
+        } else capitalize(manufacturer) + " " + model
+    }
+
+    private fun capitalize(str: String): String {
+        if (TextUtils.isEmpty(str)) {
+            return str
+        }
+        val arr = str.toCharArray()
+        var capitalizeNext = true
+        val phrase = StringBuilder()
+        for (c in arr) {
+            if (capitalizeNext && Character.isLetter(c)) {
+                phrase.append(Character.toUpperCase(c))
+                capitalizeNext = false
+                continue
+            } else if (Character.isWhitespace(c)) {
+                capitalizeNext = true
+            }
+            phrase.append(c)
+        }
+        return phrase.toString()
+    }
+}

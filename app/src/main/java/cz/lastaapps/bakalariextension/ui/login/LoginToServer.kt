@@ -1,22 +1,23 @@
 package cz.lastaapps.bakalariextension.ui.login
 
-import android.app.AlertDialog
 import android.os.AsyncTask
 import android.os.Handler
 import android.os.Looper
+import android.util.Base64
 import android.widget.Toast
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.data.LoginData
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
-import java.io.BufferedInputStream
-import java.io.BufferedReader
-import java.io.InputStreamReader
 import java.lang.Exception
 import java.net.URL
+import java.security.MessageDigest
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
-class LoginToServer : AsyncTask<Any, Unit, Boolean>() {
+class LoginToServer : AsyncTask<Any, Unit, String>() {
 
     lateinit var username: String
     lateinit var password: String
@@ -28,9 +29,9 @@ class LoginToServer : AsyncTask<Any, Unit, Boolean>() {
     lateinit var ikod: String
     lateinit var typ: String
 
-    lateinit var dialog: AlertDialog
+    private var todoAfter: Runnable? = null
 
-    override fun doInBackground(vararg params: Any?): Boolean {
+    override fun doInBackground(vararg params: Any?): String {
         try {
             val list = params[0] as ArrayList<String>
             username = list[0]
@@ -39,42 +40,73 @@ class LoginToServer : AsyncTask<Any, Unit, Boolean>() {
             town = list[3]
             school = list[4]
 
-            dialog = params[1] as AlertDialog
+            todoAfter = if (params.isNotEmpty()) params[1] as Runnable
+                     else null
+
+            if (LoginData.getUrl() == "" || LoginData.getUsername() == "" || LoginData.getSchool() == "" || LoginData.getTown() == "")
+                LoginData.saveData(username, password, url, town, school)
 
             when (loadSalt()) {
-                false -> return false
+                false -> return ""
             }
 
-            val token =
-                LoginData.generateToken(salt, ikod, typ, username = username, password = password)
+            val token = generateToken(salt, ikod, typ, username = username, password = password)
 
-            return check(token)
+            return if (LoginData.check(token)) token else ""
         } catch (e: Exception) {
             Handler(Looper.getMainLooper()).post {
-                Toast.makeText(App.appContext(), R.string.no_internet_or_url, Toast.LENGTH_LONG)
+                Toast.makeText(
+                    App.appContext(),
+                    R.string.error_no_internet_or_url,
+                    Toast.LENGTH_LONG
+                )
                     .show()
             }
-            return false
+            return ""
         }
     }
 
-    override fun onPostExecute(result: Boolean?) {
-        Toast.makeText(App.appContext(), when(result) {
-            true -> R.string.login_succeed
-            else -> R.string.login_failed
-        }, Toast.LENGTH_LONG).show()
-        if (result!!) {
+    override fun onPostExecute(token: String?) {
+        Toast.makeText(
+            App.appContext(), when (token != "") {
+                true -> R.string.login_succeed
+                else -> R.string.login_failed
+            }, Toast.LENGTH_LONG
+        ).show()
+
+        if (token != null && token != "") {
             LoginData.saveData(username, password, url, town, school)
+            LoginData.saveToken(token)
         }
-        dialog.dismiss()
+        todoAfter?.run()
+    }
+
+    private fun generateToken(
+        salt: String, ikod: String, typ: String,
+        username: String = LoginData.getUsername(), password: String = LoginData.getPassword()
+    ): String {
+        val pwd = hash(salt + ikod + typ + password)
+        val date = SimpleDateFormat("YYYYMMdd").format(Date())
+        val toHash = "*login*$username*pwd*$pwd*sgn*ANDR$date"
+        val hashed = hash(toHash)
+        return hashed.replace('\\', '_').replace('/', '_').replace('+', '-')
+
+    }
+
+    private fun hash(input: String): String {
+        val md = MessageDigest.getInstance("SHA-512")
+        md.update(input.toByteArray(Charsets.UTF_8))
+        val byteData = md.digest()
+
+        return Base64.encodeToString(byteData, Base64.NO_WRAP).trim()
     }
 
     private fun loadSalt(): Boolean {
-        var url = URL("$url?gethx=$username")
-        var urlConnection = url.openConnection()
-        var input = urlConnection.getInputStream()
+        val url = URL("$url?gethx=$username")
+        val urlConnection = url.openConnection()
+        val input = urlConnection.getInputStream()
 
-        var parser = XmlPullParserFactory.newInstance().newPullParser()
+        val parser = XmlPullParserFactory.newInstance().newPullParser()
         parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
         parser.setInput(input, null)
 
@@ -105,18 +137,4 @@ class LoginToServer : AsyncTask<Any, Unit, Boolean>() {
         }
         return true
     }
-
-    private fun check(token: String): Boolean {
-        val stringUrl = "$url?hx=$token&pm=login"
-        println(stringUrl)
-        val url = URL(stringUrl)
-        val urlConnection = url.openConnection()
-        val input = urlConnection.getInputStream()
-
-        val read = BufferedReader(InputStreamReader(input)).readLine()
-
-        return !read.contains("-1")
-    }
-
-
 }

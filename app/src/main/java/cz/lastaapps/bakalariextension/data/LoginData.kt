@@ -4,11 +4,13 @@ import android.content.Context
 import android.util.Base64
 import androidx.core.content.edit
 import cz.lastaapps.bakalariextension.App
-import java.lang.Double.min
+import cz.lastaapps.bakalariextension.ui.login.LoginToServer
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.net.URL
 import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.min
 
 
 class LoginData {
@@ -20,19 +22,41 @@ class LoginData {
         private val SP_PASSWORD = "TOP_SECRET_PASSWORD"
         private val SP_TOWN = "TOWN"
         private val SP_SCHOOL = "SCHOOL"
+        private val SP_TOKEN = "TOKEN"
 
-        fun getUsername(): String { return get(SP_USERNAME) }
-     private fun getPassword(): String { return get(SP_PASSWORD) }
-        fun getUrl():      String { return get(SP_URL) }
-        fun getTown():     String { return get(SP_TOWN) }
-        fun getSchool():   String { return get(SP_SCHOOL) }
+
+        fun getUsername(): String {
+            return get(SP_USERNAME)
+        }
+
+        fun getPassword(): String {
+            return get(SP_PASSWORD)
+        }
+
+        fun getUrl(): String {
+            return get(SP_URL)
+        }
+
+        fun getTown(): String {
+            return get(SP_TOWN)
+        }
+
+        fun getSchool(): String {
+            return get(SP_SCHOOL)
+        }
 
         private fun get(key: String): String {
             return App.appContext().getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
                 .getString(key, "").toString()
         }
 
-        fun saveData(username: String, password: String, url: String, town: String, school: String) {
+        fun saveData(
+            username: String,
+            password: String,
+            url: String,
+            town: String,
+            school: String
+        ) {
             App.appContext().getSharedPreferences(SP_KEY, Context.MODE_PRIVATE).edit {
                 putString(SP_USERNAME, username)
                 putString(SP_PASSWORD, password)
@@ -43,26 +67,40 @@ class LoginData {
             }
         }
 
-        open fun generateToken(salt: String, ikod: String, typ: String,
-                               username: String = getUsername(), password: String = getPassword()): String {
-            val pwd = hash(salt + ikod + typ + password)
-            println(pwd)
-            val date = SimpleDateFormat("YYYYMMdd").format(Date())
-            val toHash = "*login*$username*pwd*$pwd*sgn*ANDR$date"
-            println(toHash)
-            val hashed = hash(toHash)
-            println(hashed)
-            return hashed.replace('\\', '_').replace('/', '_').replace('+', '-')
 
+        fun saveToken(token: String) {
+            App.appContext().getSharedPreferences(SP_KEY, Context.MODE_PRIVATE).edit {
+                putString(SP_TOKEN, token)
+                apply()
+            }
         }
 
-        private fun hash(input: String): String {
-            val md = MessageDigest.getInstance("SHA-512")
-            md.update(input.toByteArray(Charsets.UTF_8))
-            val byteData = md.digest()
-
-            return Base64.encodeToString(byteData, Base64.NO_WRAP).trim()
-
+        fun getToken(lookup: Boolean = true): String {
+            val token: String = get(SP_TOKEN)
+            if (!check(token)) {
+                if (lookup) {
+                    LoginToServer().execute(getUsername(), getPassword(), getUrl(), getTown(), getSchool(), null)
+                    return getToken(false)
+                }
+            } else
+                return token
+            return ""
         }
+
+
+        fun check(token: String): Boolean {
+            if (token == "") return false
+
+            val stringUrl = "${getUrl()}?hx=$token&pm=login"
+            println(stringUrl)
+            val url = URL(stringUrl)
+            val urlConnection = url.openConnection()
+            val input = urlConnection.getInputStream()
+
+            val read = BufferedReader(InputStreamReader(input)).readLine()
+
+            return !read.contains("-1")
+        }
+
     }
 }

@@ -1,23 +1,20 @@
 package cz.lastaapps.bakalariextension.ui.login
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.AsyncTask
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.widget.*
 import cz.lastaapps.bakalariextension.App
+import cz.lastaapps.bakalariextension.MainActivity
 
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.data.LoginData
@@ -49,8 +46,9 @@ class LoginActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_login)
 
-        getSharedPreferences("LOGIN", Context.MODE_PRIVATE).edit().putString("TOWN", "Pelhřimov")
+        /*getSharedPreferences("LOGIN", Context.MODE_PRIVATE).edit().putString("TOWN", "Pelhřimov")
             .apply()
+*/
 
         townSpinner = findViewById<Spinner>(R.id.town_spinner)
         schoolSpinner = findViewById<Spinner>(R.id.school_spinner)
@@ -156,7 +154,7 @@ class LoginActivity : AppCompatActivity() {
                     townSpinner.setSelection(townList.size / 2)
                 }
             } else {
-                Toast.makeText(App.appContext(), R.string.no_internet, Toast.LENGTH_LONG).show()
+                Toast.makeText(App.appContext(), R.string.error_no_internet, Toast.LENGTH_LONG).show()
             }
             dialog.dismiss()
         }
@@ -255,7 +253,7 @@ class LoginActivity : AppCompatActivity() {
                 }
             } else {
                 schoolSpinner.adapter = null
-                Toast.makeText(App.appContext(), R.string.no_internet, Toast.LENGTH_LONG).show()
+                Toast.makeText(App.appContext(), R.string.error_no_internet, Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -273,7 +271,11 @@ class LoginActivity : AppCompatActivity() {
         data.add(town_spinner.selectedItem.toString())
         data.add(school_spinner.selectedItem.toString())
 
-        LoginToServer().execute(data, dialog)
+        val mainActivityIntent = Intent(this, MainActivity::class.java)
+        LoginToServer().execute(data, Runnable {
+            dialog.dismiss()
+            startActivity(mainActivityIntent)
+        })
 
         dialog.show()
     }

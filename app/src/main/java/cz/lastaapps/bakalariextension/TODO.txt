@@ -7,3 +7,5 @@ aktuální/další hodina
 	notifikace
 zhlasiťit/ztlumit mobil
 widget známky
+
+

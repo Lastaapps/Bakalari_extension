@@ -6,32 +6,57 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/nav_home"
             android:title="@string/menu_home" />
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/menu_gallery" />
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/nav_settings"
+            android:title="@string/menu_settings" />
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/menu_slideshow" />
-        <item
-            android:id="@+id/nav_tools"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="@string/menu_tools" />
+            android:id="@+id/nav_about"
+            android:icon="@drawable/nav_about"
+            android:title="@string/menu_about" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="@string/menu_communicate">
         <menu>
             <item
                 android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/nav_share"
                 android:title="@string/menu_share" />
             <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="@string/menu_send" />
+                android:id="@+id/nav_rate"
+                android:icon="@drawable/nav_rate"
+                android:title="@string/menu_rate" />
+            <item
+                android:id="@+id/nav_idea"
+                android:icon="@drawable/nav_idea"
+                android:title="@string/menu_idea" />
+            <item
+                android:id="@+id/nav_report"
+                android:icon="@drawable/nav_report"
+                android:title="@string/menu_report" />
+        </menu>
+    </item>
+
+    <item android:title="@string/menu_oder">
+        <menu>
+            <item
+                android:id="@+id/nav_facebook"
+                android:icon="@drawable/nav_facebook"
+                android:title="@string/menu_facebook" />
+            <item
+                android:id="@+id/nav_google_play"
+                android:icon="@drawable/nav_google_play"
+                android:title="@string/menu_google_play" />
+            <item
+                android:id="@+id/nav_github"
+                android:icon="@drawable/nav_github"
+                android:title="@string/menu_github" />
+            <item
+                android:id="@+id/nav_api"
+                android:icon="@drawable/nav_api"
+                android:title="@string/menu_api" />
         </menu>
     </item>
 

@@ -1,4 +1,4 @@
-package cz.lastaapps.bakalariextension.ui.home
+package cz.lastaapps.bakalariextension.ui.about
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,18 +10,22 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import cz.lastaapps.bakalariextension.R
 
-class HomeFragment : Fragment() {
+class AboutFragment : Fragment() {
 
-    private lateinit var homeViewModel: HomeViewModel
+    private lateinit var aboutViewModel: AboutViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        homeViewModel =
-            ViewModelProviders.of(this).get(HomeViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_home, container, false)
+        aboutViewModel =
+            ViewModelProviders.of(this).get(AboutViewModel::class.java)
+        val root = inflater.inflate(R.layout.fragment_about, container, false)
+        val textView: TextView = root.findViewById(R.id.text_about)
+        aboutViewModel.text.observe(this, Observer {
+            textView.text = it
+        })
         return root
     }
 }

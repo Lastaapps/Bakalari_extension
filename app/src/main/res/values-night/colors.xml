@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#C50</color>
+    <color name="colorPrimaryDark">#DE690C</color>
+    <color name="colorAccent">#0430D2</color>
+
+    <color name="side_nav_bar_start">#C6B654</color>
+    <color name="side_nav_bar_center">#A3943F</color>
+    <color name="side_nav_bar_end">#D7CA6C</color>
+</resources>
