@@ -1,10 +1,12 @@
 package cz.lastaapps.bakalariextension.send
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -17,18 +19,59 @@ import java.util.*
 class SendIdeaActivity : AppCompatActivity() {
 
     private lateinit var database: DatabaseReference
+    private val SP_KEY = "SEND_IDEA"
+    private val SP_DATE_KEY = "LAST_SENT"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_send_idea)
 
-        database = FirebaseDatabase.getInstance().reference
+        if (timeCheck()) {
+            setContentView(R.layout.activity_send_idea)
 
-        val fab = findViewById<FloatingActionButton>(R.id.send_fab)
-        fab.setOnClickListener {
-            send()
+            database = FirebaseDatabase.getInstance().reference
+
+            val fab = findViewById<FloatingActionButton>(R.id.idea_fab)
+            fab.setOnClickListener {
+                getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
+                    .edit().putLong(SP_DATE_KEY, Date().time).apply()
+                send()
+            }
+        } else {
+            AlertDialog.Builder(this)
+                .setMessage(R.string.idea_overload)
+                .setPositiveButton(R.string.idea_go_back) { dialog, _ -> run{
+                    dialog.dismiss()
+                    finish()
+                } }
+                .setCancelable(false)
+                .create()
+                .show()
         }
 
+    }
+
+
+    private fun timeCheck(): Boolean {
+        val lastSent = getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
+            .getLong(SP_DATE_KEY, 0)
+
+        val cal = Calendar.getInstance()
+        cal.time = Date(lastSent)
+        val now = Calendar.getInstance()
+
+        if (cal.after(now))
+            return false
+
+        cal.set(Calendar.HOUR, 0)
+        cal.set(Calendar.MINUTE, 0)
+        cal.set(Calendar.SECOND, 0)
+        cal.set(Calendar.MILLISECOND, 0)
+        now.set(Calendar.HOUR, 0)
+        now.set(Calendar.MINUTE, 0)
+        now.set(Calendar.SECOND, 0)
+        now.set(Calendar.MILLISECOND, 0)
+
+        return cal != now
     }
 
     private fun send() {

@@ -14,6 +14,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.*
 import cz.lastaapps.bakalariextension.App
+import cz.lastaapps.bakalariextension.LoadingActivity
 import cz.lastaapps.bakalariextension.MainActivity
 
 import cz.lastaapps.bakalariextension.R
@@ -271,10 +272,11 @@ class LoginActivity : AppCompatActivity() {
         data.add(town_spinner.selectedItem.toString())
         data.add(school_spinner.selectedItem.toString())
 
-        val mainActivityIntent = Intent(this, MainActivity::class.java)
+        val mainActivityIntent = Intent(this, LoadingActivity::class.java)
         LoginToServer().execute(data, Runnable {
             dialog.dismiss()
             startActivity(mainActivityIntent)
+            finish()
         })
 
         dialog.show()

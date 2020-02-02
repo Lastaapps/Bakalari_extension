@@ -7,7 +7,7 @@
 
     <LinearLayout
         android:id="@+id/label_box"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal"
@@ -17,27 +17,26 @@
             style="@style/Heading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_weight="1"
             android:text="@string/bakalari"
             android:textSize="48sp" />
 
         <ImageView
             android:layout_width="64sp"
             android:layout_height="64sp"
-            android:layout_weight="1"
             app:srcCompat="@drawable/icon" />
 
     </LinearLayout>
 
     <TextView
         android:id="@+id/name"
+        style="@style/Text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/label_box"
         android:layout_centerHorizontal="true"
         android:text="Jan Novák"
-        android:textColor="@android:color/primary_text_light"
         android:textSize="20sp" />
 
     <TextView
