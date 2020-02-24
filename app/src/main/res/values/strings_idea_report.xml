@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="idea_label">Send an idea</string>
+    <string name="idea_email_label">Email, so i can reply you</string>
+    <string name="idea_email_prompt">Email (Optional)</string>
+    <string name="idea_message_label">What\'s on your mind</string>
+    <string name="idea_message_prompt">Message</string>
+    <string name="idea_empty">Message cannot be empty</string>
+    <string name="idea_thanks">Thank you for your feedback :)</string>
+    <string name="idea_overload">You can send only 1 idea per day because of server overload protection</string>
+    <string name="idea_go_back">Close</string>
+
+    <string name="report_label">Report an issue</string>
+    <string name="report_email_label">Email, so i can reply you</string>
+    <string name="report_email_prompt">Email (Optional)</string>
+    <string name="report_message_label">Describe the error (English or Czech please)</string>
+    <string name="report_message_prompt">Error description</string>
+    <string name="report_empty">Report cannot be empty</string>
+    <string name="report_thanks">Thank you for your feedback :)</string>
+    <string name="report_data_collected">App will send some data to diagnose the issue, namely school\'s url, name, town and Bakalari version, account type(parent, pupil, teacher), android version, phone type, app version and phone\'s id</string>
+    <string name="report_overload">You can report only 1 issue per day because of server overload protection</string>
+    <string name="report_go_back">Close</string>
+</resources>

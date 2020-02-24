@@ -41,19 +41,44 @@
 
         </RelativeLayout>
 
-        <TextView
+        <RelativeLayout
+            android:id="@+id/emailbox"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/idea_margin"
-            android:text="@string/report_email_label" />
+            android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/idea_margin"
-            android:hint="@string/report_email_prompt"
-            android:inputType="textEmailAddress" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_toStartOf="@id/github_fab">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/idea_margin"
+                    android:text="@string/report_email_label" />
+
+                <EditText
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/idea_margin"
+                    android:hint="@string/report_email_prompt"
+                    android:inputType="textEmailAddress" />
+            </LinearLayout>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/github_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="@dimen/idea_margin"
+
+                app:backgroundTint="@color/github_background"
+                app:srcCompat="@drawable/github" />
+
+        </RelativeLayout>
 
         <TextView
             android:layout_width="match_parent"

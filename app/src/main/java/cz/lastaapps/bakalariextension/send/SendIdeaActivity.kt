@@ -16,6 +16,10 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ * Sends idea to Firebase database
+ * Limited to 1 per day
+ */
 class SendIdeaActivity : AppCompatActivity() {
 
     private lateinit var database: DatabaseReference
@@ -30,6 +34,7 @@ class SendIdeaActivity : AppCompatActivity() {
 
             database = FirebaseDatabase.getInstance().reference
 
+            //sends data to Firebase
             val fab = findViewById<FloatingActionButton>(R.id.idea_fab)
             fab.setOnClickListener {
                 getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
@@ -37,6 +42,7 @@ class SendIdeaActivity : AppCompatActivity() {
                 send()
             }
         } else {
+            //If limit per day was reached
             AlertDialog.Builder(this)
                 .setMessage(R.string.idea_overload)
                 .setPositiveButton(R.string.idea_go_back) { dialog, _ -> run{
@@ -51,6 +57,9 @@ class SendIdeaActivity : AppCompatActivity() {
     }
 
 
+    /**
+     * @return If message was sent today, or if user is moving through time in settings
+     */
     private fun timeCheck(): Boolean {
         val lastSent = getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
             .getLong(SP_DATE_KEY, 0)
@@ -74,6 +83,9 @@ class SendIdeaActivity : AppCompatActivity() {
         return cal != now
     }
 
+    /**
+     * Sends needed data to Firebase
+     */
     private fun send() {
         val email = findViewById<EditText>(R.id.email).text.trim().toString()
         val message = findViewById<EditText>(R.id.message).text.trim().toString()
@@ -104,6 +116,7 @@ class SendIdeaActivity : AppCompatActivity() {
         }
     }
 
+    /**Data structure of the data to be send*/
     @IgnoreExtraProperties
     data class Message(
         var date: String? = "",

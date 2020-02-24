@@ -13,9 +13,9 @@
             android:icon="@drawable/nav_settings"
             android:title="@string/menu_settings" />
         <item
-            android:id="@+id/nav_about"
-            android:icon="@drawable/nav_about"
-            android:title="@string/menu_about" />
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/nav_logout"
+            android:title="@string/menu_logout" />
     </group>
 
     <item android:title="@string/menu_communicate">
@@ -36,6 +36,10 @@
                 android:id="@+id/nav_report"
                 android:icon="@drawable/nav_report"
                 android:title="@string/menu_report" />
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/nav_about"
+                android:title="@string/menu_about" />
         </menu>
     </item>
 

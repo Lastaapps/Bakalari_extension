@@ -1,33 +1,38 @@
-package cz.lastaapps.bakalariextension.apimodules
+package cz.lastaapps.bakalariextension.api
 
 import android.content.Context
 import androidx.core.content.edit
-import cz.lastaapps.bakalariextension.App
+import cz.lastaapps.bakalariextension.tools.App
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.data.LoginData
-import cz.lastaapps.bakalariextension.ui.login.LoginActivity
+import cz.lastaapps.bakalariextension.login.LoginData
+import cz.lastaapps.bakalariextension.login.LoginActivity
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
 import java.lang.Exception
 import java.net.URL
 
+/**
+ * Used to read basic data about student from server
+ * */
 class Login {
 
     companion object {
-        private val SP_KEY = "LOGIN_API"
-        val VERSION = "verze"
-        val NAME = "jmeno"
-        val ROLE = "typ"
-        val SCHOOL = "skola"
-        val SCHOOL_TYPE = "typskoly"
-        val CLASS = "trida"
-        val GRADE = "rocnik"
-        val MODULES = "moduly"
-        val NEW_MARKS = "newmarkdays"
-        val NEW_MARKS_UPDATED = "newmarksupdated"
+        //shared preferences saving
+        private const val SP_KEY = "LOGIN_API"
+        const val VERSION = "verze"
+        const val NAME = "jmeno"
+        const val ROLE = "typ"
+        const val SCHOOL = "skola"
+        const val SCHOOL_TYPE = "typskoly"
+        const val CLASS = "trida"
+        const val GRADE = "rocnik"
+        const val MODULES = "moduly"
+        const val NEW_MARKS = "newmarkdays"
+        const val NEW_MARKS_UPDATED = "newmarksupdated"
 
         fun get(key: String): String {
-            return App.appContext().getSharedPreferences(SP_KEY, Context.MODE_PRIVATE).getString(key, "").toString()
+            return App.appContext().getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
+                .getString(key, "").toString()
         }
 
         private fun save(key: String, value: String) {
@@ -36,11 +41,16 @@ class Login {
                 apply()
             }
         }
+        //end shared preferences
 
-        fun login(token: String) {
-
+        /**
+         * tries to load data from server
+         * @return if data was loaded
+         */
+        fun login(token: String): Boolean{
             try {
-                val schoolUrl = LoginData.getUrl()
+                val schoolUrl = LoginData.get(
+                    LoginData.SP_URL)
                 val url = URL("$schoolUrl?hx=$token&pm=login")
                 val urlConnection = url.openConnection()
                 val input = urlConnection.getInputStream()
@@ -62,7 +72,11 @@ class Login {
 
                             when (name) {
                                 VERSION -> save(VERSION, value)
-                                NAME -> save(NAME, value.substring(0, value.lastIndexOf(',')))
+                                NAME -> {
+                                    val temp = value.substring(0, value.lastIndexOf(','))
+                                    val spaceIndex = temp.indexOf(' ')
+                                    save(NAME, "${temp.substring(spaceIndex + 1)} ${temp.substring(0, spaceIndex)}")
+                                }
                                 ROLE -> save(ROLE, value)
                                 SCHOOL -> save(SCHOOL, value)
                                 SCHOOL_TYPE -> save(SCHOOL_TYPE, value)
@@ -83,12 +97,17 @@ class Login {
                     }
                     eventType = parser.next()
                 }
+                return true
             } catch (e: Exception) {
+                return false
             } finally {
             }
-            println()
         }
 
+        /**
+         * translates school role to current language
+         * @return the name of role
+         */
         fun parseRole(role: String): String {
             return when (role) {
                 "R" -> App.appContext().getString(R.string.parent)

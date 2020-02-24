@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="licence">Usage requirements</string>
+    <string name="agree">Agree</string>
+    <string name="licence_agreement">This apps stores some your personal data like username, password and school.
+        App also collects some data about usage using Google\'s Firebase analytics.
+        This data are anonymised and will also include your town and school (you can switch it off in settings later). I am just interested to know how my app eventually grows ;)</string>
+</resources>

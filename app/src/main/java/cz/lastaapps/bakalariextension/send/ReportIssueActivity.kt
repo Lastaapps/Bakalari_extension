@@ -1,6 +1,8 @@
 package cz.lastaapps.bakalariextension.send
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -15,13 +17,16 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.IgnoreExtraProperties
 import cz.lastaapps.bakalariextension.BuildConfig
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.apimodules.Login
-import cz.lastaapps.bakalariextension.data.LoginData
+import cz.lastaapps.bakalariextension.api.Login
+import cz.lastaapps.bakalariextension.login.LoginData
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
-
+/**
+ * Sends error report to Firebase database
+ * Limited to 1 per day
+ */
 class ReportIssueActivity : AppCompatActivity() {
 
     private lateinit var database: DatabaseReference
@@ -36,13 +41,23 @@ class ReportIssueActivity : AppCompatActivity() {
 
             database = FirebaseDatabase.getInstance().reference
 
+            //sends data to Firebase
             val fab = findViewById<FloatingActionButton>(R.id.report_fab)
             fab.setOnClickListener {
                 getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
                     .edit().putLong(SP_DATE_KEY, Date().time).apply()
                 send()
             }
+
+            //Opens new issue on Github
+            val githubFab = findViewById<FloatingActionButton>(R.id.github_fab)
+            githubFab.setOnClickListener {
+                val url = "https://github.com/Lastaapps/Bakalari_extension/issues/new"
+                val uri = Uri.parse(url)
+                startActivity(Intent(Intent.ACTION_VIEW, uri))
+            }
         } else {
+            //If limit per day was reached
             AlertDialog.Builder(this)
                 .setMessage(R.string.report_overload)
                 .setPositiveButton(R.string.report_go_back) { dialog, _ -> run{
@@ -56,6 +71,9 @@ class ReportIssueActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * @return If message was sent today, or if user is moving through time in settings
+     */
     private fun timeCheck(): Boolean {
         val lastSent = getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
             .getLong(SP_DATE_KEY, 0)
@@ -79,6 +97,9 @@ class ReportIssueActivity : AppCompatActivity() {
         return cal != now
     }
 
+    /**
+     * Sends needed data to Firebase
+     */
     private fun send() {
         val email = findViewById<EditText>(R.id.email).text.trim().toString()
         val message = findViewById<EditText>(R.id.message).text.trim().toString()
@@ -99,9 +120,12 @@ class ReportIssueActivity : AppCompatActivity() {
                     androidVersion = packageManager.getPackageInfo(packageName, 0).versionName,
                     appVersionCode = BuildConfig.VERSION_CODE.toString(),
                     appVersionName = BuildConfig.VERSION_NAME,
-                    school = LoginData.getSchool(),
-                    town = LoginData.getTown(),
-                    url = LoginData.getUrl(),
+                    school = LoginData.get(
+                        LoginData.SP_SCHOOL),
+                    town = LoginData.get(
+                        LoginData.SP_TOWN),
+                    url = LoginData.get(
+                        LoginData.SP_URL),
                     bakalariVersion = Login.get(Login.VERSION),
                     accountType = Login.get(Login.ROLE)
                     )
@@ -117,6 +141,7 @@ class ReportIssueActivity : AppCompatActivity() {
         }
     }
 
+    /**Data structure of the data to be send*/
     @IgnoreExtraProperties
     data class Message(
         var date: String? = "",

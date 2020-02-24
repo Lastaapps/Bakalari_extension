@@ -7,4 +7,7 @@
     <color name="side_nav_bar_start">#3949AB</color>
     <color name="side_nav_bar_center">#5C6BC0</color>
     <color name="side_nav_bar_end">#283593</color>
+
+    <color name="github_background">#FFF</color>
+    <color name="github_foreground">#000</color>
 </resources>

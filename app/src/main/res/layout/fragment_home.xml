@@ -17,8 +17,8 @@
             style="@style/Heading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
             android:text="@string/bakalari"
             android:textSize="48sp" />
 
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/label_box"
         android:layout_centerHorizontal="true"
-        android:text="Jan Novák"
+        android:text="Jára Cimrman"
         android:textSize="20sp" />
 
     <TextView
@@ -53,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/type"
         android:layout_centerHorizontal="true"
-        android:text="Gymnázium určitě ne Brno" />
+        android:text="Gymnázium určitě ne z Brna" />
 
     <TableLayout
         android:layout_below="@id/school"

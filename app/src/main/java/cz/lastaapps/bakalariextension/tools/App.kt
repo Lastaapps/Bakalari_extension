@@ -1,8 +1,11 @@
-package cz.lastaapps.bakalariextension
+package cz.lastaapps.bakalariextension.tools
 
 import android.app.Application
 import android.content.Context
 
+/**
+ * Stores static context
+ */
 class App : Application() {
 
     companion object {

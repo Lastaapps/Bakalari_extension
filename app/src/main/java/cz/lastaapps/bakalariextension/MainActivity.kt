@@ -1,6 +1,5 @@
 package cz.lastaapps.bakalariextension
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -19,41 +18,39 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
-import com.google.firebase.analytics.FirebaseAnalytics
-import cz.lastaapps.bakalariextension.apimodules.Login
+import cz.lastaapps.bakalariextension.api.Login
 import cz.lastaapps.bakalariextension.send.ReportIssueActivity
 import cz.lastaapps.bakalariextension.send.SendIdeaActivity
+import cz.lastaapps.bakalariextension.login.Logout
+import cz.lastaapps.bakalariextension.ui.settings.SettingsActivity
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var mFirebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        /*val loginIntent = Intent(this, LoginActivity::class.java)
-        startActivity(loginIntent)
-        */
-
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
-
+        //toolbar setup
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
+        //side nav header init
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
+
         val navController = findNavController(R.id.nav_host_fragment)
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_settings, R.id.nav_about,
+                R.id.nav_home, R.id.nav_settings, R.id.nav_logout,
                 R.id.nav_share, R.id.nav_rate, R.id.nav_idea,
-                R.id.nav_report, R.id.nav_facebook, R.id.nav_google_play,
-                R.id.nav_github, R.id.nav_api
+                R.id.nav_report, R.id.nav_about, R.id.nav_facebook,
+                R.id.nav_google_play, R.id.nav_github, R.id.nav_api
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -63,7 +60,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onStart() {
         super.onStart()
 
@@ -78,7 +74,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
+        menuInflater.inflate(R.menu.option_menu, menu)
         return true
     }
 
@@ -88,13 +84,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
-        when (id) {
+        when (item.itemId) {
             R.id.nav_home -> {
             }
             R.id.nav_settings -> {
+                startActivity(Intent(this, SettingsActivity::class.java))
             }
-            R.id.nav_about -> {
+            R.id.nav_logout -> {
+                Logout.logout()
+                finish()
             }
             R.id.nav_share -> {
                 val sendIntent: Intent = Intent().apply {
@@ -117,6 +115,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_report -> {
                 val intent = Intent(this, ReportIssueActivity::class.java)
                 startActivity(intent)
+            }
+            R.id.nav_about -> {
             }
             R.id.nav_facebook -> {
                 val url = "https://www.facebook.com/lastaapps/"

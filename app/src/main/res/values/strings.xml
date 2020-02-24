@@ -13,59 +13,28 @@
     <string name="nav_header_subtitle">When basic isn´t enough</string>
     <string name="nav_header_desc">Navigation header</string>
 
-    <string name="menu_home">Home</string>
-    <string name="menu_settings">Settings</string>
-    <string name="menu_about">About</string>
-    <string name="menu_communicate">Communicate</string>
-    <string name="menu_share">Share</string>
-    <string name="menu_rate">Rate us</string>
-    <string name="menu_idea">Send us an idea</string>
-    <string name="menu_report">Report an issue</string>
-    <string name="menu_oder">Oder</string>
-    <string name="menu_facebook">Like us on Facebook</string>
-    <string name="menu_google_play">Try more apps</string>
-    <string name="menu_github">See code on Github</string>
-    <string name="menu_api">Bakalari API doc</string>
-    <string name="menu_more">Try more apps</string>
-
     <string name="share_message">Try expanded Bakalari app as i did!\n</string>
 
-    <string name="error_no_internet">No internet available</string>
+    <string name="error_no_internet">Cannot connect to internet</string>
     <string name="error_no_internet_or_url">No internet available of bad url</string>
     <string name="error_wrong_login">Wrong login</string>
+    <string name="error_no_saved_data">No data saved yet, internet connection needed for first login</string>
 
-    <string name="login_login">Login</string>
-    <string name="login_activity_title">Login to Bakalari</string>
-    <string name="login_prompt_url">School\'s Bakalari URL</string>
-    <string name="login_prompt_username">Username</string>
-    <string name="login_prompt_password">Password</string>
-    <string name="login_town">Choose town:</string>
-    <string name="login_school">Choose school:</string>
-    <string name="login_loading">Loading towns…</string>
-    <string name="login_loading_failed">Cannot load now, try again later</string>
-    <string name="login_connecting">Connection to school server…</string>
-    <string name="login_succeed">Succeeded to login!</string>
-    <string name="login_failed">"Login failed, wrong username or password"</string>
+    <string name="close">Close</string>
+    <string name="title_activity_settings">Settings</string>
 
-    <string name="idea_label">Send an idea</string>
-    <string name="idea_email_label">Email, so i can reply you</string>
-    <string name="idea_email_prompt">Email (Optional)</string>
-    <string name="idea_message_label">What\'s on your mind</string>
-    <string name="idea_message_prompt">Message</string>
-    <string name="idea_empty">Message cannot be empty</string>
-    <string name="idea_thanks">Thank you for your feedback :)</string>
-    <string name="idea_overload">You can send only 1 idea per day because of server overload protection</string>
-    <string name="idea_go_back">Close</string>
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
 
-    <string name="report_label">Report an issue</string>
-    <string name="report_email_label">Email, so i can reply you</string>
-    <string name="report_email_prompt">Email (Optional)</string>
-    <string name="report_message_label">Describe the error (English or Czech please)</string>
-    <string name="report_message_prompt">Error description</string>
-    <string name="report_empty">Report cannot be empty</string>
-    <string name="report_thanks">Thank you for your feedback :)</string>
-    <string name="report_data_collected">App will send some data to diagnose the issue, namely school\'s url, name, town and Bakalari version, account type(parent, pupil, teacher), android version, phone type, app version and phone\'s id</string>
-    <string name="report_overload">You can report only 1 issue per day because of server overload protection</string>
-    <string name="report_go_back">Close</string>
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
 
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
 </resources>

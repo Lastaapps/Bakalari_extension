@@ -1,7 +1,6 @@
-package cz.lastaapps.bakalariextension.ui.login
+package cz.lastaapps.bakalariextension.login
 
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.AsyncTask
@@ -9,16 +8,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.widget.*
-import cz.lastaapps.bakalariextension.App
+import cz.lastaapps.bakalariextension.tools.App
 import cz.lastaapps.bakalariextension.LoadingActivity
-import cz.lastaapps.bakalariextension.MainActivity
 
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.data.LoginData
 import kotlinx.android.synthetic.main.activity_login.*
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
@@ -27,6 +22,9 @@ import java.net.URL
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
+/**
+ * User interface to login to server
+ */
 class LoginActivity : AppCompatActivity() {
 
     companion object {
@@ -47,10 +45,6 @@ class LoginActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_login)
 
-        /*getSharedPreferences("LOGIN", Context.MODE_PRIVATE).edit().putString("TOWN", "Pelhřimov")
-            .apply()
-*/
-
         townSpinner = findViewById<Spinner>(R.id.town_spinner)
         schoolSpinner = findViewById<Spinner>(R.id.school_spinner)
         urlEdit = findViewById<EditText>(R.id.url)
@@ -58,9 +52,14 @@ class LoginActivity : AppCompatActivity() {
         passwordEdit = findViewById<EditText>(R.id.password)
         loginButton = findViewById<Button>(R.id.login)
 
-        urlEdit.setText(LoginData.getUrl())
-        usernameEdit.setText(LoginData.getUsername())
+        urlEdit.setText(
+            LoginData.get(
+                LoginData.SP_URL))
+        usernameEdit.setText(
+            LoginData.get(
+                LoginData.SP_USERNAME))
 
+        //town spinner init, used to select the town of school
         townSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>,
@@ -69,7 +68,6 @@ class LoginActivity : AppCompatActivity() {
                 id: Long
             ) {
                 LoadSchools().execute(townList[position])
-                //Toast.makeText(this@LoginActivity, "Select", Toast.LENGTH_LONG).show()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
@@ -85,6 +83,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
+        //shown dialog until towns are loaded
         val loadingDialog = AlertDialog.Builder(this)
             .setCancelable(false)
             .setMessage(R.string.login_loading)
@@ -93,9 +92,11 @@ class LoginActivity : AppCompatActivity() {
         LoadTowns().execute(loadingDialog)
 
         loadingDialog.show()
-
     }
 
+    /**
+     * Loads towns and puts them into spinner
+     */
     inner class LoadTowns : AsyncTask<AlertDialog, Unit, Boolean>() {
 
         lateinit var dialog: AlertDialog
@@ -148,7 +149,9 @@ class LoginActivity : AppCompatActivity() {
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 townSpinner.adapter = adapter
 
-                val i = townList.indexOf(LoginData.getTown())
+                val i = townList.indexOf(
+                    LoginData.get(
+                        LoginData.SP_TOWN))
                 if (0 <= i) {
                     townSpinner.setSelection(i)
                 } else {
@@ -161,6 +164,9 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Loads schools for the given town and puts them into school spinner
+     */
     inner class LoadSchools : AsyncTask<String, Unit, Boolean>() {
 
         override fun doInBackground(vararg args: String?): Boolean {
@@ -233,7 +239,9 @@ class LoginActivity : AppCompatActivity() {
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 schoolSpinner.adapter = adapter
 
-                val i = adapter.getPosition(LoginData.getSchool())
+                val i = adapter.getPosition(
+                    LoginData.get(
+                        LoginData.SP_SCHOOL))
                 if (0 <= i) {
                     schoolSpinner.setSelection(i)
                 }
@@ -259,6 +267,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    /**Tries to login to server with given data through LoginToServer class*/
     private fun login() {
         val dialog = AlertDialog.Builder(this)
             .setCancelable(false)
@@ -277,25 +286,11 @@ class LoginActivity : AppCompatActivity() {
             dialog.dismiss()
             startActivity(mainActivityIntent)
             finish()
-        })
+        }, Runnable { dialog.dismiss() })
 
         dialog.show()
     }
 
 }
 
-/**
- * Extension function to simplify setting an afterTextChanged action to EditText components.
- */
-private fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
-    this.addTextChangedListener(object : TextWatcher {
-        override fun afterTextChanged(editable: Editable?) {
-            afterTextChanged.invoke(editable.toString())
-        }
-
-        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-
-        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-    })
-}
 
