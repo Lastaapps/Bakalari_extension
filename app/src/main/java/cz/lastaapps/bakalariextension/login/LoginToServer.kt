@@ -5,16 +5,14 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Base64
 import android.widget.Toast
-import cz.lastaapps.bakalariextension.tools.App
 import cz.lastaapps.bakalariextension.R
-import org.xmlpull.v1.XmlPullParser
-import org.xmlpull.v1.XmlPullParserFactory
-import java.lang.Exception
-import java.net.URL
+import cz.lastaapps.bakalariextension.api.ConnectionManager
+import cz.lastaapps.bakalariextension.tools.App
 import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 /**
  * Tries to login to server with given data and saves them
@@ -24,23 +22,29 @@ class LoginToServer : AsyncTask<Any, Unit, String>() {
     companion object {
 
         /**Just to simplify call from oder classes*/
-        fun execute(username: String = LoginData.get(
-            LoginData.SP_USERNAME),
-                    password: String = LoginData.getPassword(),
-                    url: String = LoginData.get(
-                        LoginData.SP_URL),
-                    town: String = LoginData.get(
-                        LoginData.SP_TOWN),
-                    school: String = LoginData.get(
-                        LoginData.SP_SCHOOL),
-                    vararg extras: Any): LoginToServer {
+        fun execute(
+            username: String = LoginData.get(
+                LoginData.SP_USERNAME
+            ),
+            password: String = LoginData.getPassword(),
+            url: String = LoginData.get(
+                LoginData.SP_URL
+            ),
+            town: String = LoginData.get(
+                LoginData.SP_TOWN
+            ),
+            school: String = LoginData.get(
+                LoginData.SP_SCHOOL
+            ),
+            vararg extras: Any
+        ): LoginToServer {
 
             val data = ArrayList<String>()
             data.add(username)
-                    data.add(password)
-                    data.add(url)
-                    data.add(town)
-                    data.add(school)
+            data.add(password)
+            data.add(url)
+            data.add(town)
+            data.add(school)
             val task = LoginToServer()
             task.execute(data, extras)
             return task
@@ -79,14 +83,23 @@ class LoginToServer : AsyncTask<Any, Unit, String>() {
 
             //saves basic data
             if (LoginData.get(
-                    LoginData.SP_TOWN) == "") LoginData.set(
-                LoginData.SP_TOWN, town)
+                    LoginData.SP_TOWN
+                ) == ""
+            ) LoginData.set(
+                LoginData.SP_TOWN, town
+            )
             if (LoginData.get(
-                    LoginData.SP_SCHOOL) == "") LoginData.set(
-                LoginData.SP_SCHOOL, school)
+                    LoginData.SP_SCHOOL
+                ) == ""
+            ) LoginData.set(
+                LoginData.SP_SCHOOL, school
+            )
             if (LoginData.get(
-                    LoginData.SP_URL) == "") LoginData.set(
-                LoginData.SP_URL, url)
+                    LoginData.SP_URL
+                ) == ""
+            ) LoginData.set(
+                LoginData.SP_URL, url
+            )
 
             if (list.contains("")) {
                 return ""
@@ -164,39 +177,17 @@ class LoginToServer : AsyncTask<Any, Unit, String>() {
      * @return Loads data to generate token from server
      */
     private fun loadSalt(): Boolean {
-        val url = URL("$url?gethx=$username")
-        val urlConnection = url.openConnection()
-        val input = urlConnection.getInputStream()
 
-        val parser = XmlPullParserFactory.newInstance().newPullParser()
-        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
-        parser.setInput(input, null)
+        val jObject = ConnectionManager.getLoginCredentials(url, username) ?: return false
 
-        var eventType = parser.eventType
-        loop@ while (eventType != XmlPullParser.END_DOCUMENT) {
-            var name: String
-            when (eventType) {
-                XmlPullParser.START_DOCUMENT -> LoginActivity.townList = ArrayList()
-                XmlPullParser.START_TAG -> {
-                    name = parser.name
-                    eventType = parser.next()
-                    when (name) {
-                        "res" -> when (parser.text.toInt()) {
-                            2 -> return false
-                        }
-                        "typ" -> typ = parser.text
-                        "ikod" -> ikod = parser.text
-                        "salt" -> salt = parser.text
-                        else -> continue@loop
-                    }
-                }
-                XmlPullParser.TEXT -> {
-                }
-                XmlPullParser.END_TAG -> {
-                }
-            }
-            eventType = parser.next()
-        }
-        return true
+        salt = jObject.getString("Salt")
+        typ = jObject.getString("Type")
+        ikod = jObject.getString("ID")
+        jObject.getString("PlainPass")
+        jObject.getString("MessageType")
+
+        return !(salt == null || salt == "null" || salt == ""
+                || typ == null || typ == "null" || typ == ""
+                || ikod == null || ikod == "null" || ikod == "")
     }
 }

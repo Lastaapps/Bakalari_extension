@@ -14,7 +14,7 @@ import cz.lastaapps.bakalariextension.login.LoginData
 import cz.lastaapps.bakalariextension.login.LoginActivity
 import cz.lastaapps.bakalariextension.login.LoginToServer
 import cz.lastaapps.bakalariextension.tools.CheckInternet
-import cz.lastaapps.bakalariextension.tools.Toast
+import cz.lastaapps.bakalariextension.tools.MyToast
 
 /**Checks if app has been ever started -> license, if user is logged in -> LoginActivity or -> MainActivity*/
 class LoadingActivity : AppCompatActivity() {
@@ -48,7 +48,7 @@ class LoadingActivity : AppCompatActivity() {
 
             //checks, if there are at least some data saved
             if (!CheckInternet.check()) {
-                Toast.makeText(this@LoadingActivity, R.string.error_no_internet, Toast.LENGTH_LONG).show()
+                MyToast.makeText(this@LoadingActivity, R.string.error_no_internet, MyToast.LENGTH_LONG).show()
                 if (Login.get(Login.NAME) == "") {
                     Handler(Looper.getMainLooper()).post {
                         AlertDialog.Builder(this@LoadingActivity)
@@ -64,7 +64,7 @@ class LoadingActivity : AppCompatActivity() {
                 }
             }
 
-            var token = LoginData.getToken()
+            val token = LoginData.getToken()
             return if (token == "") {
                 //not logged in
                 Intent(this@LoadingActivity, LoginActivity::class.java)

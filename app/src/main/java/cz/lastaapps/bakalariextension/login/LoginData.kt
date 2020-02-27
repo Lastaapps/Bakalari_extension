@@ -1,12 +1,16 @@
 package cz.lastaapps.bakalariextension.login
 
 import android.content.Context
+import android.util.Base64
 import androidx.core.content.edit
+import cz.lastaapps.bakalariextension.api.ConnectionManager
 import cz.lastaapps.bakalariextension.tools.App
 import cz.lastaapps.bakalariextension.tools.Crypto
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.lang.Exception
 import java.net.URL
+import java.util.*
 
 /**
  * Stores data needed to login
@@ -104,16 +108,13 @@ class LoginData {
         fun check(token: String): Boolean {
             if (token == "") return false
 
-            val stringUrl = "${get(
-                SP_URL
-            )}?hx=$token&pm=login"
-            val url = URL(stringUrl)
-            val urlConnection = url.openConnection()
-            val input = urlConnection.getInputStream()
-
-            val read = BufferedReader(InputStreamReader(input)).readLine()
-
-            return !read.contains("-1")
+            val json = ConnectionManager.serverGet("", token)?: return false
+            try {
+                return  json.getString("MessageType") != "Error"
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            return false
         }
 
     }

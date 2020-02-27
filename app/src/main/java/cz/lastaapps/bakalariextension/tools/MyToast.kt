@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Looper
 
 /**Shows toast from not Main thread*/
-class Toast {
+class MyToast {
 
     companion object {
         const val LENGTH_SHORT = 0

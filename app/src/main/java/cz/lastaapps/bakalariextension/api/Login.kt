@@ -1,15 +1,10 @@
 package cz.lastaapps.bakalariextension.api
 
 import android.content.Context
+import android.util.Log
 import androidx.core.content.edit
 import cz.lastaapps.bakalariextension.tools.App
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.login.LoginData
-import cz.lastaapps.bakalariextension.login.LoginActivity
-import org.xmlpull.v1.XmlPullParser
-import org.xmlpull.v1.XmlPullParserFactory
-import java.lang.Exception
-import java.net.URL
 
 /**
  * Used to read basic data about student from server
@@ -47,60 +42,42 @@ class Login {
          * tries to load data from server
          * @return if data was loaded
          */
-        fun login(token: String): Boolean{
+        fun login(token: String): Boolean {
+
             try {
-                val schoolUrl = LoginData.get(
-                    LoginData.SP_URL)
-                val url = URL("$schoolUrl?hx=$token&pm=login")
-                val urlConnection = url.openConnection()
-                val input = urlConnection.getInputStream()
+                val json = ConnectionManager.serverGet("login", token) ?: return false
 
-                val parser = XmlPullParserFactory.newInstance().newPullParser()
-                parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false)
-                parser.setInput(input, null)
+                save(VERSION, json.getString("AppVersion"))
+                save(NAME, {
+                    val value = json.getString("UserName")
+                    val temp = value.substring(0, value.lastIndexOf(','))
+                    val spaceIndex = temp.indexOf(' ')
+                    "${temp.substring(spaceIndex + 1)} ${temp.substring(0, spaceIndex)}"
+                }.invoke())
+                save(ROLE, json.getString("UserType"))
+                json.getString("UserTypeAsStr")//handled in #parseRole()
+                save(SCHOOL, json.getString("SchoolName"))
+                save(SCHOOL_TYPE, json.getString("SchoolType"))
+                save(CLASS, json.getString("Class"))
+                save(GRADE, json.getString("StudyYear"))
+                save(MODULES, json.getString("Modules"))
+                json.getString("MessageType")
 
-                var eventType = parser.eventType
-                loop@ while (eventType != XmlPullParser.END_DOCUMENT) {
-                    var name: String
-                    when (eventType) {
-                        XmlPullParser.START_DOCUMENT -> LoginActivity.townList = ArrayList()
-                        XmlPullParser.START_TAG -> {
-                            name = parser.name
-                            eventType = parser.next()
-                            if (eventType != XmlPullParser.TEXT) continue@loop
-                            val value = parser.text.trim()
-
-                            when (name) {
-                                VERSION -> save(VERSION, value)
-                                NAME -> {
-                                    val temp = value.substring(0, value.lastIndexOf(','))
-                                    val spaceIndex = temp.indexOf(' ')
-                                    save(NAME, "${temp.substring(spaceIndex + 1)} ${temp.substring(0, spaceIndex)}")
-                                }
-                                ROLE -> save(ROLE, value)
-                                SCHOOL -> save(SCHOOL, value)
-                                SCHOOL_TYPE -> save(SCHOOL_TYPE, value)
-                                CLASS -> save(CLASS, value)
-                                GRADE -> save(GRADE, value)
-                                MODULES -> save(MODULES, value)
-                                NEW_MARKS -> {
-                                    save(NEW_MARKS, value)
-                                    save(NEW_MARKS_UPDATED, System.currentTimeMillis().toString())
-                                }
-                                else -> continue@loop
-                            }
-                        }
-                        XmlPullParser.TEXT -> {
-                        }
-                        XmlPullParser.END_TAG -> {
+                val params = json.getJSONArray("Params")
+                println(params)
+                for (i in 0 until params.length()) {
+                    val item = params.getJSONObject(i)
+                    when (item.getString("Name")) {
+                        "newmarkdays" -> {
+                            save(NEW_MARKS, item.getString("Value"))
+                            save(NEW_MARKS_UPDATED, System.currentTimeMillis().toString())
                         }
                     }
-                    eventType = parser.next()
                 }
                 return true
             } catch (e: Exception) {
+                e.printStackTrace()
                 return false
-            } finally {
             }
         }
 
@@ -108,7 +85,7 @@ class Login {
          * translates school role to current language
          * @return the name of role
          */
-        fun parseRole(role: String): String {
+        fun parseRole(role: String = get(ROLE)): String {
             return when (role) {
                 "R" -> App.appContext().getString(R.string.parent)
                 "U" -> App.appContext().getString(R.string.teacher)
