@@ -29,6 +29,10 @@ import java.util.*
  */
 class ReportIssueActivity : AppCompatActivity() {
 
+    companion object {
+        private val TAG = "${ReportIssueActivity::class.java.simpleName}"
+    }
+
     private lateinit var database: DatabaseReference
     private val SP_KEY = "REPORT_ISSUE"
     private val SP_DATE_KEY = "LAST_SENT"

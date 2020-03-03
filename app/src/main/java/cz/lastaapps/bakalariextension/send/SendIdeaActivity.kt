@@ -22,6 +22,10 @@ import java.util.*
  */
 class SendIdeaActivity : AppCompatActivity() {
 
+    companion object {
+        private val TAG = "${SendIdeaActivity::class.java.simpleName}"
+    }
+
     private lateinit var database: DatabaseReference
     private val SP_KEY = "SEND_IDEA"
     private val SP_DATE_KEY = "LAST_SENT"

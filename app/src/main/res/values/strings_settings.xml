@@ -3,31 +3,38 @@
     <string name="sett_general">General</string>
     <string name="sett_mobile_data">Use mobile data to update local data</string>
     <string name="sett_dark_mode">Theme</string>
-    <string name="sett_dark_mode_default">System</string>
-    <string-array name="sett_dark_mode">
-        <item>System</item>
+    <string name="sett_dark_mode_default" translatable="false">true</string>
+    <!-- Do not change order -->
+    <string-array name="sett_dark_mode_entries">
         <item>Light</item>
         <item>Dark</item>
+        <item>System default</item>
+    </string-array>
+    <string-array name="sett_dark_mode">
+        <item>Light</item>
+        <item>Dark</item>
+        <item>System default</item>
     </string-array>
     <string name="sett_log_out">Log out</string>
     <string name="sett_language">Select language</string>
-    <string name="sett_language_default">Default</string>
+    <!-- Do not change order -->
+    <string-array name="sett_language_entries" >
+        <item>System default</item>
+        <item>Čeština</item>
+        <item>English</item>
+    </string-array>
+    <!-- Do not change order -->
     <string-array name="sett_language" >
-        <item>Default</item>
+        <item>System default</item>
         <item>Čeština</item>
         <item>English</item>
     </string-array>
 
 
-    <string name="sett_data">Data</string>
-    <string name="sett_ads">Turn on ads to support me</string>
-    <string name="sett_collect_school">Send anonymised data about what school are you visiting</string>
 
-
-
-    <string name="sett_key_mobile_data">mobile_data</string>
-    <string name="sett_key_dark_mode">dark_mode</string>
-    <string name="sett_key_log_out">log_out</string>
-    <string name="sett_key_language">language</string>
+    <string name="sett_key_mobile_data" translatable="false">mobile_data</string>
+    <string name="sett_key_dark_mode" translatable="false">dark_mode</string>
+    <string name="sett_key_log_out" translatable="false">log_out</string>
+    <string name="sett_key_language" translatable="false">language</string>
 
 </resources>

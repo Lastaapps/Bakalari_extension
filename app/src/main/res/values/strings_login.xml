@@ -10,6 +10,6 @@
     <string name="login_loading">Loading towns…</string>
     <string name="login_loading_failed">Cannot load now, try again later</string>
     <string name="login_connecting">Connection to school server…</string>
-    <string name="login_succeed">Succeeded to login!</string>
+    <string name="login_succeeded">Succeeded to login!</string>
     <string name="login_failed">"Login failed, wrong username or password"</string>
 </resources>

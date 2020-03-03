@@ -10,6 +10,7 @@ import java.util.*
 class Licence {
 
     companion object {
+        private val TAG = "${Licence::class.java.simpleName}"
 
         private const val SP_KEY = "LICENCE"
         private const val SP_AGREED = "1.0"

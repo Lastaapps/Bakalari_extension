@@ -1,37 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/main_padding">
+    android:padding="@dimen/padding_basic">
 
-    <LinearLayout
-        android:id="@+id/label_box"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <include layout="@layout/label" android:id="@+id/label_box"
         android:gravity="center"
         android:orientation="horizontal"
-        android:layout_centerHorizontal="true">
-
-        <TextView
-            style="@style/Heading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
-            android:layout_marginRight="5dp"
-            android:text="@string/bakalari"
-            android:textSize="48sp" />
-
-        <ImageView
-            android:layout_width="64sp"
-            android:layout_height="64sp"
-            app:srcCompat="@drawable/icon" />
-
-    </LinearLayout>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"/>
 
     <TextView
         android:id="@+id/name"
-        style="@style/Text"
+        style="@style/AppTheme.Text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/label_box"
@@ -53,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/type"
         android:layout_centerHorizontal="true"
-        android:text="Gymnázium určitě ne z Brna" />
+        android:text="Bradavice" />
 
     <TableLayout
         android:layout_below="@id/school"

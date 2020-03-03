@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.core.content.edit
 import cz.lastaapps.bakalariextension.tools.App
 import cz.lastaapps.bakalariextension.R
+import cz.lastaapps.bakalariextension.login.LoginData
 
 /**
  * Used to read basic data about student from server
@@ -12,6 +13,8 @@ import cz.lastaapps.bakalariextension.R
 class Login {
 
     companion object {
+        private val TAG = "${Login::class.java.simpleName}"
+
         //shared preferences saving
         private const val SP_KEY = "LOGIN_API"
         const val VERSION = "verze"
@@ -30,9 +33,16 @@ class Login {
                 .getString(key, "").toString()
         }
 
-        private fun save(key: String, value: String) {
-            App.appContext().getSharedPreferences(SP_KEY, Context.MODE_PRIVATE).edit() {
+        fun set(key: String, value: String) {
+            App.appContext().getSharedPreferences(SP_KEY, Context.MODE_PRIVATE).edit {
                 putString(key, value)
+                apply()
+            }
+        }
+
+        fun clear() {
+            App.appContext().getSharedPreferences(SP_KEY, Context.MODE_PRIVATE).edit {
+                clear()
                 apply()
             }
         }
@@ -42,41 +52,47 @@ class Login {
          * tries to load data from server
          * @return if data was loaded
          */
-        fun login(token: String): Boolean {
+        fun login(): Boolean {
 
+            val json = ConnMgr.serverGet("login", LoginData.getToken()) ?: return false
             try {
-                val json = ConnectionManager.serverGet("login", token) ?: return false
 
-                save(VERSION, json.getString("AppVersion"))
-                save(NAME, {
+                set(VERSION, json.getString("AppVersion"))
+                set(NAME, {
                     val value = json.getString("UserName")
                     val temp = value.substring(0, value.lastIndexOf(','))
                     val spaceIndex = temp.indexOf(' ')
                     "${temp.substring(spaceIndex + 1)} ${temp.substring(0, spaceIndex)}"
                 }.invoke())
-                save(ROLE, json.getString("UserType"))
+                set(ROLE, json.getString("UserType"))
                 json.getString("UserTypeAsStr")//handled in #parseRole()
-                save(SCHOOL, json.getString("SchoolName"))
-                save(SCHOOL_TYPE, json.getString("SchoolType"))
-                save(CLASS, json.getString("Class"))
-                save(GRADE, json.getString("StudyYear"))
-                save(MODULES, json.getString("Modules"))
+                set(SCHOOL, json.getString("SchoolName"))
+                set(SCHOOL_TYPE, json.getString("SchoolType"))
+                set(CLASS, json.getString("Class"))
+                set(GRADE, json.getString("StudyYear"))
+                set(MODULES, json.getString("Modules"))
                 json.getString("MessageType")
 
-                val params = json.getJSONArray("Params")
-                println(params)
+                Log.i(TAG, "Data saved")
+
+                    val params = json.getJSONArray("Params")
                 for (i in 0 until params.length()) {
                     val item = params.getJSONObject(i)
                     when (item.getString("Name")) {
                         "newmarkdays" -> {
-                            save(NEW_MARKS, item.getString("Value"))
-                            save(NEW_MARKS_UPDATED, System.currentTimeMillis().toString())
+                            set(NEW_MARKS, item.getString("Value"))
+                            set(NEW_MARKS_UPDATED, System.currentTimeMillis().toString())
                         }
                     }
                 }
                 return true
             } catch (e: Exception) {
                 e.printStackTrace()
+                try {
+                    Log.e(TAG, "JSON error ${json.getString("ErrorMessage")}")
+                } catch (x: Exception) {
+                    Log.e(TAG, "Unknown error")
+                }
                 return false
             }
         }
@@ -92,6 +108,10 @@ class Login {
                 "Z" -> App.appContext().getString(R.string.pupil)
                 else -> App.appContext().getString(R.string.oder)
             }
+        }
+
+        fun getClassAndRole(): String {
+            return "${get(CLASS)} - ${parseRole(get(ROLE))}"
         }
     }
 }

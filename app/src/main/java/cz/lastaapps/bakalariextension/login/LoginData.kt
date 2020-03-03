@@ -1,16 +1,9 @@
 package cz.lastaapps.bakalariextension.login
 
 import android.content.Context
-import android.util.Base64
 import androidx.core.content.edit
-import cz.lastaapps.bakalariextension.api.ConnectionManager
 import cz.lastaapps.bakalariextension.tools.App
 import cz.lastaapps.bakalariextension.tools.Crypto
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.lang.Exception
-import java.net.URL
-import java.util.*
 
 /**
  * Stores data needed to login
@@ -18,6 +11,8 @@ import java.util.*
 class LoginData {
 
     companion object {
+        private val TAG = "${LoginData::class.java.simpleName}"
+
         //saving to shared preferences
         private const val SP_KEY = "LOGIN"
         const val SP_URL = "URL"
@@ -36,6 +31,7 @@ class LoginData {
             App.appContext().getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
                 .edit().putString(key, value).apply()
         }
+
         /**
          * Saves all at once
          */
@@ -59,21 +55,15 @@ class LoginData {
         /**
          * encrypts and saves password
          */
-        internal fun savePassword(pass: String) {
-            set(
-                SP_PASSWORD,
-                Crypto.encrypt(pass)
-            )
+        internal fun setPassword(pass: String) {
+            set(SP_PASSWORD, Crypto.encrypt(pass))
         }
 
         /**
          * clears password
          */
         internal fun clearPassword() {
-            set(
-                SP_PASSWORD,
-                ""
-            )
+            set(SP_PASSWORD,"")
         }
 
         /**
@@ -81,41 +71,18 @@ class LoginData {
          */
         internal fun getPassword(): String {
             return Crypto.decrypt(
-                get(
-                    SP_PASSWORD
-                )
+                get(SP_PASSWORD)
             )
         }
 
-
-        fun saveToken(token: String) {
-            App.appContext().getSharedPreferences(SP_KEY, Context.MODE_PRIVATE).edit {
-                putString(SP_TOKEN, token)
-                apply()
-            }
+        fun setToken(token: String) {
+            set(SP_TOKEN, token)
         }
 
         fun getToken(): String {
-            return get(
-                SP_TOKEN
-            )
+            return get(SP_TOKEN)
         }
         //end shared preferences
-
-        /**
-         * @return true if server responded with positive code, otherwise false
-         */
-        fun check(token: String): Boolean {
-            if (token == "") return false
-
-            val json = ConnectionManager.serverGet("", token)?: return false
-            try {
-                return  json.getString("MessageType") != "Error"
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-            return false
-        }
 
     }
 }

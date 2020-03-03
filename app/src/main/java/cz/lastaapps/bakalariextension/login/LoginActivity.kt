@@ -5,15 +5,16 @@ import android.content.Intent
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 import android.widget.*
 import cz.lastaapps.bakalariextension.tools.App
 import cz.lastaapps.bakalariextension.LoadingActivity
+import cz.lastaapps.bakalariextension.MainActivity
 
 import cz.lastaapps.bakalariextension.R
+import cz.lastaapps.bakalariextension.api.Login
 import kotlinx.android.synthetic.main.activity_login.*
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
@@ -28,6 +29,8 @@ import kotlin.collections.HashMap
 class LoginActivity : AppCompatActivity() {
 
     companion object {
+        private val TAG = "${LoginActivity::class.java.simpleName}"
+
         private lateinit var townSpinner: Spinner
         private lateinit var schoolSpinner: Spinner
         private lateinit var urlEdit: EditText
@@ -54,10 +57,14 @@ class LoginActivity : AppCompatActivity() {
 
         urlEdit.setText(
             LoginData.get(
-                LoginData.SP_URL))
+                LoginData.SP_URL
+            )
+        )
         usernameEdit.setText(
             LoginData.get(
-                LoginData.SP_USERNAME))
+                LoginData.SP_USERNAME
+            )
+        )
 
         //town spinner init, used to select the town of school
         townSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -103,6 +110,7 @@ class LoginActivity : AppCompatActivity() {
 
         override fun doInBackground(vararg args: AlertDialog?): Boolean {
             dialog = args[0]!!
+            Log.i(TAG, "Loading towns")
 
             try {
                 val url = URL("https://sluzby.bakalari.cz/api/v1/municipality")
@@ -135,8 +143,8 @@ class LoginActivity : AppCompatActivity() {
                     eventType = parser.next()
                 }
             } catch (e: Exception) {
-                Handler(Looper.getMainLooper()).post {
-                }
+                Log.e(TAG, "Failed to load towns")
+                e.printStackTrace()
                 return false
             }
             return true
@@ -151,14 +159,17 @@ class LoginActivity : AppCompatActivity() {
 
                 val i = townList.indexOf(
                     LoginData.get(
-                        LoginData.SP_TOWN))
+                        LoginData.SP_TOWN
+                    )
+                )
                 if (0 <= i) {
                     townSpinner.setSelection(i)
                 } else {
                     townSpinner.setSelection(townList.size / 2)
                 }
             } else {
-                Toast.makeText(App.appContext(), R.string.error_no_internet, Toast.LENGTH_LONG).show()
+                Toast.makeText(App.appContext(), R.string.error_no_internet, Toast.LENGTH_LONG)
+                    .show()
             }
             dialog.dismiss()
         }
@@ -171,6 +182,7 @@ class LoginActivity : AppCompatActivity() {
 
         override fun doInBackground(vararg args: String?): Boolean {
             try {
+                Log.i(TAG, "Loading schools for town ${args[0]}")
                 val stringUrl =
                     "https://sluzby.bakalari.cz/api/v1/municipality/" + Uri.encode(args[0])
                 val url = URL(stringUrl)
@@ -225,6 +237,8 @@ class LoginActivity : AppCompatActivity() {
                     eventType = parser.next()
                 }
             } catch (e: Exception) {
+                Log.e(TAG, "Failed to load towns")
+                e.printStackTrace()
                 return false
             }
             return true
@@ -241,7 +255,9 @@ class LoginActivity : AppCompatActivity() {
 
                 val i = adapter.getPosition(
                     LoginData.get(
-                        LoginData.SP_SCHOOL))
+                        LoginData.SP_SCHOOL
+                    )
+                )
                 if (0 <= i) {
                     schoolSpinner.setSelection(i)
                 }
@@ -262,13 +278,15 @@ class LoginActivity : AppCompatActivity() {
                 }
             } else {
                 schoolSpinner.adapter = null
-                Toast.makeText(App.appContext(), R.string.error_no_internet, Toast.LENGTH_LONG).show()
+                Toast.makeText(App.appContext(), R.string.error_no_internet, Toast.LENGTH_LONG)
+                    .show()
             }
         }
     }
 
     /**Tries to login to server with given data through LoginToServer class*/
     private fun login() {
+        Log.i(TAG, "Trying to log in")
         val dialog = AlertDialog.Builder(this)
             .setCancelable(false)
             .setMessage(R.string.login_connecting)
@@ -281,16 +299,36 @@ class LoginActivity : AppCompatActivity() {
         data.add(town_spinner.selectedItem.toString())
         data.add(school_spinner.selectedItem.toString())
 
-        val mainActivityIntent = Intent(this, LoadingActivity::class.java)
-        LoginToServer().execute(data, Runnable {
-            dialog.dismiss()
-            startActivity(mainActivityIntent)
-            finish()
-        }, Runnable { dialog.dismiss() })
-
+        Log.i(TAG, "Executing login task")
+        val todo =
+            //TodoAfterLoginToServer(dialog)
+            object: LoginToServer.ToDoAfter {
+                override fun run(result: Int) {
+                    dialog.dismiss()
+                    when (result) {
+                        LoginToServer.VALID_TOKEN -> {
+                            Toast.makeText(this@LoginActivity, R.string.login_succeeded, Toast.LENGTH_LONG).show()
+                            startActivity(Intent(this@LoginActivity, LoadingActivity::class.java))
+                            finish()
+                        }
+                        LoginToServer.NOT_ENOUGH_DATA -> {
+                            Toast.makeText(this@LoginActivity, R.string.error_not_enough_data, Toast.LENGTH_LONG).show()
+                        }
+                        LoginToServer.NO_INTERNET -> {
+                            Toast.makeText(this@LoginActivity, R.string.error_server_unavailable, Toast.LENGTH_LONG).show()
+                        }
+                        LoginToServer.WRONG_USERNAME -> {
+                            Toast.makeText(this@LoginActivity, R.string.error_wrong_username, Toast.LENGTH_LONG).show()
+                        }
+                        LoginToServer.INVALID_TOKEN -> {
+                            Toast.makeText(this@LoginActivity, R.string.error_invalid_password, Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
+            }
         dialog.show()
+        LoginToServer.execute(data, todo)
     }
-
 }
 
 

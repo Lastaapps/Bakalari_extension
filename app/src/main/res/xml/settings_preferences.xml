@@ -2,20 +2,19 @@
 
     <PreferenceCategory app:title="@string/sett_general">
         <SwitchPreferenceCompat app:key="@string/sett_key_mobile_data"
-            app:title="@string/sett_mobile_data"/>
+            app:title="@string/sett_mobile_data"
+            app:defaultValue="@string/sett_dark_mode_default"/>
         <ListPreference app:key="@string/sett_key_dark_mode"
             app:title="@string/sett_dark_mode"
-            app:entries="@array/sett_dark_mode"
+            app:entries="@array/sett_dark_mode_entries"
             app:entryValues="@array/sett_dark_mode"
-            app:defaultValue="@string/sett_dark_mode_default"
             app:useSimpleSummaryProvider="true"/>
         <Preference app:key="@string/sett_key_log_out"
             app:title="@string/sett_log_out"/>
         <ListPreference app:key="@string/sett_key_language"
             app:title="@string/sett_language"
-            app:entries="@array/sett_language"
+            app:entries="@array/sett_language_entries"
             app:entryValues="@array/sett_language"
-            app:defaultValue="@string/sett_language_default"
             app:useSimpleSummaryProvider="true"/>
 
     </PreferenceCategory>

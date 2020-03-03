@@ -27,6 +27,10 @@ import cz.lastaapps.bakalariextension.ui.settings.SettingsActivity
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
+    companion object {
+        private val TAG = "${MainActivity::class.java.simpleName}"
+    }
+
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,19 +61,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navView.setupWithNavController(navController)
         navView.setNavigationItemSelectedListener(this)
 
+        navView.getHeaderView(0).findViewById<TextView>(R.id.nav_name).text = Login.get(Login.NAME)
+        navView.getHeaderView(0).findViewById<TextView>(R.id.nav_type).text = Login.getClassAndRole()
 
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        val nameView = findViewById<TextView>(R.id.name)
-        val typeView = findViewById<TextView>(R.id.type)
-        val schoolView = findViewById<TextView>(R.id.school)
-
-        nameView.text = Login.get(Login.NAME)
-        typeView.text = "${Login.get(Login.CLASS)} - ${Login.parseRole(Login.get(Login.ROLE))}"
-        schoolView.text = Login.get(Login.SCHOOL)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -86,12 +80,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_home -> {
+                findNavController(R.id.nav_host_fragment).navigate(R.id.nav_home)
             }
             R.id.nav_settings -> {
                 startActivity(Intent(this, SettingsActivity::class.java))
             }
             R.id.nav_logout -> {
                 Logout.logout()
+                startActivity(Intent(this, LoadingActivity::class.java))
                 finish()
             }
             R.id.nav_share -> {
@@ -117,6 +113,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 startActivity(intent)
             }
             R.id.nav_about -> {
+                findNavController(R.id.nav_host_fragment).navigate(R.id.nav_about)
             }
             R.id.nav_facebook -> {
                 val url = "https://www.facebook.com/lastaapps/"

@@ -1,17 +1,19 @@
 package cz.lastaapps.bakalariextension.login
 
-import android.content.Intent
-import cz.lastaapps.bakalariextension.tools.App
+import android.util.Log
+import cz.lastaapps.bakalariextension.api.Login
 
 /**Deletes saved token and password, then restarts app*/
 class Logout {
 
     companion object {
+        private val TAG = "${Logout::class.java.simpleName}"
+
         fun logout() {
-            LoginData.saveToken("")
+            LoginData.setToken("")
             LoginData.clearPassword()
-            App.appContext().startActivity(Intent(
-                App.appContext(), LoginActivity::class.java))
+            Login.clear()
+            Log.i(TAG, "Logged out")
         }
     }
 }

@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">Bakalari extension</string>
+    <string name="app_name">Bakalari mobile</string>
     <string name="bakalari">Bakalari</string>
+    <string name="author">Lasta apps</string>
 
     <string name="parent">parent</string>
     <string name="pupil">pupil</string>
@@ -9,19 +10,34 @@
 
     <string name="nav_drawer_open">Open navigation drawer</string>
     <string name="nav_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Bakalari +</string>
-    <string name="nav_header_subtitle">When basic isn´t enough</string>
     <string name="nav_header_desc">Navigation header</string>
 
-    <string name="share_message">Try expanded Bakalari app as i did!\n</string>
+    <string name="share_message">Try this better Bakalari app as i did!</string>
 
     <string name="error_no_internet">Cannot connect to internet</string>
-    <string name="error_no_internet_or_url">No internet available of bad url</string>
+    <string name="error_server_unavailable">Cannot connect to school server</string>
+    <string name="error_no_internet_or_url">No internet available of bad url was entered</string>
     <string name="error_wrong_login">Wrong login</string>
+    <string name="error_wrong_username">Wrong username</string>
+    <string name="error_not_enough_data">You haven\'t entered enough data</string>
     <string name="error_no_saved_data">No data saved yet, internet connection needed for first login</string>
+    <string name="error_login_failed">Failed to login, try later</string>
+    <string name="error_invalid_password">Invalid password</string>
 
     <string name="close">Close</string>
-    <string name="title_activity_settings">Settings</string>
+
+    <!-- About -->
+    <string name="about_thanks">I want to thank all the people who created documentation of Bakalari API on Github.
+        Without them, you wouldn\'t be reading this message now. The source api is below. Thank you very much!</string>
+    <string name="about_follow">Feel free to follow me, share or check source code</string>
+
+    <!-- Licence -->
+    <string name="licence">Usage requirements</string>
+    <string name="agree">Agree</string>
+    <string name="licence_agreement">This apps stores some your personal data like username, password and school.
+        App also collects some data about usage using Google\'s Firebase analytics.
+        This data are anonymised and will also include your town and school (you can switch it off in settings later). I am just interested to know how my app eventually grows ;)</string>
+    <string name="title_activity_settings2">Settings</string>
 
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
@@ -37,4 +53,5 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+
 </resources>

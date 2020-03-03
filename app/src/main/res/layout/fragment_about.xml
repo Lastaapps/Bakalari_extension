@@ -1,20 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="@dimen/padding_basic">
+
+    <include layout="@layout/label"
+        android:id="@+id/label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/margin_basic"/>
 
     <TextView
-        android:id="@+id/text_about"
-        android:layout_width="match_parent"
+        android:id="@+id/author"
+        style="@style/AppTheme.Text"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_below="@id/label"
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/margin_basic"
+        android:layout_marginStart="@dimen/margin_basic"
+        android:layout_marginTop="@dimen/margin_basic"
+        android:layout_marginEnd="@dimen/margin_basic"
+        android:layout_marginBottom="@dimen/margin_basic"
+        android:text="Lasta apps YYYY" />
+
+    <LinearLayout
+        android:id="@+id/thanks_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+
+        android:layout_below="@id/author"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:id="@+id/thanks"
+            style="@style/AppTheme.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/about_thanks"
+            android:textAlignment="center"
+
+            android:layout_margin="@dimen/margin_basic"/>
+
+        <ImageButton
+            android:id="@+id/api"
+            style="@style/AppTheme.SmallImageButton"
+            app:srcCompat="@drawable/nav_api"
+
+            android:layout_margin="@dimen/margin_basic"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/follow"
+        style="@style/AppTheme.Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/about_follow"
+
+        android:layout_below="@id/thanks_box"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/margin_basic"/>
+
+    <LinearLayout
+        android:id="@+id/button_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+
+        android:layout_below="@id/follow"
+        android:layout_centerHorizontal="true">
+
+        <ImageButton
+            style="@style/AppTheme.SmallImageButton"
+            android:id="@+id/facebook"
+            app:srcCompat="@drawable/nav_facebook" />
+        <ImageButton
+            style="@style/AppTheme.SmallImageButton"
+            android:id="@+id/share"
+            app:srcCompat="@drawable/nav_share" />
+        <ImageButton
+            style="@style/AppTheme.SmallImageButton"
+            android:id="@+id/rate"
+            app:srcCompat="@drawable/nav_rate" />
+        <ImageButton
+            style="@style/AppTheme.SmallImageButton"
+            android:id="@+id/google_play"
+            app:srcCompat="@drawable/nav_google_play" />
+        <ImageButton
+            style="@style/AppTheme.SmallImageButton"
+            android:id="@+id/github"
+            app:srcCompat="@drawable/nav_github" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/version"
+        style="@style/AppTheme.Text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/button_box"
+
+        android:layout_centerHorizontal="true"
+        android:text="1.0.0 001" />
+
+</RelativeLayout>
