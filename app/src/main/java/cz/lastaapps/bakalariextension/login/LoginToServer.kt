@@ -22,7 +22,7 @@ import kotlin.collections.ArrayList
 class LoginToServer : AsyncTask<Any, Unit, String>() {
 
     companion object {
-        private val TAG = "${LoginToServer::class.java.simpleName}"
+        private val TAG = LoginToServer::class.java.simpleName
 
 
         /**

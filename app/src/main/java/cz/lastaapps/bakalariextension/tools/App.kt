@@ -10,7 +10,7 @@ import android.util.Log
 class App : Application() {
 
     companion object {
-        private val TAG = "${App::class.java.simpleName}"
+        private val TAG = App::class.java.simpleName
 
         lateinit var app: App
         fun appContext(): Context {

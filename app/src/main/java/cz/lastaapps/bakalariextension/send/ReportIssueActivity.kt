@@ -30,12 +30,13 @@ import java.util.*
 class ReportIssueActivity : AppCompatActivity() {
 
     companion object {
-        private val TAG = "${ReportIssueActivity::class.java.simpleName}"
+        private val TAG = ReportIssueActivity::class.java.simpleName
+
+        private const val SP_KEY = "REPORT_ISSUE"
+        private const val SP_DATE_KEY = "LAST_SENT"
     }
 
     private lateinit var database: DatabaseReference
-    private val SP_KEY = "REPORT_ISSUE"
-    private val SP_DATE_KEY = "LAST_SENT"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,12 +1,12 @@
 package cz.lastaapps.bakalariextension.send
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -23,12 +23,12 @@ import java.util.*
 class SendIdeaActivity : AppCompatActivity() {
 
     companion object {
-        private val TAG = "${SendIdeaActivity::class.java.simpleName}"
+        private val TAG = SendIdeaActivity::class.java.simpleName
+        private const val SP_KEY = "SEND_IDEA"
+        private const val SP_DATE_KEY = "LAST_SENT"
     }
 
     private lateinit var database: DatabaseReference
-    private val SP_KEY = "SEND_IDEA"
-    private val SP_DATE_KEY = "LAST_SENT"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

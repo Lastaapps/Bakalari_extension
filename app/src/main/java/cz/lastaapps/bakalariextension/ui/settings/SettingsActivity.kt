@@ -1,7 +1,5 @@
 package cz.lastaapps.bakalariextension.ui.settings
 
-import android.app.AlarmManager
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -16,7 +14,6 @@ import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
@@ -25,7 +22,6 @@ import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.login.Logout
 import cz.lastaapps.bakalariextension.tools.App
 import java.util.*
-import kotlin.collections.HashMap
 
 
 /**
@@ -113,12 +109,12 @@ class SettingsActivity : AppCompatActivity() {
          * Represents findPreference<Preference>
          */
         private inline fun fp(key: String): Preference? {
-            return findPreference<Preference>(key)
+            return findPreference(key)
         }
     }
 
     companion object {
-        private val TAG = "${SettingsActivity::class.java.simpleName}"
+        private val TAG = SettingsActivity::class.java.simpleName
 
         private const val RELAUNCH_APP = "RELAUNCH"
 

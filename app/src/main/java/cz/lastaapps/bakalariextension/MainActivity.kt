@@ -19,16 +19,16 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import cz.lastaapps.bakalariextension.api.Login
+import cz.lastaapps.bakalariextension.login.Logout
 import cz.lastaapps.bakalariextension.send.ReportIssueActivity
 import cz.lastaapps.bakalariextension.send.SendIdeaActivity
-import cz.lastaapps.bakalariextension.login.Logout
 import cz.lastaapps.bakalariextension.ui.settings.SettingsActivity
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     companion object {
-        private val TAG = "${MainActivity::class.java.simpleName}"
+        private val TAG = MainActivity::class.java.simpleName
     }
 
     private lateinit var appBarConfiguration: AppBarConfiguration

@@ -24,7 +24,7 @@ import cz.lastaapps.bakalariextension.ui.settings.SettingsActivity
 class LoadingActivity : AppCompatActivity() {
 
     companion object {
-        private val TAG = "${LoadingActivity::class.java.simpleName}"
+        private val TAG = LoadingActivity::class.java.simpleName
     }
 
     private lateinit var mFirebaseAnalytics: FirebaseAnalytics

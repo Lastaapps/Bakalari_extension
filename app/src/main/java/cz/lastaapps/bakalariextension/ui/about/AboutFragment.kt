@@ -12,18 +12,13 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import cz.lastaapps.bakalariextension.BuildConfig
-import cz.lastaapps.bakalariextension.MainActivity
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.login.Logout
-import cz.lastaapps.bakalariextension.send.ReportIssueActivity
-import cz.lastaapps.bakalariextension.send.SendIdeaActivity
-import cz.lastaapps.bakalariextension.ui.settings.SettingsActivity
 import java.util.*
 
 class AboutFragment : Fragment() {
 
     companion object {
-        private val TAG = "${AboutFragment::class.java.simpleName}"
+        private val TAG = AboutFragment::class.java.simpleName
     }
 
     private lateinit var aboutViewModel: AboutViewModel

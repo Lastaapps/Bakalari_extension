@@ -3,9 +3,9 @@ package cz.lastaapps.bakalariextension.api
 import android.content.Context
 import android.util.Log
 import androidx.core.content.edit
-import cz.lastaapps.bakalariextension.tools.App
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.login.LoginData
+import cz.lastaapps.bakalariextension.tools.App
 
 /**
  * Used to read basic data about student from server
@@ -13,7 +13,7 @@ import cz.lastaapps.bakalariextension.login.LoginData
 class Login {
 
     companion object {
-        private val TAG = "${Login::class.java.simpleName}"
+        private val TAG = Login::class.java.simpleName
 
         //shared preferences saving
         private const val SP_KEY = "LOGIN_API"
@@ -27,6 +27,10 @@ class Login {
         const val MODULES = "moduly"
         const val NEW_MARKS = "newmarkdays"
         const val NEW_MARKS_UPDATED = "newmarksupdated"
+
+        const val ROLE_TEACHER = "U"
+        const val ROLE_PARENT = "R"
+        const val ROLE_PUPIL = "Z"
 
         fun get(key: String): String {
             return App.appContext().getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
@@ -103,9 +107,9 @@ class Login {
          */
         fun parseRole(role: String = get(ROLE)): String {
             return when (role) {
-                "R" -> App.appContext().getString(R.string.parent)
-                "U" -> App.appContext().getString(R.string.teacher)
-                "Z" -> App.appContext().getString(R.string.pupil)
+                ROLE_PARENT -> App.appContext().getString(R.string.parent)
+                ROLE_TEACHER -> App.appContext().getString(R.string.teacher)
+                ROLE_PUPIL -> App.appContext().getString(R.string.pupil)
                 else -> App.appContext().getString(R.string.oder)
             }
         }

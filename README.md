@@ -1,3 +1,4 @@
-Tady budou možná již brzy informace o projektu
+Applikace na Android bude zobrazovat rozvth v notifikační oblasti a widgetech, hlášení obědů ze systému iCanteen, známky, předvídač, absenci a možná další.
+Nebo to nedodělám a nebude nic...
 
-A nebo možná taky ne...
+Bakaláři API: https://github.com/bakalari-api/bakalari-api

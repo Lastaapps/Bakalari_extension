@@ -7,11 +7,10 @@ import cz.lastaapps.bakalariextension.tools.CheckInternet
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import java.lang.Exception
+import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLEncoder
-import java.util.HashMap
-import javax.net.ssl.HttpsURLConnection
+import java.util.*
 
 /**
  * Connection manager for API V2 - JSONs
@@ -19,14 +18,14 @@ import javax.net.ssl.HttpsURLConnection
 class ConnMgr {
 
     companion object {
-        private val TAG = "${ConnMgr::class.java.simpleName}"
+        private val TAG = ConnMgr::class.java.simpleName
 
         fun serverGet(module: String, token: String = LoginData.getToken()): JSONObject? {
             return try {
-                Log.i(TAG, "Loading api  module $module")
+                Log.i(TAG, "Loading api module $module")
 
                 val url = URL("${getRawUrl()}/if/2/$module")
-                val urlConnection = url.openConnection() as HttpsURLConnection
+                val urlConnection = url.openConnection() as HttpURLConnection
                 urlConnection.setRequestProperty("Accept", "application/json")
                 urlConnection.setRequestProperty("Authorization", "Basic ${getV2Token(token)}")
                 urlConnection.setRequestProperty("Content-Type", "application/json")
@@ -36,7 +35,7 @@ class ConnMgr {
 
                 var response = ""
                 var line: String?
-                val br = BufferedReader(InputStreamReader(urlConnection.getInputStream()))
+                val br = BufferedReader(InputStreamReader(urlConnection.inputStream))
                 while (br.readLine().also { line = it } != null) {
                     response += line
                 }
