@@ -81,11 +81,11 @@ dependencies {
 }
 
 
-private static Integer generateVersionCode() {
+private Integer generateVersionCode() {
     return ext.minimumSdkVersion * 10000000 + ext.versionMajor * 10000 + ext.versionMinor * 100 + ext.versionPatch
 }
 
-private static String generateVersionName() {
+private String generateVersionName() {
     String versionName = "${ext.versionMajor}.${ext.versionMinor}.${ext.versionPatch}"
     if (ext.versionClassifier == null && ext.isBeta) {
         ext.versionClassifier = "BETA"

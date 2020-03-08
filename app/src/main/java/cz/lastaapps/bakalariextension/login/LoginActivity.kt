@@ -6,22 +6,16 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 import android.widget.*
-import cz.lastaapps.bakalariextension.tools.App
+import androidx.appcompat.app.AppCompatActivity
 import cz.lastaapps.bakalariextension.LoadingActivity
-import cz.lastaapps.bakalariextension.MainActivity
-
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.Login
+import cz.lastaapps.bakalariextension.tools.App
 import kotlinx.android.synthetic.main.activity_login.*
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
-import java.lang.Exception
 import java.net.URL
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 /**
  * User interface to login to server
@@ -295,6 +289,7 @@ class LoginActivity : AppCompatActivity() {
         val data = ArrayList<String>()
         data.add(usernameEdit.text.toString())
         data.add(passwordEdit.text.toString())
+        data.add("true")
         data.add(urlEdit.text.toString())
         data.add(town_spinner.selectedItem.toString())
         data.add(school_spinner.selectedItem.toString())

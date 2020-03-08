@@ -34,6 +34,7 @@ class LoginToServer : AsyncTask<Any, Unit, String>() {
         fun execute(
             username: String = LoginData.get(LoginData.SP_USERNAME),
             password: String = LoginData.getPassword(),
+            isPlain: String = "false",
             url: String = LoginData.get(LoginData.SP_URL),
             town: String = LoginData.get(LoginData.SP_TOWN),
             school: String = LoginData.get(LoginData.SP_SCHOOL),
@@ -42,6 +43,7 @@ class LoginToServer : AsyncTask<Any, Unit, String>() {
             val data = ArrayList<String>()
             data.add(username)
             data.add(password)
+            data.add(isPlain)
             data.add(url)
             data.add(town)
             data.add(school)
@@ -63,6 +65,7 @@ class LoginToServer : AsyncTask<Any, Unit, String>() {
 
     lateinit var username: String
     lateinit var password: String
+    lateinit var isPlain: String
     lateinit var url: String
     lateinit var town: String
     lateinit var school: String
@@ -80,9 +83,10 @@ class LoginToServer : AsyncTask<Any, Unit, String>() {
             val list = params[0] as ArrayList<String>
             username = list[0]
             password = list[1]
-            url = list[2]
-            town = list[3]
-            school = list[4]
+            isPlain = list[2]
+            url = list[3]
+            town = list[4]
+            school = list[5]
 
             todoAfter =
                 if (params.size >= 2) params[1] as ToDoAfter
@@ -109,14 +113,17 @@ class LoginToServer : AsyncTask<Any, Unit, String>() {
                 return ""
             }
 
-            //loads salt from server for user given
-            if (!loadSalt()) {
-                result = WRONG_USERNAME
-                Log.e(TAG, "Failed to obtain salt, wrong username")
-                return ""
+            if (isPlain == "true") {
+                //loads salt from server for given user
+                if (!loadSalt()) {
+                    result = WRONG_USERNAME
+                    Log.e(TAG, "Failed to obtain salt, wrong username")
+                    return ""
+                }
+                password = generateSemiPassword(salt, ikod, typ, password)
             }
 
-            val token = generateToken(salt, ikod, typ, username, password)
+            val token = generateToken(username, password)
             Log.i(TAG, "Checking token $token")
 
             if (ConnMgr.checkToken(token) != ConnMgr.TOKEN_VALID) {
@@ -133,10 +140,10 @@ class LoginToServer : AsyncTask<Any, Unit, String>() {
         } catch (e: Exception) {
             Handler(Looper.getMainLooper()).post {
                 Toast.makeText(
-                    App.appContext(),
-                    R.string.error_no_internet_or_url,
-                    Toast.LENGTH_LONG
-                )
+                        App.appContext(),
+                        R.string.error_no_internet_or_url,
+                        Toast.LENGTH_LONG
+                    )
                     .show()
             }
             e.printStackTrace()
@@ -154,22 +161,28 @@ class LoginToServer : AsyncTask<Any, Unit, String>() {
         todoAfter?.run(result)
     }
 
+
+    private fun generateSemiPassword(
+        salt: String,
+        ikod: String,
+        typ: String,
+        password: String
+    ): String {
+        return hash(salt + ikod + typ + password)
+    }
+
     /**
      * @returns generated token
      */
     private fun generateToken(
-        salt: String,
-        ikod: String,
-        typ: String,
         username: String,
-        password: String
+        semiPwd: String
     ): String {
         Log.i(TAG, "Generating token from data given")
-        val pwd = hash(salt + ikod + typ + password)
         val formatter = SimpleDateFormat("YYYYMMdd")
         formatter.timeZone = TimeZone.getTimeZone("GMT")
         val date = formatter.format(Date())
-        val toHash = "*login*$username*pwd*$pwd*sgn*ANDR$date"
+        val toHash = "*login*$username*pwd*$semiPwd*sgn*ANDR$date"
         val hashed = hash(toHash)
         return hashed.replace('\\', '_').replace('/', '_').replace('+', '-')
     }

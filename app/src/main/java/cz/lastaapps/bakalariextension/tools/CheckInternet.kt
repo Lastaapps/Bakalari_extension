@@ -3,7 +3,7 @@ package cz.lastaapps.bakalariextension.tools
 import android.content.Context
 import android.net.ConnectivityManager
 import android.util.Log
-import cz.lastaapps.bakalariextension.api.ConnMgr
+import cz.lastaapps.bakalariextension.login.LoginData
 import cz.lastaapps.bakalariextension.ui.settings.SettingsActivity
 import java.io.IOException
 import java.net.HttpURLConnection
@@ -23,7 +23,7 @@ class CheckInternet {
             val activeNetwork = cm.activeNetworkInfo
             return if (activeNetwork != null && activeNetwork.isConnected) {
                 try {
-                    var stringUrl = ConnMgr.getRawUrl()
+                    var stringUrl = LoginData.get(LoginData.SP_URL)
                     if (stringUrl == "") {
                         if (canBeGoogle) {
                             Log.i(TAG, "No school url set, checking at least google")
