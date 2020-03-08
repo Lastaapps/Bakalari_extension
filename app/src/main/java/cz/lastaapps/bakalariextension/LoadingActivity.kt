@@ -3,29 +3,28 @@ package cz.lastaapps.bakalariextension
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.AsyncTask
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.analytics.FirebaseAnalytics
 import cz.lastaapps.bakalariextension.api.ConnMgr
 import cz.lastaapps.bakalariextension.api.Login
-import cz.lastaapps.bakalariextension.login.LoginData
 import cz.lastaapps.bakalariextension.login.LoginActivity
+import cz.lastaapps.bakalariextension.login.LoginData
 import cz.lastaapps.bakalariextension.login.LoginToServer
 import cz.lastaapps.bakalariextension.tools.App
 import cz.lastaapps.bakalariextension.tools.CheckInternet
 import cz.lastaapps.bakalariextension.tools.MyToast
 import cz.lastaapps.bakalariextension.ui.settings.SettingsActivity
-import java.security.Permission
 
 /**Checks if app has been ever started -> license, if user is logged in -> LoginActivity or -> MainActivity*/
 class LoadingActivity : AppCompatActivity() {
 
     companion object {
-        private val TAG = "${LoadingActivity::class.java.simpleName}"
+        private val TAG = LoadingActivity::class.java.simpleName
     }
 
     private lateinit var mFirebaseAnalytics: FirebaseAnalytics

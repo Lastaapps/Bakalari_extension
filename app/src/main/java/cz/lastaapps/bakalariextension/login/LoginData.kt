@@ -11,7 +11,7 @@ import cz.lastaapps.bakalariextension.tools.Crypto
 class LoginData {
 
     companion object {
-        private val TAG = "${LoginData::class.java.simpleName}"
+        private val TAG = LoginData::class.java.simpleName
 
         //saving to shared preferences
         private const val SP_KEY = "LOGIN"

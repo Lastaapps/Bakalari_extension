@@ -30,7 +30,7 @@ import javax.security.auth.x500.X500Principal
 class Crypto {
 
     companion object {
-        private val TAG = "${Crypto::class.java.simpleName}"
+        private val TAG = Crypto::class.java.simpleName
 
 
         fun encrypt(mess: String): String {

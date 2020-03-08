@@ -14,7 +14,7 @@ import java.net.URL
  * Checks connection to school server, if there is no URL available, to www.google.com*/
 class CheckInternet {
     companion object {
-        private val TAG = "${CheckInternet::class.java.simpleName}"
+        private val TAG = CheckInternet::class.java.simpleName
 
         fun check(canBeGoogle: Boolean = true): Boolean {
             val cm = App.appContext()

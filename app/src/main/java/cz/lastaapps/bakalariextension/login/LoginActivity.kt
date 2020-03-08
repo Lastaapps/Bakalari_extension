@@ -6,22 +6,16 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 import android.widget.*
-import cz.lastaapps.bakalariextension.tools.App
+import androidx.appcompat.app.AppCompatActivity
 import cz.lastaapps.bakalariextension.LoadingActivity
-import cz.lastaapps.bakalariextension.MainActivity
-
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.Login
+import cz.lastaapps.bakalariextension.tools.App
 import kotlinx.android.synthetic.main.activity_login.*
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
-import java.lang.Exception
 import java.net.URL
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 /**
  * User interface to login to server
@@ -29,7 +23,7 @@ import kotlin.collections.HashMap
 class LoginActivity : AppCompatActivity() {
 
     companion object {
-        private val TAG = "${LoginActivity::class.java.simpleName}"
+        private val TAG = LoginActivity::class.java.simpleName
 
         private lateinit var townSpinner: Spinner
         private lateinit var schoolSpinner: Spinner
@@ -48,12 +42,12 @@ class LoginActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_login)
 
-        townSpinner = findViewById<Spinner>(R.id.town_spinner)
-        schoolSpinner = findViewById<Spinner>(R.id.school_spinner)
-        urlEdit = findViewById<EditText>(R.id.url)
-        usernameEdit = findViewById<EditText>(R.id.username)
-        passwordEdit = findViewById<EditText>(R.id.password)
-        loginButton = findViewById<Button>(R.id.login)
+        townSpinner = findViewById(R.id.town_spinner)
+        schoolSpinner = findViewById(R.id.school_spinner)
+        urlEdit = findViewById(R.id.url)
+        usernameEdit = findViewById(R.id.username)
+        passwordEdit = findViewById(R.id.password)
+        loginButton = findViewById(R.id.login)
 
         urlEdit.setText(
             LoginData.get(
@@ -106,7 +100,7 @@ class LoginActivity : AppCompatActivity() {
      */
     inner class LoadTowns : AsyncTask<AlertDialog, Unit, Boolean>() {
 
-        lateinit var dialog: AlertDialog
+        private lateinit var dialog: AlertDialog
 
         override fun doInBackground(vararg args: AlertDialog?): Boolean {
             dialog = args[0]!!
@@ -228,7 +222,7 @@ class LoginActivity : AppCompatActivity() {
                         }
                         XmlPullParser.END_TAG -> {
                             if (parser.name == "schoolInfo") {
-                                schoolMap.put(schoolName, schoolUrl)
+                                schoolMap[schoolName] = schoolUrl
                             }
                             isName = false
                             isUrl = false

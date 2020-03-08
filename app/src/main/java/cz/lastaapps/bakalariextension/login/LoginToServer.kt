@@ -22,7 +22,7 @@ import kotlin.collections.ArrayList
 class LoginToServer : AsyncTask<Any, Unit, String>() {
 
     companion object {
-        private val TAG = "${LoginToServer::class.java.simpleName}"
+        private val TAG = LoginToServer::class.java.simpleName
 
 
         /**
@@ -61,11 +61,11 @@ class LoginToServer : AsyncTask<Any, Unit, String>() {
         const val INVALID_TOKEN = -1
     }
 
-    lateinit var username: String
-    lateinit var password: String
-    lateinit var url: String
-    lateinit var town: String
-    lateinit var school: String
+    private lateinit var username: String
+    private lateinit var password: String
+    private lateinit var url: String
+    private lateinit var town: String
+    private lateinit var school: String
 
     private lateinit var salt: String
     private lateinit var ikod: String

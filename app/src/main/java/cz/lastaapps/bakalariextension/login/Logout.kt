@@ -7,7 +7,7 @@ import cz.lastaapps.bakalariextension.api.Login
 class Logout {
 
     companion object {
-        private val TAG = "${Logout::class.java.simpleName}"
+        private val TAG = Logout::class.java.simpleName
 
         fun logout() {
             LoginData.setToken("")

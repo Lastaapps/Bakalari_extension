@@ -26,7 +26,7 @@
     <!-- Do not change order -->
     <string-array name="sett_language" >
         <item>System default</item>
-        <item>Čeština</item>
+        <item>Czech</item>
         <item>English</item>
     </string-array>
 

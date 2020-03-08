@@ -1,14 +1,13 @@
 package cz.lastaapps.bakalariextension.tools
 
 import android.content.Context
-import android.content.Intent
 import android.os.Looper
 
 /**Shows toast from not Main thread*/
 class MyToast {
 
     companion object {
-        private val TAG = "${MyToast::class.java.simpleName}"
+        private val TAG = MyToast::class.java.simpleName
 
         const val LENGTH_SHORT = 0
         const val LENGTH_LONG = 1

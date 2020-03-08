@@ -9,7 +9,7 @@
         android:id="@+id/nav_home"
         android:name="cz.lastaapps.bakalariextension.ui.home.HomeFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/fragment_main" >
         <action
             android:id="@+id/action_nav_home_to_nav_about"
             app:destination="@id/nav_about"
