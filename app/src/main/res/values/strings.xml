@@ -3,10 +3,10 @@
     <string name="bakalari">Bakalari</string>
     <string name="author">Lasta apps</string>
 
-    <string name="parent">parent</string>
-    <string name="pupil">pupil</string>
-    <string name="teacher">teacher</string>
-    <string name="oder">oder</string>
+    <string name="role_parent">parent</string>
+    <string name="role_pupil">pupil</string>
+    <string name="role_teacher">teacher</string>
+    <string name="role_oder">oder</string>
 
     <string name="nav_drawer_open">Open navigation drawer</string>
     <string name="nav_drawer_close">Close navigation drawer</string>
@@ -14,15 +14,29 @@
 
     <string name="share_message">Try this better Bakalari app as i did!</string>
 
+
     <string name="error_no_internet">Cannot connect to internet</string>
     <string name="error_server_unavailable">Cannot connect to school server</string>
+
+    <string name="error_no_saved_data">No data saved yet, internet connection needed for first login</string>
     <string name="error_no_internet_or_url">No internet available of bad url was entered</string>
     <string name="error_wrong_login">Wrong login</string>
     <string name="error_wrong_username">Wrong username</string>
     <string name="error_not_enough_data">You haven\'t entered enough data</string>
-    <string name="error_no_saved_data">No data saved yet, internet connection needed for first login</string>
     <string name="error_login_failed">Failed to login, try later</string>
     <string name="error_invalid_password">Invalid password</string>
+
+    <string name="error_no_timetable">Failed to load timetable</string>
+    <string name="error_cannot_download">Cannot download data from server</string>
+    <string name="error_cannot_download_timetable">Cannot download timetable from server</string>
+    <string name="error_failed_to_find_lesson">Failed to find lesson</string>
+    <string name="error_please_report">Please report this to app developer</string>
+    <string name="error_no_timetable_no_internet">Failed to load timetable, try connection to internet</string>
+
+
+    <string name="timetable_chanel_name">Current lesson</string>
+    <string name="timetable_chanel_description">The notification showing current and next lesson
+        - it\'s class, teacher, …</string>
 
     <string name="close">Close</string>
 
@@ -54,4 +68,44 @@
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
 
+    <!-- Timetable -->
+    <string name="monday_shortut">Mo</string>
+    <string name="tuesday_shortut">Tu</string>
+    <string name="wednesday_shortut">We</string>
+    <string name="thursday_shortut">Th</string>
+    <string name="friday_shortut">Fr</string>
+
+    <string-array name="week_forms">
+        <item>This week</item>
+        <item>Next week</item>
+        <item>Previous week</item>
+        <item>%d weeks %s</item><!--2-4 weeks-->
+        <item>%d weeks %s</item><!--5+ weeks-->
+        <item>forward</item>
+        <item>backward</item>
+    </string-array>
+    <string name="last_updated">last updated: </string>
+    <string name="permanent">Permanent</string>
+
+    <string name="info_name">Name</string>
+    <string name="info_subject">Subject</string>
+    <string name="info_teacher">Teacher</string>
+    <string name="info_room">Room</string>
+    <string name="info_theme">Theme</string>
+    <string name="info_absence">Absence</string>
+    <string name="info_group">Group</string>
+    <string name="info_change">Change</string>
+    <string name="info_notice">Notice</string>
+
+    <string name="group">group</string>
+    <string name="next">Next</string>
+    <string name="end">End</string>
+    <string name="interuption">Break</string>//break is keyword
+    <string name="have_nice_day">Have a nice day</string>
+    <string name="free_lesson">Free lesson</string>
+    <string name="until">until</string>
+    <string name="finally_home">And finally home</string>
+
+    <string name="preparing_timetable">Preparing timetable</string>
+    <string name="should_not_take_long">This shouldn\'t be there more than few seconds</string>
 </resources>

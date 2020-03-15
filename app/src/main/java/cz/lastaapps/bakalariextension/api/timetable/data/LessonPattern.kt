@@ -1,6 +1,6 @@
-package cz.lastaapps.bakalariextension.api.timetable
+package cz.lastaapps.bakalariextension.api.timetable.data
 
-class LessonPattern (
+data class LessonPattern (
     var begin: String,
     var end: String,
     var caption: String

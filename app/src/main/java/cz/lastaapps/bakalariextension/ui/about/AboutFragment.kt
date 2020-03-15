@@ -69,7 +69,7 @@ class AboutFragment : Fragment() {
             startActivity(Intent(Intent.ACTION_VIEW, uri))
         }
         root.findViewById<ImageButton>(R.id.google_play).setOnClickListener {
-            //TODO
+            //TODO add play store link
             val url = "https://play.google.com/store/apps/dev?id=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
             val uri = Uri.parse(url)
             startActivity(Intent(Intent.ACTION_VIEW, uri))

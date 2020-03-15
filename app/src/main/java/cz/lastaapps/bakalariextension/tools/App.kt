@@ -2,6 +2,8 @@ package cz.lastaapps.bakalariextension.tools
 
 import android.app.Application
 import android.content.Context
+import android.content.res.Resources
+import android.graphics.drawable.Drawable
 import android.util.Log
 
 /**
@@ -13,8 +15,31 @@ class App : Application() {
         private val TAG = App::class.java.simpleName
 
         lateinit var app: App
-        fun appContext(): Context {
+
+        val context: Context
+        get() {
             return app.applicationContext
+        }
+
+        val resources: Resources
+        get() {
+            return app.resources
+        }
+
+        fun getString(id: Int): String {
+            return resources.getString(id)
+        }
+
+        fun getStringArray(id: Int): Array<String> {
+            return resources.getStringArray(id)
+        }
+
+        fun getColor(id: Int): Int {
+            return resources.getColor(id)
+        }
+
+        fun getDrawable(id: Int): Drawable {
+            return resources.getDrawable(id)
         }
     }
 

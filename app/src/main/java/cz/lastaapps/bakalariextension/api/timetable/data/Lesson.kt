@@ -1,8 +1,10 @@
-package cz.lastaapps.bakalariextension.api.timetable
+package cz.lastaapps.bakalariextension.api.timetable.data
 
 data class Lesson(
     var id: String,
     var type: String,
+    var name: String,
+    var shortcut: String,
     var subject: String,
     var subjectShortcut: String,
     var teacher: String,
@@ -21,8 +23,16 @@ data class Lesson(
     var notice: String
 ): Comparable<Lesson> {
 
+    fun isNormal(): Boolean {
+        return type == "H"
+    }
+
     fun isFree(): Boolean {
         return type == "X"
+    }
+
+    fun isAbsence(): Boolean {
+        return type == "A"
     }
 
     override fun compareTo(other: Lesson): Int {

@@ -64,21 +64,40 @@ class TTStorage {
             return file.exists()
         }
 
-        fun lastUpdated(cal: Calendar): Calendar {
-            val time = getSP().getLong(getFile(cal).name, 0)
+        fun lastUpdated(cal: Calendar): Calendar? {
+            /*val time = getSP().getLong(getFile(cal).name, 0)
             val c = Calendar.getInstance()
             c.time = Date(time)
+            return c*/
+
+            val file = getFile(cal)
+            if (!file.exists())
+                return null
+            val c = Calendar.getInstance()
+            c.time = Date(file.lastModified())
             return c
+        }
+
+        fun deleteAll() {
+            Log.e(TAG, "Deleting ALL timetables")
+
+            App.context.fileList().forEach {
+                if (it.startsWith(FILE_PREFIX)) {
+                    val f = File(App.context.filesDir, it)
+                    Log.i(TAG, "Deleting ${f.name}")
+                    f.deleteOnExit()
+                }
+            }
         }
 
         fun deleteOld(cal: Calendar) {
             val file = getFile(cal)
             Log.i(TAG, "Deleting older than ${file.name}")
 
-            App.appContext().fileList().forEach {
+            App.context.fileList().forEach {
                 if (it.startsWith(FILE_PREFIX))
                     if (file.name > it) {
-                        val f = File(App.appContext().filesDir, it)
+                        val f = File(App.context.filesDir, it)
                         Log.i(TAG, "Deleting ${f.name}")
                         f.deleteOnExit()
 
@@ -91,13 +110,18 @@ class TTStorage {
         }
 
         private fun getFile(cal: Calendar): File {
-            TTTools.toMonday(cal)
-            val filename = FILE_PREFIX + TTTools.format(cal) + FILE_SUFFIX
-            return File(App.appContext().filesDir, filename)
+            val filename = (FILE_PREFIX + (
+                if (cal != TTTools.PERMANENT) {
+                    TTTools.toMonday(cal)
+                    TTTools.format(cal)
+                } else
+                    "perm"
+                        ) + FILE_SUFFIX)
+            return File(App.context.filesDir, filename)
         }
 
         private fun getSP(): SharedPreferences {
-            return App.appContext().getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
+            return App.context.getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
         }
     }
 }

@@ -10,4 +10,15 @@
 
     <color name="github_background">#FFF</color>
     <color name="github_foreground">#000</color>
+
+    <color name="icons_dark">#000</color>
+    <color name="icons_light">#FFF</color>
+
+    <color name="border">#777</color>
+
+    <color name="timetable_bottom_text">#CCC</color>
+    <color name="timetable_bottom_text_background">#333</color>
+    <color name="timetable_absence">#00C853</color>
+    <color name="timetable_current">#FDD835</color>
+    <color name="timetable_change">#E53935</color>
 </resources>

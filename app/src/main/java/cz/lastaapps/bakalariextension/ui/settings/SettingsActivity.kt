@@ -34,7 +34,7 @@ class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        relaunchApp = intent.extras?.getBoolean(RELAUNCH_APP, false)?: false
+        relaunchApp = intent.extras?.getBoolean(RELAUNCH_APP, false) ?: false
 
         setContentView(R.layout.activity_settings)
         supportFragmentManager
@@ -118,18 +118,18 @@ class SettingsActivity : AppCompatActivity() {
 
         private const val RELAUNCH_APP = "RELAUNCH"
 
-        val MOBILE_DATA = App.appContext().getString(R.string.sett_key_mobile_data)
-        val DARK_MODE = App.appContext().getString(R.string.sett_key_dark_mode)
-        val LANGUAGE = App.appContext().getString(R.string.sett_key_language)
+        val MOBILE_DATA = App.getString(R.string.sett_key_mobile_data)
+        val DARK_MODE = App.getString(R.string.sett_key_dark_mode)
+        val LANGUAGE = App.getString(R.string.sett_key_language)
         val LOGOUT = getString(R.string.sett_key_log_out)
 
         fun initSettings() {
             val sp = getSP()
             val editor = sp.edit()
 
-            Log.i(TAG, sp.getBoolean(MOBILE_DATA, false).toString())
-            Log.i(TAG, sp.getString(LANGUAGE, ""))
-            Log.i(TAG, sp.getString(DARK_MODE, ""))
+            Log.d(TAG, sp.getBoolean(MOBILE_DATA, false).toString())
+            Log.d(TAG, sp.getString(LANGUAGE, ""))
+            Log.d(TAG, sp.getString(DARK_MODE, ""))
 
             if (sp.getString(LANGUAGE, "") == "")
                 editor.putString(LANGUAGE, getArray(R.array.sett_language)[0])
@@ -145,8 +145,6 @@ class SettingsActivity : AppCompatActivity() {
             value: String = getSP().getString(LANGUAGE, "").toString()
         ) {
 
-            Log.i(TAG, "String: ${getString(R.string.sett_mobile_data)}")
-
             val array: Array<String> = getArray(R.array.sett_language)
             val index = array.indexOf(value)
             val languageCode = getLanguageCode(index)
@@ -157,40 +155,43 @@ class SettingsActivity : AppCompatActivity() {
             conf.setLocale(Locale(languageCode.toLowerCase())) // API 17+ only.
 
             res.updateConfiguration(conf, dm)
-
-            Log.i(TAG, "String: ${context.getString(R.string.sett_mobile_data)}")
         }
+
         private fun getLanguageCode(i: Int): String {
             val array: Array<String> = arrayOf(Locale.getDefault().language, "cs", "en")
             return array[i.coerceAtLeast(0)]
         }
 
-        fun updateDarkTheme(value: String = getSP().getString(DARK_MODE, "").toString()) {
+        fun updateDarkTheme(value: String = getSP().getString(DARK_MODE, "").toString()): Boolean {
             val array: Array<String> = getArray(R.array.sett_dark_mode)
-            val index = array.indexOf(value)
-            AppCompatDelegate.setDefaultNightMode(
-                when (index) {
-                    0 -> AppCompatDelegate.MODE_NIGHT_NO
-                    1 -> AppCompatDelegate.MODE_NIGHT_YES
-                    else ->
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-                            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                        else
-                            AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
-                }
-            )
+
+            val toChange = when (array.indexOf(value)) {
+                0 -> AppCompatDelegate.MODE_NIGHT_NO
+                1 -> AppCompatDelegate.MODE_NIGHT_YES
+                else ->
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                        AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                    else
+                        AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
+            }
+
+            if (toChange == AppCompatDelegate.getDefaultNightMode())
+                return false
+
+            AppCompatDelegate.setDefaultNightMode(toChange)
+            return true
         }
 
         inline fun getSP(): SharedPreferences {
-            return PreferenceManager.getDefaultSharedPreferences(App.appContext())
+            return PreferenceManager.getDefaultSharedPreferences(App.context)
         }
 
         private inline fun getString(id: Int): String {
-            return App.appContext().getString(id)
+            return App.context.getString(id)
         }
 
         private inline fun getArray(id: Int): Array<String> {
-            return App.appContext().resources.getStringArray(id)
+            return App.context.resources.getStringArray(id)
         }
     }
 }

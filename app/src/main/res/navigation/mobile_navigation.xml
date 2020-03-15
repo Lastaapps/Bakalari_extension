@@ -14,6 +14,9 @@
             android:id="@+id/action_nav_home_to_nav_about"
             app:destination="@id/nav_about"
             app:enterAnim="@anim/fragment_fade_enter" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_timetable"
+            app:destination="@id/nav_timetable" />
     </fragment>
 
     <fragment
@@ -21,5 +24,11 @@
         android:name="cz.lastaapps.bakalariextension.ui.about.AboutFragment"
         android:label="@string/menu_about"
         tools:layout="@layout/fragment_about" />
+
+    <fragment
+        android:id="@+id/nav_timetable"
+        android:name="cz.lastaapps.bakalariextension.ui.timetable.TimetableFragment"
+        android:label="@string/menu_timetable"
+        tools:layout="@layout/fragment_timetable" />
 
 </navigation>

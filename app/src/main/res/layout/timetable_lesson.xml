@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/timetable_column_size"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        style="@style/Timetable.Cell"
+        android:layout_width="@dimen/timetable_column_size"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/subject"
+            style="@style/Timetable.Lesson.Name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_centerInParent="true"
+            android:layout_margin="@dimen/timetable_margin"
+
+            android:text="ScvM" />
+
+        <TextView
+            android:id="@+id/teacher"
+            style="@style/Timetable.Lesson.Teacher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="@dimen/timetable_margin"
+
+            android:text="WK" />
+
+        <TextView
+            android:id="@+id/room"
+            style="@style/Timetable.Lesson.Room"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="@dimen/timetable_margin"
+
+            android:text="IVT-h" />
+    </RelativeLayout>
+</RelativeLayout>

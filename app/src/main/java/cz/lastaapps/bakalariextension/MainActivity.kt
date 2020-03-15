@@ -2,11 +2,13 @@ package cz.lastaapps.bakalariextension
 
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -29,12 +31,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     companion object {
         private val TAG = MainActivity::class.java.simpleName
+
+        //intent extra to select default fragment
+        const val NAVIGATE = "navigate"
     }
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val orientation = resources.configuration.orientation
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
+
         setContentView(R.layout.activity_main)
 
         //toolbar setup
@@ -64,6 +75,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navView.getHeaderView(0).findViewById<TextView>(R.id.nav_name).text = Login.get(Login.NAME)
         navView.getHeaderView(0).findViewById<TextView>(R.id.nav_type).text = Login.getClassAndRole()
 
+        //init fragment
+        val navigateTo = intent.getIntExtra(NAVIGATE, -1)
+        if (navigateTo != -1)
+            findNavController(R.id.nav_host_fragment).navigate(navigateTo)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -77,10 +92,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_settings -> {
+                startActivity(Intent(this, SettingsActivity::class.java))
+            }
+            else ->
+                return super.onOptionsItemSelected(item)
+        }
+        return true
+    }
+
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_home -> {
                 findNavController(R.id.nav_host_fragment).navigate(R.id.nav_home)
+            }
+            R.id.nav_timetable -> {
+                findNavController(R.id.nav_host_fragment).navigate(R.id.nav_timetable)
             }
             R.id.nav_settings -> {
                 startActivity(Intent(this, SettingsActivity::class.java))
@@ -129,7 +158,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 startActivity(Intent(Intent.ACTION_VIEW, uri))
             }
             R.id.nav_google_play -> {
-                //TODO
+                //TODO app play store link
                 val url = "https://play.google.com/store/apps/dev?id=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
                 val uri = Uri.parse(url)
                 startActivity(Intent(Intent.ACTION_VIEW, uri))
