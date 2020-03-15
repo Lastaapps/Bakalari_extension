@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/timetable_column_size"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:maxWidth="@dimen/timetable_column_size"
+    android:minWidth="@dimen/timetable_column_size">
+
+    <RelativeLayout
+        style="@style/Timetable.Cell"
+        android:layout_width="@dimen/timetable_column_size"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/caption"
+            style="@style/Timetable.Number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+
+            android:layout_margin="@dimen/timetable_margin"
+            android:text="1" />
+
+        <TextView
+            android:id="@+id/begin"
+            style="@style/Timetable.Times"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/timetable_margin"
+            android:rotation="270"
+            android:text="10:00"
+            android:translationX="-5dp" />
+
+        <TextView
+            android:id="@+id/end"
+            style="@style/Timetable.Times"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/timetable_margin"
+            android:rotation="270"
+            android:text="10:45"
+            android:translationX="5dp" />
+    </RelativeLayout>
+</RelativeLayout>

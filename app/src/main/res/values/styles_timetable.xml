@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Timetable -->
+    <style name="Timetable.Cell" parent="">
+        <item name="android:background">@drawable/border</item>
+    </style>
+    
+    <style name="Timetable.Main" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">@dimen/timetable_main</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="Timetable.Secondary" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">@dimen/timetable_secondary</item>
+    </style>
+
+    <style name="Timetable.Number" parent="Timetable.Main">
+
+    </style>
+
+    <style name="Timetable.Times" parent="Timetable.Secondary">
+
+    </style>
+
+    <style name="Timetable.Lesson.Name" parent="Timetable.Main">
+
+    </style>
+
+    <style name="Timetable.Lesson.Room" parent="Timetable.Secondary">
+
+    </style>
+
+    <style name="Timetable.Lesson.Teacher" parent="Timetable.Secondary">
+
+    </style>
+
+    <style name="Timetable.Lesson.Group" parent="Timetable.Secondary">
+
+    </style>
+
+    <style name="Timetable.Day.Day" parent="Timetable.Main">
+
+    </style>
+
+    <style name="Timetable.Day.Date" parent="Timetable.Secondary">
+
+    </style>
+
+    <style name="Timetable.Cycle" parent="Timetable.Secondary">
+
+    </style>
+
+    <style name="Timetable.Absence" parent="Timetable.Main">
+
+    </style>
+
+    <!-- Bottom box with buttons-->
+    <style name="Timetable.LastUpdate" parent="">
+        <item name="android:textSize">@dimen/timetable_bottom_text</item>
+        <item name="android:textColor">@color/timetable_bottom_text</item>
+        <item name="android:background">@color/timetable_bottom_text_background</item>
+    </style>
+    <style name="Timetable.ImageButton" parent="">
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:background">@android:color/transparent</item>
+
+        <item name="android:maxWidth">@dimen/timetable_bottom_button</item>
+        <item name="android:maxHeight">@dimen/timetable_bottom_button</item>
+        <item name="android:layout_width">@dimen/timetable_bottom_button</item>
+        <item name="android:layout_height">@dimen/timetable_bottom_button</item>
+
+        <item name="android:layout_margin">@dimen/timetable_bottom_margin</item>
+    </style>
+
+    <style name="Timetable.Info" parent="Theme.AppCompat.DayNight.Dialog.MinWidth">
+
+    </style>
+
+    <style name="Timetable.Info.Name" parent="TextAppearance.AppCompat">
+
+    </style>
+
+    <style name="Timetable.Info.Value" parent="TextAppearance.AppCompat">
+
+    </style>
+</resources>

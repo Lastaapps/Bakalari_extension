@@ -20,4 +20,24 @@
     <dimen name="heading_text_size">32sp</dimen>
 
     <dimen name="small_image_button">40dp</dimen>
+
+
+    <!-- Timetable -->
+    <dimen name="timetable_column_size_first">50dp</dimen>
+    <dimen name="timetable_icon">32dp</dimen>
+    <dimen name="timetable_column_size">75dp</dimen>
+    <dimen name="timetable_margin">1dp</dimen>
+
+    <dimen name="timetable_main">20sp</dimen>
+    <dimen name="timetable_secondary">12sp</dimen>
+    <dimen name="timetable_lesson_main">18sp</dimen>
+    <dimen name="timetable_lesson_secondary">12sp</dimen>
+    <dimen name="timetable_number_size">20sp</dimen>
+    <dimen name="timetable_time_size">10sp</dimen>
+
+    <dimen name="timetable_bottom_margin">10dp</dimen>
+    <dimen name="timetable_bottom_button">35dp</dimen>
+    <dimen name="timetable_bottom_row">45dp</dimen><!-- 2x padding + button -->
+    <dimen name="timetable_bottom_text">12sp</dimen>
+    <dimen name="timetable_bottom_sides">10dp</dimen>
 </resources>

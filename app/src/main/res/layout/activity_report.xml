@@ -30,7 +30,7 @@
                 android:layout_alignParentTop="true"/>
 
             <TextView
-                style="@style/Heading"
+                style="@style/AppTheme.Heading"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/report_label"

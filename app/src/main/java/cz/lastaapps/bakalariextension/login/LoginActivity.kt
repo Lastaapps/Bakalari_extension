@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.*
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import cz.lastaapps.bakalariextension.LoadingActivity
 import cz.lastaapps.bakalariextension.R
@@ -32,15 +33,17 @@ class LoginActivity : AppCompatActivity() {
         private lateinit var passwordEdit: EditText
         private lateinit var loginButton: Button
 
-        lateinit var townList: ArrayList<String>
-        lateinit var schoolMap: HashMap<String, String>
     }
 
+    lateinit var viewModel: LoginViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_login)
+
+        val vM: LoginViewModel by viewModels()
+        viewModel = vM
 
         townSpinner = findViewById(R.id.town_spinner)
         schoolSpinner = findViewById(R.id.school_spinner)
@@ -49,7 +52,7 @@ class LoginActivity : AppCompatActivity() {
         passwordEdit = findViewById(R.id.password)
         loginButton = findViewById(R.id.login)
 
-        urlEdit.setText(
+        /*urlEdit.setText(
             LoginData.get(
                 LoginData.SP_URL
             )
@@ -58,17 +61,18 @@ class LoginActivity : AppCompatActivity() {
             LoginData.get(
                 LoginData.SP_USERNAME
             )
-        )
+        )*/
 
         //town spinner init, used to select the town of school
         townSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>,
-                view: View,
+                view: View?,
                 position: Int,
                 id: Long
             ) {
-                LoadSchools().execute(townList[position])
+                viewModel.townIndex = position
+                LoadSchools().execute(viewModel.townList[viewModel.townIndex])
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
@@ -84,15 +88,20 @@ class LoginActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        //shown dialog until towns are loaded
-        val loadingDialog = AlertDialog.Builder(this)
-            .setCancelable(false)
-            .setMessage(R.string.login_loading)
-            .create()
+        if (viewModel.townList.isEmpty()) {
+            //shown dialog until towns are loaded
+            val loadingDialog = AlertDialog.Builder(this)
+                .setCancelable(false)
+                .setMessage(R.string.login_loading)
+                .create()
 
-        LoadTowns().execute(loadingDialog)
+            LoadTowns().execute(loadingDialog)
 
-        loadingDialog.show()
+            loadingDialog.show()
+        } else {
+            fillTownSpinner()
+            fillSchoolSpinner()
+        }
     }
 
     /**
@@ -120,14 +129,14 @@ class LoginActivity : AppCompatActivity() {
                 while (eventType != XmlPullParser.END_DOCUMENT) {
                     var name: String
                     when (eventType) {
-                        XmlPullParser.START_DOCUMENT -> townList = ArrayList()
+                        XmlPullParser.START_DOCUMENT -> viewModel.townList = ArrayList()
                         XmlPullParser.START_TAG -> {
                             name = parser.name
                             isInName = name == "name"
                         }
                         XmlPullParser.TEXT -> {
                             if (isInName) {
-                                townList.add(parser.text.trim())
+                                viewModel.townList.add(parser.text.trim())
                             }
                         }
                         XmlPullParser.END_TAG -> {
@@ -146,26 +155,33 @@ class LoginActivity : AppCompatActivity() {
 
         override fun onPostExecute(result: Boolean?) {
             if (result == true) {
-                val adapter =
-                    ArrayAdapter(this@LoginActivity, android.R.layout.simple_spinner_item, townList)
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                townSpinner.adapter = adapter
-
-                val i = townList.indexOf(
-                    LoginData.get(
-                        LoginData.SP_TOWN
-                    )
-                )
-                if (0 <= i) {
-                    townSpinner.setSelection(i)
-                } else {
-                    townSpinner.setSelection(townList.size / 2)
-                }
+                fillTownSpinner()
             } else {
-                Toast.makeText(App.appContext(), R.string.error_no_internet, Toast.LENGTH_LONG)
+                Toast.makeText(App.context, R.string.error_no_internet, Toast.LENGTH_LONG)
                     .show()
             }
             dialog.dismiss()
+        }
+    }
+
+    private fun fillTownSpinner() {
+        val adapter =
+            ArrayAdapter(this@LoginActivity, android.R.layout.simple_spinner_item, viewModel.townList)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        townSpinner.adapter = adapter
+
+        var i = viewModel.townList.indexOf(
+            LoginData.get(
+                LoginData.SP_TOWN
+            )
+        )
+        if (viewModel.townIndex >= 0)
+            i = viewModel.townIndex
+
+        if (0 <= i) {
+            townSpinner.setSelection(i)
+        } else {
+            townSpinner.setSelection(viewModel.townList.size / 2)
         }
     }
 
@@ -197,7 +213,7 @@ class LoginActivity : AppCompatActivity() {
                     var name: String
 
                     when (eventType) {
-                        XmlPullParser.START_DOCUMENT -> schoolMap = HashMap()
+                        XmlPullParser.START_DOCUMENT -> viewModel.schoolUrlMap = HashMap()
                         XmlPullParser.START_TAG -> {
                             name = parser.name
                             when (name) {
@@ -222,7 +238,7 @@ class LoginActivity : AppCompatActivity() {
                         }
                         XmlPullParser.END_TAG -> {
                             if (parser.name == "schoolInfo") {
-                                schoolMap[schoolName] = schoolUrl
+                                viewModel.schoolUrlMap[schoolName] = schoolUrl
                             }
                             isName = false
                             isUrl = false
@@ -240,43 +256,52 @@ class LoginActivity : AppCompatActivity() {
 
         override fun onPostExecute(result: Boolean?) {
             if (result == true) {
-                val adapter = ArrayAdapter(
-                    this@LoginActivity, android.R.layout.simple_spinner_item,
-                    ArrayList(schoolMap.keys)
-                )
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                schoolSpinner.adapter = adapter
-
-                val i = adapter.getPosition(
-                    LoginData.get(
-                        LoginData.SP_SCHOOL
-                    )
-                )
-                if (0 <= i) {
-                    schoolSpinner.setSelection(i)
-                }
-
-                schoolSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                    override fun onItemSelected(
-                        parent: AdapterView<*>,
-                        view: View,
-                        position: Int,
-                        id: Long
-                    ) {
-                        urlEdit.setText(schoolMap[schoolSpinner.getItemAtPosition(position).toString()])
-                    }
-
-                    override fun onNothingSelected(parent: AdapterView<*>) {
-                        schoolSpinner.adapter = null
-                    }
-                }
+                fillSchoolSpinner()
             } else {
                 schoolSpinner.adapter = null
-                Toast.makeText(App.appContext(), R.string.error_no_internet, Toast.LENGTH_LONG)
+                Toast.makeText(App.context, R.string.error_no_internet, Toast.LENGTH_LONG)
                     .show()
             }
         }
     }
+
+    private fun fillSchoolSpinner() {
+        val adapter = ArrayAdapter(
+            this@LoginActivity, android.R.layout.simple_spinner_item,
+            ArrayList(viewModel.schoolUrlMap.keys)
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        schoolSpinner.adapter = adapter
+
+        var i = adapter.getPosition(
+            LoginData.get(
+                LoginData.SP_SCHOOL
+            )
+        )
+        if (viewModel.schoolIndex >= 0)
+            i = viewModel.schoolIndex
+
+        if (0 <= i) {
+            schoolSpinner.setSelection(i)
+        }
+
+        schoolSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                viewModel.schoolIndex = position
+                urlEdit.setText(viewModel.schoolUrlMap[schoolSpinner.getItemAtPosition(position).toString()])
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                schoolSpinner.adapter = null
+            }
+        }
+    }
+
 
     /**Tries to login to server with given data through LoginToServer class*/
     private fun login() {

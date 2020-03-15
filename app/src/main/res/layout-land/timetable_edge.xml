@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="@dimen/timetable_column_size_first"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        style="@style/Timetable.Cell"
+        android:layout_width="@dimen/timetable_column_size_first"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="@dimen/timetable_icon"
+            android:layout_height="@dimen/timetable_icon"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/timetable_margin"
+            app:srcCompat="@drawable/timetable" />
+
+        <TextView
+            android:id="@+id/cycle"
+            style="@style/Timetable.Cycle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/timetable_margin"
+            android:rotation="270"
+            android:text="Lichý 1"
+            android:translationX="8dp" />
+
+    </RelativeLayout>
+</RelativeLayout>

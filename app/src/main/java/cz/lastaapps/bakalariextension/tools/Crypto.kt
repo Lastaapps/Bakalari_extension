@@ -148,7 +148,7 @@ class Crypto {
                         val start: Calendar = Calendar.getInstance()
                         val end: Calendar = Calendar.getInstance()
                         end.add(Calendar.YEAR, 30)
-                        val spec = KeyPairGeneratorSpec.Builder(App.appContext())
+                        val spec = KeyPairGeneratorSpec.Builder(App.context)
                             .setAlias(KEY_ALIAS)
                             .setSubject(X500Principal("CN=$KEY_ALIAS"))
                             .setSerialNumber(BigInteger.TEN)

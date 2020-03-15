@@ -33,19 +33,19 @@ class Login {
         const val ROLE_PUPIL = "Z"
 
         fun get(key: String): String {
-            return App.appContext().getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
+            return App.context.getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
                 .getString(key, "").toString()
         }
 
         fun set(key: String, value: String) {
-            App.appContext().getSharedPreferences(SP_KEY, Context.MODE_PRIVATE).edit {
+            App.context.getSharedPreferences(SP_KEY, Context.MODE_PRIVATE).edit {
                 putString(key, value)
                 apply()
             }
         }
 
         fun clear() {
-            App.appContext().getSharedPreferences(SP_KEY, Context.MODE_PRIVATE).edit {
+            App.context.getSharedPreferences(SP_KEY, Context.MODE_PRIVATE).edit {
                 clear()
                 apply()
             }
@@ -107,10 +107,10 @@ class Login {
          */
         fun parseRole(role: String = get(ROLE)): String {
             return when (role) {
-                ROLE_PARENT -> App.appContext().getString(R.string.parent)
-                ROLE_TEACHER -> App.appContext().getString(R.string.teacher)
-                ROLE_PUPIL -> App.appContext().getString(R.string.pupil)
-                else -> App.appContext().getString(R.string.oder)
+                ROLE_PARENT -> App.getString(R.string.role_parent)
+                ROLE_TEACHER -> App.getString(R.string.role_teacher)
+                ROLE_PUPIL -> App.getString(R.string.role_pupil)
+                else -> App.getString(R.string.role_oder)
             }
         }
 

@@ -23,12 +23,12 @@ class LoginData {
         private const val SP_TOKEN = "TOKEN"
 
         fun get(key: String): String {
-            return App.appContext().getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
+            return App.context.getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
                 .getString(key, "").toString()
         }
 
         fun set(key: String, value: String) {
-            App.appContext().getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
+            App.context.getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
                 .edit().putString(key, value).apply()
         }
 
@@ -42,7 +42,7 @@ class LoginData {
             town: String,
             school: String
         ) {
-            App.appContext().getSharedPreferences(SP_KEY, Context.MODE_PRIVATE).edit {
+            App.context.getSharedPreferences(SP_KEY, Context.MODE_PRIVATE).edit {
                 putString(SP_USERNAME, username)
                 putString(SP_PASSWORD, Crypto.encrypt(password))
                 putString(SP_URL, url)

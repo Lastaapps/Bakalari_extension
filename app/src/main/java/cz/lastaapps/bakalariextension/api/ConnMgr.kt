@@ -108,11 +108,11 @@ class ConnMgr {
         }
 
         fun getV2Token(token: String): String {
-            //TODO
             val v2Token = Base64.encodeToString(
                 "ANDR:${token}".toByteArray(),
                 Base64.NO_WRAP
             )
+            //TODO remove token logging to console
             println("Token: $token" )
             println("V2 Token: $v2Token")
             return v2Token

@@ -27,7 +27,7 @@ class LoginToServer : AsyncTask<Any, Unit, String>() {
 
         /**
          * Just to simplify call from oder classes
-         * @param 0 - ArrayList<String> with username, password, url, town and school in this oder
+         * @param 0 - ArrayList<String> with username, password, is password plain, url, town and school in this oder
          * @param 1 - (optional) Runnable, what to do if login has succeeded
          * @param 2 - (optional, requires param 1) Runnable, what to do if login has failed
          */
@@ -63,12 +63,12 @@ class LoginToServer : AsyncTask<Any, Unit, String>() {
         const val INVALID_TOKEN = -1
     }
 
-    lateinit var username: String
-    lateinit var password: String
-    lateinit var isPlain: String
-    lateinit var url: String
-    lateinit var town: String
-    lateinit var school: String
+    private lateinit var username: String
+    private lateinit var password: String
+    private lateinit var isPlain: String
+    private lateinit var url: String
+    private lateinit var town: String
+    private lateinit var school: String
 
     private lateinit var salt: String
     private lateinit var ikod: String
@@ -140,7 +140,7 @@ class LoginToServer : AsyncTask<Any, Unit, String>() {
         } catch (e: Exception) {
             Handler(Looper.getMainLooper()).post {
                 Toast.makeText(
-                        App.appContext(),
+                        App.context,
                         R.string.error_no_internet_or_url,
                         Toast.LENGTH_LONG
                     )

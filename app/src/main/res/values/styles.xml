@@ -4,7 +4,7 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" />
 
-    <style name="Heading" parent="AppTheme.Text">
+    <style name="AppTheme.Heading" parent="AppTheme.Text">
         <item name="android:textSize">@dimen/heading_text_size</item>
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>

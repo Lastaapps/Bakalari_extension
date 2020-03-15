@@ -17,7 +17,7 @@ class CheckInternet {
         private val TAG = CheckInternet::class.java.simpleName
 
         fun check(canBeGoogle: Boolean = true): Boolean {
-            val cm = App.appContext()
+            val cm = App.context
                 .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
             val activeNetwork = cm.activeNetworkInfo
@@ -35,42 +35,16 @@ class CheckInternet {
                     val url = URL(stringUrl)
                     val urlc: HttpURLConnection = url.openConnection() as HttpURLConnection
                     urlc.setRequestProperty("User-Agent", "test")
-                    urlc.setRequestProperty("Connection", "close")
-                    urlc.connectTimeout = 1000 // mTimeout is in seconds
+                    urlc.setRequestProperty("Connection", "Keep-Alive")
+                    urlc.connectTimeout = 2000
                     urlc.connect()
 
                     urlc.responseCode == 200
                 } catch (e: IOException) {
-                    Log.i("TAG", "Error checking internet connection", e)
+                    Log.i(TAG, "Error checking internet connection", e)
                     false
                 }
             } else false
-
-            /*return try {
-                var stringUrl = ConnMgr.getRawUrl()
-                if (stringUrl == "") {
-                    if (canBeGoogle) {
-                        println("No school url set, checking at least google")
-                        stringUrl = "https://www.google.com"
-                    } else return false
-                }
-                Log.i(TAG, "Checking connection to $stringUrl")
-                val url = URL(stringUrl)
-                val urlConnection = url.openConnection()
-                urlConnection.connectTimeout = 5000
-                val input = urlConnection.getInputStream()
-
-                val data = input.read()
-                input.close()
-                Log.i(TAG, "Server working")
-
-                //some data was returned, so it should be working
-                data >= 0
-            } catch (e: Exception) {
-                Log.i(TAG, "Server down")
-                e.printStackTrace()
-                false
-            }*/
         }
 
         fun canUseInternet(): Boolean {
@@ -84,10 +58,10 @@ class CheckInternet {
 
         private fun connectedMobileData(): Boolean {
 
-            val cm = App.appContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val cm = App.context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             return cm.isActiveNetworkMetered
 
-            // Get connect mangaer
+            // Get connect manager
             /*val connMgr =
                 App.appContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 

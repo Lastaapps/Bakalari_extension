@@ -17,11 +17,11 @@ class Licence {
         private const val SP_TIME = "1.0_date"
 
         fun check(): Boolean {
-            return App.appContext().getSharedPreferences(SP_KEY, Context.MODE_PRIVATE).getBoolean(SP_AGREED, false)
+            return App.context.getSharedPreferences(SP_KEY, Context.MODE_PRIVATE).getBoolean(SP_AGREED, false)
         }
 
         private fun agreed() {
-            App.appContext().getSharedPreferences(SP_KEY, Context.MODE_PRIVATE).edit {
+            App.context.getSharedPreferences(SP_KEY, Context.MODE_PRIVATE).edit {
                 putBoolean(SP_AGREED, true)
                 putLong(SP_TIME, Date().time)
                 apply()

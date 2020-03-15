@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="sett_general">General</string>
-    <string name="sett_mobile_data">Use mobile data to update local data</string>
+    <string name="sett_mobile_data">Use mobile data while running in background</string>
     <string name="sett_dark_mode">Theme</string>
     <string name="sett_dark_mode_default" translatable="false">true</string>
     <!-- Do not change order -->
