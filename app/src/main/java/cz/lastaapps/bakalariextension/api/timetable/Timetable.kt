@@ -7,6 +7,7 @@ import cz.lastaapps.bakalariextension.api.timetable.data.Lesson
 import cz.lastaapps.bakalariextension.api.timetable.data.LessonPattern
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import cz.lastaapps.bakalariextension.login.LoginData
+import cz.lastaapps.bakalariextension.tools.App
 import fr.arnaudguyon.xmltojsonlib.XmlToJson
 import org.json.JSONException
 import org.json.JSONObject
@@ -71,7 +72,10 @@ class Timetable {
                 val json = xmlToJson(input)
                 val week = parseJson(json!!)
 
-                TTStorage.save(week!!.date, json)
+                week?.let {
+                    TTStorage.save(week.date, json)
+                    TTNotifiService.startService(App.context)
+                }
 
                 return week
 

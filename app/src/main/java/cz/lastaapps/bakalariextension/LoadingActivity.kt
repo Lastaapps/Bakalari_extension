@@ -80,6 +80,7 @@ class LoadingActivity : AppCompatActivity() {
             mChannel.setSound(null, null)
             mChannel.enableVibration(false)
             mChannel.enableLights(false)
+            mChannel.importance = NotificationManager.IMPORTANCE_HIGH
 
             val notificationManager =
                 getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
@@ -196,11 +197,7 @@ class LoadingActivity : AppCompatActivity() {
 
     private fun launchServices() {
         Handler(Looper.getMainLooper()).post {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                startForegroundService(Intent(this, TTNotifiService::class.java))
-            else
-                startService(Intent(this, TTNotifiService::class.java))
-
+            TTNotifiService.startService(this@LoadingActivity)
         }
     }
 }
