@@ -13,7 +13,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import cz.lastaapps.bakalariextension.BuildConfig
 import cz.lastaapps.bakalariextension.R
-import java.util.*
+import org.threeten.bp.Instant
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.format.DateTimeFormatter
 
 class AboutFragment : Fragment() {
 
@@ -33,11 +36,11 @@ class AboutFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_about, container, false)
 
         root.findViewById<TextView>(R.id.author).text = "${getString(R.string.author)} " +
-                "${{
-                    val cal = Calendar.getInstance()
-                    cal.time = (BuildConfig.BUILD_TIME)
-                    cal[Calendar.YEAR]
-                }.invoke()}"
+                "${
+                    ZonedDateTime.ofInstant(
+                        Instant.ofEpochMilli(BuildConfig.BUILD_TIME), ZoneId.of("UTC")
+                    ).format(DateTimeFormatter.ofPattern("yyyy"))
+                }"
         root.findViewById<TextView>(R.id.version).text =
             "${BuildConfig.VERSION_NAME} ${BuildConfig.VERSION_CODE}"
 

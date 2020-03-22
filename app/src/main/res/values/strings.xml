@@ -6,6 +6,8 @@
     <string name="role_parent">parent</string>
     <string name="role_pupil">pupil</string>
     <string name="role_teacher">teacher</string>
+    <string name="role_leading">leading</string>
+    <string name="role_system">system</string>
     <string name="role_oder">oder</string>
 
     <string name="nav_drawer_open">Open navigation drawer</string>
@@ -21,7 +23,7 @@
     <string name="error_no_saved_data">No data saved yet, internet connection needed for first login</string>
     <string name="error_no_internet_or_url">No internet available of bad url was entered</string>
     <string name="error_wrong_login">Wrong login</string>
-    <string name="error_wrong_username">Wrong username</string>
+    <string name="error_wrong_login_data">Wrong username or password</string>
     <string name="error_not_enough_data">You haven\'t entered enough data</string>
     <string name="error_login_failed">Failed to login, try later</string>
     <string name="error_invalid_password">Invalid password</string>
@@ -86,16 +88,16 @@
     </string-array>
     <string name="last_updated">last updated: </string>
     <string name="permanent">Permanent</string>
+    <string name="empty_timetable">Empty timetable</string>
 
     <string name="info_name">Name</string>
     <string name="info_subject">Subject</string>
     <string name="info_teacher">Teacher</string>
     <string name="info_room">Room</string>
     <string name="info_theme">Theme</string>
-    <string name="info_absence">Absence</string>
     <string name="info_group">Group</string>
     <string name="info_change">Change</string>
-    <string name="info_notice">Notice</string>
+    <string name="info_time">Time</string>
 
     <string name="group">group</string>
     <string name="next">Next</string>

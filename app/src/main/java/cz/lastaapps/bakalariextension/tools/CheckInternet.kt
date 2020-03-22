@@ -23,7 +23,7 @@ class CheckInternet {
             val activeNetwork = cm.activeNetworkInfo
             return if (activeNetwork != null && activeNetwork.isConnected) {
                 try {
-                    var stringUrl = LoginData.get(LoginData.SP_URL)
+                    var stringUrl = LoginData.url
                     if (stringUrl == "") {
                         if (canBeGoogle) {
                             Log.i(TAG, "No school url set, checking at least google")

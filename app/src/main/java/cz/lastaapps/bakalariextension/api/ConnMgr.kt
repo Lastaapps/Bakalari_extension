@@ -1,35 +1,207 @@
 package cz.lastaapps.bakalariextension.api
 
-import android.util.Base64
 import android.util.Log
 import cz.lastaapps.bakalariextension.login.LoginData
-import cz.lastaapps.bakalariextension.tools.CheckInternet
+import org.json.JSONException
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLEncoder
-import java.util.*
 
 /**
- * Connection manager for API V2 - JSONs
+ * Connection manager for API V3
  */
 class ConnMgr {
 
     companion object {
         private val TAG = ConnMgr::class.java.simpleName
 
-        fun serverGet(module: String, token: String = LoginData.getToken()): JSONObject? {
+        fun serverGet(module: String): JSONObject? {
             return try {
-                Log.i(TAG, "Loading api module $module")
+                Log.i(TAG, "Loading api module GET $module")
 
-                val url = URL("${getRawUrl()}/if/2/$module")
+                if (isExpired()) {
+                    if (!refreshAccessToken()) {
+                        throw Exception("Failed to obtain new access token")
+                    }
+                }
+
+                val url = URL("${getAPIUrl()}/3/$module")
                 val urlConnection = url.openConnection() as HttpURLConnection
-                urlConnection.setRequestProperty("Accept", "application/json")
-                urlConnection.setRequestProperty("Authorization", "Basic ${getV2Token(token)}")
-                urlConnection.setRequestProperty("Content-Type", "application/json")
+                urlConnection.setRequestProperty(
+                    "Content-Type",
+                    "application/x-www-form-urlencoded"
+                )
+                urlConnection.setRequestProperty("Authorization", "Bearer ${LoginData.accessToken}")
                 urlConnection.setRequestProperty("Connection", "Keep-Alive")
+
+                Log.i(TAG, "Server: ${urlConnection.responseCode} ${urlConnection.responseMessage}")
+                var response = ""
+                var line: String?
+                val br = BufferedReader(InputStreamReader(urlConnection.inputStream))
+                while (br.readLine().also { line = it } != null) {
+                    response += line
+                }
+
+                br.close()
+
+                Log.i(TAG, "Read succeed")
+                if (urlConnection.responseCode == 200) {
+
+                    JSONObject(response)
+                } else {
+
+                    Log.e(TAG, "Wrong server response code, connection failed")
+                    null
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
+        }
+
+        fun serverPost(module: String, paramMap: Map<String, String>): JSONObject? {
+            return try {
+                Log.i(TAG, "Loading api module POST $module")
+
+                if (isExpired()) {
+                    if (!refreshAccessToken()) {
+                        throw Exception("Failed to obtain new access token")
+                    }
+                }
+
+                val data = getPostDataString(paramMap)
+
+                val url = URL("${getAPIUrl()}/3/$module")
+                val urlConnection = url.openConnection() as HttpURLConnection
+                urlConnection.requestMethod = "POST"
+                urlConnection.setRequestProperty("Authorization", "Bearer ${LoginData.accessToken}")
+                urlConnection.setRequestProperty(
+                    "Content-Type",
+                    "application/x-www-form-urlencoded"
+                )
+                urlConnection.setRequestProperty("Host", getRawUrl())
+                urlConnection.setRequestProperty("Accept", "application/json")
+                urlConnection.setRequestProperty("Connection", "Keep-Alive")
+                urlConnection.setRequestProperty("Content-length", "${data.length}")
+
+                val output = OutputStreamWriter(urlConnection.outputStream, "UTF-8")
+                output.write(data)
+                output.flush()
+
+                Log.i(TAG, "Server: ${urlConnection.responseCode} ${urlConnection.responseMessage}")
+
+                if (urlConnection.responseCode == 200) {
+                    var response = ""
+                    var line: String?
+                    val br = BufferedReader(InputStreamReader(urlConnection.inputStream))
+                    while (br.readLine().also { line = it } != null) {
+                        response += line
+                    }
+
+                    Log.i(TAG, "Read succeed")
+
+                    JSONObject(response)
+                } else {
+                    Log.e(TAG, "Wrong server response code, connection failed")
+                    null
+                }
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+                null
+            }
+        }
+
+        const val LOGIN_WRONG = -1
+        const val LOGIN_OK = 1
+        const val LOGIN_NO_INTERNET = 0
+
+        fun obtainTokens(username: String, password: String): Int {
+            var json: JSONObject
+
+            try {
+                Log.i(TAG, "Obtaining new access token")
+
+                val paramMap = HashMap<String, String>()
+                paramMap["client_id"] = "ANDR"
+                paramMap["grant_type"] = "password"
+                paramMap["username"] = username
+                paramMap["password"] = password
+                val data = getPostDataString(paramMap)
+
+                val url = URL("${getAPIUrl()}/login")
+                val urlConnection = url.openConnection() as HttpURLConnection
+                urlConnection.requestMethod = "POST"
+                urlConnection.setRequestProperty(
+                    "Content-Type",
+                    "application/x-www-form-urlencoded"
+                )
+                urlConnection.setRequestProperty("Connection", "Keep-Alive")
+                urlConnection.setRequestProperty("Content-length", "${data.length}")
+
+                val output = OutputStreamWriter(urlConnection.outputStream, "UTF-8")
+                output.write(data)
+                output.flush()
+
+                Log.i(TAG, "Server: ${urlConnection.responseCode} ${urlConnection.responseMessage}")
+
+                if (urlConnection.responseCode == 400)
+                    return LOGIN_WRONG
+
+                var response = ""
+                var line: String?
+                val br = BufferedReader(InputStreamReader(urlConnection.inputStream))
+                while (br.readLine().also { line = it } != null) {
+                    response += line
+                }
+
+                output.close()
+                br.close()
+
+                Log.i(TAG, "Read succeed")
+
+                json = JSONObject(response)
+
+                LoginData.accessToken = json.getString("access_token")
+                LoginData.refreshToken = json.getString("refresh_token")
+                LoginData.tokenExpiration = json.getInt("expires_in").toLong()
+
+                return LOGIN_OK
+            } catch (je: JSONException) {
+                je.printStackTrace()
+                return LOGIN_WRONG
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return LOGIN_NO_INTERNET
+            }
+        }
+
+        fun refreshAccessToken(refreshToken: String = LoginData.refreshToken): Boolean {
+            return try {
+                Log.i(TAG, "Obtaining new access token")
+
+                val paramMap = HashMap<String, String>()
+                paramMap["client_id"] = "ANDR"
+                paramMap["grant_type"] = "refresh_token"
+                paramMap["refresh_token"] = refreshToken
+                val data = getPostDataString(paramMap)
+
+                val url = URL("${getAPIUrl()}/login")
+                val urlConnection = url.openConnection() as HttpURLConnection
+                urlConnection.requestMethod = "POST"
+                urlConnection.setRequestProperty(
+                    "Content-Type",
+                    "application/x-www-form-urlencoded"
+                )
+                urlConnection.setRequestProperty("Connection", "Keep-Alive")
+                urlConnection.setRequestProperty("Content-length", "${data.length}")
+
+                val output = OutputStreamWriter(urlConnection.outputStream, "UTF-8")
+                output.write(data)
+                output.flush()
 
                 Log.i(TAG, "Server: ${urlConnection.responseCode} ${urlConnection.responseMessage}")
 
@@ -40,87 +212,37 @@ class ConnMgr {
                     response += line
                 }
 
-                Log.i(TAG, "Read $response")
-                JSONObject(response)
-            } catch (e: java.lang.Exception) {
-                e.printStackTrace()
-                null
-            }
-        }
+                output.close()
+                br.close()
 
-        fun serverPost(module: String, list: Map<String, String>): JSONObject? {
+                Log.i(TAG, "Read succeed")
 
+                val json = JSONObject(response)
 
-            return null
-        }
+                LoginData.accessToken = json.getString("access_token")
+                LoginData.refreshToken = json.getString("refresh_token")
+                LoginData.tokenExpiration = json.getInt("expires_in").toLong()
 
-        fun getLoginCredentials(urlString: String, username: String): JSONObject? {
-            return try {
-                Log.i(TAG, "Loading login info on $urlString for $username")
-                    val url = URL("${getRawUrl(urlString)}/if/2/gethx/$username")
-                val urlConnection = url.openConnection()
-                urlConnection.setRequestProperty("Accept", "text/json")
-                urlConnection.setRequestProperty("Connection", "Keep-Alive")
-
-                var response = ""
-                var line: String?
-                val br = BufferedReader(InputStreamReader(urlConnection.getInputStream()))
-                while (br.readLine().also { line = it } != null) {
-                    response += line
-                }
-
-                JSONObject(response)
-            } catch (e: java.lang.Exception) {
-                Log.e(TAG, "failed to load data")
-                e.printStackTrace()
-                null
-            }
-        }
-
-        /**
-         * @return TOKEN_NO, TOKEN_INVALID, TOKEN_NO_INTERNET, TOKEN_VALID
-         */
-        const val TOKEN_NO = 0
-        const val TOKEN_INVALID = 1
-        const val TOKEN_NO_INTERNET = 2
-        const val TOKEN_VALID = 3
-        const val TOKEN_ODER = -1
-        fun checkToken(token: String): Int {
-            if (token == "") return TOKEN_NO
-
-            if (!CheckInternet.check(false))
-                return TOKEN_NO_INTERNET
-
-            val json = serverGet("login", token) ?: return TOKEN_ODER
-            try {
-                return if (json.getString("MessageType") == "Login")
-                    TOKEN_VALID
-                else
-                    TOKEN_INVALID
+                true
             } catch (e: Exception) {
                 e.printStackTrace()
+                false
             }
-            return TOKEN_ODER
         }
 
-        fun getRawUrl(url: String = LoginData.get(LoginData.SP_URL)): String {
+        fun isExpired(expireDate: Long = LoginData.tokenExpiration): Boolean {
+            return System.currentTimeMillis() > expireDate - 5000 //5 sec just to make sure
+        }
+
+        fun getRawUrl(url: String = LoginData.url): String {
             return url.replace("/login.aspx", "")
         }
 
-        fun getV2Token(token: String): String {
-            val v2Token = Base64.encodeToString(
-                "ANDR:${token}".toByteArray(),
-                Base64.NO_WRAP
-            )
-            //TODO remove token logging to console
-            println("Token: $token" )
-            println("V2 Token: $v2Token")
-            return v2Token
+        fun getAPIUrl(url: String = LoginData.url): String {
+            return url.replace("/login.aspx", "/api")
         }
 
-        //https://stackoverflow.com/questions/9767952/how-to-add-parameters-to-httpurlconnection-using-post-using-namevaluepair/29561084#29561084
-
-        private fun getPostDataString(params: HashMap<String, String>): String? {
+        private fun getPostDataString(params: Map<String, String>): String {
             val result = StringBuilder()
             var first = true
             for ((key, value) in params.entries) {

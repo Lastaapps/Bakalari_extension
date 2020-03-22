@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.Login
+import cz.lastaapps.bakalariextension.api.User
 
 class HomeFragment : Fragment() {
 
@@ -31,9 +31,9 @@ class HomeFragment : Fragment() {
         val typeView = root.findViewById<TextView>(R.id.type)
         val schoolView = root.findViewById<TextView>(R.id.school)
 
-        nameView.text = Login.get(Login.NAME)
-        typeView.text = Login.getClassAndRole()
-        schoolView.text = Login.get(Login.SCHOOL)
+        nameView.text = User.get(User.NAME)
+        typeView.text = User.getClassAndRole()
+        schoolView.text = User.get(User.SCHOOL)
 
         return root
     }

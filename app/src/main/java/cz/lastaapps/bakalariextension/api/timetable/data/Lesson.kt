@@ -1,41 +1,33 @@
 package cz.lastaapps.bakalariextension.api.timetable.data
 
-data class Lesson(
-    var id: String,
-    var type: String,
-    var name: String,
-    var shortcut: String,
-    var subject: String,
-    var subjectShortcut: String,
-    var teacher: String,
-    var teacherShortcut: String,
-    var room: String,
-    var roomShortcut: String,
-    var absence: String,
-    var absenceShortcut: String,
-    var theme: String,
-    var group: String,
-    var groupShortcut: String,
-    var cycle: String,
-    var freed: String,
-    var change: String,
-    var caption: String,
-    var notice: String
-): Comparable<Lesson> {
+class Lesson(
+    hourId: Int,
+    var groupIds: ArrayList<String>,
+    var subjectId: String,
+    var teacherId: String,
+    var roomId: String,
+    var cycleIds: ArrayList<String>,
+    var change: Change?,
+    var homeworkIds: ArrayList<String>,
+    var theme: String
+): DataID<Int>(hourId) {
 
     fun isNormal(): Boolean {
-        return type == "H"
+        if (change == null) return true
+        if (change!!.isAdded()) return true
+        return false
     }
 
-    fun isFree(): Boolean {
-        return type == "X"
+    fun isRemoved(): Boolean {
+        if (change == null) return false
+        if (change!!.isRemoved()) return true
+        return false
     }
 
     fun isAbsence(): Boolean {
-        return type == "A"
+        if (change == null) return false
+        if (change!!.isCanceled()) return true
+        return false
     }
 
-    override fun compareTo(other: Lesson): Int {
-        return caption.toInt().compareTo(other.caption.toInt())
-    }
 }

@@ -23,7 +23,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".api.timetable.TimeChangeReceiver"
+            android:name=".TimeChangeReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -38,7 +38,7 @@
 
         <receiver
             android:name=".BootReceiver"
-            android:enabled="true"
+            android:enabled="false"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -46,7 +46,7 @@
         </receiver>
         <receiver
             android:name=".api.timetable.TTReceiver"
-            android:enabled="true"
+            android:enabled="false"
             android:exported="true" />
 
         <activity

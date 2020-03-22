@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.util.Log
+import com.jakewharton.threetenabp.AndroidThreeTen
 
 /**
  * Stores static context
@@ -47,5 +48,6 @@ class App : Application() {
         super.onCreate()
         Log.i(TAG, "App object created")
         app = this
+        AndroidThreeTen.init(this);
     }
 }

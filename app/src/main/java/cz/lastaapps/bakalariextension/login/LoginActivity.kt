@@ -52,16 +52,8 @@ class LoginActivity : AppCompatActivity() {
         passwordEdit = findViewById(R.id.password)
         loginButton = findViewById(R.id.login)
 
-        /*urlEdit.setText(
-            LoginData.get(
-                LoginData.SP_URL
-            )
-        )
-        usernameEdit.setText(
-            LoginData.get(
-                LoginData.SP_USERNAME
-            )
-        )*/
+        urlEdit.setText(LoginData.url)
+        usernameEdit.setText(LoginData.username)
 
         //town spinner init, used to select the town of school
         townSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -171,9 +163,7 @@ class LoginActivity : AppCompatActivity() {
         townSpinner.adapter = adapter
 
         var i = viewModel.townList.indexOf(
-            LoginData.get(
-                LoginData.SP_TOWN
-            )
+            LoginData.town
         )
         if (viewModel.townIndex >= 0)
             i = viewModel.townIndex
@@ -274,9 +264,7 @@ class LoginActivity : AppCompatActivity() {
         schoolSpinner.adapter = adapter
 
         var i = adapter.getPosition(
-            LoginData.get(
-                LoginData.SP_SCHOOL
-            )
+            LoginData.school
         )
         if (viewModel.schoolIndex >= 0)
             i = viewModel.schoolIndex
@@ -314,7 +302,6 @@ class LoginActivity : AppCompatActivity() {
         val data = ArrayList<String>()
         data.add(usernameEdit.text.toString())
         data.add(passwordEdit.text.toString())
-        data.add("true")
         data.add(urlEdit.text.toString())
         data.add(town_spinner.selectedItem.toString())
         data.add(school_spinner.selectedItem.toString())
@@ -337,11 +324,8 @@ class LoginActivity : AppCompatActivity() {
                         LoginToServer.NO_INTERNET -> {
                             Toast.makeText(this@LoginActivity, R.string.error_server_unavailable, Toast.LENGTH_LONG).show()
                         }
-                        LoginToServer.WRONG_USERNAME -> {
-                            Toast.makeText(this@LoginActivity, R.string.error_wrong_username, Toast.LENGTH_LONG).show()
-                        }
-                        LoginToServer.INVALID_TOKEN -> {
-                            Toast.makeText(this@LoginActivity, R.string.error_invalid_password, Toast.LENGTH_LONG).show()
+                        LoginToServer.WRONG_LOGIN -> {
+                            Toast.makeText(this@LoginActivity, R.string.error_wrong_login_data, Toast.LENGTH_LONG).show()
                         }
                     }
                 }

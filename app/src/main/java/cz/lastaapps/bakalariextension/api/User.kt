@@ -4,33 +4,38 @@ import android.content.Context
 import android.util.Log
 import androidx.core.content.edit
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.login.LoginData
 import cz.lastaapps.bakalariextension.tools.App
 
 /**
  * Used to read basic data about student from server
  * */
-class Login {
+class User {
 
     companion object {
-        private val TAG = Login::class.java.simpleName
+        private val TAG = User::class.java.simpleName
 
         //shared preferences saving
-        private const val SP_KEY = "LOGIN_API"
-        const val VERSION = "verze"
-        const val NAME = "jmeno"
-        const val ROLE = "typ"
-        const val SCHOOL = "skola"
+        private const val SP_KEY = "API_USER"
+        const val UID = "uid"
+        const val NAME = "fullname"
+        const val ROLE = "role"
+        const val SCHOOL = "school"
         const val SCHOOL_TYPE = "typskoly"
-        const val CLASS = "trida"
-        const val GRADE = "rocnik"
-        const val MODULES = "moduly"
-        const val NEW_MARKS = "newmarkdays"
-        const val NEW_MARKS_UPDATED = "newmarksupdated"
+        const val CLASS_ID = "class_id"
+        const val CLASS_SHORTCUT = "class_shortcut"
+        const val CLASS_NAME = "class_name"
+        const val GRADE = "grade"
+        const val MODULES = "modules"
+        const val SEMESTER_ID = "semester_id"
+        const val SEMESTER_START = "semester_start"
+        const val SEMESTER_END = "semester_end"
 
-        const val ROLE_TEACHER = "U"
-        const val ROLE_PARENT = "R"
-        const val ROLE_PUPIL = "Z"
+        const val ROLE_PARENT = "parents"
+        //TODO not sure about names
+        const val ROLE_SYSTEM = "system"
+        const val ROLE_TEACHER = "teachers"
+        const val ROLE_PUPIL = "pupil"
+        const val ROLE_HEADQUARTERS = "headquarters"
 
         fun get(key: String): String {
             return App.context.getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
@@ -58,37 +63,39 @@ class Login {
          */
         fun login(): Boolean {
 
-            val json = ConnMgr.serverGet("login", LoginData.getToken()) ?: return false
+            val json = ConnMgr.serverGet("user") ?: return false
             try {
 
-                set(VERSION, json.getString("AppVersion"))
+                set(UID, json.getString("UserUID"))
+
+                val classJson = json.getJSONObject("Class")
+                set(CLASS_ID, classJson.getString("Id"))
+                set(CLASS_SHORTCUT, classJson.getString("Abbrev"))
+                set(CLASS_NAME, classJson.getString("Name"))
+
                 set(NAME, {
-                    val value = json.getString("UserName")
+                    val value = json.getString("FullName")
                     val temp = value.substring(0, value.lastIndexOf(','))
                     val spaceIndex = temp.indexOf(' ')
                     "${temp.substring(spaceIndex + 1)} ${temp.substring(0, spaceIndex)}"
                 }.invoke())
-                set(ROLE, json.getString("UserType"))
-                json.getString("UserTypeAsStr")//handled in #parseRole()
-                set(SCHOOL, json.getString("SchoolName"))
+                set(SCHOOL, json.getString("SchoolOrganizationName"))
                 set(SCHOOL_TYPE, json.getString("SchoolType"))
-                set(CLASS, json.getString("Class"))
+                set(ROLE, json.getString("UserType"))
+                json.getString("UserTypeText")//handled in parseRole()
                 set(GRADE, json.getString("StudyYear"))
-                set(MODULES, json.getString("Modules"))
-                json.getString("MessageType")
+
+                //json.getJSONArray("EnabledModules")
+
+                val semester = json.getJSONObject("SettingModules")
+                    .getJSONObject("Common")
+                    .getJSONObject("ActualSemester")
+                set(SEMESTER_ID, semester.getString("SemesterId"))
+                set(SEMESTER_START, semester.getString("From"))
+                set(SEMESTER_END, semester.getString("To"))
 
                 Log.i(TAG, "Data saved")
 
-                    val params = json.getJSONArray("Params")
-                for (i in 0 until params.length()) {
-                    val item = params.getJSONObject(i)
-                    when (item.getString("Name")) {
-                        "newmarkdays" -> {
-                            set(NEW_MARKS, item.getString("Value"))
-                            set(NEW_MARKS_UPDATED, System.currentTimeMillis().toString())
-                        }
-                    }
-                }
                 return true
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -110,12 +117,15 @@ class Login {
                 ROLE_PARENT -> App.getString(R.string.role_parent)
                 ROLE_TEACHER -> App.getString(R.string.role_teacher)
                 ROLE_PUPIL -> App.getString(R.string.role_pupil)
+                //TODO report letters to firebase to analyze
+                //ROLE_LEADING -> App.getString(R.string.role_leading)
+                ROLE_SYSTEM -> App.getString(R.string.role_system)
                 else -> App.getString(R.string.role_oder)
             }
         }
 
         fun getClassAndRole(): String {
-            return "${get(CLASS)} - ${parseRole(get(ROLE))}"
+            return "${get(CLASS_NAME)} - ${parseRole(get(ROLE))}"
         }
     }
 }

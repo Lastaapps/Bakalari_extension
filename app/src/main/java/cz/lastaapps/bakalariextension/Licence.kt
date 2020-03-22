@@ -5,7 +5,8 @@ import android.content.DialogInterface
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
 import cz.lastaapps.bakalariextension.tools.App
-import java.util.*
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZonedDateTime
 
 class Licence {
 
@@ -23,7 +24,7 @@ class Licence {
         private fun agreed() {
             App.context.getSharedPreferences(SP_KEY, Context.MODE_PRIVATE).edit {
                 putBoolean(SP_AGREED, true)
-                putLong(SP_TIME, Date().time)
+                putLong(SP_TIME, ZonedDateTime.now(ZoneId.of("UTC")).toInstant().toEpochMilli())
                 apply()
             }
         }

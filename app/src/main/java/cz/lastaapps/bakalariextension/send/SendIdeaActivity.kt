@@ -12,9 +12,11 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.IgnoreExtraProperties
 import cz.lastaapps.bakalariextension.R
+import cz.lastaapps.bakalariextension.tools.TimeTools
+import org.threeten.bp.Instant
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZonedDateTime
 import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.*
 
 /**
  * Sends idea to Firebase database
@@ -42,7 +44,10 @@ class SendIdeaActivity : AppCompatActivity() {
             val fab = findViewById<FloatingActionButton>(R.id.idea_fab)
             fab.setOnClickListener {
                 getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
-                    .edit().putLong(SP_DATE_KEY, Date().time).apply()
+                    .edit()
+                    .putLong(SP_DATE_KEY,
+                        ZonedDateTime.now(ZoneId.of("UTC")).toInstant().toEpochMilli())
+                    .apply()
                 send()
             }
         } else {
@@ -68,23 +73,13 @@ class SendIdeaActivity : AppCompatActivity() {
         val lastSent = getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
             .getLong(SP_DATE_KEY, 0)
 
-        val cal = Calendar.getInstance()
-        cal.time = Date(lastSent)
-        val now = Calendar.getInstance()
+        val cal = ZonedDateTime.ofInstant(Instant.ofEpochMilli(lastSent), TimeTools.UTC)
+        val now = TimeTools.now
 
-        if (cal.after(now))
+        if (cal.isAfter(now))
             return false
 
-        cal.set(Calendar.HOUR, 0)
-        cal.set(Calendar.MINUTE, 0)
-        cal.set(Calendar.SECOND, 0)
-        cal.set(Calendar.MILLISECOND, 0)
-        now.set(Calendar.HOUR, 0)
-        now.set(Calendar.MINUTE, 0)
-        now.set(Calendar.SECOND, 0)
-        now.set(Calendar.MILLISECOND, 0)
-
-        return cal != now
+        return cal.toLocalDate() != now.toLocalDate()
     }
 
     /**
@@ -99,8 +94,7 @@ class SendIdeaActivity : AppCompatActivity() {
                 val id = database.push().key.toString()
 
                 val obj = Message(
-                    date = SimpleDateFormat("HH:mm dd.MM.YYYY z")
-                        .format(Calendar.getInstance(TimeZone.getTimeZone("UTC")).time),
+                    date = TimeTools.format(TimeTools.now, TimeTools.COMPLETE_FORMAT),
                     messageId = id,
                     email = email,
                     message = message,

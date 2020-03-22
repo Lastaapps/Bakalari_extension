@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.text.TextUtils
 import android.widget.EditText
 import android.widget.Toast
@@ -17,11 +16,13 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.IgnoreExtraProperties
 import cz.lastaapps.bakalariextension.BuildConfig
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.Login
+import cz.lastaapps.bakalariextension.api.User
 import cz.lastaapps.bakalariextension.login.LoginData
+import cz.lastaapps.bakalariextension.tools.TimeTools
+import org.threeten.bp.Instant
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZonedDateTime
 import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.*
 
 /**
  * Sends error report to Firebase database
@@ -50,7 +51,10 @@ class ReportIssueActivity : AppCompatActivity() {
             val fab = findViewById<FloatingActionButton>(R.id.report_fab)
             fab.setOnClickListener {
                 getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
-                    .edit().putLong(SP_DATE_KEY, Date().time).apply()
+                    .edit()
+                    .putLong(SP_DATE_KEY,
+                        ZonedDateTime.now(ZoneId.of("UTC")).toInstant().toEpochMilli())
+                    .apply()
                 send()
             }
 
@@ -83,28 +87,19 @@ class ReportIssueActivity : AppCompatActivity() {
         val lastSent = getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
             .getLong(SP_DATE_KEY, 0)
 
-        val cal = Calendar.getInstance()
-        cal.time = Date(lastSent)
-        val now = Calendar.getInstance()
+        val cal = ZonedDateTime.ofInstant(Instant.ofEpochMilli(lastSent), TimeTools.UTC)
+        val now = TimeTools.now
 
-        if (cal.after(now))
+        if (cal.isAfter(now))
             return false
 
-        cal.set(Calendar.HOUR, 0)
-        cal.set(Calendar.MINUTE, 0)
-        cal.set(Calendar.SECOND, 0)
-        cal.set(Calendar.MILLISECOND, 0)
-        now.set(Calendar.HOUR, 0)
-        now.set(Calendar.MINUTE, 0)
-        now.set(Calendar.SECOND, 0)
-        now.set(Calendar.MILLISECOND, 0)
-
-        return cal != now
+        return cal.toLocalDate() != now.toLocalDate()
     }
 
     /**
      * Sends needed data to Firebase
      */
+    //TODO add ability to send each modules data to debug
     private fun send() {
         val email = findViewById<EditText>(R.id.email).text.trim().toString()
         val message = findViewById<EditText>(R.id.message).text.trim().toString()
@@ -113,26 +108,23 @@ class ReportIssueActivity : AppCompatActivity() {
             try {
                 val id = database.push().key.toString()
                 val obj = Message(
-                    date = SimpleDateFormat("HH:mm dd.MM.YYYY z")
-                        .format(Calendar.getInstance(TimeZone.getTimeZone("UTC")).time),
+                    date = TimeTools.format(TimeTools.now, TimeTools.COMPLETE_FORMAT),
                     messageId = id,
                     email = email,
                     message = message,
-                    phoneId = Settings.Secure.getString(
-                        contentResolver,
-                        Settings.Secure.ANDROID_ID),
+                    phoneId = {
+                        (LoginData.userID + LoginData.town + LoginData.school)
+                            .hashCode().toString()
+                    }.invoke(),
                     phoneType = getDeviceName(),
                     androidVersion = packageManager.getPackageInfo(packageName, 0).versionName,
                     appVersionCode = BuildConfig.VERSION_CODE.toString(),
                     appVersionName = BuildConfig.VERSION_NAME,
-                    school = LoginData.get(
-                        LoginData.SP_SCHOOL),
-                    town = LoginData.get(
-                        LoginData.SP_TOWN),
-                    url = LoginData.get(
-                        LoginData.SP_URL),
-                    bakalariVersion = Login.get(Login.VERSION),
-                    accountType = Login.get(Login.ROLE)
+                    school = LoginData.school,
+                    town = LoginData.town,
+                    url = LoginData.url,
+                    bakalariVersion = LoginData.apiVersion,
+                    accountType = User.get(User.ROLE)
                     )
                 database.child("report").child(id).setValue(obj)
 

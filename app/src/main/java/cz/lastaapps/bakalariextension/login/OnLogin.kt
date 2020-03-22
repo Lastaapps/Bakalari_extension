@@ -1,48 +1,58 @@
 package cz.lastaapps.bakalariextension.login
 
 import android.content.ComponentName
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.util.Log
+import android.os.Handler
+import android.os.Looper
 import cz.lastaapps.bakalariextension.BootReceiver
 import cz.lastaapps.bakalariextension.TimeChangeReceiver
 import cz.lastaapps.bakalariextension.api.User
 import cz.lastaapps.bakalariextension.api.timetable.TTNotifiService
-import cz.lastaapps.bakalariextension.api.timetable.TTStorage
 import cz.lastaapps.bakalariextension.tools.App
 
-/**Deletes saved token and password, then restarts app*/
-class Logout {
+
+class OnLogin {
 
     companion object {
-        private val TAG = Logout::class.java.simpleName
+        fun onLogin(): Boolean {
+            Handler(Looper.getMainLooper()).post {
+                foreground()
+            }
 
-        fun logout() {
-            LoginData.accessToken = ""
-            LoginData.refreshToken = ""
-            LoginData.tokenExpiration = 0
-            User.clear()
-            TTStorage.deleteAll()
+            val success = background()
 
-            //disables receivers
+            if (!success)
+                Logout.logout()
+
+            return success
+        }
+
+        private fun foreground() {
+
+        }
+
+        private fun background(): Boolean {
+            if (!User.login())
+                return false
+
+            //enables receivers
             val pm: PackageManager = App.context.packageManager
             val bootReceiver =
                 ComponentName(App.context, BootReceiver::class.java)
             pm.setComponentEnabledSetting(
-                bootReceiver, PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                bootReceiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP
             )
             val timeReceiver =
                 ComponentName(App.context, TimeChangeReceiver::class.java)
             pm.setComponentEnabledSetting(
-                timeReceiver, PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                timeReceiver, PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                 PackageManager.DONT_KILL_APP
             )
 
-            //stops services
-            App.context.stopService(Intent(App.context, TTNotifiService::class.java))
+            TTNotifiService.startService(App.context)
 
-            Log.i(TAG, "Logged out")
+            return true
         }
     }
 }

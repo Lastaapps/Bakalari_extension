@@ -1,46 +1,50 @@
 package cz.lastaapps.bakalariextension.api.timetable.data
 
-import cz.lastaapps.bakalariextension.api.timetable.TTTools
-import java.util.*
+import cz.lastaapps.bakalariextension.api.timetable.data.TTData.*
+import cz.lastaapps.bakalariextension.tools.TimeTools
+import org.threeten.bp.ZonedDateTime
+import kotlin.math.min
 
 data class Week(
-    var cycleCode: String,
-    var cycleName: String,
-    var cycleShortcut: String,
-    var type: String,
-    var patterns: ArrayList<LessonPattern>,
-    var days: ArrayList<Day>
+    var hours: DataIdList<Hour>,
+    var days: ArrayList<Day>,
+    var classes: DataIdList<Class>,
+    var groups: DataIdList<Group>,
+    var subjects: DataIdList<Subject>,
+    var teachers: DataIdList<Teacher>,
+    var rooms: DataIdList<Room>,
+    var cycles: DataIdList<Cycle>
 ) {
-    val date: Calendar
+    val date: ZonedDateTime
         get() {
-            if (days[0].date == "")
-                return TTTools.PERMANENT
-
-            return TTTools.toMonday(
-                TTTools.parse(days[0].date)
-            )
+            val time = days[0].toDate()
+            return TimeTools.toMonday(time)
         }
 
-    fun getDay(cal: Calendar): Day? {
-        return if (days[0].toCal() <= TTTools.toMidnight(cal)
-            && TTTools.toMidnight(cal) <= days[4].toCal()
-        )
+    fun getDay(cal: ZonedDateTime): Day? {
 
-            days[cal.get(Calendar.DAY_OF_WEEK) - 1 - 1]
+        return if (TimeTools.toDateTime(days[0].toDate()) <= TimeTools.toDateTime(cal)
+            && TimeTools.toDateTime(cal) < TimeTools.toDateTime(days[4].toDate()).plusDays(1)
+        )
+            days[cal.dayOfWeek.value - 1]
         else
             null
     }
 
     fun today(): Day? {
-        return getDay(TTTools.cal)
+        return getDay(TimeTools.now)
     }
 
-
-    fun getPatternForLesson(lesson: Lesson): LessonPattern? {
-        for (pattern in patterns) {
-            if (pattern.caption == lesson.caption)
-                return pattern
+    fun getNotEmptyHours(): DataIdList<Hour> {
+        var min = hours.size
+        for (day in days) {
+            min = min(day.firstLessonIndex(hours), min)
         }
-        return null
+
+        val data = DataIdList<Hour>()
+        if (min in 0 until hours.size)
+            data.addAll(hours.subList(min, hours.size))
+
+        return data
     }
 }

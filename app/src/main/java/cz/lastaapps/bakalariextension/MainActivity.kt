@@ -20,7 +20,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
-import cz.lastaapps.bakalariextension.api.Login
+import cz.lastaapps.bakalariextension.api.User
 import cz.lastaapps.bakalariextension.login.Logout
 import cz.lastaapps.bakalariextension.send.ReportIssueActivity
 import cz.lastaapps.bakalariextension.send.SendIdeaActivity
@@ -72,8 +72,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navView.setupWithNavController(navController)
         navView.setNavigationItemSelectedListener(this)
 
-        navView.getHeaderView(0).findViewById<TextView>(R.id.nav_name).text = Login.get(Login.NAME)
-        navView.getHeaderView(0).findViewById<TextView>(R.id.nav_type).text = Login.getClassAndRole()
+        navView.getHeaderView(0).findViewById<TextView>(R.id.nav_name).text = User.get(User.NAME)
+        navView.getHeaderView(0).findViewById<TextView>(R.id.nav_type).text = User.getClassAndRole()
 
         //init fragment
         val navigateTo = intent.getIntExtra(NAVIGATE, -1)

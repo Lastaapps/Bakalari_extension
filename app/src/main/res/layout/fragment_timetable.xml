@@ -26,11 +26,11 @@
 
         <RelativeLayout
             android:id="@+id/table_box"
-            android:background="@drawable/border"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-
             android:layout_above="@+id/bottom_box"
+
+            android:background="@drawable/border"
 
             android:visibility="visible">
 
@@ -85,17 +85,35 @@
 
             </LinearLayout>
 
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
 
-                android:layout_toEndOf="@+id/table_days">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
 
-                <TableLayout
-                    android:id="@+id/table"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent" />
-            </HorizontalScrollView>
+                    android:layout_toEndOf="@+id/table_days"
+                    >
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        >
+                    <TableLayout
+                        android:id="@+id/table"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                    </TableLayout>
+
+                    </HorizontalScrollView>
+                    <TextView
+                        style="@style/Timetable.Secondary"
+                        android:id="@+id/empty_timetable"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/empty_timetable"
+                        android:layout_centerInParent="true"
+                        android:visibility="gone"/>
+
+                </RelativeLayout>
 
         </RelativeLayout>
 
@@ -108,8 +126,8 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/Timetable.LastUpdate"
                 android:id="@+id/last_updated"
+                style="@style/Timetable.LastUpdate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
@@ -125,10 +143,10 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:layout_centerInParent="true"
                     android:gravity="center"
 
-                    android:layout_centerInParent="true">
+                    android:orientation="horizontal">
 
                     <ImageButton
                         android:id="@+id/permanent_switch"

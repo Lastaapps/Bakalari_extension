@@ -1,23 +1,24 @@
 package cz.lastaapps.bakalariextension.ui.timetable
 
-import android.app.AlertDialog
-import android.content.Context
-import android.content.DialogInterface
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
-import android.widget.*
+import android.widget.ImageButton
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.timetable.TTStorage
-import cz.lastaapps.bakalariextension.api.timetable.TTTools
 import cz.lastaapps.bakalariextension.api.timetable.Timetable
-import cz.lastaapps.bakalariextension.api.timetable.data.Lesson
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import cz.lastaapps.bakalariextension.tools.App
-import java.util.*
+import cz.lastaapps.bakalariextension.tools.TimeTools
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZonedDateTime
 import kotlin.math.abs
 
 class TimetableFragment : Fragment() {
@@ -29,17 +30,21 @@ class TimetableFragment : Fragment() {
     }
 
     lateinit var root: View
-    lateinit var calendar: Calendar
+    lateinit var calendar: ZonedDateTime
     var height: Int = 0
     var isPermanent = false
-    lateinit var lastCalendar: Calendar
+    lateinit var lastCalendar: ZonedDateTime
+    var cycleIndex = 0
+    var week: Week? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        calendar = TTTools.toMonday(TTTools.cal)
+        calendar = TimeTools.toMonday(
+            TimeTools.cal
+        )
         if (savedInstanceState?.getSerializable(CALENDAR_KEY) != null)
-            calendar = savedInstanceState.getSerializable(CALENDAR_KEY) as Calendar
+            calendar = savedInstanceState.getSerializable(CALENDAR_KEY) as ZonedDateTime
     }
 
     override fun onCreateView(
@@ -63,29 +68,45 @@ class TimetableFragment : Fragment() {
         })
 
         root.findViewById<ImageButton>(R.id.previous_week).setOnClickListener {
-            calendar = TTTools.previousWeek(calendar)
-            updateTimetable(calendar)
+            if (!isPermanent) {
+                calendar = TimeTools.previousWeek(calendar)
+                updateTimetable(calendar)
+            } else {
+                cycleIndex--
+                val week = week
+                if (week != null && cycleIndex < 0 ) {
+                    cycleIndex = week.cycles.size - 1
+                }
+                updateTimetable(TimeTools.PERMANENT)
+            }
         }
         root.findViewById<ImageButton>(R.id.next_week).setOnClickListener {
-            calendar = TTTools.nextWeek(calendar)
-            updateTimetable(calendar)
+            if (!isPermanent) {
+                calendar = TimeTools.nextWeek(calendar)
+                updateTimetable(calendar)
+            } else {
+                cycleIndex++
+                val week = week
+                if (week != null && cycleIndex > (week.cycles.size - 1)) {
+                    cycleIndex = 0
+                }
+                updateTimetable(TimeTools.PERMANENT)
+            }
         }
+
         root.findViewById<ImageButton>(R.id.permanent_switch).setOnClickListener {
             if (isPermanent) {
+                cycleIndex = 0
                 updateTimetable(calendar)
                 (it as ImageButton).setImageDrawable(
                     root.context.resources.getDrawable(R.drawable.permanent)
                 )
-                root.findViewById<ImageButton>(R.id.next_week).visibility = View.VISIBLE
-                root.findViewById<ImageButton>(R.id.previous_week).visibility = View.VISIBLE
 
             } else {
-                updateTimetable(TTTools.PERMANENT)
+                updateTimetable(TimeTools.PERMANENT)
                 (it as ImageButton).setImageDrawable(
                     root.context.resources.getDrawable(R.drawable.actual)
                 )
-                root.findViewById<ImageButton>(R.id.next_week).visibility = View.GONE
-                root.findViewById<ImageButton>(R.id.previous_week).visibility = View.GONE
             }
             isPermanent = !isPermanent
         }
@@ -104,7 +125,7 @@ class TimetableFragment : Fragment() {
         return super.onSaveInstanceState(outState)
     }
 
-    private fun updateTimetable(cal: Calendar, forceReload: Boolean = false) {
+    private fun updateTimetable(cal: ZonedDateTime, forceReload: Boolean = false) {
         LoadTask().execute(cal, forceReload)
     }
 
@@ -120,15 +141,16 @@ class TimetableFragment : Fragment() {
             errorMessage.visibility = View.GONE
             table.visibility = View.INVISIBLE
             bottomBox.visibility = View.INVISIBLE
+            bottomBox.isEnabled = false
         }
 
         override fun doInBackground(vararg params: Any?): Week? {
-            val cal = params[0] as Calendar
+            val cal = params[0] as ZonedDateTime
             val forceReload = params[1] as Boolean
 
             lastCalendar = cal
 
-            val week = Timetable.loadTimetable(cal, forceReload)
+            week = Timetable.loadTimetable(cal, forceReload)
 
             while (height == 0)
                 Thread.sleep(1)
@@ -142,6 +164,7 @@ class TimetableFragment : Fragment() {
             val errorMessage = root.findViewById<TextView>(R.id.error_message)
             val table = root.findViewById<View>(R.id.table_box)
             val bottomBox = root.findViewById<ViewGroup>(R.id.bottom_box)
+            bottomBox.isEnabled = true
             val lastUpdated = root.findViewById<TextView>(R.id.last_updated)
 
             progressBar.visibility = View.GONE
@@ -155,7 +178,12 @@ class TimetableFragment : Fragment() {
 
                 lastUpdated.text = lastUpdatedText()
 
-                createTimetable(week)
+                val cycle = if (week.cycles.size > 0)
+                    week.cycles[cycleIndex]
+                else
+                    null
+
+                TimetableCreator.createTimetable(root, week, cycle)
             }
             bottomBox.visibility = View.VISIBLE
         }
@@ -163,9 +191,11 @@ class TimetableFragment : Fragment() {
         private fun lastUpdatedText(): String {
 
             var toReturn =
-                if (lastCalendar != TTTools.PERMANENT) {
-                    var diff = (TTTools.toMonday(TTTools.cal).time.time / 1000).toInt() -
-                            (lastCalendar.time.time / 1000).toInt()
+                if (lastCalendar != TimeTools.PERMANENT) {
+                    var diff = (TimeTools.toMonday(
+                        TimeTools.cal
+                    ).toEpochSecond() -
+                            lastCalendar.toEpochSecond()).toInt()
 
                     diff /= 60 * 60 * 24 * 7
 
@@ -199,174 +229,19 @@ class TimetableFragment : Fragment() {
                 } else
                     getString(R.string.permanent)
 
-            toReturn += ", " + getString(R.string.last_updated) + " " +
-                    TTTools.format(
-                        TTStorage.lastUpdated(lastCalendar)!!,
-                        TimeZone.getDefault().displayName, "HH:mm d.M."
-                    )
+            try {
+                toReturn += ", " + getString(R.string.last_updated) + " " +
+                        TimeTools.format(
+                            TTStorage.lastUpdated(lastCalendar)!!,
+                            "HH:mm d.M.", ZoneId.systemDefault()
+                        )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
 
             return toReturn
         }
     }
 
-    private fun createTimetable(week: Week) {
-
-        val daysTable = root.findViewById<LinearLayout>(R.id.table_days)
-        val table = root.findViewById<TableLayout>(R.id.table)
-
-        val context = root.context
-
-        val edge = daysTable.findViewById<ViewGroup>(R.id.edge)
-        edge.findViewById<TextView>(R.id.cycle).text =
-            week.cycleName
-
-        val dayArray =
-            arrayOf(R.id.monday, R.id.tuesday, R.id.wednesday, R.id.thursday, R.id.friday)
-        val dayShortcutsArray = arrayOf(
-            R.string.monday_shortut,
-            R.string.tuesday_shortut,
-            R.string.wednesday_shortut,
-            R.string.thursday_shortut,
-            R.string.friday_shortut
-        )
-        for (i in 0 until 5) {
-            val day = week.days[i]
-            val view = daysTable.findViewById<ViewGroup>(dayArray[i])
-
-            val dayTV = view.findViewById<TextView>(R.id.day)
-            val dateTV = view.findViewById<TextView>(R.id.date)
-
-            dayTV.text = getString(dayShortcutsArray[i])
-            if (day.date != "")
-                dateTV.text = TTTools.format(day.toCal(), TTTools.CET, "d.M.")
-            else
-                dateTV.text = ""
-        }
-
-        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-
-        table.removeAllViews()
-
-        val numberRow = TableRow(context)
-        table.addView(numberRow, 0)
-        for (i in 0 until week.patterns.size) {
-            val pattern = week.patterns[i]
-            val viewGroup = inflater.inflate(R.layout.timetable_number, null)
-
-            viewGroup.findViewById<TextView>(R.id.caption).text = pattern.caption
-            viewGroup.findViewById<TextView>(R.id.begin).text = pattern.begin
-            viewGroup.findViewById<TextView>(R.id.end).text = pattern.end
-
-            val params = TableRow.LayoutParams()
-            params.height = height
-            viewGroup.layoutParams = params
-            numberRow.addView(viewGroup)
-        }
-
-        for (day in week.days) {
-            val row = TableRow(context)
-            table.addView(row)
-            for (lesson in day.lessons) {
-                var viewGroup: View
-                when {
-                    lesson.isNormal() -> {
-                        viewGroup = inflater.inflate(R.layout.timetable_lesson, null)
-
-                        viewGroup.findViewById<TextView>(R.id.subject).text = lesson.subjectShortcut
-                        viewGroup.findViewById<TextView>(R.id.room).text = lesson.roomShortcut
-                        viewGroup.findViewById<TextView>(R.id.teacher).text =
-                            if (lesson.teacherShortcut == "")
-                                lesson.teacherShortcut
-                            else
-                                //for teachers
-                                lesson.groupShortcut
-
-                    }
-
-                    lesson.isAbsence() -> {
-                        viewGroup = inflater.inflate(R.layout.timetable_absence, null)
-
-                        viewGroup.findViewById<TextView>(R.id.absence).text = lesson.shortcut
-
-                        viewGroup.setBackgroundColor(App.getColor(R.color.timetable_absence))
-                    }
-
-                    else -> {
-                        viewGroup = inflater.inflate(R.layout.timetable_free, null)
-                    }
-                }
-
-                if (lesson.change != "") {
-                    viewGroup.setBackgroundColor(App.getColor(R.color.timetable_change))
-                }
-
-                val pattern = week.getPatternForLesson(lesson)
-                if (pattern != null) {
-                    val now = TTTools.calToSeconds(TTTools.now)
-                    val begin = TTTools.calToSeconds(TTTools.parseTime(pattern.begin, TTTools.CET))
-                    val end = TTTools.calToSeconds(TTTools.parseTime(pattern.end, TTTools.CET))
-
-                    if (day.toCal().time == TTTools.cal.time
-                        && now in begin..end
-                    ) {
-                        viewGroup.setBackgroundColor(App.getColor(R.color.timetable_current))
-                    }
-                }
-
-                showLessonInfo(viewGroup, lesson)
-
-                val params = TableRow.LayoutParams()
-                params.height = height
-                viewGroup.layoutParams = params
-
-                row.gravity = Gravity.CENTER_VERTICAL
-                row.addView(viewGroup)
-            }
-        }
-    }
-
-    private fun showLessonInfo(view: View, lesson: Lesson) {
-        view.setOnClickListener {
-
-            val inflater =
-                it.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            val root = inflater.inflate(R.layout.timetable_info, null)
-            val table = root.findViewById<TableLayout>(R.id.table)
-
-            val addInfoRow = { table: TableLayout, field: String, fieldName: String ->
-                if (field != "") {
-
-                    val inflater =
-                        table.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-
-                    val row = inflater.inflate(R.layout.timetable_info_row, null)
-                    row.findViewById<TextView>(R.id.name).text = fieldName
-                    row.findViewById<TextView>(R.id.value).text = field
-
-                    table.addView(row)
-                }
-            }
-
-            addInfoRow(table, lesson.name, "${getString(R.string.info_name)}:")
-            addInfoRow(table, lesson.subject, "${getString(R.string.info_subject)}:")
-            addInfoRow(table, lesson.teacher, "${getString(R.string.info_teacher)}:")
-            addInfoRow(table, lesson.room, "${getString(R.string.info_room)}:")
-            addInfoRow(table, lesson.theme, "${getString(R.string.info_theme)}:")
-            addInfoRow(table, lesson.absence, "${getString(R.string.info_absence)}:")
-            addInfoRow(table, lesson.group, "${getString(R.string.info_group)}:")
-            addInfoRow(table, lesson.change, "${getString(R.string.info_change)}:")
-            addInfoRow(table, lesson.notice, "${getString(R.string.info_notice)}:")
-
-
-            AlertDialog.Builder(ContextThemeWrapper(it.context, R.style.Timetable_Info))
-                .setCancelable(true)
-                .setPositiveButton(R.string.close) { dialog: DialogInterface?, _: Int ->
-                    dialog?.dismiss()
-                }
-                .setView(root)
-                .create()
-                .show()
-        }
-    }
 
 }

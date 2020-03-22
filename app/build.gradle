@@ -50,10 +50,10 @@ android {
     signingConfigs {
         buildTypes {
             debug {
-                buildConfigField "java.util.Date", "BUILD_TIME", "new java.util.Date(" + System.currentTimeMillis() + "L)"
+                buildConfigField "java.lang.Long", "BUILD_TIME", "new java.lang.Long(" + System.currentTimeMillis() + "L)"
             }
             release {
-                buildConfigField "java.util.Date", "BUILD_TIME", "new java.util.Date(" + System.currentTimeMillis() + "L)"
+                buildConfigField "java.lang.Long", "BUILD_TIME", "new java.lang.Long(" + System.currentTimeMillis() + "L)"
             }
         }
     }
@@ -78,7 +78,7 @@ dependencies {
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'com.google.firebase:firebase-database:19.2.1'
 
-    implementation 'com.github.smart-fun:XmlToJson:1.4.5'
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.2.2'
 
     implementation 'androidx.preference:preference:1.1.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'

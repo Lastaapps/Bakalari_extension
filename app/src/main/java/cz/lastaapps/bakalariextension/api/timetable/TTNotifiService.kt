@@ -3,19 +3,25 @@ package cz.lastaapps.bakalariextension.api.timetable
 import android.app.*
 import android.content.Context
 import android.content.Intent
-import android.os.*
+import android.os.Build
+import android.os.Handler
+import android.os.IBinder
+import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
-import cz.lastaapps.bakalariextension.LoadingActivity
+import androidx.navigation.NavDeepLinkBuilder
 import cz.lastaapps.bakalariextension.MainActivity
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import cz.lastaapps.bakalariextension.tools.App
 import cz.lastaapps.bakalariextension.tools.CheckInternet
 import cz.lastaapps.bakalariextension.tools.MyToast
-import java.util.*
-import kotlin.collections.ArrayList
+import cz.lastaapps.bakalariextension.tools.TimeTools
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.temporal.ChronoField
+import org.threeten.bp.temporal.ChronoUnit
 import kotlin.math.floor
 
 
@@ -36,6 +42,12 @@ class TTNotifiService : Service() {
         }
     }
 
+    /**Prevents multiple instances of loading thread
+     * When new timetable is loaded from server, this service is started
+     * And this service also can load timetable from server, witch leads
+     * into infinite cycle with out this protection*/
+    private var startAble = true
+
     override fun onCreate() {
         super.onCreate()
         startForeground(NOTIFICATION_ID, waitingNotification())
@@ -45,8 +57,12 @@ class TTNotifiService : Service() {
 
         startForeground(NOTIFICATION_ID, waitingNotification())
 
-        Log.i(TAG, "Timetable service started started")
-        Thread(todo).start()
+        Log.i(TAG, "Timetable service started")
+
+        if (startAble) {
+            Log.i(TAG, "Updating notification with data")
+            Thread(todo).start()
+        }
 
         setRegularRepeating()
 
@@ -56,8 +72,17 @@ class TTNotifiService : Service() {
     private val todo = object : Runnable {
 
         override fun run() {
+            startAble = false
+            try {
+                todo()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            startAble = true
+        }
 
-            val cal = TTTools.cal
+        fun todo() {
+            val cal = TimeTools.cal
             var week = Timetable.loadFromStorage(cal)
 
             if (week == null) {
@@ -77,6 +102,7 @@ class TTNotifiService : Service() {
                                 "Please connect to internet"
                             )
                         )
+                        stopForeground(false)
                         return
                     }
                 } else {
@@ -98,24 +124,22 @@ class TTNotifiService : Service() {
                     val title = messages[0]
                     val subtitle = messages[1]
 
-                    Handler(Looper.getMainLooper()).post {
-                        Log.i(TAG, "Starting foreground")
-                        updateNotification(generateNotification(title, subtitle))
-                    }
+                    Log.i(TAG, "Starting foreground")
+                    updateNotification(generateNotification(title, subtitle))
+
                     return
                 }
             }
-            Handler(Looper.getMainLooper()).post {
-                Log.i(TAG, "Stopping foreground")
-                stopForeground(true)
-            }
+            Log.i(TAG, "Stopping foreground")
+            stopForeground(true)
         }
 
     }
 
     private fun generateNotificationData(week: Week): Array<String>? {
 
-        val now = TTTools.calToSeconds(TTTools.now)
+        val now = TimeTools.calToSeconds(
+            TimeTools.now.toLocalTime())
 
         val actions = NotificationContent.generateActions(week) ?: return null
 
@@ -140,9 +164,9 @@ class TTNotifiService : Service() {
 
         for (it in keys) {
             if (it > now) {
-                val cal = TTTools.cal
-                cal.set(Calendar.HOUR_OF_DAY, floor(it / (60.0 * 60.0)).toInt())
-                cal.set(Calendar.MINUTE, floor(it / 60.0).toInt() % 60)
+                val cal = TimeTools.cal
+                    .with(ChronoField.HOUR_OF_DAY, floor(it / (60.0 * 60.0)).toLong())
+                    .with(ChronoField.MINUTE_OF_HOUR, floor(it / 60.0).toLong() % 60)
                 setNextAlarm(cal)
                 return actions[it]
             }
@@ -158,16 +182,12 @@ class TTNotifiService : Service() {
     }
 
     private fun generateNotification(title: String, subtitle: String): Notification {
-        val pendingIntent = PendingIntent.getActivity(
-            this, 1,
-            Intent(this, LoadingActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                val bundle = Bundle()
-                bundle.putInt(MainActivity.NAVIGATE, R.id.nav_timetable)
-                putExtras(bundle)
-            },
-            PendingIntent.FLAG_UPDATE_CURRENT
-        )
+        val pendingIntent = NavDeepLinkBuilder(this)
+                .setComponentName(MainActivity::class.java)
+                .setGraph(R.navigation.mobile_navigation)
+                .setDestination(R.id.nav_timetable)
+                //.setArguments(bundle)
+                .createPendingIntent()
 
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val builder = Notification.Builder(this, NOTIFICATION_CHANEL_ID)
@@ -197,7 +217,7 @@ class TTNotifiService : Service() {
         )
     }
 
-    private fun setNextAlarm(cal: Calendar) {
+    private fun setNextAlarm(cal: ZonedDateTime) {
         val alarmManager =
             getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(this, TTReceiver::class.java)
@@ -210,13 +230,13 @@ class TTNotifiService : Service() {
         if (Build.VERSION.SDK_INT >= 19) {
             alarmManager.setExact(
                 AlarmManager.RTC,
-                cal.time.time,
+                cal.toInstant().toEpochMilli(),
                 pendingIntent
             )
         } else {
             alarmManager.set(
                 AlarmManager.RTC,
-                cal.time.time,
+                cal.toInstant().toEpochMilli(),
                 pendingIntent
             )
         }
@@ -233,14 +253,14 @@ class TTNotifiService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        val cal = TTTools.cal
-        cal.set(Calendar.HOUR_OF_DAY, 4)
-        cal.time = Date(cal.timeInMillis + TTTools.DAY)
-        setNextAlarm(cal)
+        val cal = ZonedDateTime.now(ZoneId.systemDefault())
+            .truncatedTo(ChronoUnit.DAYS)
+            .plusDays(1)
+            .with(ChronoField.HOUR_OF_DAY, 4)
 
         alarmManager.setInexactRepeating(
             AlarmManager.RTC,
-            cal.time.time,
+            cal.toInstant().toEpochMilli(),
             AlarmManager.INTERVAL_DAY,
             pendingIntent
         )

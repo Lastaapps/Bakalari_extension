@@ -1,68 +1,93 @@
 package cz.lastaapps.bakalariextension.api.timetable.data
 
-import cz.lastaapps.bakalariextension.api.timetable.TTTools
-import java.util.*
+import cz.lastaapps.bakalariextension.tools.TimeTools
+import org.threeten.bp.ZonedDateTime
 
 data class Day (
+    var dayOfWeek: Int,
     var date: String,
-    var dayShortcut: String,
-    var lessons: ArrayList<Lesson>
+    var description: String,
+    var dayType: String,
+    var lessons: DataIdList<Lesson>
 ): Comparable<Day> {
     override fun compareTo(other: Day): Int {
-        return TTTools.parse(
-            date
+        return TimeTools.parse(
+            date, TimeTools.COMPLETE_FORMAT
         ).compareTo(
-            TTTools.parse(
-                other.date
+            TimeTools.parse(
+                other.date, TimeTools.COMPLETE_FORMAT
             )
         )
     }
 
-    fun firstLessonIndex(): Int {
-        for (i in 0 until lessons.size) {
-            val lesson = lessons[i]
-            if (lesson.isNormal() || lesson.isAbsence()) {
+    fun getLesson(hour: Hour, cycle: TTData.Cycle? = null): Lesson? {
+        if (cycle == null)
+            return lessons.getById(hour.id)
+
+        val array = lessons.getAllById(hour.id)
+        for (lesson in array) {
+            if (lesson.cycleIds.contains(cycle.id))
+                return lesson
+        }
+        return null
+    }
+
+    fun isFree(hour: Hour): Boolean {
+        val lesson = getLesson(hour) ?: return true
+        if (lesson.isRemoved()) return true
+        return false
+    }
+
+    fun isNormal(hour: Hour): Boolean {
+        val lesson = getLesson(hour) ?: return false
+        return lesson.isNormal()
+    }
+
+    fun isAbsence(hour: Hour): Boolean {
+        val lesson = getLesson(hour) ?: return false
+        return lesson.isAbsence()
+    }
+
+    fun firstLessonIndex(hours: DataIdList<Hour>): Int {
+        for (i in 0 until hours.size) {
+            if (!isFree(hours[i]))
                 return i
-            }
         }
         return -1
     }
 
-    fun lastLessonIndex(): Int {
-        for (i in (lessons.size - 1) downTo 0) {
-            val lesson = lessons[i]
-            if (lesson.isNormal()) {
+    fun lastLessonIndex(hours: DataIdList<Hour>): Int {
+        for (i in (hours.size - 1) downTo 0) {
+            if (!isFree(hours[i]))
                 return i
-            }
         }
         return -1
     }
 
-    fun endsWithLunch(): Boolean {
-        for (index in firstLessonIndex()..lastLessonIndex()) {
-            val lesson = getLesson(index)
-            if (lesson.isFree())
+    fun endsWithLunch(hours: DataIdList<Hour>): Boolean {
+        for (i in firstLessonIndex(hours)..lastLessonIndex(hours)) {
+            if (i > 0) return false
+
+            if (isFree(hours[i])) {
                 return false
+            }
         }
         return true
-    }
-
-    fun getLesson(index: Int): Lesson {
-        return lessons[index]
-    }
-
-    fun toCal(): Calendar {
-        if (date == "")
-            return TTTools.PERMANENT
-
-       return TTTools.toMidnight(TTTools.parse(date))
     }
 
     fun isEmpty(): Boolean {
-        lessons.forEach {
-            if (!it.isFree())
+        for (lesson in lessons) {
+            if (!lesson.isRemoved()) {
                 return false
+            }
         }
         return true
+    }
+
+    fun toDate(): ZonedDateTime {
+        if (date == "")
+            return TimeTools.PERMANENT
+
+       return TimeTools.parse(date, TimeTools.COMPLETE_FORMAT)
     }
 }
