@@ -19,10 +19,19 @@
   ~
   -->
 
-<full-backup-content>
-    <include domain="sharedpref" path="LOGIN.xml"/>
-    <include domain="sharedpref" path="LICENCE.xml"/>
-    <include domain="sharedpref" path="WHATS_NEW.xml"/>
-    <!-- Settings -->
-    <include domain="sharedpref" path="cz.lastaapps.bakalariextension_preferences.xml"/>
-</full-backup-content>
+<resources>
+
+    <string name="whats_new_title">What\'s new</string>
+
+    <!-- What's new -->
+    <string name="whats_new">
+        1.0.0\n
+        first release\n
+        \n
+    </string>
+    <string name="whats_new_beta">
+        1.0.0-Beta\n
+        first release\n
+        \n
+    </string>
+</resources>

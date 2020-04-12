@@ -20,6 +20,8 @@
   -->
 
 <resources>
+
+    <!-- General -->
     <string name="sett_general">General</string>
     <string name="sett_mobile_data">Use mobile data while running in background</string>
     <string name="sett_dark_mode">Theme</string>
@@ -55,6 +57,7 @@
         <item>en</item>
     </string-array>
 
+    <!-- Timetable -->
     <string name="sett_timetable">Timetable</string>
     <string name="sett_timetable_day_title">Switch to next week since</string>
     <!-- Do not change order -->
@@ -72,9 +75,17 @@
     <string name="sett_timetable_notification_title">Show notification with lesson info</string>
     <string name="sett_timetable_notification_default" translatable="false">true</string>
 
+    <!-- Analytics -->
     <string name="sett_analytics">Analytics</string>
     <string name="sett_send_town_school">Include town and school into analytic data</string>
     <string name="sett_send_town_school_default" translatable="false">true</string>
+
+    <!-- Oders -->
+    <string name="sett_others">Others</string>
+    <string name="sett_show_whats_new">What\'s new</string>
+
+
+
 
     <string name="sett_key_mobile_data" translatable="false">mobile_data</string>
     <string name="sett_key_dark_mode" translatable="false">dark_mode</string>
@@ -83,5 +94,6 @@
     <string name="sett_key_timetable_day" translatable="false">timetable_day</string>
     <string name="sett_key_timetable_notification" translatable="false">timetable_notification</string>
     <string name="sett_key_send_town_school" translatable="false">send_town_school</string>
+    <string name="sett_key_show_whats_new" translatable="false">whats_new</string>
 
 </resources>

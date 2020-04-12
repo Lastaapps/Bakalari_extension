@@ -33,6 +33,7 @@ import androidx.preference.PreferenceFragmentCompat
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.LoadingActivity
 import cz.lastaapps.bakalariextension.R
+import cz.lastaapps.bakalariextension.WhatsNew
 import cz.lastaapps.bakalariextension.api.timetable.TTNotifyService
 import cz.lastaapps.bakalariextension.login.Logout
 import cz.lastaapps.bakalariextension.tools.BaseActivity
@@ -189,6 +190,14 @@ class SettingsActivity : BaseActivity() {
             //if user's town and school can be send in analytics and reports
             fp(sett.SEND_TOWN_SCHOOL)?.setOnPreferenceChangeListener { _, newValue ->
                 Log.i(TAG, "Send town and school changed to $newValue")
+                true
+            }
+
+            fp(sett.SHOW_WHATS_NEW)?.setOnPreferenceClickListener { _ ->
+                Log.i(TAG, "Showing What's new")
+
+                WhatsNew(context!!).showDialog()
+
                 true
             }
 

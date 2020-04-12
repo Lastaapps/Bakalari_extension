@@ -49,6 +49,8 @@ class Settings(val context: Context) {
         get() = getString(R.string.sett_key_timetable_notification)
     val SEND_TOWN_SCHOOL
         get() = getString(R.string.sett_key_send_town_school)
+    val SHOW_WHATS_NEW
+        get() = getString(R.string.sett_key_show_whats_new)
 
     /**Inits settings if they aren't yet*/
     fun initSettings() {

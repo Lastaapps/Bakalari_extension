@@ -34,6 +34,7 @@ import androidx.fragment.app.Fragment
 import cz.lastaapps.bakalariextension.BuildConfig
 import cz.lastaapps.bakalariextension.Licence
 import cz.lastaapps.bakalariextension.R
+import cz.lastaapps.bakalariextension.WhatsNew
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
@@ -114,6 +115,10 @@ class AboutFragment : Fragment() {
             startActivity(Intent(Intent.ACTION_VIEW, uri))
         }
 
+        //view whats new
+        root.findViewById<ImageButton>(R.id.whats_new).setOnClickListener {
+            WhatsNew(context!!).showDialog()
+        }
         //view licence
         root.findViewById<ImageButton>(R.id.licence).setOnClickListener {
             Licence.viewLicence(context!!)
