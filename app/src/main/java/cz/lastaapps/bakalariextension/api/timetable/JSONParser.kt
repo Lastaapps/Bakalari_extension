@@ -1,21 +1,66 @@
+/*
+ *    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+ *
+ *     This file is part of Bakalari extension.
+ *
+ *     Bakalari extension is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     Bakalari extension is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 package cz.lastaapps.bakalariextension.api.timetable
 
 import android.util.Log
 import cz.lastaapps.bakalariextension.api.timetable.data.*
 import cz.lastaapps.bakalariextension.api.timetable.data.TTData.*
+import cz.lastaapps.bakalariextension.tools.TimeTools
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import org.threeten.bp.ZonedDateTime
 
 class JSONParser {
     companion object {
         private val TAG = JSONParser::class.java.simpleName
 
-        fun parseJson(root: JSONObject): Week {
+        //caching current week for faster app performance
+        private var actualWeek: Week? = null
+        private var actualWeekHash = -1
+
+        //releases cached data (on logout)
+        fun releaseActualCache() {
+            actualWeek = null
+            actualWeekHash = -1
+        }
+
+        /**Parses timetable from json, scheme on https://github.com/bakalari-api/bakalari-api-v3
+         * @param loadedForDate which date was put into TTStorage or to API request*/
+        fun parseJson(loadedForDate: ZonedDateTime, root: JSONObject): Week {
 
             Log.i(TAG, "Parsing timetable json")
 
-            return Week(
+            val isActual = isActual(root)
+            if (isActual) {
+                if (root.toString().hashCode() == actualWeekHash) {
+                    val actualWeek = actualWeek
+                    if (actualWeek != null) {
+                        Log.i(TAG, "Using cached week")
+                        return actualWeek
+                    }
+                }
+            }
+
+            val week = Week(
                 parseHours(root.getJSONArray("Hours")),
                 parseDays(root.getJSONArray("Days")),
                 parseClasses(root.getJSONArray("Classes")),
@@ -23,8 +68,25 @@ class JSONParser {
                 parseSubjects(root.getJSONArray("Subjects")),
                 parseTeachers(root.getJSONArray("Teachers")),
                 parseRooms(root.getJSONArray("Rooms")),
-                parseCycles(root.getJSONArray("Cycles"))
+                parseCycles(root.getJSONArray("Cycles")),
+                loadedForDate
             )
+
+            if (isActual) {
+                actualWeek = week
+                actualWeekHash = week.toString().hashCode()
+            }
+
+            return week
+        }
+
+        private fun isActual(json: JSONObject): Boolean {
+            val cal = TimeTools.parse(
+                json.getJSONArray("Days").getJSONObject(0).getString("Date"),
+                TimeTools.COMPLETE_FORMAT
+            )
+
+            return TimeTools.toDate(TimeTools.toMonday(cal)) == TimeTools.monday.toLocalDate()
         }
 
         private fun parseHours(jsonArray: JSONArray): DataIdList<Hour> {

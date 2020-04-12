@@ -1,101 +1,168 @@
+/*
+ *    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+ *
+ *     This file is part of Bakalari extension.
+ *
+ *     Bakalari extension is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     Bakalari extension is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 package cz.lastaapps.bakalariextension.ui.settings
 
-import android.content.Context
+import android.app.backup.BackupManager
 import android.content.Intent
-import android.content.SharedPreferences
-import android.content.res.Configuration
-import android.content.res.Resources
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.DisplayMetrics
+import android.os.Process
 import android.util.Log
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceManager
+import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.LoadingActivity
 import cz.lastaapps.bakalariextension.R
+import cz.lastaapps.bakalariextension.api.timetable.TTNotifyService
 import cz.lastaapps.bakalariextension.login.Logout
-import cz.lastaapps.bakalariextension.tools.App
-import java.util.*
+import cz.lastaapps.bakalariextension.tools.BaseActivity
+import cz.lastaapps.bakalariextension.tools.Settings
 
 
 /**
- * App's settings
+ * Manages settings UI, actual settings are saved in *.tools.Settings
  */
-class SettingsActivity : AppCompatActivity() {
+class SettingsActivity : BaseActivity() {
 
+    companion object {
+        private val TAG = SettingsActivity::class.java.simpleName
+
+        //savedInstanceBundle entry telling, that after settings are closed,
+        // whole app needs to be reloaded
+        private const val RELAUNCH_APP = "RELAUNCH"
+    }
+
+    //if any critical setting was changed and app needs to reload completely
     private var relaunchApp = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        Log.i(TAG, "Creating settings activity")
+
         relaunchApp = intent.extras?.getBoolean(RELAUNCH_APP, false) ?: false
 
         setContentView(R.layout.activity_settings)
+        //puts in Fragment containing settings
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.settings, SettingsFragment())
             .commit()
+
+        //puts back arrow into the top left corner
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId === android.R.id.home) {
+        if (item.itemId == android.R.id.home) {
             onBackPressed()
+            return true
         }
         return super.onOptionsItemSelected(item)
     }
 
     override fun onBackPressed() {
+
+        //notifies that backup should be made
+        BackupManager.dataChanged(App.context.packageName)
+
         if (relaunchApp) {
-            startActivity(Intent(this, LoadingActivity::class.java))
-            finish()
+            //restarts app
+            /*val intent = Intent(this, LoadingActivity::class.java)
+            val mgr = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            mgr[AlarmManager.RTC, System.currentTimeMillis() + 1000] = PendingIntent.getActivity(
+                this.baseContext,
+                0,
+                intent,
+                intent.flags
+            )*/
+            //restarts app
+            Handler(Looper.getMainLooper()).postDelayed(
+                {
+                    Process.killProcess(Process.myPid())
+                }, 50
+            )
         } else
             super.onBackPressed()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        if (isFinishing)
+            //notifies that backup should be made
+            BackupManager.dataChanged(App.context.packageName)
+    }
+
+    /**Fragment with all the settings*/
     class SettingsFragment : PreferenceFragmentCompat() {
+
+        lateinit var sett: Settings
+
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-            initSettings()
+
+            //reference to actual Settings
+            sett = Settings(context!!)
+
+            sett.initSettings()
             setPreferencesFromResource(R.xml.settings_preferences, rootKey)
 
-            fp(MOBILE_DATA)?.setOnPreferenceChangeListener { preference, newValue ->
+            //sets actions for all the actions
+
+            //if app can use mobile data in background
+            fp(sett.MOBILE_DATA)?.setOnPreferenceChangeListener { preference, newValue ->
                 Log.i(TAG, "Mobile data changed to $newValue")
                 true
             }
 
             //dark mode
-            fp(DARK_MODE)?.setOnPreferenceChangeListener { preference, newValue ->
+            fp(sett.DARK_MODE)?.setOnPreferenceChangeListener { preference, newValue ->
                 Log.i(TAG, "Dark theme changed, selected $newValue")
 
-                updateDarkTheme(newValue.toString())
+                sett.updateDarkTheme(newValue.toString())
                 true
             }
 
             //language
-            fp(LANGUAGE)?.setOnPreferenceChangeListener { preference, newValue ->
+            fp(sett.LANGUAGE)?.setOnPreferenceChangeListener { preference, newValue ->
                 Log.i(TAG, "Language changed to $newValue")
 
-                updateLanguage(context!!, newValue.toString())
-
+                //relaunches app
                 Handler(Looper.getMainLooper()).postDelayed({
+
                     val intent = Intent(activity, SettingsActivity::class.java)
                     intent.putExtra(RELAUNCH_APP, true)
                     activity?.startActivity(intent)
                     activity?.finish()
-                }, 100)
+
+                }, 10)
 
                 true
             }
 
             //logout
-            fp(LOGOUT)?.onPreferenceClickListener =
+            fp(sett.LOGOUT)?.onPreferenceClickListener =
                 Preference.OnPreferenceClickListener {
                     Log.i(TAG, "Login out")
                     Logout.logout()
@@ -103,95 +170,35 @@ class SettingsActivity : AppCompatActivity() {
                     startActivity(Intent(this.activity, LoadingActivity::class.java))
                     true
                 }
+
+            //from which day should be next week shown
+            fp(sett.TIMETABLE_DAY)?.setOnPreferenceChangeListener { _, newValue ->
+                Log.i(TAG, "Show new timetable day changed to $newValue")
+                true
+            }
+
+            //if notification informing about timetable should be shown
+            fp(sett.TIMETABLE_NOTIFICATION)?.setOnPreferenceChangeListener { preference, newValue ->
+                Log.i(TAG, "Timetable notification changed to $newValue")
+                Handler(Looper.getMainLooper()).postDelayed({
+                    TTNotifyService.startService(preference.context)
+                }, 100)
+                true
+            }
+
+            //if user's town and school can be send in analytics and reports
+            fp(sett.SEND_TOWN_SCHOOL)?.setOnPreferenceChangeListener { _, newValue ->
+                Log.i(TAG, "Send town and school changed to $newValue")
+                true
+            }
+
         }
 
         /**
          * Represents findPreference<Preference>
          */
-        private inline fun fp(key: String): Preference? {
-            return findPreference(key)
-        }
+        private inline fun fp(key: String): Preference? = findPreference(key)
+
     }
 
-    companion object {
-        private val TAG = SettingsActivity::class.java.simpleName
-
-        private const val RELAUNCH_APP = "RELAUNCH"
-
-        val MOBILE_DATA = App.getString(R.string.sett_key_mobile_data)
-        val DARK_MODE = App.getString(R.string.sett_key_dark_mode)
-        val LANGUAGE = App.getString(R.string.sett_key_language)
-        val LOGOUT = getString(R.string.sett_key_log_out)
-
-        fun initSettings() {
-            val sp = getSP()
-            val editor = sp.edit()
-
-            Log.d(TAG, sp.getBoolean(MOBILE_DATA, false).toString())
-            Log.d(TAG, sp.getString(LANGUAGE, ""))
-            Log.d(TAG, sp.getString(DARK_MODE, ""))
-
-            if (sp.getString(LANGUAGE, "") == "")
-                editor.putString(LANGUAGE, getArray(R.array.sett_language)[0])
-
-            if (sp.getString(DARK_MODE, "") == "")
-                editor.putString(DARK_MODE, getArray(R.array.sett_dark_mode)[2])
-
-            editor.apply()
-        }
-
-        fun updateLanguage(
-            context: Context,
-            value: String = getSP().getString(LANGUAGE, "").toString()
-        ) {
-
-            val array: Array<String> = getArray(R.array.sett_language)
-            val index = array.indexOf(value)
-            val languageCode = getLanguageCode(index)
-            val res: Resources = context.resources
-            // Change locale settings in the app.
-            val dm: DisplayMetrics = res.displayMetrics
-            val conf: Configuration = res.configuration
-            conf.setLocale(Locale(languageCode.toLowerCase())) // API 17+ only.
-
-            res.updateConfiguration(conf, dm)
-        }
-
-        private fun getLanguageCode(i: Int): String {
-            val array: Array<String> = arrayOf(Locale.getDefault().language, "cs", "en")
-            return array[i.coerceAtLeast(0)]
-        }
-
-        fun updateDarkTheme(value: String = getSP().getString(DARK_MODE, "").toString()): Boolean {
-            val array: Array<String> = getArray(R.array.sett_dark_mode)
-
-            val toChange = when (array.indexOf(value)) {
-                0 -> AppCompatDelegate.MODE_NIGHT_NO
-                1 -> AppCompatDelegate.MODE_NIGHT_YES
-                else ->
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-                        AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                    else
-                        AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
-            }
-
-            if (toChange == AppCompatDelegate.getDefaultNightMode())
-                return false
-
-            AppCompatDelegate.setDefaultNightMode(toChange)
-            return true
-        }
-
-        inline fun getSP(): SharedPreferences {
-            return PreferenceManager.getDefaultSharedPreferences(App.context)
-        }
-
-        private inline fun getString(id: Int): String {
-            return App.context.getString(id)
-        }
-
-        private inline fun getArray(id: Int): Array<String> {
-            return App.context.resources.getStringArray(id)
-        }
-    }
 }

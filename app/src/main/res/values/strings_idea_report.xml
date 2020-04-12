@@ -1,4 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~
+  ~     This file is part of Bakalari extension.
+  ~
+  ~     Bakalari extension is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Bakalari extension is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
 <resources>
     <string name="idea_label">Send an idea</string>
     <string name="idea_email_label">Email, so i can reply you</string>
@@ -20,4 +40,6 @@
     <string name="report_data_collected">App will send some data to diagnose the issue, namely school\'s url, name, town and Bakalari version, account type(parent, pupil, teacher), android version, phone type, app version and phone\'s id</string>
     <string name="report_overload">You can report only 1 issue per day because of server overload protection</string>
     <string name="report_go_back">Close</string>
+    <string name="report_include_timetable">Include timetables</string>
+    <string name="report_include_timetable_warning">May contain personal info like class name or teachers names</string>
 </resources>

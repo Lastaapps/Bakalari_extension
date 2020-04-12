@@ -1,13 +1,33 @@
+/*
+ *    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+ *
+ *     This file is part of Bakalari extension.
+ *
+ *     Bakalari extension is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     Bakalari extension is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 package cz.lastaapps.bakalariextension.api
 
 import android.content.Context
 import android.util.Log
 import androidx.core.content.edit
+import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.tools.App
 
 /**
- * Used to read basic data about student from server
+ * Used to store basic data about student from server
  * */
 class User {
 
@@ -34,14 +54,16 @@ class User {
         //TODO not sure about names
         const val ROLE_SYSTEM = "system"
         const val ROLE_TEACHER = "teachers"
-        const val ROLE_PUPIL = "pupil"
-        const val ROLE_HEADQUARTERS = "headquarters"
+        const val ROLE_STUDENT = "students"
+        const val ROLE_HEADMASTERSHIP = "headmastership"
 
+        /**@return string from shared preferences*/
         fun get(key: String): String {
             return App.context.getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
                 .getString(key, "").toString()
         }
 
+        /**sets entry in shared preferences*/
         fun set(key: String, value: String) {
             App.context.getSharedPreferences(SP_KEY, Context.MODE_PRIVATE).edit {
                 putString(key, value)
@@ -49,6 +71,7 @@ class User {
             }
         }
 
+        /**clears saved data*/
         fun clear() {
             App.context.getSharedPreferences(SP_KEY, Context.MODE_PRIVATE).edit {
                 clear()
@@ -61,7 +84,7 @@ class User {
          * tries to load data from server
          * @return if data was loaded
          */
-        fun login(): Boolean {
+        fun download(): Boolean {
 
             val json = ConnMgr.serverGet("user") ?: return false
             try {
@@ -116,7 +139,7 @@ class User {
             return when (role) {
                 ROLE_PARENT -> App.getString(R.string.role_parent)
                 ROLE_TEACHER -> App.getString(R.string.role_teacher)
-                ROLE_PUPIL -> App.getString(R.string.role_pupil)
+                ROLE_STUDENT -> App.getString(R.string.role_student)
                 //TODO report letters to firebase to analyze
                 //ROLE_LEADING -> App.getString(R.string.role_leading)
                 ROLE_SYSTEM -> App.getString(R.string.role_system)

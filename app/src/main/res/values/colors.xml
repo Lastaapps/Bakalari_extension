@@ -1,4 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~
+  ~     This file is part of Bakalari extension.
+  ~
+  ~     Bakalari extension is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Bakalari extension is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
 <resources>
     <color name="colorPrimary">#3AF</color>
     <color name="colorPrimaryDark">#2196F3</color>
@@ -7,6 +27,8 @@
     <color name="side_nav_bar_start">#3949AB</color>
     <color name="side_nav_bar_center">#5C6BC0</color>
     <color name="side_nav_bar_end">#283593</color>
+    <color name="bottom_nav_background">#AAA</color>
+    <color name="bottom_nav_foreground">#00ACC1</color>
 
     <color name="github_background">#FFF</color>
     <color name="github_foreground">#000</color>
@@ -21,4 +43,11 @@
     <color name="timetable_absence">#00C853</color>
     <color name="timetable_current">#FDD835</color>
     <color name="timetable_change">#E53935</color>
+    <color name="timetable_holiday">#00BCD4</color>
+
+    <color name="widget_background">#FFF</color>
+    <color name="widget_foreground">#000</color>
+    <color name="widget_background_dark">#000</color>
+    <color name="widget_foreground_dark">#FFF</color>
+
 </resources>

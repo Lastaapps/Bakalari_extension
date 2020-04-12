@@ -1,9 +1,30 @@
+<!--
+  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~
+  ~     This file is part of Bakalari extension.
+  ~
+  ~     Bakalari extension is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Bakalari extension is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="nav_header_vertical_spacing">8dp</dimen>
     <dimen name="nav_header_height">176dp</dimen>
+    <dimen name="nav_bottom_view">40dp</dimen>
 
     <dimen name="icon_size">64sp</dimen>
     <dimen name="padding_basic">10dp</dimen>
@@ -21,11 +42,15 @@
 
     <dimen name="small_image_button">40dp</dimen>
 
+    <!-- Widget -->
+    <dimen name="widget_margin">5dp</dimen>
+    <dimen name="widget_grid_spacing">5dp</dimen>
 
     <!-- Timetable -->
     <dimen name="timetable_column_size_first">50dp</dimen>
+    <dimen name="timetable_row_height">55dp</dimen>
     <dimen name="timetable_icon">32dp</dimen>
-    <dimen name="timetable_column_size">75dp</dimen>
+    <dimen name="timetable_column_size">65dp</dimen>
     <dimen name="timetable_margin">1dp</dimen>
 
     <dimen name="timetable_main">20sp</dimen>
@@ -40,4 +65,6 @@
     <dimen name="timetable_bottom_row">45dp</dimen><!-- 2x padding + button -->
     <dimen name="timetable_bottom_text">12sp</dimen>
     <dimen name="timetable_bottom_sides">10dp</dimen>
+    <dimen name="timetable_homework_warning">16dp</dimen>
+
 </resources>

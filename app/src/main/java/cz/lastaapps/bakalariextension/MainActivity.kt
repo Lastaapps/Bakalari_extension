@@ -1,3 +1,23 @@
+/*
+ *    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+ *
+ *     This file is part of Bakalari extension.
+ *
+ *     Bakalari extension is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     Bakalari extension is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 package cz.lastaapps.bakalariextension
 
 import android.content.Intent
@@ -5,12 +25,12 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -19,15 +39,20 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import cz.lastaapps.bakalariextension.api.User
 import cz.lastaapps.bakalariextension.login.Logout
 import cz.lastaapps.bakalariextension.send.ReportIssueActivity
 import cz.lastaapps.bakalariextension.send.SendIdeaActivity
+import cz.lastaapps.bakalariextension.tools.BaseActivity
 import cz.lastaapps.bakalariextension.ui.settings.SettingsActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+/**Activity containing all the content fragments and navigation*/
+class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     companion object {
         private val TAG = MainActivity::class.java.simpleName
@@ -41,6 +66,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        Log.i(TAG, "Creating MainActivity")
+
+        //goes fullscreen in landscape mode
         val orientation = resources.configuration.orientation
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -56,7 +84,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
 
+        //finds controller used for switching fragments
         val navController = findNavController(R.id.nav_host_fragment)
+
+        //sets up bottom navigation with same navController
+        findViewById<BottomNavigationView>(R.id.bottom_nav)
+            .setupWithNavController(navController)
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -72,13 +105,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navView.setupWithNavController(navController)
         navView.setNavigationItemSelectedListener(this)
 
+        //updates side nav with info
         navView.getHeaderView(0).findViewById<TextView>(R.id.nav_name).text = User.get(User.NAME)
         navView.getHeaderView(0).findViewById<TextView>(R.id.nav_type).text = User.getClassAndRole()
 
-        //init fragment
+        //selects default fragment
         val navigateTo = intent.getIntExtra(NAVIGATE, -1)
         if (navigateTo != -1)
             findNavController(R.id.nav_host_fragment).navigate(navigateTo)
+
+        //only on the first onCreate() call
+        if (savedInstanceState == null)
+            launchInit()
+    }
+
+    /**Inits services, alarms and widgets*/
+    private fun launchInit() {
+        val scope = CoroutineScope(Dispatchers.Default)
+        scope.launch {
+            AppStartInit(applicationContext).appStartInit()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -92,6 +138,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
+    /**options in the top right corner*/
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_settings -> {
@@ -103,7 +150,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
+    /**When side navigation or the bottom bar was selected*/
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        Log.i(TAG, "Navigation item selected")
+
         when (item.itemId) {
             R.id.nav_home -> {
                 findNavController(R.id.nav_host_fragment).navigate(R.id.nav_home)

@@ -1,177 +1,143 @@
+/*
+ *    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+ *
+ *     This file is part of Bakalari extension.
+ *
+ *     Bakalari extension is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     Bakalari extension is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 package cz.lastaapps.bakalariextension
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.Service
 import android.content.DialogInterface
 import android.content.Intent
-import android.os.*
+import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.analytics.FirebaseAnalytics
-import cz.lastaapps.bakalariextension.api.User
-import cz.lastaapps.bakalariextension.api.timetable.TTNotifiService
-import cz.lastaapps.bakalariextension.api.timetable.TTStorage
 import cz.lastaapps.bakalariextension.login.LoginActivity
 import cz.lastaapps.bakalariextension.login.LoginData
+import cz.lastaapps.bakalariextension.tools.BaseActivity
 import cz.lastaapps.bakalariextension.tools.CheckInternet
-import cz.lastaapps.bakalariextension.tools.MyToast
-import cz.lastaapps.bakalariextension.tools.TimeTools
-import cz.lastaapps.bakalariextension.ui.settings.SettingsActivity
+import kotlinx.coroutines.*
+import java.lang.Runnable
 
 /**Checks if app has been ever started -> license, if user is logged in -> LoginActivity or -> MainActivity*/
-class LoadingActivity : AppCompatActivity() {
+class LoadingActivity : BaseActivity() {
 
     companion object {
         private val TAG = LoadingActivity::class.java.simpleName
-
-        private const val SHOULD_RUN = "should_run"
     }
-
-    private lateinit var mFirebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //onCreate was called multiple times because of recreation
-        // caused by theme change
-        if (savedInstanceState == null ||
-            savedInstanceState.getBoolean(SHOULD_RUN, true)
-        ) {
-            SettingsActivity.updateDarkTheme()
-            SettingsActivity.initSettings()
-            SettingsActivity.updateLanguage(this)
+        Log.i(TAG, "Creating LoadingActivity")
 
+        if (!isChangingConfigurations)
             setContentView(R.layout.activity_loading)
+    }
 
-            //deletes old timetables
-            TTStorage.deleteOld(
-                TimeTools.previousWeek(
-                    TimeTools.cal))
+    override fun onResume() {
+        super.onResume()
 
-            initNotificationChannels()
-
-            //firebase init
-            mFirebaseAnalytics = FirebaseAnalytics.getInstance(this)
-
-            LoadingTask().execute()
+        if (!isChangingConfigurations) {
+            decision()
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putBoolean(SHOULD_RUN, false)
-    }
+    /**Decides if app should be started or user need to accept licence or log in*/
+    private fun decision() {
+        val scope = CoroutineScope(Dispatchers.Default)
+        scope.launch {
 
-    private fun initNotificationChannels() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = getString(R.string.timetable_chanel_name)
-            val descriptionText = getString(R.string.timetable_chanel_description)
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val mChannel = NotificationChannel(
-                TTNotifiService.NOTIFICATION_CHANEL_ID,
-                name,
-                importance
-            )
-            mChannel.description = descriptionText
-            mChannel.setShowBadge(false)
-            mChannel.setSound(null, null)
-            mChannel.enableVibration(false)
-            mChannel.enableLights(false)
-            mChannel.importance = NotificationManager.IMPORTANCE_HIGH
+            if (LoginData.isLoggedIn() && Licence.check()) {
 
-            val notificationManager =
-                getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
-            //notificationManager.deleteNotificationChannel(mChannel.id)
-            notificationManager.createNotificationChannel(mChannel)
-        }
-    }
+                Log.i(TAG, "Launching from saved data")
 
-    /**checks for internet, token and loads data or redirects to needed activity*/
-    private inner class LoadingTask : AsyncTask<Any, Any, Intent?>() {
+                withContext(Dispatchers.Main) {
 
-        override fun doInBackground(vararg params: Any?): Intent? {
+                    //let oder work to be finished on UI Thread first, then co doer things
+                    for (i in 0 until 10)
+                        delay(1)
 
-            if (!Licence.check()) {
-                Handler(Looper.getMainLooper()).post {
-                    Licence.showDialog(this@LoadingActivity, Runnable {
-                        Handler(Looper.getMainLooper()).postDelayed(
-                            { LoadingTask().execute() },
-                            100
-                        )
-                    })
+                    //starts main activity
+                    startActivity(mainActivityIntent())
+
+                    //let finish more important work on UI thread
+                    for (i in 0 until 20)
+                        delay(1)
+
+                    //closes
+                    finish()
                 }
-                return null
-            }
-
-            //checks, if there are at least some data saved
-            if (!CheckInternet.check()) {
-
-                Log.i(TAG, "Cannot connect to server")
-
-                MyToast.makeText(
-                    this@LoadingActivity,
-                    R.string.error_no_internet,
-                    MyToast.LENGTH_LONG
-                ).show()
-
-                return if (User.get(User.NAME) == "") {
-
-                    Log.i(TAG, "No data saved yet")
-
-                    Handler(Looper.getMainLooper()).post {
-                        if (!(this@LoadingActivity.isDestroyed || this@LoadingActivity.isFinishing))
-                            AlertDialog.Builder(this@LoadingActivity)
-                                .setMessage(R.string.error_no_saved_data)
-                                .setCancelable(false)
-                                .setPositiveButton(R.string.close) { _: DialogInterface, _: Int -> finish() }
-                                .create()
-                                .show()
-                    }
-                    null
-                } else {
-                    Log.i(TAG, "Launching from saved data")
-
-                    launchServices()
-
-                    mainActivityIntent()
-                }
-            }
-            Log.i(TAG, "Internet is working")
-
-            val token = LoginData.accessToken
-            if (token == "") {
-                //not logged in
-                Log.i(TAG, "No token yet")
-
-                return Intent(this@LoadingActivity, LoginActivity::class.java)
-
             } else {
 
-                launchServices()
+                Log.i(TAG, "Not logged in yet")
 
-                return mainActivityIntent()
-            }
-        }
-
-        override fun onPostExecute(intent: Intent?) {
-            if (intent != null) {
-                startActivity(intent)
-                finish()
+                onNotLoggedIn()
             }
         }
     }
 
-    private fun launchServices() {
-        Handler(Looper.getMainLooper()).post {
-            TTNotifiService.startService(this@LoadingActivity)
+    /**What to do if user in not logged in*/
+    private suspend fun onNotLoggedIn() {
+
+        //checks if user has accepted the licence
+        if (!Licence.check()) {
+            withContext(Dispatchers.Main) {
+                //shows licence dialog
+                Licence.showDialog(this@LoadingActivity, Runnable {
+                    decision()
+                })
+            }
+            return
+        }
+
+        //check if there is internet connection, so if user can log in
+        if (!CheckInternet.check()) {
+
+            withContext(Dispatchers.Main) {
+                Log.i(TAG, "Cannot connect to internet")
+
+                //no internet, no log in
+                Toast.makeText(
+                    this@LoadingActivity,
+                    R.string.error_no_internet,
+                    Toast.LENGTH_LONG
+                ).show()
+
+                if (!(this@LoadingActivity.isDestroyed || this@LoadingActivity.isFinishing))
+                    AlertDialog.Builder(this@LoadingActivity)
+                        .setMessage(R.string.error_no_saved_data)
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.close) { _: DialogInterface, _: Int -> finish() }
+                        .create()
+                        .show()
+            }
+        } else {
+            //opens LoginActivity
+            Log.i(TAG, "Internet working, opening login")
+            this.startActivity(Intent(App.context, LoginActivity::class.java))
         }
     }
 
+    /**@return Intent, which can start MainActivity, with extra about what fragment to show*/
     private fun mainActivityIntent(): Intent {
         //used for launching activity and setting default fragment, when i want for example show timetable
-        return Intent(this@LoadingActivity, MainActivity::class.java).apply {
+        return Intent(this, MainActivity::class.java).apply {
+            //extra needs to be passed from local Intent
             if (intent.getIntExtra(MainActivity.NAVIGATE, -1) != -1)
                 putExtra(
                     MainActivity.NAVIGATE,

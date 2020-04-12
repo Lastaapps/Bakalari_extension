@@ -1,4 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~
+  ~     This file is part of Bakalari extension.
+  ~
+  ~     Bakalari extension is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Bakalari extension is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
 <resources>
     <string name="sett_general">General</string>
     <string name="sett_mobile_data">Use mobile data while running in background</string>
@@ -29,12 +49,39 @@
         <item>Czech</item>
         <item>English</item>
     </string-array>
+    <string-array name="sett_language_codes" >
+        <item>en</item> <!--System one, set in code-->
+        <item>cs</item>
+        <item>en</item>
+    </string-array>
 
+    <string name="sett_timetable">Timetable</string>
+    <string name="sett_timetable_day_title">Switch to next week since</string>
+    <!-- Do not change order -->
+    <string-array name="sett_timetable_day_entries" >
+        <item>Saturday</item>
+        <item>Sunday</item>
+        <item>Monday</item>
+    </string-array>
+    <!-- Do not change order -->
+    <string-array name="sett_timetable_day" >
+        <item>Saturday</item>
+        <item>Sunday</item>
+        <item>Monday</item>
+    </string-array>
+    <string name="sett_timetable_notification_title">Show notification with lesson info</string>
+    <string name="sett_timetable_notification_default" translatable="false">true</string>
 
+    <string name="sett_analytics">Analytics</string>
+    <string name="sett_send_town_school">Include town and school into analytic data</string>
+    <string name="sett_send_town_school_default" translatable="false">true</string>
 
     <string name="sett_key_mobile_data" translatable="false">mobile_data</string>
     <string name="sett_key_dark_mode" translatable="false">dark_mode</string>
     <string name="sett_key_log_out" translatable="false">log_out</string>
     <string name="sett_key_language" translatable="false">language</string>
+    <string name="sett_key_timetable_day" translatable="false">timetable_day</string>
+    <string name="sett_key_timetable_notification" translatable="false">timetable_notification</string>
+    <string name="sett_key_send_town_school" translatable="false">send_town_school</string>
 
 </resources>

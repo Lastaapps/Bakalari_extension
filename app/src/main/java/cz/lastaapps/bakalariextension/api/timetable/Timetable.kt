@@ -1,18 +1,46 @@
+/*
+ *    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+ *
+ *     This file is part of Bakalari extension.
+ *
+ *     Bakalari extension is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     Bakalari extension is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 package cz.lastaapps.bakalariextension.api.timetable
 
 import android.util.Log
+import cz.lastaapps.bakalariextension.App
+import cz.lastaapps.bakalariextension.WidgetUpdater
 import cz.lastaapps.bakalariextension.api.ConnMgr
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
-import cz.lastaapps.bakalariextension.tools.App
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import org.threeten.bp.ZonedDateTime
 
-
+/**Obtains week object containing all the data*/
 class Timetable {
 
     companion object {
         private val TAG = Timetable::class.java.simpleName
 
+        /**Tries to load timetable for date given
+         * At first from storage
+         * if it can be outdated or isn't downloaded yet,
+         * tries to download from server
+         * if fails, return null
+         *
+         * For permanent timetable use date *.tools.TimeTools#PERMANENT*/
         fun loadTimetable(cal: ZonedDateTime, forceReload: Boolean = false): Week? {
 
             val time = TimeTools.toMidnight(TimeTools.toMonday(cal))
@@ -38,21 +66,24 @@ class Timetable {
             return toReturn
         }
 
-        fun loadFromServer(cal: ZonedDateTime): Week? {
+        /**Tries load timetable from server and save him to local storage
+         * @return downloaded Week object or null, if download failed*/
+        fun loadFromServer(date: ZonedDateTime): Week? {
             try {
                 Log.i(
                     TAG,
                     "Loading timetable from server - ${TimeTools.format(
-                        cal,
+                        date,
                         TimeTools.DATE_FORMAT
                     )}"
                 )
 
+                //downloads normal or permanent timetable
                 val json = (
-                        if (cal != TimeTools.PERMANENT)
+                        if (date != TimeTools.PERMANENT)
                             ConnMgr.serverGet(
                                 "timetable/actual?date=${TimeTools.format(
-                                    cal,
+                                    date,
                                     TimeTools.DATE_FORMAT
                                 )}"
                             )
@@ -60,10 +91,15 @@ class Timetable {
                             ConnMgr.serverGet("timetable/permanent")
                         ) ?: return null
 
-                val week = JSONParser.parseJson(json)
+                //parses json
+                val week = JSONParser.parseJson(date, json)
 
-                TTStorage.save(cal, json)
-                TTNotifiService.startService(App.context)
+                //saves json
+                TTStorage.save(date, json)
+
+                //updates notification service, if it is running
+                TTNotifyService.startService(App.context)
+                WidgetUpdater.update(App.context)
 
                 return week
 
@@ -73,10 +109,12 @@ class Timetable {
             }
         }
 
-        fun loadFromStorage(cal: ZonedDateTime): Week? {
+        /**Loads timetable from local storage
+         * @return Week or null, if there is no week of the date save yet*/
+        fun loadFromStorage(date: ZonedDateTime): Week? {
 
             val time = TimeTools.toMidnight(
-                TimeTools.toMonday(cal)
+                TimeTools.toMonday(date)
             )
 
             Log.i(
@@ -85,8 +123,10 @@ class Timetable {
             )
 
             return try {
+
                 val json = TTStorage.load(time) ?: return null
-                JSONParser.parseJson(json)
+                JSONParser.parseJson(date, json)
+
             } catch (e: Exception) {
                 e.printStackTrace()
                 null

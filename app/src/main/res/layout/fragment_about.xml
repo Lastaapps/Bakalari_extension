@@ -1,16 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~
+  ~     This file is part of Bakalari extension.
+  ~
+  ~     Bakalari extension is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Bakalari extension is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/padding_basic">
 
-    <include layout="@layout/label"
+    <include
         android:id="@+id/label"
+        layout="@layout/logo_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_margin="@dimen/margin_basic"/>
+        android:layout_margin="@dimen/margin_basic" />
 
     <TextView
         android:id="@+id/author"
@@ -31,28 +52,28 @@
         android:id="@+id/thanks_box"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-
         android:layout_below="@id/author"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+
+        android:gravity="center"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/thanks"
             style="@style/AppTheme.Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_basic"
             android:text="@string/about_thanks"
-            android:textAlignment="center"
 
-            android:layout_margin="@dimen/margin_basic"/>
+            android:textAlignment="center" />
 
         <ImageButton
             android:id="@+id/api"
             style="@style/AppTheme.SmallImageButton"
-            app:srcCompat="@drawable/nav_api"
+            android:layout_margin="@dimen/margin_basic"
 
-            android:layout_margin="@dimen/margin_basic"/>
+            app:srcCompat="@drawable/nav_api" />
     </LinearLayout>
 
     <TextView
@@ -60,40 +81,44 @@
         style="@style/AppTheme.Text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/about_follow"
-
         android:layout_below="@id/thanks_box"
+
         android:layout_centerHorizontal="true"
-        android:layout_margin="@dimen/margin_basic"/>
+        android:layout_margin="@dimen/margin_basic"
+        android:text="@string/about_follow" />
 
     <LinearLayout
         android:id="@+id/button_box"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-
         android:layout_below="@id/follow"
-        android:layout_centerHorizontal="true">
+
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal">
 
         <ImageButton
-            style="@style/AppTheme.SmallImageButton"
             android:id="@+id/facebook"
+            style="@style/AppTheme.SmallImageButton"
             app:srcCompat="@drawable/nav_facebook" />
+
         <ImageButton
-            style="@style/AppTheme.SmallImageButton"
             android:id="@+id/share"
+            style="@style/AppTheme.SmallImageButton"
             app:srcCompat="@drawable/nav_share" />
+
         <ImageButton
-            style="@style/AppTheme.SmallImageButton"
             android:id="@+id/rate"
+            style="@style/AppTheme.SmallImageButton"
             app:srcCompat="@drawable/nav_rate" />
+
         <ImageButton
-            style="@style/AppTheme.SmallImageButton"
             android:id="@+id/google_play"
-            app:srcCompat="@drawable/nav_google_play" />
-        <ImageButton
             style="@style/AppTheme.SmallImageButton"
+            app:srcCompat="@drawable/nav_google_play" />
+
+        <ImageButton
             android:id="@+id/github"
+            style="@style/AppTheme.SmallImageButton"
             app:srcCompat="@drawable/nav_github" />
     </LinearLayout>
 
@@ -106,5 +131,27 @@
 
         android:layout_centerHorizontal="true"
         android:text="1.0.0 001" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/version"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/margin_basic"
+        android:gravity="center"
+        android:orientation="vertical">
+
+
+        <ImageButton
+            android:id="@+id/licence"
+            style="@style/AppTheme.SmallImageButton"
+            app:srcCompat="@drawable/nav_licence" />
+
+        <TextView
+            style="@android:style/TextAppearance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/licence" />
+    </LinearLayout>
 
 </RelativeLayout>

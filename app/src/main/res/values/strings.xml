@@ -1,10 +1,32 @@
+<!--
+  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~
+  ~     This file is part of Bakalari extension.
+  ~
+  ~     Bakalari extension is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Bakalari extension is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
 <resources>
     <string name="app_name">Bakalari mobile</string>
     <string name="bakalari">Bakalari</string>
     <string name="author">Lasta apps</string>
 
+    <string name="beta">beta</string>
+
     <string name="role_parent">parent</string>
-    <string name="role_pupil">pupil</string>
+    <string name="role_student">student</string>
     <string name="role_teacher">teacher</string>
     <string name="role_leading">leading</string>
     <string name="role_system">system</string>
@@ -34,6 +56,8 @@
     <string name="error_failed_to_find_lesson">Failed to find lesson</string>
     <string name="error_please_report">Please report this to app developer</string>
     <string name="error_no_timetable_no_internet">Failed to load timetable, try connection to internet</string>
+    <string name="error_no_timetable_for_today">No timetable for today</string>
+    <string name="error_no_timetable_open_app">Failed to download timetable, open app</string>
 
 
     <string name="timetable_chanel_name">Current lesson</string>
@@ -48,11 +72,13 @@
     <string name="about_follow">Feel free to follow me, share or check source code</string>
 
     <!-- Licence -->
-    <string name="licence">Usage requirements</string>
+    <string name="licence">Licence</string>
     <string name="agree">Agree</string>
-    <string name="licence_agreement">This apps stores some your personal data like username, password and school.
-        App also collects some data about usage using Google\'s Firebase analytics.
-        This data are anonymised and will also include your town and school (you can switch it off in settings later). I am just interested to know how my app eventually grows ;)</string>
+    <string name="view_licence">View licence</string>
+    <string name="licence_agreement">This apps is distributed under GNU GPL-3.0 or later licence, open source code and licence can
+        be found in the About section. App collects some data about the app usage for future improvements
+        using Firebase analytics. This data are anonymised and will also include your town and school
+        (you can switch it off in settings later). I am just interested to know how my app grows ;)</string>
     <string name="title_activity_settings2">Settings</string>
 
     <!-- Preference Titles -->
@@ -89,6 +115,7 @@
     <string name="last_updated">last updated: </string>
     <string name="permanent">Permanent</string>
     <string name="empty_timetable">Empty timetable</string>
+    <string name="holiday">Holiday</string>
 
     <string name="info_name">Name</string>
     <string name="info_subject">Subject</string>
@@ -97,17 +124,39 @@
     <string name="info_theme">Theme</string>
     <string name="info_group">Group</string>
     <string name="info_change">Change</string>
+    <string name="info_change_type">Change type</string>
     <string name="info_time">Time</string>
+
+    <string name="change_added">Added</string>
+    <string name="change_removed">Removed</string>
+    <string name="change_canceled">Canceled</string>
 
     <string name="group">group</string>
     <string name="next">Next</string>
     <string name="end">End</string>
-    <string name="interuption">Break</string>//break is keyword
+    <string name="interruption">Break</string>//break is keyword
     <string name="have_nice_day">Have a nice day</string>
     <string name="free_lesson">Free lesson</string>
+    <string name="last_lesson">Last lesson</string>
     <string name="until">until</string>
     <string name="finally_home">And finally home</string>
+    <string name="enjoy_holiday">Enjoy freedom!</string>
 
     <string name="preparing_timetable">Preparing timetable</string>
     <string name="should_not_take_long">This shouldn\'t be there more than few seconds</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
+
+    <!-- Widget strings -->
+    <string name="widget_small_timetable_title">Widget setup</string>
+    <string name="widget_small_timetable_alpha">Set how much is widget transparent</string>
+    <string name="widget_small_timetable_transparent">Transparent</string>
+    <string name="widget_small_timetable_solid">Solid</string>
+    <string name="widget_small_timetable_theme">Choose widget theme</string>
+    <string name="widget_small_timetable_system">System</string>
+    <string name="widget_small_timetable_light">Light</string>
+    <string name="widget_small_timetable_dark">Dark</string>
+    <string name="widget_small_timetable_submit">Update widget</string>
 </resources>

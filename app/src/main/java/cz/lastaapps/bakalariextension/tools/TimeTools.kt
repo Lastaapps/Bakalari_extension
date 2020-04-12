@@ -1,17 +1,40 @@
+/*
+ *    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+ *
+ *     This file is part of Bakalari extension.
+ *
+ *     Bakalari extension is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     Bakalari extension is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 package cz.lastaapps.bakalariextension.tools
 
 import org.threeten.bp.*
 import org.threeten.bp.format.DateTimeFormatter
 
+/**Tool with presets times, parsing and formating methods and templates*/
 class TimeTools {
     companion object {
         private val TAG = TimeTools::class.java.simpleName
 
-        val COMPLETE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssXXX"
-        val DATE_FORMAT = "yyyy-MM-dd"
-        val TIME_FORMAT = "H:mm"
+        const val COMPLETE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssXXX"
+        const val NORMAL_DATE_TIME = "HH:mm d.M."
+        const val DATE_FORMAT = "yyyy-MM-dd"
+        const val TIME_FORMAT = "H:mm"
         val UTC = ZoneId.of("UTC")
         val CET = ZoneId.of("Europe/Prague")
+        //used to request permanent timetable
         val PERMANENT: ZonedDateTime =
             toMonday(
                 toMidnight(
@@ -22,6 +45,8 @@ class TimeTools {
                 )
             )
 
+        /**Parses date and time
+         * @return parsed ZoneDateTime at selected timezone*/
         fun parse(string: String, pattern: String, timezone: ZoneId? = null): ZonedDateTime {
             var zone = ZonedDateTime.parse(string, DateTimeFormatter.ofPattern(pattern))
             if (timezone != null) {
@@ -30,6 +55,14 @@ class TimeTools {
             return zone
         }
 
+        /**Parse day only
+         * @return parsed Local date*/
+        fun parseDate(string: String, pattern: String): LocalDate {
+            return LocalDate.parse(string, DateTimeFormatter.ofPattern(pattern))
+        }
+
+        /**Parses time only
+         * @return parsed LocalTime*/
         fun parseTime(string: String, pattern: String, timezone: ZoneId = UTC): LocalTime {
             var zone = LocalTime.parse(string, DateTimeFormatter.ofPattern(pattern))
 
@@ -40,63 +73,82 @@ class TimeTools {
             return zone
         }
 
+        /**@return Formatted date*/
         fun format(date: ZonedDateTime, pattern: String, timezone: ZoneId = date.zone): String {
             val newZone = date.withZoneSameInstant(timezone)
-            val local = newZone.toLocalDateTime()
-            return local.format(DateTimeFormatter.ofPattern(pattern))
+            return newZone.format(DateTimeFormatter.ofPattern(pattern))
         }
 
-        val cal: ZonedDateTime
+        /**Today's midnight in UTC*/
+        val today: ZonedDateTime
             get() {
                 return toMidnight(
                     ZonedDateTime.now(UTC)
                 )
             }
 
+        /**Now in UTC*/
         val now: ZonedDateTime
             get() {
                 return ZonedDateTime.now(UTC)
             }
 
-        fun toMidnight(cal: ZonedDateTime): ZonedDateTime {
-            val data = cal
+        /**First monday going backward since now in UTC*/
+        val monday: ZonedDateTime
+            get() {
+                return toMonday(today)
+            }
+
+        /**Trims dateTimes time to midnight
+         * @return previous midnight*/
+        fun toMidnight(dateTime: ZonedDateTime): ZonedDateTime {
+            return dateTime
                 .toLocalDate()
-                .atStartOfDay(cal.zone)
-            return data
+                .atStartOfDay(dateTime.zone)
         }
 
-        fun toMonday(cal: ZonedDateTime): ZonedDateTime {
-            var diff = DayOfWeek.MONDAY.value - cal.dayOfWeek.value
+        /**First monday going backward since now in UTC
+         * @return monday*/
+        fun toMonday(dateTime: ZonedDateTime): ZonedDateTime {
+            var diff = DayOfWeek.MONDAY.value - dateTime.dayOfWeek.value
             if (diff == 0)
-                return cal
+                return dateTime
             while (diff > 0)
                 diff -= 7
 
-            val toReturn = cal.plusDays(diff.toLong())
-            return toReturn
+            return dateTime.plusDays(diff.toLong())
         }
 
-        fun toDateTime(date: ZonedDateTime, timezone: ZoneId = UTC): LocalDateTime {
-            return date.withZoneSameInstant(timezone).toLocalDateTime()
+        /**@return LocalDateTime at timezone given*/
+        fun toDateTime(dateTime: ZonedDateTime, timezone: ZoneId = UTC): LocalDateTime {
+            return dateTime.withZoneSameInstant(timezone).toLocalDateTime()
         }
 
+        /**@return LocalDate at timezone given*/
         fun toDate(date: ZonedDateTime, timezone: ZoneId = UTC): LocalDate {
             return date.withZoneSameInstant(timezone).toLocalDate()
         }
 
+        /**@return LocalTime at timezone given*/
+        fun toTime(time: ZonedDateTime, timezone: ZoneId = UTC): LocalTime {
+            return time.withZoneSameInstant(timezone).toLocalTime()
+        }
+
         /**@returns seconds till midnight*/
-        fun calToSeconds(cal: LocalTime): Int {
-            return (cal.hour * 3600
-                    + cal.minute * 60
-                    + cal.second)
+        fun timeToSeconds(time: LocalTime): Int {
+            return (time.hour * 3600
+                    + time.minute * 60
+                    + time.second)
         }
 
-        fun nextWeek(cal: ZonedDateTime): ZonedDateTime {
-            return cal.plusDays(7)
+        /**Adds 7 days to the date*/
+        fun nextWeek(dateTime: ZonedDateTime): ZonedDateTime {
+            return dateTime.plusDays(7)
         }
 
-        fun previousWeek(cal: ZonedDateTime): ZonedDateTime {
-            return cal.minusDays(7)
+        /**Subtracts 7 days from the date*/
+        fun previousWeek(dateTime: ZonedDateTime): ZonedDateTime {
+            return dateTime.minusDays(7)
         }
     }
 }

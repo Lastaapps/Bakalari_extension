@@ -1,4 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~
+  ~     This file is part of Bakalari extension.
+  ~
+  ~     Bakalari extension is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Bakalari extension is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -13,10 +33,15 @@
         <action
             android:id="@+id/action_nav_home_to_nav_about"
             app:destination="@id/nav_about"
-            app:enterAnim="@anim/fragment_fade_enter" />
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@android:anim/fade_out" />
         <action
             android:id="@+id/action_nav_home_to_nav_timetable"
-            app:destination="@id/nav_timetable" />
+            app:destination="@id/nav_timetable"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
 
     <fragment
@@ -27,7 +52,7 @@
 
     <fragment
         android:id="@+id/nav_timetable"
-        android:name="cz.lastaapps.bakalariextension.ui.timetable.TimetableFragment"
+        android:name="cz.lastaapps.bakalariextension.ui.timetable.normal.TimetableFragment"
         android:label="@string/menu_timetable"
         tools:layout="@layout/fragment_timetable" />
 

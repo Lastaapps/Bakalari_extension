@@ -1,41 +1,48 @@
+/*
+ *    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+ *
+ *     This file is part of Bakalari extension.
+ *
+ *     Bakalari extension is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     Bakalari extension is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
 package cz.lastaapps.bakalariextension.login
 
-import android.os.AsyncTask
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
+import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.ConnMgr
-import cz.lastaapps.bakalariextension.tools.App
 import cz.lastaapps.bakalariextension.tools.CheckInternet
 
 
 /**
- * Tries to login to server with given data and saves them
+ * Tries to login to server with given data and saves them on success
  */
-class LoginToServer : AsyncTask<Any, Unit, Int>() {
+class LoginToServer(
+    val username: String,
+    val password: String,
+    val url: String,
+    val town: String,
+    val school: String
+) {
 
     companion object {
         private val TAG = LoginToServer::class.java.simpleName
-
-
-        fun execute(
-            username: String,
-            password: String,
-            url: String,
-            town: String,
-            school: String,
-            todo: ToDoAfter? = null
-        ): LoginToServer {
-            val data = ArrayList<String>()
-            data.add(username)
-            data.add(password)
-            data.add(url)
-            data.add(town)
-            data.add(school)
-            return execute(data, todo)
-        }
 
         /**
          * Just to simplify call from oder classes
@@ -43,11 +50,6 @@ class LoginToServer : AsyncTask<Any, Unit, Int>() {
          * @param 1 - (optional) Runnable, what to do if login has succeeded
          * @param 2 - (optional, requires param 1) Runnable, what to do if login has failed
          */
-        fun execute(data: ArrayList<String>, todo: ToDoAfter? = null): LoginToServer {
-            val task = LoginToServer()
-            task.execute(data, todo)
-            return task
-        }
 
         const val VALID_TOKEN = 0
         const val NOT_ENOUGH_DATA = 1
@@ -55,32 +57,14 @@ class LoginToServer : AsyncTask<Any, Unit, Int>() {
         const val WRONG_LOGIN = 3
     }
 
-    private lateinit var username: String
-    private lateinit var password: String
-    private lateinit var isPlain: String
-    private lateinit var url: String
-    private lateinit var town: String
-    private lateinit var school: String
-
-    private lateinit var salt: String
-    private lateinit var ikod: String
-    private lateinit var typ: String
-
-    //to hide dialogs or save data, run on the Main thread
-    private var todoAfter: ToDoAfter? = null
-
-    override fun doInBackground(vararg params: Any?): Int {
+    suspend fun run(): Int {
         try {
-            val list = params[0] as ArrayList<String>
-            username = list[0]
-            password = list[1]
-            url = list[2]
-            town = list[3]
-            school = list[4]
 
-            todoAfter =
-                if (params.size >= 2) params[1] as ToDoAfter
-                else null
+            //checks if enough data was putted in
+            if (url == "" || username == "" || password == "") {
+                Log.e(TAG, "Not enough data was entered")
+                return NOT_ENOUGH_DATA
+            }
 
             //saves basic data
             if (LoginData.town == "")
@@ -90,10 +74,6 @@ class LoginToServer : AsyncTask<Any, Unit, Int>() {
             if (LoginData.url == "")
                 LoginData.url = url
 
-            if (list.contains("")) {
-                Log.e(TAG, "Not enough data was entered")
-                return NOT_ENOUGH_DATA
-            }
 
             //checks for server availability
             if (!CheckInternet.check(false)) {
@@ -101,13 +81,15 @@ class LoginToServer : AsyncTask<Any, Unit, Int>() {
                 return NO_INTERNET
             }
 
+            //obtains tokens
             return when (ConnMgr.obtainTokens(username, password)) {
                 ConnMgr.LOGIN_OK -> {
 
                     //downloads default user info
-                    if (OnLogin.onLogin())
+                    if (OnLogin.onLogin(App.context)) {
+                        LoginData.saveData(username, url, town, school)
                         VALID_TOKEN
-                    else
+                    } else
                         NO_INTERNET
                 }
                 ConnMgr.LOGIN_WRONG -> WRONG_LOGIN
@@ -116,27 +98,15 @@ class LoginToServer : AsyncTask<Any, Unit, Int>() {
         } catch (e: Exception) {
             Handler(Looper.getMainLooper()).post {
                 Toast.makeText(
-                        App.context,
-                        R.string.error_no_internet_or_url,
-                        Toast.LENGTH_LONG
-                    )
+                    App.context,
+                    R.string.error_no_internet_or_url,
+                    Toast.LENGTH_LONG
+                )
                     .show()
             }
             e.printStackTrace()
+
             return NO_INTERNET
         }
-    }
-
-    override fun onPostExecute(result: Int) {
-        //saves valid tokens
-        if (result == VALID_TOKEN) {
-            Log.i(TAG, "Saving data")
-            LoginData.saveData(username, url, town, school)
-        }
-        todoAfter?.run(result)
-    }
-
-    interface ToDoAfter {
-        fun run(result: Int)
     }
 }
