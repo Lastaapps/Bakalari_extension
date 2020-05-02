@@ -20,6 +20,8 @@
 
 package cz.lastaapps.bakalariextension.api.timetable.data
 
+import cz.lastaapps.bakalariextension.api.DataID
+
 /**Stores info about lesson and the change of the lesson*/
 class Lesson(
     hourId: Int,

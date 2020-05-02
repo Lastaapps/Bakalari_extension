@@ -133,6 +133,8 @@ class TTStorage {
         fun deleteAll() {
             Log.e(TAG, "Deleting ALL timetables")
 
+            releaseActualCache()
+
             App.context.fileList().forEach {
                 if (it.startsWith(FILE_PREFIX)) {
                     val f = File(App.context.filesDir, it)

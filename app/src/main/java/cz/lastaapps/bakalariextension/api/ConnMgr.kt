@@ -164,12 +164,12 @@ class ConnMgr {
                 Log.i(TAG, "Obtaining new access token")
 
                 //POST data map
-                val paramMap = HashMap<String, String>()
-                paramMap["client_id"] = "ANDR"
-                paramMap["grant_type"] = "password"
-                paramMap["username"] = username
-                paramMap["password"] = password
-                val data = getPostDataString(paramMap)
+                val dataMap = HashMap<String, String>()
+                dataMap["client_id"] = "ANDR"
+                dataMap["grant_type"] = "password"
+                dataMap["username"] = username
+                dataMap["password"] = password
+                val data = getPostDataString(dataMap)
 
                 //creating URL connection
                 val url = URL("${getAPIUrl()}/login")

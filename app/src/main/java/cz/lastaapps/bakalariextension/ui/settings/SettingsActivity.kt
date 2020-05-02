@@ -34,8 +34,8 @@ import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.LoadingActivity
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.WhatsNew
-import cz.lastaapps.bakalariextension.api.timetable.TTNotifyService
 import cz.lastaapps.bakalariextension.login.Logout
+import cz.lastaapps.bakalariextension.services.timetablenotification.TTNotifyService
 import cz.lastaapps.bakalariextension.tools.BaseActivity
 import cz.lastaapps.bakalariextension.tools.Settings
 
@@ -124,7 +124,7 @@ class SettingsActivity : BaseActivity() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 
             //reference to actual Settings
-            sett = Settings(context!!)
+            sett = Settings(requireContext())
 
             sett.initSettings()
             setPreferencesFromResource(R.xml.settings_preferences, rootKey)
@@ -196,7 +196,7 @@ class SettingsActivity : BaseActivity() {
             fp(sett.SHOW_WHATS_NEW)?.setOnPreferenceClickListener { _ ->
                 Log.i(TAG, "Showing What's new")
 
-                WhatsNew(context!!).showDialog()
+                WhatsNew(requireContext()).showDialog()
 
                 true
             }

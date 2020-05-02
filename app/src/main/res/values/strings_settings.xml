@@ -75,6 +75,25 @@
     <string name="sett_timetable_notification_title">Show notification with lesson info</string>
     <string name="sett_timetable_notification_default" translatable="false">true</string>
 
+    <!-- Marks -->
+    <string name="sett_marks">Marks</string>
+    <string name="sett_marks_new_mark">Show mark as new for</string>
+    <string name="sett_marks_new_mark_default" translatable="false">2</string>
+    <!-- Do not change order -->
+    <string-array name="sett_marks_new_mark_entries" >
+        <item>1 day</item>
+        <item>2 days</item>
+        <item>3 days</item>
+        <item>4 days</item>
+    </string-array>
+    <!-- Do not change order -->
+    <string-array name="sett_marks_new_mark" >
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
     <!-- Analytics -->
     <string name="sett_analytics">Analytics</string>
     <string name="sett_send_town_school">Include town and school into analytic data</string>
@@ -93,6 +112,7 @@
     <string name="sett_key_language" translatable="false">language</string>
     <string name="sett_key_timetable_day" translatable="false">timetable_day</string>
     <string name="sett_key_timetable_notification" translatable="false">timetable_notification</string>
+    <string name="sett_key_marks_new_mark" translatable="false">marks_new_mark</string>
     <string name="sett_key_send_town_school" translatable="false">send_town_school</string>
     <string name="sett_key_show_whats_new" translatable="false">whats_new</string>
 

@@ -45,6 +45,8 @@
     <color name="timetable_change">#E53935</color>
     <color name="timetable_holiday">#00BCD4</color>
 
+    <color name="marks_new_mark">#D50000</color>
+
     <color name="widget_background">#FFF</color>
     <color name="widget_foreground">#000</color>
     <color name="widget_background_dark">#000</color>

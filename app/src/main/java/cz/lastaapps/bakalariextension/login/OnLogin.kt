@@ -32,11 +32,12 @@ import android.os.Looper
 import android.util.Log
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.User
-import cz.lastaapps.bakalariextension.api.timetable.TTNotifyService
-import cz.lastaapps.bakalariextension.api.timetable.TTReceiver
+import cz.lastaapps.bakalariextension.api.marks.Marks
 import cz.lastaapps.bakalariextension.api.timetable.Timetable
 import cz.lastaapps.bakalariextension.receivers.BootReceiver
 import cz.lastaapps.bakalariextension.receivers.TimeChangeReceiver
+import cz.lastaapps.bakalariextension.services.timetablenotification.TTNotifyService
+import cz.lastaapps.bakalariextension.services.timetablenotification.TTReceiver
 import cz.lastaapps.bakalariextension.tools.CheckInternet
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import cz.lastaapps.bakalariextension.ui.timetable.small.widget.SmallTimetableWidget
@@ -99,9 +100,9 @@ class OnLogin {
             if (!User.download())
                 return false
 
-            Log.e(TAG, "back 3")
-            //downloads some timetables for offline use if user in on wifi
+            //downloads some basic data for offline use if user is connected to wifi
             if (!CheckInternet.connectedMobileData()) {
+                //download timetables
                 Log.i(TAG, "Downloading default timetables")
                 val date = TimeTools.monday
                 //what timetables should be loaded
@@ -114,8 +115,11 @@ class OnLogin {
 
                 for (it in array)
                     Timetable.loadFromServer(it)
+
+
+                //downloads marks
+                Marks.loadFromServer()
             }
-            Log.e(TAG, "back 5")
 
             return true
         }

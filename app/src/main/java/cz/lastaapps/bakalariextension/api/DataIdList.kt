@@ -18,10 +18,14 @@
  *
  */
 
-package cz.lastaapps.bakalariextension.api.timetable.data
+package cz.lastaapps.bakalariextension.api
 
 /**Adds method to access data lists via their IDs*/
-class DataIdList<T: DataID<*>>: ArrayList<T>() {
+class DataIdList<T: DataID<*>>: ArrayList<T> {
+
+    constructor(): super()
+
+    constructor(list: List<T>): super(list)
 
     fun getById(id: Any?): T? {
         for (it in this) {

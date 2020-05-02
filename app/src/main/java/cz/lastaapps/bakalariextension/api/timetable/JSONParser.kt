@@ -21,8 +21,8 @@
 package cz.lastaapps.bakalariextension.api.timetable
 
 import android.util.Log
+import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.timetable.data.*
-import cz.lastaapps.bakalariextension.api.timetable.data.TTData.*
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import org.json.JSONArray
 import org.json.JSONException
@@ -313,103 +313,3 @@ class JSONParser {
         }
     }
 }
-/*var toReturn: Week? = null
-
-Log.i(TAG, "Parsing titables json")
-
-var json = j!!.getJSONObject("results")
-if (json.getString("result").toInt() != 1)
-    return null
-
-json = json.getJSONObject("rozvrh")
-
-val days: ArrayList<Day> = ArrayList()
-val patterns: ArrayList<LessonPattern> = ArrayList()
-toReturn = Week(
-    json.getString("kodcyklu"),
-    json.getString("nazevcyklu"),
-    json.getString("zkratkacyklu"),
-    json.getString("typ"),
-    patterns,
-    days
-)
-
-val jPatterns = json.getJSONObject("hodiny").getJSONArray("hod")
-for (i in 0 until jPatterns.length()) {
-    val pJson = jPatterns.getJSONObject(i)
-    patterns.add(
-        LessonPattern(
-            pJson.getString("begintime"),
-            pJson.getString("endtime"),
-            pJson.getString("caption")
-        )
-    )
-}
-
-val jDay = json.getJSONObject("dny").getJSONArray("den")
-for (i in 0 until jDay.length()) {
-    val lessons: ArrayList<Lesson> = ArrayList()
-
-    val dJson = jDay.getJSONObject(i)
-    days.add(
-        Day(
-            dJson.getString("datum"),
-            dJson.getString("zkratka"),
-            lessons
-        )
-    )
-
-    val jLess = dJson.getJSONObject("hodiny").getJSONArray("hod")
-    for (j in 0 until jLess.length()) {
-        val lJson = jLess.getJSONObject(j)
-
-        val id = getSecureString(lJson, "idcode")
-        val type = getSecureString(lJson, "typ")
-        val name = getSecureString(lJson, "nazev")//absence only
-        val shortcut = getSecureString(lJson, "zkratka")//absence only
-        val subject = getSecureString(lJson, "pr")
-        val subjectShortcut = getSecureString(lJson, "zkrpr")
-        val teacher = getSecureString(lJson, "uc")
-        val teacherShortcut = getSecureString(lJson, "zkruc")
-        val room = getSecureString(lJson, "mist")
-        val roomShortcut = getSecureString(lJson, "zkrmist")
-        val absence = getSecureString(lJson, "abs")
-        val absenceShortcut = getSecureString(lJson, "zkrabs")
-        val theme = getSecureString(lJson, "tema")
-        val group = getSecureString(lJson, "skup")
-        val groupShortcut = getSecureString(lJson, "zkrskup")
-        val cycle = getSecureString(lJson, "cycle")
-        val freed = getSecureString(lJson, "uvol")
-        val change = getSecureString(lJson, "chng")
-        val caption = getSecureString(lJson, "caption")
-        val notice = getSecureString(lJson, "notice")
-
-        lessons.add(
-            Lesson(
-                id,
-                type,
-                name,
-                shortcut,
-                subject,
-                subjectShortcut,
-                teacher,
-                teacherShortcut,
-                room,
-                roomShortcut,
-                absence,
-                absenceShortcut,
-                theme,
-                group,
-                groupShortcut,
-                cycle,
-                freed,
-                change,
-                caption,
-                notice
-            )
-        )
-    }
-
-}
-
-return toReturn*/

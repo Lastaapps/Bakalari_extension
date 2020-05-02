@@ -18,22 +18,15 @@
  *
  */
 
-package cz.lastaapps.bakalariextension.api.timetable.data
+package cz.lastaapps.bakalariextension.api
 
 import java.io.Serializable
 
 /**Parent of the most of the items, the can be then used in DataIDList*/
-open class DataID<T>(var id: T): Serializable
-
-/**Parent for classes containing just id, name and shortcut*/
-open class TTData(
-    id: String,
-    var shortcut: String,
-    var name: String
-): DataID<String>(id) {
+open class DataID<T>(var id: T): Serializable {
 
     override fun equals(other: Any?): Boolean {
-        return if (other is TTData)
+        return if (other is DataID<*>)
             id == other.id
         else
             false
@@ -42,22 +35,20 @@ open class TTData(
     override fun hashCode(): Int {
         return id.hashCode()
     }
+}
+
+/**Parent for classes containing just id, name and shortcut*/
+open class SimpleData(
+    id: String,
+    var shortcut: String,
+    var name: String
+): DataID<String>(id), Comparable<SimpleData> {
 
     override fun toString(): String {
         return "{id=$id name=$name shortcut=$shortcut}"
     }
 
-    class Room(id: String, shortcut: String, name: String) : TTData(id, shortcut, name) {}
-    class Teacher(id: String, shortcut: String, name: String) : TTData(id, shortcut, name) {}
-    class Subject(id: String, shortcut: String, name: String) : TTData(id, shortcut, name) {}
-    class Group(var classId: String, id: String, shortcut: String, name: String):
-        TTData(id, shortcut, name) {}
-    class Class(id: String, shortcut: String, name: String) : TTData(id, shortcut, name) {}
-    class Cycle(id: String, shortcut: String, name: String) :
-        TTData(id, shortcut, name), Comparable<Cycle> {
-        override fun compareTo(other: Cycle): Int {
-            return id.compareTo(other.id)
-        }
-
+    override fun compareTo(other: SimpleData): Int {
+        return id.compareTo(other.id)
     }
 }

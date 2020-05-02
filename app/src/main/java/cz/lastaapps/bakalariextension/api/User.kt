@@ -106,16 +106,22 @@ class User {
                 set(SCHOOL_TYPE, json.getString("SchoolType"))
                 set(ROLE, json.getString("UserType"))
                 json.getString("UserTypeText")//handled in parseRole()
-                set(GRADE, json.getString("StudyYear"))
 
-                //json.getJSONArray("EnabledModules")
+                //don't know how will data look during holidays
+                try {
+                    set(GRADE, json.getString("StudyYear"))
 
-                val semester = json.getJSONObject("SettingModules")
-                    .getJSONObject("Common")
-                    .getJSONObject("ActualSemester")
-                set(SEMESTER_ID, semester.getString("SemesterId"))
-                set(SEMESTER_START, semester.getString("From"))
-                set(SEMESTER_END, semester.getString("To"))
+                    //json.getJSONArray("EnabledModules")
+
+                    val semester = json.getJSONObject("SettingModules")
+                        .getJSONObject("Common")
+                        .getJSONObject("ActualSemester")
+                    set(SEMESTER_ID, semester.getString("SemesterId"))
+                    set(SEMESTER_START, semester.getString("From"))
+                    set(SEMESTER_END, semester.getString("To"))
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
 
                 Log.i(TAG, "Data saved")
 

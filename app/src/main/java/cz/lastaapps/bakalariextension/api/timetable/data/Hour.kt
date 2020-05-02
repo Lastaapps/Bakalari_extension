@@ -20,6 +20,8 @@
 
 package cz.lastaapps.bakalariextension.api.timetable.data
 
+import cz.lastaapps.bakalariextension.api.DataID
+
 /**Stores lesson start and end times + id which is used to find lessons in day*/
 class Hour (
     id: Int,

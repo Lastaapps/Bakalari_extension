@@ -37,8 +37,8 @@ import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.timetable.TTStorage
 import cz.lastaapps.bakalariextension.api.timetable.Timetable
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.tools.lastUpdated
 import kotlinx.coroutines.*
-import org.threeten.bp.ZoneId
 import kotlin.math.abs
 
 
@@ -65,7 +65,7 @@ class TimetableFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         //inits view model holding data
-        val v: TimetableViewModel by activity!!.viewModels()
+        val v: TimetableViewModel by requireActivity().viewModels()
         vm = v
     }
 
@@ -88,7 +88,7 @@ class TimetableFragment : Fragment() {
         //shows toolbar if it was shown before fragment was set
         val orientation = resources.configuration.orientation
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            (activity!! as MainActivity).supportActionBar!!.apply {
+            (requireActivity() as MainActivity).supportActionBar!!.apply {
                 if (toolbarVisibility)
                     show()
             }
@@ -310,20 +310,15 @@ class TimetableFragment : Fragment() {
             } else
                 getString(R.string.permanent)
 
-        try {
-            toReturn += ", " + getString(R.string.last_updated) + " " +
-                    TimeTools.format(
-                        TTStorage.lastUpdated(
-                            if (!vm.isPermanent)
-                                vm.dateTime
-                            else
-                                TimeTools.PERMANENT
-                        )!!,
-                        TimeTools.NORMAL_DATE_TIME,
-                        ZoneId.systemDefault()
-                    )
-        } catch (e: Exception) {
-            e.printStackTrace()
+        //add when was timetable last updated
+        val lastUpdated = TTStorage.lastUpdated(
+            if (!vm.isPermanent)
+                vm.dateTime
+            else
+                TimeTools.PERMANENT
+        )
+        lastUpdated?.let {
+            toReturn += ", " + lastUpdated(requireContext(), it)
         }
 
         return toReturn

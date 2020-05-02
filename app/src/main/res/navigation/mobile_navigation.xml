@@ -29,7 +29,7 @@
         android:id="@+id/nav_home"
         android:name="cz.lastaapps.bakalariextension.ui.home.HomeFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_main" >
+        tools:layout="@layout/fragment_home" >
         <action
             android:id="@+id/action_nav_home_to_nav_about"
             app:destination="@id/nav_about"
@@ -42,6 +42,9 @@
             app:exitAnim="@android:anim/slide_out_right"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_marks"
+            app:destination="@id/nav_marks" />
     </fragment>
 
     <fragment
@@ -55,5 +58,11 @@
         android:name="cz.lastaapps.bakalariextension.ui.timetable.normal.TimetableFragment"
         android:label="@string/menu_timetable"
         tools:layout="@layout/fragment_timetable" />
+
+    <fragment
+        android:id="@+id/nav_marks"
+        android:name="cz.lastaapps.bakalariextension.ui.marks.MarksRootFragment"
+        android:label="@string/menu_marks"
+        tools:layout="@layout/fragment_marks_root" />
 
 </navigation>

@@ -161,6 +161,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             R.id.nav_timetable -> {
                 findNavController(R.id.nav_host_fragment).navigate(R.id.nav_timetable)
             }
+            R.id.nav_marks -> {
+                findNavController(R.id.nav_host_fragment).navigate(R.id.nav_marks)
+            }
             R.id.nav_settings -> {
                 startActivity(Intent(this, SettingsActivity::class.java))
             }

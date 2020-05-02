@@ -52,6 +52,16 @@
             app:defaultValue="@string/sett_timetable_notification_default"/>
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/sett_marks">
+        <ListPreference
+            app:title="@string/sett_marks_new_mark"
+            app:key="@string/sett_key_marks_new_mark"
+            app:defaultValue="@string/sett_marks_new_mark_default"
+            app:entries="@array/sett_marks_new_mark_entries"
+            app:entryValues="@array/sett_marks_new_mark"
+            app:useSimpleSummaryProvider="true"/>
+    </PreferenceCategory>
+
     <PreferenceCategory app:title="@string/sett_analytics">
         <SwitchPreferenceCompat
             app:key="@string/sett_key_send_town_school"

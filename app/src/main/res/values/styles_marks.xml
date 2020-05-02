@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~
+  ~     This file is part of Bakalari extension.
+  ~
+  ~     Bakalari extension is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Bakalari extension is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<resources>
+
+    <style name="Marks.Text" parent="TextAppearance.AppCompat">
+
+    </style>
+    <style name="Marks.Mark" parent="Marks.Text">
+        <item name="android:textSize">20sp</item>
+    </style>
+    <style name="Marks.Subject" parent="Marks.Text">
+        <item name="android:textSize">20sp</item>
+    </style>
+    <style name="Marks.Caption" parent="Marks.Text">
+
+    </style>
+    <style name="Marks.Weight" parent="Marks.Text">
+
+    </style>
+    <style name="Marks.Date" parent="Marks.Text">
+
+    </style>
+    <style name="Marks.Average" parent="Marks.Text">
+
+    </style>
+    <style name="Marks.MarksCount" parent="Marks.Text">
+
+    </style>
+    <style name="Marks.LastUpdate" parent="">
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">@dimen/timetable_bottom_text</item>
+        <item name="android:textColor">@color/timetable_bottom_text</item>
+        <item name="android:background">@color/timetable_bottom_text_background</item>
+    </style>
+
+    <style name="Marks.Predictor.Label" parent="Marks.Text">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="Marks.Predictor.Average" parent="Marks.Text">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="Marks.Predictor.AddMark" parent="Marks.Text">
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_margin">10dp</item>
+    </style>
+
+    <style name="Marks.Predictor.AddMark.Label" parent="Marks.Text">
+        <item name="android:textSize">20sp</item>
+        <item name="android:layout_margin">10dp</item>
+    </style>
+</resources>

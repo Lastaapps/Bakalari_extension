@@ -24,7 +24,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import cz.lastaapps.bakalariextension.api.timetable.TTNotifyService
+import cz.lastaapps.bakalariextension.services.timetablenotification.TTNotifyService
 import cz.lastaapps.bakalariextension.ui.timetable.small.widget.SmallTimetableWidget
 
 /**Updates services and widgets on startup*/

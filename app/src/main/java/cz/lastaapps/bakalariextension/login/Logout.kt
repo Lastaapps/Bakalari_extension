@@ -26,12 +26,13 @@ import android.content.pm.PackageManager
 import android.util.Log
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.api.User
+import cz.lastaapps.bakalariextension.api.marks.MarksStorage
 import cz.lastaapps.bakalariextension.api.timetable.JSONParser
-import cz.lastaapps.bakalariextension.api.timetable.TTNotifyService
-import cz.lastaapps.bakalariextension.api.timetable.TTReceiver
 import cz.lastaapps.bakalariextension.api.timetable.TTStorage
 import cz.lastaapps.bakalariextension.receivers.BootReceiver
 import cz.lastaapps.bakalariextension.receivers.TimeChangeReceiver
+import cz.lastaapps.bakalariextension.services.timetablenotification.TTNotifyService
+import cz.lastaapps.bakalariextension.services.timetablenotification.TTReceiver
 import cz.lastaapps.bakalariextension.ui.timetable.small.widget.SmallTimetableWidget
 
 /**Deletes saved tokens and all oder data, then restarts app*/
@@ -50,8 +51,11 @@ class Logout {
 
             //deletes timetables
             TTStorage.deleteAll()
-            TTStorage.releaseActualCache()
             JSONParser.releaseActualCache()
+
+            //deletes marks
+            MarksStorage.delete()
+            cz.lastaapps.bakalariextension.api.marks.JSONParser.releaseActualCache()
 
             //disables receivers
             val receivers = arrayOf(

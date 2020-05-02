@@ -24,8 +24,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import cz.lastaapps.bakalariextension.api.timetable.TTNotifyService
 import cz.lastaapps.bakalariextension.login.LoginData
+import cz.lastaapps.bakalariextension.services.timetablenotification.TTNotifyService
 import cz.lastaapps.bakalariextension.ui.timetable.small.widget.SmallTimetableWidget
 
 /**Receives when user changes time - refreshes services and widgets and makes access token expired*/

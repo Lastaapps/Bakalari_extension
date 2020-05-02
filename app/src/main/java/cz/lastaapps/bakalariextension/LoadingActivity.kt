@@ -70,14 +70,14 @@ class LoadingActivity : BaseActivity() {
 
                     //let oder work to be finished on UI Thread first, then co doer things
                     for (i in 0 until 10)
-                        delay(1)
+                        yield()
 
                     //starts main activity
                     startActivity(mainActivityIntent())
 
                     //let finish more important work on UI thread
                     for (i in 0 until 20)
-                        delay(1)
+                        yield()
 
                     //closes
                     finish()

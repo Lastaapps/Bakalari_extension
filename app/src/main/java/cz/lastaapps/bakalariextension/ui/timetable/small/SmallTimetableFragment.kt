@@ -50,6 +50,7 @@ class SmallTimetableFragment : Fragment {
 
     constructor(): super()
 
+    //TODO show tomorrow in the evening
     constructor(date: ZonedDateTime): super() {
         _date = date
     }

@@ -40,6 +40,7 @@
 
     <dimen name="heading_text_size">32sp</dimen>
 
+    <dimen name="image_button">64dp</dimen>
     <dimen name="small_image_button">40dp</dimen>
 
     <!-- Widget -->
@@ -67,4 +68,12 @@
     <dimen name="timetable_bottom_sides">10dp</dimen>
     <dimen name="timetable_homework_warning">16dp</dimen>
 
+    <!-- Sizes of stoke in nav icons -->
+    <integer name="icons_stoke_thick">  3</integer>
+    <integer name="icons_stoke_medium"> 2</integer>
+    <integer name="icons_stoke_light">  1</integer>
+    <integer name="icons_stroke_border">2</integer>
+    <integer name="icons_stoke_thick_nav">  3</integer>
+    <integer name="icons_stoke_medium_nav"> 2</integer>
+    <integer name="icons_stoke_light_nav">  1</integer>
 </resources>

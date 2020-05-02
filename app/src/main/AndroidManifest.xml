@@ -71,19 +71,13 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".api.timetable.TTReceiver"
+            android:name=".services.timetablenotification.TTReceiver"
             android:enabled="false"
             android:exported="true">
-
-            <!--
-            intent-filter>
-                <action android:name="cz.lastaapps.action.TIMETABLE_NOTIFICATION_TRIGGER" />
-            </intent-filter
-            -->
         </receiver>
 
         <service
-            android:name=".api.timetable.TTNotifyService"
+            android:name=".services.timetablenotification.TTNotifyService"
             android:enabled="true" />
         <service
             android:name=".ui.timetable.small.widget.SmallTimetableRemoteAdapterService"

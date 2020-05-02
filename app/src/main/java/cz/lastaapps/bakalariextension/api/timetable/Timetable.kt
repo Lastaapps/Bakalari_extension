@@ -25,6 +25,7 @@ import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.WidgetUpdater
 import cz.lastaapps.bakalariextension.api.ConnMgr
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
+import cz.lastaapps.bakalariextension.services.timetablenotification.TTNotifyService
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import org.threeten.bp.ZonedDateTime
 

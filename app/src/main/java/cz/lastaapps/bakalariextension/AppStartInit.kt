@@ -23,8 +23,8 @@ package cz.lastaapps.bakalariextension
 import android.content.Context
 import android.util.Log
 import androidx.work.*
-import cz.lastaapps.bakalariextension.api.timetable.TTNotifyService
 import cz.lastaapps.bakalariextension.api.timetable.TTStorage
+import cz.lastaapps.bakalariextension.services.timetablenotification.TTNotifyService
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import cz.lastaapps.bakalariextension.workers.WifiChargerWorker
 import kotlinx.coroutines.delay

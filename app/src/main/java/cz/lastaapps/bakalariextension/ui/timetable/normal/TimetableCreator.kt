@@ -31,9 +31,9 @@ import android.widget.TableRow
 import android.widget.TextView
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.timetable.data.DataIdList
+import cz.lastaapps.bakalariextension.api.DataIdList
+import cz.lastaapps.bakalariextension.api.timetable.data.Cycle
 import cz.lastaapps.bakalariextension.api.timetable.data.Hour
-import cz.lastaapps.bakalariextension.api.timetable.data.TTData
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import cz.lastaapps.bakalariextension.ui.timetable.CellSetup
@@ -42,7 +42,7 @@ import org.threeten.bp.ZoneId
 /**Creates normal timetable cell structure*/
 class TimetableCreator {
     companion object {
-        fun createTimetable(root: View, week: Week, cycle: TTData.Cycle?) {
+        fun createTimetable(root: View, week: Week, cycle: Cycle?) {
 
             val daysTable = root.findViewById<LinearLayout>(R.id.table_days)
             val table = root.findViewById<TableLayout>(R.id.table)
@@ -183,7 +183,7 @@ class TimetableCreator {
 
         /**Sets up lesson view for all the days*/
         private fun setupLessons(
-            table: TableLayout, week: Week, cycle: TTData.Cycle?,
+            table: TableLayout, week: Week, cycle: Cycle?,
             validHours: DataIdList<Hour>, inflater: LayoutInflater, height: Int
         ) {
             val context = table.context

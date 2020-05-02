@@ -26,12 +26,21 @@ import android.content.res.Resources
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
+import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
 
 class Settings(val context: Context) {
 
     companion object {
         private val TAG = Settings::class.java.simpleName
+
+        private var _withAppContext: Settings? = null
+        fun withAppContext(): Settings {
+            if (_withAppContext == null) {
+                _withAppContext = Settings(App.context)
+            }
+            return _withAppContext!!
+        }
     }
 
     //preferences keys
@@ -47,6 +56,8 @@ class Settings(val context: Context) {
         get() = getString(R.string.sett_key_timetable_day)
     val TIMETABLE_NOTIFICATION
         get() = getString(R.string.sett_key_timetable_notification)
+    val MARKS_SHOW_NEW
+        get() = getString(R.string.sett_key_marks_new_mark)
     val SEND_TOWN_SCHOOL
         get() = getString(R.string.sett_key_send_town_school)
     val SHOW_WHATS_NEW
@@ -76,6 +87,10 @@ class Settings(val context: Context) {
 
             if (sp.getString(TIMETABLE_DAY, "") == "")
                 editor.putString(TIMETABLE_DAY, getArray(R.array.sett_timetable_day)[2])
+
+            if (sp.getString(MARKS_SHOW_NEW, "") == "")
+                editor.putString(MARKS_SHOW_NEW, getString(R.string.sett_marks_new_mark_default))
+
 
             editor.apply()
         }
@@ -128,9 +143,14 @@ class Settings(val context: Context) {
         return 2 - array.indexOf(getSP().getString(TIMETABLE_DAY, ""))
     }
 
-    /**if timetable notification should be shown*/
+    /**@return if timetable notification should be shown*/
     fun isTimetableNotificationEnabled(): Boolean {
         return getSP().getBoolean(TIMETABLE_NOTIFICATION, true)
+    }
+
+    /**@return for how many days should be mark shown as new*/
+    fun getNewMarkDuration(): Int {
+        return getSP().getString(MARKS_SHOW_NEW, "2")!!.toInt()
     }
 
     /**@return Setting's shared preferences*/

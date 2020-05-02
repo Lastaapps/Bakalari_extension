@@ -1,0 +1,47 @@
+<!--
+  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~
+  ~     This file is part of Bakalari extension.
+  ~
+  ~     Bakalari extension is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Bakalari extension is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="128dp"
+    android:height="128dp"
+    android:viewportWidth="128.00002"
+    android:viewportHeight="128">
+  <path
+      android:pathData="m119.163,31.94 l0.183,63.803 -55.163,32.06 -55.346,-31.743 -0.183,-63.803 55.163,-32.06z"
+      android:strokeWidth="@integer/icons_stroke_border"
+      android:fillColor="#00000000"
+      android:strokeColor="#ffffff"/>
+  <path
+      android:pathData="m49.699,46.124 l15.875,-15.875v50.271,0"
+      android:strokeAlpha="1"
+      android:strokeLineJoin="round"
+      android:strokeWidth="@integer/icons_stoke_medium_nav"
+      android:fillColor="#00000000"
+      android:strokeColor="#ffffff"
+      android:strokeLineCap="round"/>
+  <path
+      android:pathData="m42.833,88.61h42.333v0"
+      android:strokeAlpha="1"
+      android:strokeLineJoin="round"
+      android:strokeWidth="@integer/icons_stoke_medium_nav"
+      android:fillColor="#00000000"
+      android:strokeColor="#ffffff"
+      android:strokeLineCap="round"/>
+</vector>

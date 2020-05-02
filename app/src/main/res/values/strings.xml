@@ -116,6 +116,7 @@
     <string name="permanent">Permanent</string>
     <string name="empty_timetable">Empty timetable</string>
     <string name="holiday">Holiday</string>
+    <string name="celebration">Celebration</string>
 
     <string name="info_name">Name</string>
     <string name="info_subject">Subject</string>
@@ -131,6 +132,7 @@
     <string name="change_removed">Removed</string>
     <string name="change_canceled">Canceled</string>
 
+    <!-- Timetable notification -->
     <string name="group">group</string>
     <string name="next">Next</string>
     <string name="end">End</string>
@@ -148,8 +150,46 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
 
+    <!-- Last updated section -->
+    <string name="last_updated_template">Last updated %d %s ago</string>
+    <string name="last_updated_right_now">Last updated right now</string>
+    <string name="last_updated_in_future">Last updated in future</string>
+    <string-array name="last_updated_minutes">
+        <item>minute</item>
+        <item>minutes</item>
+    </string-array>
+    <string-array name="last_updated_hours">
+        <item>hour</item>
+        <item>hours</item>
+    </string-array>
+    <string-array name="last_updated_days">
+        <item>day</item>
+        <item>days</item>
+    </string-array>
+    <string-array name="last_updated_weeks">
+        <item>week</item>
+        <item>weeks</item>
+    </string-array>
 
-    <!-- Widget strings -->
+    <!-- Marks -->
+    <string name="marks_by_date">By date</string>
+    <string name="marks_by_subject">By subject</string>
+    <string name="marks_predictor">Predictor</string>
+    <string name="marks_failed_to_load">Failed to load marks</string>
+    <string name="marks_no_marks">No marks yet</string>
+    <string name="marks_mixed">Normal marks and points mixed together, cannot compute average</string>
+    <string name="marks_weight">Weight</string>
+    <string name="marks_average">average</string>
+    <string name="marks_marks_count">marks</string>
+    <string name="marks_choose_subject">Choose subject:</string>
+    <string name="marks_predictor_add_mark_label">Mark</string>
+    <string name="marks_predictor_add_mark_mark">Mark:</string>
+    <string name="marks_predictor_add_mark_points">Points:</string>
+    <string name="marks_predictor_add_mark_weight">Weight:</string>
+    <string name="marks_predictor_add_mark_button">Update</string>
+    <string name="marks_predictor_enter_valid_data">Enter valid data</string>
+
+    <!-- Widget small timetable strings -->
     <string name="widget_small_timetable_title">Widget setup</string>
     <string name="widget_small_timetable_alpha">Set how much is widget transparent</string>
     <string name="widget_small_timetable_transparent">Transparent</string>

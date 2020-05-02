@@ -18,7 +18,7 @@
  *
  */
 
-package cz.lastaapps.bakalariextension.api.timetable
+package cz.lastaapps.bakalariextension.services.timetablenotification
 
 import android.content.Context
 import cz.lastaapps.bakalariextension.R
@@ -53,9 +53,14 @@ class NotificationContent(val context: Context) {
 
         val firstLesson = day.firstLessonIndex(week.hours)
         //when day ends with lunch, it will be also shown
+
+        val x1 = day.lastLessonIndex(week.hours)
+        val x2 = day.endsWithLunch(week.hours)
+        val x3 = day.lastLessonIndex(week.hours) + (if (day.endsWithLunch(week.hours)) 1 else 0)
+
         val lastLesson =
-            (day.lastLessonIndex(week.hours) + if (day.endsWithLunch(week.hours)) 1 else 0)
-                .coerceAtMost(day.lessons.size - 1)
+            (day.lastLessonIndex(week.hours) + (if (day.endsWithLunch(week.hours)) 1 else 0))
+                .coerceAtMost(week.hours.size - 1)
 
         //empty day check - weekend and holidays
         if (firstLesson < 0 || lastLesson < 0)
@@ -65,7 +70,7 @@ class NotificationContent(val context: Context) {
         for (index in firstLesson..lastLesson) {
 
             val hour = hours[index]
-            val lesson = day.getLesson(hour) ?: continue
+            val lesson = day.getLesson(hour)
             val nextHour = if (index != lastLesson) hours[index + 1] else null
             val nextLesson = if (nextHour != null) day.getLesson(nextHour) else null
 
@@ -85,6 +90,9 @@ class NotificationContent(val context: Context) {
             //normal lesson
             if (day.isNormal(hour)) {
 
+                //lesson is null only during free lesson, line only because of compiler
+                if (lesson == null) continue
+
                 if (nextLesson == null || nextHour == null) {
                     lessonLast(actions, begin, end, week, hour, lesson)
                 }
@@ -102,20 +110,23 @@ class NotificationContent(val context: Context) {
                 //lunch lesson
 
                 if (nextLesson == null || nextHour == null) {
-                    freeLast(actions, begin, end, week, hour, lesson)
+                    freeLast(actions, begin, end, week, hour)
                 }
                 else if (day.isNormal(nextHour)) {
-                    freeNextLesson(actions, begin, end, week, hour, nextHour, lesson, nextLesson)
+                    freeNextLesson(actions, begin, end, week, hour, nextHour, nextLesson)
                 }
                 else if (day.isFree(nextHour)) {
-                    freeNextFree(actions, begin, end, week, hour, nextHour, lesson, nextLesson)
+                    freeNextFree(actions, begin, end, week, hour, nextHour)
                 }
                 else if (day.isAbsence(nextHour)) {
-                    freeNextAbsence(actions, begin, end, week, hour, nextHour, lesson, nextLesson)
+                    freeNextAbsence(actions, begin, end, week, hour, nextHour, nextLesson)
                 }
             }
             else if (day.isAbsence(hour)) {
                 //if is class absence
+
+                //lesson is null only during free lesson, line only because of compiler
+                if (lesson == null) continue
 
                 if (nextLesson == null || nextHour == null) {
                     absenceLast(actions, begin, end, week, hour, lesson)
@@ -240,8 +251,7 @@ class NotificationContent(val context: Context) {
 
     private fun freeLast(
         actions: HashMap<Int, Array<String>?>, begin: Int, end: Int,
-        week: Week, pattern: Hour,
-        lesson: Lesson
+        week: Week, pattern: Hour
     ) {
         //the last lesson - free - probably lunch
 
@@ -263,7 +273,7 @@ class NotificationContent(val context: Context) {
     private fun freeNextLesson(
         actions: HashMap<Int, Array<String>?>, begin: Int, end: Int,
         week: Week, pattern: Hour, nextPattern: Hour,
-        lesson: Lesson, nextLesson: Lesson
+        nextLesson: Lesson
     ) {
         //before normal lesson
 
@@ -286,8 +296,7 @@ class NotificationContent(val context: Context) {
 
     private fun freeNextFree(
         actions: HashMap<Int, Array<String>?>, begin: Int, end: Int,
-        week: Week, pattern: Hour, nextPattern: Hour,
-        lesson: Lesson, nextLesson: Lesson
+        week: Week, pattern: Hour, nextPattern: Hour
     ) {
         //before free lesson
 
@@ -309,7 +318,7 @@ class NotificationContent(val context: Context) {
     private fun freeNextAbsence(
         actions: HashMap<Int, Array<String>?>, begin: Int, end: Int,
         week: Week, pattern: Hour, nextPattern: Hour,
-        lesson: Lesson, nextLesson: Lesson
+        nextLesson: Lesson
     ) {
         //before free lesson
 
@@ -318,7 +327,7 @@ class NotificationContent(val context: Context) {
         //last 10 minutes of the lesson
         actions[end] = arrayOf(
             "$freeLessonStr $untilStr ${pattern.end}",
-            "$nextStr: ${nextPattern.begin} ${lesson.change?.typeShortcut} ${lesson.change?.typeName}"
+            "$nextStr: ${nextPattern.begin} ${nextLesson.change?.typeShortcut} ${nextLesson.change?.typeName}"
         )
     }
 

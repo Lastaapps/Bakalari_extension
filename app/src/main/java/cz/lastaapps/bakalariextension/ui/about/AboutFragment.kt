@@ -87,7 +87,7 @@ class AboutFragment : Fragment() {
             var uri = Uri.parse(url)
             try {
                 val applicationInfo =
-                    activity!!.packageManager.getApplicationInfo("com.facebook.katana", 0)
+                    requireActivity().packageManager.getApplicationInfo("com.facebook.katana", 0)
                 if (applicationInfo.enabled) {
                     uri = Uri.parse("fb://facewebmodal/f?href=$url")
                 }
@@ -117,11 +117,11 @@ class AboutFragment : Fragment() {
 
         //view whats new
         root.findViewById<ImageButton>(R.id.whats_new).setOnClickListener {
-            WhatsNew(context!!).showDialog()
+            WhatsNew(requireContext()).showDialog()
         }
         //view licence
         root.findViewById<ImageButton>(R.id.licence).setOnClickListener {
-            Licence.viewLicence(context!!)
+            Licence.viewLicence(requireContext())
         }
 
         return root

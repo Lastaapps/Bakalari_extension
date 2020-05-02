@@ -20,7 +20,7 @@
 
 package cz.lastaapps.bakalariextension.api.timetable.data
 
-import cz.lastaapps.bakalariextension.api.timetable.data.TTData.*
+import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import org.threeten.bp.ZonedDateTime
 import java.io.Serializable

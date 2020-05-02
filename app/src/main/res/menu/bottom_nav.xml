@@ -29,4 +29,8 @@
         android:id="@+id/nav_timetable"
         android:icon="@drawable/nav_timetable"
         android:title="@string/menu_timetable" />
+    <item
+        android:id="@+id/nav_marks"
+        android:icon="@drawable/nav_marks"
+        android:title="@string/menu_marks" />
 </menu>

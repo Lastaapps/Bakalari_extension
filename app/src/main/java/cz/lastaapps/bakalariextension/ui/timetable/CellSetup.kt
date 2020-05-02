@@ -43,7 +43,7 @@ class CellSetup {
         /**updates text in view inflated from R.layout.timetable_lesson
          * @param highlight if should actual lesson highlighted*/
         fun setUpCell(
-            view: View, week: Week, day: Day, hour: Hour, cycle: TTData.Cycle?,
+            view: View, week: Week, day: Day, hour: Hour, cycle: Cycle?,
             highlight: Boolean = true
         ) {
             val map = getStrings(week, day, hour, cycle)
@@ -60,7 +60,7 @@ class CellSetup {
 
         /**@return Map<resource id of the TextView, text>*/
         fun getStrings(
-            week: Week, day: Day, hour: Hour, cycle: TTData.Cycle?
+            week: Week, day: Day, hour: Hour, cycle: Cycle?
         ): HashMap<Int, String> {
             val map = HashMap<Int, String>()
 
@@ -104,7 +104,7 @@ class CellSetup {
         /**@param highlight if cell can be highlighted as actual
          * @return background color for the cell*/
         fun getBackgroundColor(
-            week: Week, day: Day, hour: Hour, cycle: TTData.Cycle?,
+            week: Week, day: Day, hour: Hour, cycle: Cycle?,
             highlight: Boolean
         ): Int {
             val lesson = day.getLesson(hour, cycle)
@@ -147,11 +147,13 @@ class CellSetup {
         }
 
         fun isHomeworkWarningVisible(
-            week: Week, day: Day, hour: Hour, cycle: TTData.Cycle?
+            week: Week, day: Day, hour: Hour, cycle: Cycle?
         ): Boolean {
-            val lesson = day.getLesson(hour, cycle)
-            if (lesson != null) {
-                return lesson.homeworkIds.isNotEmpty()
+            if (!week.isPermanent()) {
+                val lesson = day.getLesson(hour, cycle)
+                if (lesson != null) {
+                    return lesson.homeworkIds.isNotEmpty()
+                }
             }
             return false
         }
@@ -159,7 +161,7 @@ class CellSetup {
 
     /**Shows lesson info on click*/
     class ShowLessonInfo(
-        val week: Week, val day: Day, val hour: Hour, val cycle: TTData.Cycle?
+        val week: Week, val day: Day, val hour: Hour, val cycle: Cycle?
     ) : View.OnClickListener {
 
         override fun onClick(view: View) {

@@ -18,7 +18,7 @@
  *
  */
 
-package cz.lastaapps.bakalariextension.api.timetable
+package cz.lastaapps.bakalariextension.services.timetablenotification
 
 import android.app.AlarmManager
 import android.app.Notification
@@ -35,6 +35,7 @@ import androidx.navigation.NavDeepLinkBuilder
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.MainActivity
 import cz.lastaapps.bakalariextension.R
+import cz.lastaapps.bakalariextension.api.timetable.Timetable
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import cz.lastaapps.bakalariextension.login.LoginData
 import cz.lastaapps.bakalariextension.tools.*
@@ -133,13 +134,19 @@ class TTNotifyService : BaseService() {
     private suspend fun todo() {
         //today
         val cal = TimeTools.today
-        var week = Timetable.loadFromStorage(cal)
+        var week =
+            Timetable.loadFromStorage(
+                cal
+            )
 
         //tries to load week from server
         if (week == null) {
             if (CheckInternet.canUseInternet() && CheckInternet.check()) {
 
-                week = Timetable.loadFromServer(cal)
+                week =
+                    Timetable.loadFromServer(
+                        cal
+                    )
 
                 if (week == null) {
                     MyToast.makeText(
@@ -209,7 +216,9 @@ class TTNotifyService : BaseService() {
 
         //generates Notification object
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val builder = Notification.Builder(this, NOTIFICATION_CHANEL_ID)
+            val builder = Notification.Builder(this,
+                NOTIFICATION_CHANEL_ID
+            )
                 .setContentTitle(title)
                 .setContentText(subtitle)
                 .setAutoCancel(false)
@@ -247,7 +256,9 @@ class TTNotifyService : BaseService() {
         )
 
         //strings generated in NotificationContent
-        val actions = NotificationContent(this).generateActions(week) ?: return null
+        val actions = NotificationContent(
+            this
+        ).generateActions(week) ?: return null
 
         //times
         val keys = ArrayList<Int>(actions.keys)
@@ -325,17 +336,11 @@ class TTNotifyService : BaseService() {
             TimeTools.CET
         )
 
-        setAlarm(pendingIntent, time)
+        setRepeatingAlarm(pendingIntent, time)
 
-        /*alarmManager.setInexactRepeating(
-            AlarmManager.RTC,
-            cal.toInstant().toEpochMilli(),
-            AlarmManager.INTERVAL_DAY,
-            pendingIntent
-        )*/
     }
 
-    /**Puts Pending intent into AlarmManager*/
+    /**Puts Pending intent into AlarmManager as exact*/
     private fun setAlarm(pendingIntent: PendingIntent, time: ZonedDateTime) {
         val alarmManager =
             getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -364,6 +369,29 @@ class TTNotifyService : BaseService() {
         }
     }
 
+    /**Puts Pending intent into AlarmManager as repeating*/
+    private fun setRepeatingAlarm(pendingIntent: PendingIntent, time: ZonedDateTime) {
+        val alarmManager =
+            getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        when {
+            Build.VERSION.SDK_INT >= 19 -> {
+                alarmManager.setInexactRepeating(
+                    AlarmManager.RTC,
+                    time.toInstant().toEpochMilli(),
+                    AlarmManager.INTERVAL_DAY,
+                    pendingIntent
+                )
+            }
+            else -> {
+                alarmManager.setRepeating(
+                    AlarmManager.RTC,
+                    AlarmManager.INTERVAL_DAY,
+                    time.toInstant().toEpochMilli(),
+                    pendingIntent
+                )
+            }
+        }
+    }
     override fun onBind(intent: Intent): IBinder? {
         return null
     }

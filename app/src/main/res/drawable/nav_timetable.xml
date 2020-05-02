@@ -1,46 +1,66 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="256dp"
-    android:height="256dp"
-    android:viewportWidth="256"
-    android:viewportHeight="256">
+<!--
+  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~
+  ~     This file is part of Bakalari extension.
+  ~
+  ~     Bakalari extension is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Bakalari extension is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
 
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="128dp"
+    android:height="128dp"
+    android:viewportWidth="128"
+    android:viewportHeight="128">
   <path
-      android:pathData="m238.327,63.88 l0.366,127.605 -110.327,64.12 -110.693,-63.486 -0.366,-127.605 110.327,-64.12z"
-      android:strokeWidth="8"
+      android:pathData="m118.838,32.89 l0.182,63.426 -54.838,31.871 -55.02,-31.556 -0.182,-63.426 54.838,-31.871z"
+      android:strokeWidth="@integer/icons_stroke_border"
       android:fillColor="#00000000"
-      android:strokeColor="#F000"/>
+      android:strokeColor="#ffffff"/>
   <path
-      android:pathData="M88.487,62.114C81.928,62.114 76.648,67.394 76.648,73.953L76.648,162.744C76.648,169.302 81.928,174.583 88.487,174.583L132.321,174.583A34.162,35.025 90,0 1,127.119 156.72A34.162,35.025 90,0 1,162.144 122.558A34.162,35.025 90,0 1,177.278 125.959L177.278,73.953C177.278,67.394 171.998,62.114 165.439,62.114L88.487,62.114z"
-      android:strokeWidth="8"
+      android:pathData="m44.36,32.012c-3.26,0 -5.885,2.624 -5.885,5.884v44.133c0,3.26 2.625,5.885 5.885,5.885h21.788a17.409,16.98 0,0 1,-2.586 -8.879,17.409 16.98,0 0,1 17.409,-16.98 17.409,16.98 0,0 1,7.522 1.69v-25.85c0,-3.26 -2.625,-5.884 -5.885,-5.884z"
+      android:strokeWidth="@integer/icons_stoke_medium_nav"
       android:fillColor="#00000000"
-      android:strokeColor="#F000"/>
+      android:strokeColor="#ffffff"/>
   <path
-      android:pathData="M76.648,84.608h100.63v22.494h-100.63z"
-      android:strokeWidth="4"
+      android:pathData="M38.476,43.192h50.018v11.18h-50.018z"
+      android:strokeWidth="@integer/icons_stoke_light_nav"
       android:fillColor="#00000000"
-      android:strokeColor="#F000"/>
+      android:strokeColor="#ffffff"/>
   <path
-      android:pathData="M76.648,129.595L76.648,152.089L127.483,152.089A34.162,35.025 90,0 1,140.895 129.595L76.648,129.595z"
-      android:strokeWidth="4"
+      android:pathData="m38.476,65.553v11.18h25.267a17.409,16.98 0,0 1,6.666 -11.18z"
+      android:strokeWidth="@integer/icons_stoke_light_nav"
       android:fillColor="#00000000"
-      android:strokeColor="#F000"/>
+      android:strokeColor="#ffffff"/>
   <path
-      android:pathData="M110.192,62.114L110.192,174.583L132.321,174.583A34.162,35.025 90,0 1,127.119 156.72A34.162,35.025 90,0 1,143.735 127.686L143.735,62.114L110.192,62.114z"
-      android:strokeWidth="4"
+      android:pathData="m55.148,32.012v55.902h10.999a17.409,16.98 0,0 1,-2.586 -8.879,17.409 16.98,0 0,1 8.259,-14.431L71.821,32.012Z"
+      android:strokeWidth="@integer/icons_stoke_light_nav"
       android:fillColor="#00000000"
-      android:strokeColor="#F000"/>
+      android:strokeColor="#ffffff"/>
   <path
-      android:pathData="m162.173,133.147v23.678h15.105v0"
+      android:pathData="m80.985,67.318v11.769h7.508v0"
       android:strokeAlpha="1"
       android:strokeLineJoin="miter"
-      android:strokeWidth="8"
-      android:strokeColor="#F000"
+      android:strokeWidth="@integer/icons_stoke_medium_nav"
+      android:fillColor="#00000000"
+      android:strokeColor="#ffffff"
       android:fillAlpha="1"
       android:strokeLineCap="round"/>
   <path
-      android:pathData="M127.119,156.72a35.025,34.162 0,1 0,70.051 0a35.025,34.162 0,1 0,-70.051 0z"
-      android:strokeWidth="8"
+      android:pathData="M63.562,79.035a17.409,16.98 0,1 0,34.819 0a17.409,16.98 0,1 0,-34.819 0z"
+      android:strokeWidth="@integer/icons_stoke_medium_nav"
       android:fillColor="#00000000"
-      android:strokeColor="#F000"
+      android:strokeColor="#ffffff"
       android:fillAlpha="1"/>
 </vector>
