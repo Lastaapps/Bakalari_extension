@@ -21,6 +21,7 @@
 package cz.lastaapps.bakalariextension.services.timetablenotification
 
 import android.content.Context
+import android.text.Html
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.timetable.data.Hour
 import cz.lastaapps.bakalariextension.api.timetable.data.Lesson
@@ -52,12 +53,8 @@ class NotificationContent(val context: Context) {
             return null
 
         val firstLesson = day.firstLessonIndex(week.hours)
+
         //when day ends with lunch, it will be also shown
-
-        val x1 = day.lastLessonIndex(week.hours)
-        val x2 = day.endsWithLunch(week.hours)
-        val x3 = day.lastLessonIndex(week.hours) + (if (day.endsWithLunch(week.hours)) 1 else 0)
-
         val lastLesson =
             (day.lastLessonIndex(week.hours) + (if (day.endsWithLunch(week.hours)) 1 else 0))
                 .coerceAtMost(week.hours.size - 1)
@@ -154,13 +151,13 @@ class NotificationContent(val context: Context) {
 
         //before lesson starts
         actions[begin] = arrayOf(
-            "${pattern.begin} ${week.rooms.getById(lesson.roomId)?.shortcut} - ${week.subjects.getById(lesson.subjectId)?.name}",
+            "${pattern.begin} ${Html.fromHtml("<b>" + week.rooms.getById(lesson.roomId)?.shortcut + "</b>")} - ${week.subjects.getById(lesson.subjectId)?.name}",
             "${week.teachers.getById(lesson.teacherId)?.name}${if (lesson.theme != "") " ${lesson.theme}" else ""}, $groupStr ${week.groups.getByIds(lesson.groupIds)?.shortcut}"
         )
 
         //during lesson
         actions[end - 10 * 60] = arrayOf(
-            "${week.rooms.getById(lesson.roomId)?.shortcut} - ${week.subjects.getById(lesson.subjectId)?.name}",
+            "${Html.fromHtml("<b>" + week.rooms.getById(lesson.roomId)?.shortcut + "</b>")} - ${week.subjects.getById(lesson.subjectId)?.name}",
             "${pattern.begin} - ${pattern.end}"
         )
 
@@ -180,13 +177,13 @@ class NotificationContent(val context: Context) {
 
         //before lesson starts
         actions[begin] = arrayOf(
-            "${pattern.begin} ${week.rooms.getById(lesson.roomId)?.shortcut} - ${week.subjects.getById(lesson.subjectId)?.name}",
+            "${pattern.begin} ${Html.fromHtml("<b>" + week.rooms.getById(lesson.roomId)?.shortcut + "</b>")} - ${week.subjects.getById(lesson.subjectId)?.name}",
             "${week.teachers.getById(lesson.teacherId)?.name}${if (lesson.theme != "") " ${lesson.theme}" else ""}, $groupStr ${week.groups.getByIds(lesson.groupIds)?.shortcut}"
         )
 
         //during lesson
         actions[end - 10 * 60] = arrayOf(
-            "${week.rooms.getById(lesson.roomId)?.shortcut} - ${week.subjects.getById(lesson.subjectId)?.name}",
+            "${Html.fromHtml("<b>" + week.rooms.getById(lesson.roomId)?.shortcut + "</b>")} - ${week.subjects.getById(lesson.subjectId)?.name}",
             "${pattern.begin} - ${pattern.end}, $nextStr: ${week.rooms.getById(nextLesson.roomId)?.shortcut} - ${week.subjects.getById(nextLesson.subjectId)?.name}"
         )
 
@@ -206,13 +203,13 @@ class NotificationContent(val context: Context) {
 
         //before lesson starts
         actions[begin] = arrayOf(
-            "${pattern.begin} ${week.rooms.getById(lesson.roomId)?.shortcut} - ${week.subjects.getById(lesson.subjectId)?.name}",
+            "${pattern.begin} ${Html.fromHtml("<b>" + week.rooms.getById(lesson.roomId)?.shortcut + "</b>")} - ${week.subjects.getById(lesson.subjectId)?.name}",
             "${week.teachers.getById(lesson.teacherId)?.name}${if (lesson.theme != "") " ${lesson.theme}" else ""}"
         )
 
         //during lesson
         actions[end - 10 * 60] = arrayOf(
-            "${week.rooms.getById(lesson.roomId)?.shortcut} - ${week.subjects.getById(lesson.subjectId)?.name}",
+            "${Html.fromHtml("<b>" + week.rooms.getById(lesson.roomId)?.shortcut + "</b>")} - ${week.subjects.getById(lesson.subjectId)?.name}",
             "${pattern.begin} - ${pattern.end}, $nextStr: $freeLessonStr"
         )
 
@@ -232,13 +229,13 @@ class NotificationContent(val context: Context) {
 
         //before lesson starts
         actions[begin] = arrayOf(
-            "${pattern.begin} ${week.rooms.getById(lesson.roomId)?.shortcut} - ${week.subjects.getById(lesson.subjectId)?.name}",
+            "${pattern.begin} ${Html.fromHtml("<b>" + week.rooms.getById(lesson.roomId)?.shortcut + "</b>")} - ${week.subjects.getById(lesson.subjectId)?.name}",
             "${week.teachers.getById(lesson.teacherId)?.name}${if (lesson.theme != "") " ${lesson.theme}" else ""}, $groupStr ${week.groups.getByIds(lesson.groupIds)?.shortcut}"
         )
 
         //during lesson
         actions[end - 10 * 60] = arrayOf(
-            "${week.rooms.getById(lesson.roomId)?.shortcut} - ${week.subjects.getById(lesson.subjectId)?.name}",
+            "${Html.fromHtml("<b>" + week.rooms.getById(lesson.roomId)?.shortcut + "</b>")} - ${week.subjects.getById(lesson.subjectId)?.name}",
             "${pattern.begin} - ${pattern.end}, $nextStr: ${lesson.change?.typeShortcut} ${lesson.change?.typeName}"
         )
 

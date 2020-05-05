@@ -21,14 +21,10 @@
 package cz.lastaapps.bakalariextension.ui.timetable.normal
 
 import android.content.Context
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TableLayout
-import android.widget.TableRow
-import android.widget.TextView
+import android.widget.*
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.DataIdList
@@ -36,13 +32,91 @@ import cz.lastaapps.bakalariextension.api.timetable.data.Cycle
 import cz.lastaapps.bakalariextension.api.timetable.data.Hour
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.tools.Timer
 import cz.lastaapps.bakalariextension.ui.timetable.CellSetup
+import kotlinx.coroutines.yield
 import org.threeten.bp.ZoneId
 
 /**Creates normal timetable cell structure*/
 class TimetableCreator {
     companion object {
-        fun createTimetable(root: View, week: Week, cycle: Cycle?) {
+
+        fun prepareTimetable(root: View, height: Int, lessons: Int) {
+            val table = root.findViewById<TableLayout>(R.id.table)
+
+            val rowChildParams = TableRow.LayoutParams()
+            rowChildParams.height = height
+            rowChildParams.width = App.getDimension(R.dimen.timetable_column_size)
+
+            val tableChildParams = TableLayout.LayoutParams()
+            tableChildParams.height = height
+            tableChildParams.width = App.getDimension(R.dimen.timetable_column_size) * lessons
+
+            val inflater = LayoutInflater.from(root.context)
+
+            for (i in 0 until table.childCount) {
+
+                //view is TableRow of Holiday
+                val view = table.getChildAt(i) as ViewGroup
+                view.layoutParams = tableChildParams
+
+                when {
+                    i == 0 -> {
+                        //lesson number
+
+                        //inflates new views if needed
+                        while (view.childCount < lessons) {
+                            inflater.inflate(R.layout.timetable_hour, view, true)
+                        }
+
+                        //hides surplus cells
+                        for (j in 0 until view.childCount) {
+                            view.getChildAt(j).apply {
+                                visibility =
+                                    if (j <= lessons) {
+                                        View.VISIBLE
+                                    } else {
+                                        View.GONE
+                                    }
+                                layoutParams = rowChildParams
+                            }
+                        }
+                    }
+                    i % 2 == 1 -> {
+                        //normal lessons
+
+                        //inflates new views if needed
+                        while (view.childCount < lessons) {
+                            inflater.inflate(R.layout.timetable_lesson, view, true)
+                        }
+
+                        //hides surplus cells
+                        for (j in 0 until view.childCount) {
+                            view.getChildAt(j).apply {
+                                visibility =
+                                    if (j <= lessons) {
+                                        View.VISIBLE
+                                    } else {
+                                        View.GONE
+                                    }
+                                layoutParams = rowChildParams
+                            }
+                        }
+                    }
+                    else -> {
+                        //holiday
+
+                        //updates background of holiday, default w and h is match_parent
+                        view.getChildAt(0).layoutParams = RelativeLayout.LayoutParams(tableChildParams)
+                    }
+                }
+            }
+        }
+
+        suspend fun createTimetable(root: View, week: Week, cycle: Cycle?) {
+
+            //TODO remove
+            val timer = Timer("TimetableCreator")
 
             val daysTable = root.findViewById<LinearLayout>(R.id.table_days)
             val table = root.findViewById<TableLayout>(R.id.table)
@@ -61,9 +135,7 @@ class TimetableCreator {
                 height
             )
 
-            //resets timetable data
-            table.removeAllViews()
-
+            yield()
 
             //init cycle name, cycle in week is null during empty weeks
             val edge = daysTable.findViewById<ViewGroup>(R.id.edge)
@@ -71,7 +143,7 @@ class TimetableCreator {
             edge.layoutParams = LinearLayout.LayoutParams(edge.measuredWidth, height)
 
             //non valid hour would result in empty columns (like zero lessons)
-            val validHours = week.getNotEmptyHours()
+            val validHours = week.trimFreeMorning()
             if (validHours.isEmpty() || cycle == null) {
 
                 edge.findViewById<TextView>(R.id.cycle).text = ""
@@ -90,25 +162,30 @@ class TimetableCreator {
                     .visibility = View.GONE
             }
 
+            timer.print()
+
+            yield()
+
             //sets up first row
             setupHours(
                 table,
                 week,
-                validHours,
-                inflater,
-                height
+                validHours
             )
+
+            yield()
+
+            timer.print()
 
             //sets up oder rows
             setupLessons(
                 table,
                 week,
                 cycle,
-                validHours,
-                inflater,
-                height
+                validHours
             )
 
+            timer.print()
         }
 
         /**Sets up first column Mo-Fr except first edge cell*/
@@ -124,6 +201,7 @@ class TimetableCreator {
                 R.string.thursday_shortut,
                 R.string.friday_shortut
             )
+
             //goes through
             for (i in 0 until 5) {
                 val day = week.days[i]
@@ -148,77 +226,70 @@ class TimetableCreator {
 
         /**Sets up first row except first edge cell*/
         private fun setupHours(
-            table: TableLayout, week: Week, validHours: DataIdList<Hour>,
-            inflater: LayoutInflater, height: Int
+            table: TableLayout, week: Week, validHours: DataIdList<Hour>
         ) {
 
-            val context = table.context
-
             //first row with lesson start/end times and captions
-            val numberRow = TableRow(context)
-            table.addView(numberRow, 0)
-            for (i in 0 until week.hours.size) {
-                val hour = week.hours[i]
+            val numberRow = table.getChildAt(0) as TableRow
 
-                //deleting free columns
-                if (!validHours.contains(hour))
-                    continue
+            for (i in 0 until validHours.size) {
+                val hour = validHours[i]
 
-                val viewGroup =
-                    inflater.inflate(R.layout.timetable_number, numberRow, false)
+                //TODO remove
+                //val timer = Timer("setupHours")
+
+                val viewGroup = numberRow.getChildAt(i)
+
+                //timer.print()
 
                 //sets texts
                 viewGroup.findViewById<TextView>(R.id.caption).text = hour.caption
                 viewGroup.findViewById<TextView>(R.id.begin).text = hour.begin
                 viewGroup.findViewById<TextView>(R.id.end).text = hour.end
 
-                //sets size to match the others
-                val params = TableRow.LayoutParams()
-                params.height = height
-                viewGroup.layoutParams = params
-                numberRow.addView(viewGroup)
-
+                //timer.print()
             }
         }
 
         /**Sets up lesson view for all the days*/
-        private fun setupLessons(
-            table: TableLayout, week: Week, cycle: Cycle?,
-            validHours: DataIdList<Hour>, inflater: LayoutInflater, height: Int
+        private suspend fun setupLessons(
+            table: TableLayout, week: Week, cycle: Cycle?, validHours: DataIdList<Hour>
         ) {
-            val context = table.context
-
             //creating actual timetable
-            for (day in week.days) {
+            for (i in 0 until week.days.size) {
+                val day = week.days[i]
+
+                //regular day
+                val row = table.getChildAt(i * 2 + 1) as TableRow
+                val holiday = table.getChildAt(i * 2 + 2)
 
                 if (!day.isHoliday() || week.isPermanent()) {
 
-                    //regular day
-                    val row = TableRow(context)
-                    table.addView(row)
+                    for (j in 0 until validHours.size) {
+                        val hour = validHours[j]
 
-                    for (i in 0 until week.hours.size) {
-                        val hour = week.hours[i]
+                        //TODO remove
+                        //val timer = Timer("setupLesson")
 
-                        //deleting free columns
-                        if (!validHours.contains(hour))
-                            continue
+                        val cell = row.getChildAt(j)
 
-                        val view = inflater.inflate(R.layout.timetable_lesson, row, false)
+                        //timer.print()
 
                         //updates texts in the cell
                         CellSetup.setUpCell(
-                            view,
+                            cell,
                             week,
                             day,
                             hour,
                             cycle
                         )
 
+                        //timer.print()
+
                         //shows info on click
                         val lesson = day.getLesson(hour, cycle)
                         if (lesson != null) {
-                            view.setOnClickListener(
+                            cell.setOnClickListener(
                                 CellSetup.ShowLessonInfo(
                                     week,
                                     day,
@@ -228,34 +299,23 @@ class TimetableCreator {
                             )
                         }
 
-                        //changes size to match the others
-                        val params = TableRow.LayoutParams()
-                        params.width = App.getDimension(R.dimen.timetable_column_size)
-                        params.height = height
-                        view.layoutParams = params
-                        view.minimumWidth = params.width
-
-                        row.gravity = Gravity.CENTER_VERTICAL
-                        row.addView(view)
+                        row.visibility = View.VISIBLE
+                        holiday.visibility = View.GONE
                     }
                 } else {
 
                     //during holiday
-                    val holiday =
-                        inflater.inflate(R.layout.timetable_holiday, table, false)
 
                     //updates texts
                     holiday.findViewById<TextView>(R.id.holiday).text = day.getHolidayDescription()
-                    holiday.findViewById<TextView>(R.id.holiday).textAlignment = TextView.TEXT_ALIGNMENT_VIEW_START
+                    holiday.findViewById<TextView>(R.id.holiday).textAlignment =
+                        TextView.TEXT_ALIGNMENT_VIEW_START
 
-                    //changes size to match the others
-                    val params = TableLayout.LayoutParams()
-                    params.width = App.getDimension(R.dimen.timetable_column_size) * validHours.size
-                    params.height = height
-                    holiday.layoutParams = params
-
-                    table.addView(holiday)
+                    row.visibility = View.GONE
+                    holiday.visibility = View.VISIBLE
                 }
+
+                yield()
             }
         }
 

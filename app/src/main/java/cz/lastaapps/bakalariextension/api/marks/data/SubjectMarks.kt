@@ -23,7 +23,7 @@ package cz.lastaapps.bakalariextension.api.marks.data
 import cz.lastaapps.bakalariextension.api.DataIdList
 
 /**Subject marking info with marks and subject info*/
-class SubjectMarks (
+class SubjectMarks(
     val marks: DataIdList<Mark>,
     val subject: Subject,
     val averageText: String,
@@ -32,5 +32,9 @@ class SubjectMarks (
     val tempMarkNote: String,
     val pointsOnly: Boolean,
     val predictorEnabled: Boolean
-){
+) {
+    companion object {
+        val default: SubjectMarks
+            get() = SubjectMarks(DataIdList(), Subject("", "", ""), "0,00", "", "", "", false, false)
+    }
 }

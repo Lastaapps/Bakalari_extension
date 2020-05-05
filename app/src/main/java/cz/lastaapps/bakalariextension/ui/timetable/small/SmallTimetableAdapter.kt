@@ -34,27 +34,30 @@ import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import cz.lastaapps.bakalariextension.ui.timetable.CellSetup
 import kotlin.math.max
 
-
+/**Adapter supplying view for small timetable fragment*/
 class SmallTimetableAdapter(var context: Context, var week: Week, var day: Day) : BaseAdapter() {
 
+    //witch lesson should be shown
     private var firstIndex = 0
     private var lastIndex = 0
-    private val inflater =
-        context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+    private val inflater = LayoutInflater.from(context)
 
     init {
         firstIndex = day.firstLessonIndex(week.hours)
         lastIndex = day.lastLessonIndex(week.hours)
     }
 
+    /**id day is not empty*/
     fun valid(): Boolean {
         return !(firstIndex < 0 || lastIndex < 0 || lastIndex < firstIndex)
     }
 
     override fun getView(position: Int, changedView: View?, parent: ViewGroup?): View {
         val view = changedView ?: {
+
             val view = inflater.inflate(R.layout.timetable_lesson, parent, false)
 
+            //view setup
             view.minimumWidth = App.getDimension(R.dimen.timetable_column_size)
             view.minimumHeight = App.getDimension(R.dimen.timetable_row_height)
             val params = AbsListView.LayoutParams(
@@ -65,8 +68,10 @@ class SmallTimetableAdapter(var context: Context, var week: Week, var day: Day) 
             view
         }.invoke()
 
+        //lesson to be shows
         val hour = week.hours[position + firstIndex]
 
+        //sets texts
         CellSetup.setUpCell(
             view,
             week,
@@ -75,6 +80,7 @@ class SmallTimetableAdapter(var context: Context, var week: Week, var day: Day) 
             null
         )
 
+        //shows some lesson info on click
         view.setOnClickListener(
             CellSetup.ShowLessonInfo(
                 week,

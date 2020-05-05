@@ -72,10 +72,7 @@ class SmallTimetableFragment : Fragment {
     ): View? {
         Log.i(TAG, "Creating view for SmallTimetable fragment")
 
-        view =
-            SmallTimetableView(
-                inflater.context
-            )
+        view = SmallTimetableView(inflater.context)
 
         return view
     }

@@ -30,6 +30,9 @@
     <color name="bottom_nav_background">#AAA</color>
     <color name="bottom_nav_foreground">#00ACC1</color>
 
+    <color name="light">#FFF</color>
+    <color name="dark">#000</color>
+
     <color name="github_background">#FFF</color>
     <color name="github_foreground">#000</color>
 

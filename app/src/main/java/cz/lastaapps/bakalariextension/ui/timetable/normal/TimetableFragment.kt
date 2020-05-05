@@ -27,16 +27,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageButton
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.MainActivity
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.timetable.TTStorage
 import cz.lastaapps.bakalariextension.api.timetable.Timetable
+import cz.lastaapps.bakalariextension.databinding.FragmentTimetableBinding
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.tools.Timer
 import cz.lastaapps.bakalariextension.tools.lastUpdated
 import kotlinx.coroutines.*
 import kotlin.math.abs
@@ -50,7 +51,7 @@ class TimetableFragment : Fragment() {
     }
 
     //root view of the timetable
-    private lateinit var root: View
+    private lateinit var binding: FragmentTimetableBinding
 
     //row height
     private var height: Int = 0
@@ -61,12 +62,26 @@ class TimetableFragment : Fragment() {
     //ViewModel storing all the not orientation related data
     private lateinit var vm: TimetableViewModel
 
+    private lateinit var scope: CoroutineScope
+
+    /**how many rows does timetable have right now*/
+    private var setOnLessons = -1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         //inits view model holding data
         val v: TimetableViewModel by requireActivity().viewModels()
         vm = v
+
+        scope = CoroutineScope(Dispatchers.Main)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        //cancel running work
+        scope.cancel()
     }
 
     override fun onStart() {
@@ -99,108 +114,112 @@ class TimetableFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val timer = Timer(TAG)
+
         //inflates views
-        root = inflater.inflate(R.layout.fragment_timetable, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_timetable, container, false)
+
+        timer.print()
 
         //checks for height of timetables to make all rows same height
-        val tableBox = root.findViewById<ViewGroup>(R.id.table_box)
-        tableBox.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                height = tableBox.measuredHeight / 6
-                //val width: Int = edge.measuredWidth
-                if (height != 0)
-                    tableBox.viewTreeObserver.removeOnGlobalLayoutListener(this)
-            }
-        })
+        binding.apply {
 
-        //moves in weeks or cycles backward
-        root.findViewById<ImageButton>(R.id.previous_week).setOnClickListener {
-            if (!vm.isPermanent) {
 
-                vm.dateTime = TimeTools.previousWeek(vm.dateTime)
-
-            } else {
-
-                vm.cycleIndex--
-                val week = vm.week
-                if (week != null && vm.cycleIndex < 0) {
-                    vm.cycleIndex = week.cycles.size - 1
+            tableBox.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    height = tableBox.measuredHeight / 6
+                    //val width: Int = edge.measuredWidth
+                    if (height != 0)
+                        tableBox.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
+            })
+
+            //moves in weeks or cycles backward
+            previousWeek.setOnClickListener {
+                if (!vm.isPermanent) {
+
+                    vm.dateTime = TimeTools.previousWeek(vm.dateTime)
+
+                } else {
+
+                    vm.cycleIndex--
+                    val week = vm.week
+                    if (week != null && vm.cycleIndex < 0) {
+                        vm.cycleIndex = week.cycles.size - 1
+                    }
+                }
+
+                updateTimetable()
+            }
+            //moves in weeks or cycles forward
+            nextWeek.setOnClickListener {
+
+                if (!vm.isPermanent) {
+                    vm.dateTime = TimeTools.nextWeek(vm.dateTime)
+
+                } else {
+
+                    vm.cycleIndex++
+                    val week = vm.week
+                    if (week != null && vm.cycleIndex > (week.cycles.size - 1)) {
+                        vm.cycleIndex = 0
+                    }
+                }
+
+                updateTimetable()
             }
 
-            updateTimetable()
-        }
-        //moves in weeks or cycles forward
-        root.findViewById<ImageButton>(R.id.next_week).setOnClickListener {
-
-            if (!vm.isPermanent) {
-                vm.dateTime = TimeTools.nextWeek(vm.dateTime)
-
-            } else {
-
-                vm.cycleIndex++
-                val week = vm.week
-                if (week != null && vm.cycleIndex > (week.cycles.size - 1)) {
+            //changes to permanent or actual timetable
+            permanentSwitch.setOnClickListener {
+                if (vm.isPermanent) {
                     vm.cycleIndex = 0
+                    (it as ImageButton).setImageDrawable(
+                        root.context.resources.getDrawable(R.drawable.permanent)
+                    )
+
+                } else {
+                    (it as ImageButton).setImageDrawable(
+                        root.context.resources.getDrawable(R.drawable.actual)
+                    )
                 }
+
+                vm.isPermanent = !vm.isPermanent
+                updateTimetable()
             }
 
-            updateTimetable()
-        }
-
-        //changes to permanent or actual timetable
-        root.findViewById<ImageButton>(R.id.permanent_switch).setOnClickListener {
-            if (vm.isPermanent) {
-                vm.cycleIndex = 0
-                (it as ImageButton).setImageDrawable(
-                    root.context.resources.getDrawable(R.drawable.permanent)
-                )
-
-            } else {
-                (it as ImageButton).setImageDrawable(
-                    root.context.resources.getDrawable(R.drawable.actual)
-                )
+            /**Reloads timetable from server*/
+            reload.setOnClickListener {
+                updateTimetable(true)
             }
 
-            vm.isPermanent = !vm.isPermanent
-            updateTimetable()
-        }
-
-        /**Reloads timetable from server*/
-        root.findViewById<ImageButton>(R.id.reload).setOnClickListener {
-            updateTimetable(true)
-        }
-
-        /**navigates back to today if user is somewhere in a future or a history*/
-        root.findViewById<ImageButton>(R.id.home).setOnClickListener {
-            vm.dateTime = TimeTools.monday
-            it.visibility = View.GONE
-            updateTimetable()
+            /**navigates back to today if user is somewhere in a future or a history*/
+            home.setOnClickListener {
+                vm.dateTime = TimeTools.monday
+                it.visibility = View.GONE
+                updateTimetable()
+            }
         }
 
         updateTimetable()
 
-        return root
+        return binding.root
     }
 
     /**Updates timetable for new week / cycle*/
     private fun updateTimetable(forceReload: Boolean = false) {
-        val scope = CoroutineScope(Dispatchers.Main)
+
         scope.launch {
 
             //finding views
-            val progressBar = root.findViewById<ProgressBar>(R.id.progress_bar)
-            val errorMessage = root.findViewById<TextView>(R.id.error_message)
-            val table = root.findViewById<View>(R.id.table_box)
-            val bottomBox = root.findViewById<ViewGroup>(R.id.bottom_box)
-            val lastUpdated = root.findViewById<TextView>(R.id.last_updated)
+            binding.apply {
+                //setting loading state
+                progressBar.visibility = View.VISIBLE
+                errorMessage.visibility = View.GONE
+                tableBox.visibility = View.INVISIBLE
+                bottomBox.visibility = View.INVISIBLE
+                bottomBox.isEnabled = false
+            }
 
-            //setting loading state
-            progressBar.visibility = View.VISIBLE
-            errorMessage.visibility = View.GONE
-            table.visibility = View.INVISIBLE
-            bottomBox.visibility = View.INVISIBLE
-            bottomBox.isEnabled = false
 
             //loads timetable and row height
             withContext(Dispatchers.IO) {
@@ -213,27 +232,24 @@ class TimetableFragment : Fragment() {
                 val week = Timetable.loadTimetable(toLoad, forceReload)
                 vm.week = week
 
-                while (height == 0)
+                //waits until view is laid out
+                while (height <= 0)
                     delay(1)
 
                 //updated UI with downloaded data
                 withContext(Dispatchers.Main) {
 
-                    bottomBox.isEnabled = true
-
-                    progressBar.visibility = View.GONE
-                    bottomBox.visibility = View.VISIBLE
+                    yield()
 
                     if (week == null) {
                         //failed to load week
-                        errorMessage.visibility = View.VISIBLE
-                        errorMessage.text = getString(R.string.error_no_timetable_no_internet)
-                        lastUpdated.text = ""
-                    } else {
-                        table.visibility = View.VISIBLE
+                        binding.apply {
+                            errorMessage.visibility = View.VISIBLE
+                            errorMessage.text = getString(R.string.error_no_timetable_no_internet)
+                            lastUpdated.text = ""
+                        }
 
-                        //sets text like Next week, last updated 12:00 30.2.2020
-                        lastUpdated.text = lastUpdatedText()
+                    } else {
 
                         val cycle =
                             if (vm.isPermanent) {
@@ -247,12 +263,47 @@ class TimetableFragment : Fragment() {
                                 else
                                     null
 
+                        yield()
+
+                        //TODO remove
+                        val timer = Timer(TAG)
+
+                        val lessons = week.trimFreeMorning().size
+                        if (setOnLessons != lessons) {
+                            TimetableCreator.prepareTimetable(binding.root, height, lessons)
+                            setOnLessons = lessons
+                        }
+
+                        timer.print()
+
+                        yield()
+
+                        timer.print()
+
                         //creates actual timetable
                         TimetableCreator.createTimetable(
-                            root,
+                            binding.root,
                             week,
                             cycle
                         )
+                        timer.print()
+
+                        yield()
+
+                        binding.apply {
+                            //sets text like Next week, last updated 12:00 30.2.2020
+                            lastUpdated.text = lastUpdatedText()
+
+                            yield()
+
+                            tableBox.visibility = View.VISIBLE
+                        }
+                    }
+
+                    binding.apply {
+                        progressBar.visibility = View.GONE
+                        bottomBox.visibility = View.VISIBLE
+                        bottomBox.isEnabled = true
                     }
                 }
             }
@@ -276,7 +327,7 @@ class TimetableFragment : Fragment() {
 
 
                 //show button whits takes user back to today
-                root.findViewById<ImageButton>(R.id.home).visibility = if (diff in -2..2) {
+                binding.home.visibility = if (diff in -2..2) {
                     View.GONE
                 } else {
                     View.VISIBLE
@@ -318,7 +369,7 @@ class TimetableFragment : Fragment() {
                 TimeTools.PERMANENT
         )
         lastUpdated?.let {
-            toReturn += ", " + lastUpdated(requireContext(), it)
+            toReturn += ", " + lastUpdated(App.context, it)
         }
 
         return toReturn

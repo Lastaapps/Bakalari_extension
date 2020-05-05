@@ -42,21 +42,6 @@ import cz.lastaapps.bakalariextension.tools.TimeTools
  */
 class SmallTimetableWidget : AppWidgetProvider() {
 
-    companion object {
-        /**Updates SmallTimetable widgets*/
-        fun update(context: Context) {
-            val intent = Intent(context, SmallTimetableWidget::class.java)
-            intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
-
-            val ids: IntArray = AppWidgetManager.getInstance(App.app)
-                .getAppWidgetIds(
-                    ComponentName(context, SmallTimetableWidget::class.java)
-                )
-            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
-            context.sendBroadcast(intent)
-        }
-    }
-
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -75,99 +60,112 @@ class SmallTimetableWidget : AppWidgetProvider() {
     override fun onEnabled(context: Context) {}
 
     override fun onDisabled(context: Context) {}
-}
 
-internal fun updateAppWidget(
-    context: Context,
-    appWidgetManager: AppWidgetManager,
-    widgetId: Int
-) {
-    // Construct the RemoteViews object
-    val views = RemoteViews(context.packageName, R.layout.widget_small_timetable)
+    companion object {
+        /**Updates SmallTimetable widgets*/
+        fun update(context: Context) {
+            val intent = Intent(context, SmallTimetableWidget::class.java)
+            intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
 
-    setupWidget(views, widgetId, context)
+            val ids: IntArray = AppWidgetManager.getInstance(App.app)
+                .getAppWidgetIds(
+                    ComponentName(context, SmallTimetableWidget::class.java)
+                )
+            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
+            context.sendBroadcast(intent)
+        }
 
-    // Instruct the widget manager to update the widget
-    appWidgetManager.updateAppWidget(widgetId, views)
-}
+        fun updateAppWidget(context: Context, appWidgetManager: AppWidgetManager, widgetId: Int) {
+            // Construct the RemoteViews object
+            val views = RemoteViews(context.packageName, R.layout.widget_small_timetable)
 
-/**sets up remote view*/
-private fun setupWidget(views: RemoteViews, widgetId: Int, context: Context) {
+            setupWidget(views, widgetId, context)
 
-    //changes background
-    val background = applyAlpha(
-        widgetId, if (isLight(widgetId))
-            R.color.widget_background
-        else
-            R.color.widget_background_dark
-    )
-    views.setInt(R.id.widget_root, "setBackgroundColor", background)
+            // Instruct the widget manager to update the widget
+            appWidgetManager.updateAppWidget(widgetId, views)
+        }
 
-    //changes error text color
-    views.setTextColor(
-        R.id.error_message, App.getColor(
-            if (isLight(widgetId))
-                R.color.widget_foreground
-            else
-                R.color.widget_foreground_dark
-        )
-    )
+        /**sets up remote view*/
+        fun setupWidget(views: RemoteViews, widgetId: Int, context: Context) {
 
-    //opens full timetable
-    val intent = Intent(context, LoadingActivity::class.java)
-    intent.putExtra(MainActivity.NAVIGATE, R.id.nav_timetable)
-    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-    val pendingIntent = PendingIntent.getActivity(
-        context,
-        1,
-        intent,
-        PendingIntent.FLAG_UPDATE_CURRENT
-    )
-    views.setPendingIntentTemplate(R.id.grid_view, pendingIntent)
+            val config = SmallTimetableWidgetConfig.updater
 
-    //loads week
-    val week = Timetable.loadFromStorage(TimeTools.monday)
+            //changes background
+            val background = config.applyAlpha(
+                widgetId, if (config.isLight(widgetId))
+                    R.color.widget_background
+                else
+                    R.color.widget_background_dark
+            )
+            views.setInt(R.id.widget_root, "setBackgroundColor", background)
 
-    //week is not downloaded yet
-    if (week == null) {
-        views.setViewVisibility(R.id.error_message, View.VISIBLE)
-        return
-    }
-    val day = week.today()
-    //on weekend is null
-    if (day == null) {
-        views.setViewVisibility(R.id.error_message, View.VISIBLE)
-        return
-    }
+            //changes error text color
+            views.setTextColor(
+                R.id.error_message, App.getColor(
+                    if (config.isLight(widgetId))
+                        R.color.widget_foreground
+                    else
+                        R.color.widget_foreground_dark
+                )
+            )
 
-    views.setEmptyView(R.id.grid_view, R.id.error_message)
+            //opens full timetable
+            val intent = Intent(context, LoadingActivity::class.java)
+            intent.putExtra(MainActivity.NAVIGATE, R.id.nav_timetable)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            val pendingIntent = PendingIntent.getActivity(
+                context,
+                1,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+            views.setPendingIntentTemplate(R.id.grid_view, pendingIntent)
 
-    //differs for holiday and workday
-    if (!day.isHoliday()) {
+            //loads week
+            val week = Timetable.loadFromStorage(TimeTools.monday)
 
-        //intent to start service providing data for widget
-        val gridViewsServiceIntent =
-            Intent(context, SmallTimetableRemoteAdapterService::class.java)
-        //puts in widget id
-        gridViewsServiceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
-        //puts in today's date
-        gridViewsServiceIntent.putExtra(
-            SmallTimetableRemoteAdapterService.DATE_EXTRA,
-            TimeTools.now.toInstant().toEpochMilli()
-        )
-        gridViewsServiceIntent.data = Uri.parse(
-            gridViewsServiceIntent.toUri(Intent.URI_INTENT_SCHEME)
-        )
+            //week is not downloaded yet
+            if (week == null) {
+                views.setViewVisibility(R.id.error_message, View.VISIBLE)
+                return
+            }
+            val day = week.today()
+            //on weekend is null
+            if (day == null) {
+                views.setViewVisibility(R.id.error_message, View.VISIBLE)
+                return
+            }
 
-        //adds remote adapter service
-        views.setViewVisibility(R.id.grid_view, View.VISIBLE)
-        views.setRemoteAdapter(R.id.grid_view, gridViewsServiceIntent)
+            views.setEmptyView(R.id.grid_view, R.id.error_message)
 
-    } else {
+            //differs for holiday and workday
+            if (!day.isHoliday()) {
 
-        //sets up holiday view
-        views.setTextViewText(R.id.holiday, day.getHolidayDescription())
-        views.setViewVisibility(R.id.cell_main, View.VISIBLE)
+                //intent to start service providing data for widget
+                val gridViewsServiceIntent =
+                    Intent(context, SmallTimetableRemoteAdapterService::class.java)
+                //puts in widget id
+                gridViewsServiceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+                //puts in today's date
+                gridViewsServiceIntent.putExtra(
+                    SmallTimetableRemoteAdapterService.DATE_EXTRA,
+                    TimeTools.now.toInstant().toEpochMilli()
+                )
+                gridViewsServiceIntent.data = Uri.parse(
+                    gridViewsServiceIntent.toUri(Intent.URI_INTENT_SCHEME)
+                )
+
+                //adds remote adapter service
+                views.setViewVisibility(R.id.grid_view, View.VISIBLE)
+                views.setRemoteAdapter(R.id.grid_view, gridViewsServiceIntent)
+
+            } else {
+
+                //sets up holiday view
+                views.setTextViewText(R.id.holiday, day.getHolidayDescription())
+                views.setViewVisibility(R.id.cell_main, View.VISIBLE)
+            }
+        }
     }
 }

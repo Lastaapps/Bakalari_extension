@@ -61,7 +61,7 @@ data class Week(
     }
 
     /**trims hours from beginning, where there is no lesson during whole week*/
-    fun getNotEmptyHours(): DataIdList<Hour> {
+    fun trimFreeMorning(): DataIdList<Hour> {
         var min = hours.size
         for (day in days) {
             val firstLesson = day.firstLessonIndex(hours)

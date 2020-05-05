@@ -27,7 +27,6 @@ import android.util.Log
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.api.User
 import cz.lastaapps.bakalariextension.api.marks.MarksStorage
-import cz.lastaapps.bakalariextension.api.timetable.JSONParser
 import cz.lastaapps.bakalariextension.api.timetable.TTStorage
 import cz.lastaapps.bakalariextension.receivers.BootReceiver
 import cz.lastaapps.bakalariextension.receivers.TimeChangeReceiver
@@ -51,11 +50,9 @@ class Logout {
 
             //deletes timetables
             TTStorage.deleteAll()
-            JSONParser.releaseActualCache()
 
             //deletes marks
             MarksStorage.delete()
-            cz.lastaapps.bakalariextension.api.marks.JSONParser.releaseActualCache()
 
             //disables receivers
             val receivers = arrayOf(

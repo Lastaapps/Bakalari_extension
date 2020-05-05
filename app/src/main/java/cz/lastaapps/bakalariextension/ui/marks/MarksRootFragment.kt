@@ -110,7 +110,7 @@ class MarksRootFragment : Fragment() {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
 
-            //loasds marks from storage
+            //loads marks from storage
             val allSubjectMarks = viewModel.marks.value
                 ?: Marks.loadFromStorage()
 

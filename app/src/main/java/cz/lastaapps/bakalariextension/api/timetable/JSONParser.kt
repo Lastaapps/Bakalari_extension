@@ -23,7 +23,6 @@ package cz.lastaapps.bakalariextension.api.timetable
 import android.util.Log
 import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.timetable.data.*
-import cz.lastaapps.bakalariextension.tools.TimeTools
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -33,34 +32,13 @@ class JSONParser {
     companion object {
         private val TAG = JSONParser::class.java.simpleName
 
-        //caching current week for faster app performance
-        private var actualWeek: Week? = null
-        private var actualWeekHash = -1
-
-        //releases cached data (on logout)
-        fun releaseActualCache() {
-            actualWeek = null
-            actualWeekHash = -1
-        }
-
         /**Parses timetable from json, scheme on https://github.com/bakalari-api/bakalari-api-v3
          * @param loadedForDate which date was put into TTStorage or to API request*/
         fun parseJson(loadedForDate: ZonedDateTime, root: JSONObject): Week {
 
             Log.i(TAG, "Parsing timetable json")
 
-            val isActual = isActual(root)
-            if (isActual) {
-                if (root.toString().hashCode() == actualWeekHash) {
-                    val actualWeek = actualWeek
-                    if (actualWeek != null) {
-                        Log.i(TAG, "Using cached week")
-                        return actualWeek
-                    }
-                }
-            }
-
-            val week = Week(
+            return Week(
                 parseHours(root.getJSONArray("Hours")),
                 parseDays(root.getJSONArray("Days")),
                 parseClasses(root.getJSONArray("Classes")),
@@ -71,22 +49,6 @@ class JSONParser {
                 parseCycles(root.getJSONArray("Cycles")),
                 loadedForDate
             )
-
-            if (isActual) {
-                actualWeek = week
-                actualWeekHash = week.toString().hashCode()
-            }
-
-            return week
-        }
-
-        private fun isActual(json: JSONObject): Boolean {
-            val cal = TimeTools.parse(
-                json.getJSONArray("Days").getJSONObject(0).getString("Date"),
-                TimeTools.COMPLETE_FORMAT
-            )
-
-            return TimeTools.toDate(TimeTools.toMonday(cal)) == TimeTools.monday.toLocalDate()
         }
 
         private fun parseHours(jsonArray: JSONArray): DataIdList<Hour> {

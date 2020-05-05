@@ -125,7 +125,7 @@ class SmallTimetableRemoteViewsFactory(private val context: Context, private val
         for (it in array) {
             views.setTextColor(
                 it, App.getColor(
-                    if (isLight(widgetId))
+                    if (SmallTimetableWidgetConfig.updater.isLight(widgetId))
                         R.color.widget_foreground
                     else
                         R.color.widget_foreground_dark

@@ -20,6 +20,7 @@
 
 package cz.lastaapps.bakalariextension.ui.marks.predictor
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -98,7 +99,7 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
             checkValidity()
             loadMarks()
             loadAddedMarks()
-            updateAverage()
+            updateNewAverage()
         }
 
         return binding.root
@@ -107,7 +108,7 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
     /**called when predicted marks was changed*/
     private fun marksUpdated() {
         loadAddedMarks()
-        updateAverage()
+        updateNewAverage()
     }
 
     /**updates views based on if subject has valid marks*/
@@ -159,7 +160,7 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
             //enables selection
             binding.subjectSpinner.onItemSelectedListener = this
             binding.subjectSpinner.isEnabled = true
-            
+
         } else {
             //special value - viewModel will return empty lists
             viewModel.predictorSelected.value = -1
@@ -186,6 +187,7 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
     private fun loadMarks() {
         val marks = viewModel.subjectMarks
 
+        viewModel.average.value = viewModel.selectedSubject.averageText
         binding.marksList.adapter = MarksAdapter(marks)
     }
 
@@ -217,16 +219,30 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
     }
 
     /**Recalculates average and updates text*/
-    private fun updateAverage() {
+    private fun updateNewAverage() {
         val list = DataIdList<Mark>()
 
         list.addAll(viewModel.predictorMarks)
         list.addAll(viewModel.subjectMarks)
 
         //calculates real average
-        val average = Mark.calculateAverage(list)
+        val newAverage = Mark.calculateAverage(list)
+        viewModel.newAverage.value = newAverage
 
-        binding.averageText = average
+        val marks = viewModel.subjectMarks
+        val comparison = viewModel.average.value!!.trim().compareTo(newAverage)
+        viewModel.newAverageColor.value =
+            when {
+                comparison == 0 || marks.isEmpty() || Mark.isMixed(marks) -> {
+                    ColorStateList.valueOf(resources.getColor(android.R.color.primary_text_light))
+                }
+                (comparison > 0) == Mark.isAllNormal(marks) -> {
+                    ColorStateList.valueOf(resources.getColor(android.R.color.holo_green_light))
+                }
+                else -> {
+                    ColorStateList.valueOf(resources.getColor(android.R.color.holo_red_light))
+                }
+            }
     }
 
     /**On subject selected*/

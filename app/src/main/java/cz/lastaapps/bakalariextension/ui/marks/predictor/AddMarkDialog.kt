@@ -29,6 +29,7 @@ import androidx.databinding.DataBindingUtil
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.marks.data.Mark
 import cz.lastaapps.bakalariextension.databinding.MarksPredictorAddMarkBinding
+import kotlin.math.max
 
 class AddMarkDialog {
 
@@ -45,6 +46,10 @@ class AddMarkDialog {
             val marksArray = arrayOf("1", "1-", "2", "2-", "3", "3-", "4", "4-", "5")
             bind.marksSpinner.adapter =
                 ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, marksArray)
+
+            if (!mark.isPoints) {
+                bind.marksSpinner.setSelection(max(0, marksArray.indexOf(mark.markText)))
+            }
 
             val dialog = AlertDialog.Builder(context).apply {
                 setCancelable(true)

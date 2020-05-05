@@ -21,14 +21,17 @@
 package cz.lastaapps.bakalariextension.ui.marks
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.marks.Marks
 import cz.lastaapps.bakalariextension.api.marks.data.Mark
 import cz.lastaapps.bakalariextension.api.marks.data.MarksAllSubjects
+import cz.lastaapps.bakalariextension.api.marks.data.SubjectMarks
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -74,8 +77,29 @@ class MarksViewModel : ViewModel() {
 
     // ---- Predictor section -----
 
+    //default average
+    val average = MutableLiveData("")
+
+    //text of new average
+    val newAverage = MutableLiveData("")
+
+    //color of new average
+    val newAverageColor = MutableLiveData(ColorStateList.valueOf(App.getColor(android.R.color.primary_text_dark)))
+
     /**Which subject was selected in predictor*/
     val predictorSelected = MutableLiveData(0)
+
+    val selectedSubject: SubjectMarks
+        get() {
+            //if there is no subject, index is -1
+            val index = predictorSelected.value!!
+            return if (index >= 0) {
+                //gets subject for selected index
+                marks.value!!.subjects[index]
+            } else {
+                SubjectMarks.default
+            }
+        }
 
     /**marks for subject selected right now in predictor*/
     val subjectMarks: DataIdList<Mark>

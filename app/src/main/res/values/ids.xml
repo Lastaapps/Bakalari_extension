@@ -20,28 +20,5 @@
   -->
 
 <resources>
-    <color name="colorPrimary">#C50</color>
-    <color name="colorPrimaryDark">#DE690C</color>
-    <color name="colorAccent">#0430D2</color>
-
-    <color name="side_nav_bar_start">#C6B654</color>
-    <color name="side_nav_bar_center">#A3943F</color>
-    <color name="side_nav_bar_end">#D7CA6C</color>
-
-    <color name="light">#000</color>
-    <color name="dark">#FFF</color>
-
-    <color name="github_background">#000</color>
-    <color name="github_foreground">#FFF</color>
-
-    <color name="icons_dark">#FFF</color>
-    <color name="icons_light">#000</color>
-
-    <color name="border">#777</color>
-
-    <color name="timetable_bottom_text">#333</color>
-    <color name="timetable_bottom_text_background">#CCC</color>
-    <color name="timetable_absence">#388E3C</color>
-    <color name="timetable_current">#FBC02D</color>
-    <color name="timetable_change">#D32F2F</color>
+    <item name="APPWIDGET_HOST_ID" type="id"/>
 </resources>

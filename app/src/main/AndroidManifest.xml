@@ -114,7 +114,8 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.timetable.small.widget.SmallTimetableWidgetConfigure"
+            android:name=".ui.timetable.small.widget.SmallTimetableWidgetConfig"
+            android:theme="@style/AppTheme.Transparent"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />

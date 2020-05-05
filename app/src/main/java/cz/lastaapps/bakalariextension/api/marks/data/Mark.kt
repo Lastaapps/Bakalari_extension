@@ -36,7 +36,7 @@ class Mark(
     /**What was test about*/
     var caption: String,
     var theme: String,
-    /**marks value to show, 1, 1-,... or number of points*/
+    /**marks value to show, 1, 1-,... or number of points like 0,69*/
     var markText: String,
     var teacherId: String,
     /**Type shortcut of mark - T, E, H,...*/
@@ -65,6 +65,7 @@ class Mark(
 
     /**Cashes parsed date*/
     private var _toDate: ZonedDateTime? = null
+
     /**@return parsed date of mark*/
     fun toDate(): ZonedDateTime {
         if (_toDate == null)
@@ -79,6 +80,7 @@ class Mark(
 
     /**Cashes parsed edited date*/
     private var _toEditDate: ZonedDateTime? = null
+
     /**@return parsed date of mark*/
     fun toEditDate(): ZonedDateTime {
         if (_toEditDate == null)
@@ -117,45 +119,48 @@ class Mark(
 
         /**@return marks average*/
         fun calculateAverage(marks: DataIdList<Mark>): String {
-            return when {
-                //no marks
-                marks.isEmpty() -> "0.00"
 
-                //normal marks
-                isAllNormal(marks) -> {
-                    var average = 0.0
-                    var weights = 0
+            return String.format(
+                Locale("cs"), "%.2f", when {
+                    //no marks
+                    marks.isEmpty() -> 0
 
-                    for (mark in marks) {
-                        average += parseMarkValue(mark.markText) * mark.weight
-                        weights += mark.weight
+                    //normal marks
+                    isAllNormal(marks) -> {
+                        var average = 0.0
+                        var weights = 0
+
+                        for (mark in marks) {
+                            average += parseMarkValue(mark.markText) * mark.weight
+                            weights += mark.weight
+                        }
+
+                        average /= weights
+
+                        (average * 100.0).roundToInt() / 100.0
                     }
 
-                    average /= weights
+                    //point marks
+                    isAllPoints(marks) -> {
+                        var average = 0.0
+                        var weights = 0
 
-                    ((average * 100.0).roundToInt() / 100.0).toString()
-                }
+                        for (mark in marks) {
+                            average += mark.markText.toDouble() / mark.maxPoints * mark.weight
+                            weights += mark.weight
+                        }
 
-                //point marks
-                isAllPoints(marks) -> {
-                    var average = 0.0
-                    var weights = 0
+                        average /= weights
 
-                    for (mark in marks) {
-                        average += mark.markText.toDouble() / mark.maxPoints * mark.weight
-                        weights += mark.weight
+                        (average * 100.0).roundToInt() / 100.0
                     }
 
-                    average /= weights
-
-                    ((average * 100.0).roundToInt() / 100.0).toString()
+                    //mixed marks
+                    else -> {
+                        0
+                    }
                 }
-
-                //mixed marks
-                else -> {
-                    "0.00"
-                }
-            }
+            )
         }
 
         /**Made for normal marks with - at the end like 1-

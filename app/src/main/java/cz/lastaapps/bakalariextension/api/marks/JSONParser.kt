@@ -34,39 +34,15 @@ class JSONParser {
     companion object {
         private val TAG = JSONParser::class.java.simpleName
 
-        //caching current week for faster app performance
-        private var marksCache: MarksAllSubjects? = null
-        private var marksCacheHash = -1
-
-        //releases cached data (on logout)
-        fun releaseActualCache() {
-            marksCache = null
-            marksCacheHash = -1
-        }
-
         /**Parses marks from json, scheme on https://github.com/bakalari-api/bakalari-api-v3*/
         fun parseJson(root: JSONObject): MarksAllSubjects {
 
             Log.i(TAG, "Parsing marks json")
 
-            //makes hash for faster loading
-            val newHash = root.toString().hashCode()
-            //tries to return hashed version
-            if (marksCache != null) {
-                if (newHash == marksCacheHash)
-                    return marksCache!!
-            }
-
             //parses whole json
-            val marks = MarksAllSubjects(
+            return MarksAllSubjects(
                 parseAllSubjects(root.getJSONArray("Subjects"))
             )
-
-            //updates cache
-            marksCache = marks
-            marksCacheHash = newHash
-
-            return marks
         }
 
         /**parse array in /Subjects */

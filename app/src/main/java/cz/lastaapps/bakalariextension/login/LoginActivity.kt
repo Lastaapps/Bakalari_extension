@@ -102,6 +102,12 @@ class LoginActivity : BaseActivity() {
             }
         }
 
+        //when enter pressed in password field
+        passwordEdit.setOnEditorActionListener {_, _ ,_ ->
+            login()
+            true
+        }
+
         loginButton.setOnClickListener {
             login()
         }
