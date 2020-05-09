@@ -158,15 +158,15 @@
 
 
             <ImageButton
-                android:id="@+id/licence"
+                android:id="@+id/license"
                 style="@style/AppTheme.SmallImageButton"
-                app:srcCompat="@drawable/nav_licence" />
+                app:srcCompat="@drawable/nav_license" />
 
             <TextView
                 style="@android:style/TextAppearance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/licence" />
+                android:text="@string/license" />
         </LinearLayout>
     </LinearLayout>
 

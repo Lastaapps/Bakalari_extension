@@ -46,6 +46,7 @@ import cz.lastaapps.bakalariextension.login.Logout
 import cz.lastaapps.bakalariextension.send.ReportIssueActivity
 import cz.lastaapps.bakalariextension.send.SendIdeaActivity
 import cz.lastaapps.bakalariextension.tools.BaseActivity
+import cz.lastaapps.bakalariextension.ui.license.LicenseActivity
 import cz.lastaapps.bakalariextension.ui.settings.SettingsActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -114,6 +115,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         if (navigateTo != -1)
             findNavController(R.id.nav_host_fragment).navigate(navigateTo)
 
+        //What's new - shown only once per version
+        if (WhatsNew(this).shouldShow()) {
+            WhatsNew(this).showDialog()
+        }
+
         //only on the first onCreate() call
         if (savedInstanceState == null)
             launchInit()
@@ -140,19 +146,18 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     /**options in the top right corner*/
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_settings -> {
-                startActivity(Intent(this, SettingsActivity::class.java))
-            }
-            else ->
-                return super.onOptionsItemSelected(item)
+        return if (onNavigationItemSelected(item)) {
+            true
+        } else {
+            super.onOptionsItemSelected(item)
         }
-        return true
     }
 
     /**When side navigation or the bottom bar was selected*/
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         Log.i(TAG, "Navigation item selected")
+
+        var toReturn = true
 
         when (item.itemId) {
             R.id.nav_home -> {
@@ -175,14 +180,18 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             R.id.nav_share -> {
                 val sendIntent: Intent = Intent().apply {
                     action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT, getString(R.string.share_message) + " https://play.google.com/store/apps/details?id=cz.lastaapps.bakalariextension")
+                    putExtra(
+                        Intent.EXTRA_TEXT,
+                        getString(R.string.share_message) + " https://play.google.com/store/apps/details?id=cz.lastaapps.bakalariextension"
+                    )
                     type = "text/plain"
                 }
                 val shareIntent = Intent.createChooser(sendIntent, null)
                 startActivity(shareIntent)
             }
             R.id.nav_rate -> {
-                val url = "https://play.google.com/store/apps/details?id=cz.lastaapps.bakalariextension"
+                val url =
+                    "https://play.google.com/store/apps/details?id=cz.lastaapps.bakalariextension"
                 val uri = Uri.parse(url)
                 startActivity(Intent(Intent.ACTION_VIEW, uri))
             }
@@ -212,7 +221,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
             R.id.nav_google_play -> {
                 //TODO app play store link
-                val url = "https://play.google.com/store/apps/dev?id=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+                val url =
+                    "https://play.google.com/store/apps/dev?id=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
                 val uri = Uri.parse(url)
                 startActivity(Intent(Intent.ACTION_VIEW, uri))
             }
@@ -226,11 +236,18 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 val uri = Uri.parse(url)
                 startActivity(Intent(Intent.ACTION_VIEW, uri))
             }
+            R.id.nav_license -> {
+                startActivity(Intent(this, LicenseActivity::class.java))
+            }
+            else -> {
+                toReturn = false
+            }
         }
 
         val drawer =
             findViewById<View>(R.id.drawer_layout) as DrawerLayout
         drawer.closeDrawer(GravityCompat.START)
-        return true
+
+        return toReturn
     }
 }

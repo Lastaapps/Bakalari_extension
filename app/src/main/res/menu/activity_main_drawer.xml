@@ -91,6 +91,10 @@
                 android:id="@+id/nav_api"
                 android:icon="@drawable/nav_api"
                 android:title="@string/menu_api" />
+            <item
+                android:id="@+id/nav_license"
+                android:icon="@drawable/nav_license"
+                android:title="@string/menu_license" />
         </menu>
     </item>
 

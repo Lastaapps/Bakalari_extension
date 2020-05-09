@@ -30,6 +30,7 @@ import cz.lastaapps.bakalariextension.login.LoginActivity
 import cz.lastaapps.bakalariextension.login.LoginData
 import cz.lastaapps.bakalariextension.tools.BaseActivity
 import cz.lastaapps.bakalariextension.tools.CheckInternet
+import cz.lastaapps.bakalariextension.ui.license.LicenseActivity
 import kotlinx.coroutines.*
 import java.lang.Runnable
 
@@ -57,12 +58,12 @@ class LoadingActivity : BaseActivity() {
         }
     }
 
-    /**Decides if app should be started or user need to accept licence or log in*/
+    /**Decides if app should be started or user need to accept license or log in*/
     private fun decision() {
         val scope = CoroutineScope(Dispatchers.Default)
         scope.launch {
 
-            if (LoginData.isLoggedIn() && Licence.check()) {
+            if (LoginData.isLoggedIn() && LicenseActivity.check()) {
 
                 Log.i(TAG, "Launching from saved data")
 
@@ -94,11 +95,11 @@ class LoadingActivity : BaseActivity() {
     /**What to do if user in not logged in*/
     private suspend fun onNotLoggedIn() {
 
-        //checks if user has accepted the licence
-        if (!Licence.check()) {
+        //checks if user has accepted the license
+        if (!LicenseActivity.check()) {
             withContext(Dispatchers.Main) {
-                //shows licence dialog
-                Licence.showDialog(this@LoadingActivity, Runnable {
+                //shows license dialog
+                LicenseActivity.showDialog(this@LoadingActivity, Runnable {
                     decision()
                 })
             }

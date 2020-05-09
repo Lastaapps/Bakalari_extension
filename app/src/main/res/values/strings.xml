@@ -71,15 +71,21 @@
         Without them, you wouldn\'t be reading this message now. The source api is below. Thank you very much!</string>
     <string name="about_follow">Feel free to follow me, share or check source code</string>
 
-    <!-- Licence -->
-    <string name="licence">Licence</string>
-    <string name="agree">Agree</string>
-    <string name="view_licence">View licence</string>
-    <string name="licence_agreement">This apps is distributed under GNU GPL-3.0 or later licence, open source code and licence can
-        be found in the About section. App collects some data about the app usage for future improvements
+    <!-- License -->
+    <string name="license">License</string>
+    <string name="licenses">Licenses</string>
+    <string name="license_agree">Agree</string>
+    <string name="license_view">View license</string>
+    <string name="license_agreement">This apps is distributed under GNU GPL-3.0 or later license, open source code license.\n
+        App collects some data about the app usage for future improvements
         using Firebase analytics. This data are anonymised and will also include your town and school
-        (you can switch it off in settings later). I am just interested to know how my app grows ;)</string>
-    <string name="title_activity_settings2">Settings</string>
+        (you can switch it off in settings). I am just interested to know how my app grows ;)\n
+        App also report crashes with no personal data.
+    </string>
+    <string name="license_show">Show license</string>
+    <string name="license_hide">Hide license</string>
+    <string name="license_gnu3">GNU GPL-3.0</string>
+    <string name="license_apache">Apache 2.0</string>
 
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>

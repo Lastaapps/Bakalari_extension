@@ -30,6 +30,7 @@
 
     <color name="light">#000</color>
     <color name="dark">#FFF</color>
+    <color name="gray_background">#888</color>
 
     <color name="github_background">#000</color>
     <color name="github_foreground">#FFF</color>

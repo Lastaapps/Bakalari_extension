@@ -71,9 +71,37 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:backgroundDimEnabled">false</item>
     </style>
-    <!--
 
-        <item name="android:windowIsTranslucent">true</item>
-     -->
+
+    <!-- License activity styles-->
+    <style name="License.Activity" parent="AppTheme">
+    </style>
+
+    <style name="License.Label" parent="AppTheme.Text">
+        <item name="android:textSize">@dimen/heading_text_size</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="License.Group" parent="AppTheme.Text">
+        <item name="android:layout_margin">10dp</item>
+    </style>
+
+    <style name="License.Type" parent="AppTheme.Text">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="License.Package" parent="AppTheme.Text">
+
+    </style>
+
+    <style name="License.ShowHide" parent="AppTheme.Text">
+
+    </style>
+
+    <style name="License.Content" parent="AppTheme.Text">
+        <item name="backgroundColor">@color/gray_background</item>
+        <item name="android:padding">10dp</item>
+    </style>
 
 </resources>

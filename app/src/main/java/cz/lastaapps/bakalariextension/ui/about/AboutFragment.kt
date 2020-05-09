@@ -32,9 +32,9 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import cz.lastaapps.bakalariextension.BuildConfig
-import cz.lastaapps.bakalariextension.Licence
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.WhatsNew
+import cz.lastaapps.bakalariextension.ui.license.LicenseActivity
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
@@ -119,9 +119,9 @@ class AboutFragment : Fragment() {
         root.findViewById<ImageButton>(R.id.whats_new).setOnClickListener {
             WhatsNew(requireContext()).showDialog()
         }
-        //view licence
-        root.findViewById<ImageButton>(R.id.licence).setOnClickListener {
-            Licence.viewLicence(requireContext())
+        //view license
+        root.findViewById<ImageButton>(R.id.license).setOnClickListener {
+            requireActivity().startActivity(Intent(requireContext(), LicenseActivity::class.java))
         }
 
         return root

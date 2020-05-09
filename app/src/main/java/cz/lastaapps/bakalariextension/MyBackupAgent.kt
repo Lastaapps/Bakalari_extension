@@ -27,7 +27,7 @@ import android.os.ParcelFileDescriptor
 import android.util.Log
 import cz.lastaapps.bakalariextension.login.LoginData
 
-/**Backs up login (sort off), licence and preferences to Google drive*/
+/**Backs up login (sort off), license and preferences to Google drive*/
 class MyBackupAgent : BackupAgent() {
     companion object {
         private val TAG = MyBackupAgent::class.java.simpleName

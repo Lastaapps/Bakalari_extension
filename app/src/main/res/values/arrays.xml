@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~
+  ~     This file is part of Bakalari extension.
+  ~
+  ~     Bakalari extension is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Bakalari extension is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<resources>
+    <array name="license_gnu3">
+        <item>@string/app_name</item>
+    </array>
+
+    <array name="license_apache">
+        <item>androidx.annotation:annotation</item>
+        <item>androidx.appcompat:appcompat</item>
+        <item>androidx.constraintlayout:constraintlayout</item>
+        <item>androidx.core:core-ktx</item>
+        <item>androidx.lifecycle:lifecycle-extensions</item>
+        <item>androidx.navigation:navigation-fragment-ktx</item>
+        <item>androidx.navigation:navigation-fragment</item>
+        <item>androidx.navigation:navigation-ui-ktx</item>
+        <item>androidx.navigation:navigation-ui</item>
+        <item>androidx.preference:preference</item>
+        <item>androidx.swiperefreshlayout:swiperefreshlayout</item>
+        <item>androidx.vectordrawable:vectordrawable</item>
+        <item>androidx.work:work-runtime-ktx</item>
+        <item>com.android.support:multidex</item>
+        <item>com.crashlytics.sdk.android:crashlytics</item>
+        <item>com.google.android.material</item>
+        <item>com.google.firebase:firebase-analytics</item>
+        <item>com.google.firebase:firebase-core</item>
+        <item>com.google.firebase:firebase-database</item>
+        <item>org.jetbrains.kotlinx:kotlinx-coroutines-android</item>
+        <item>org.jetbrains.kotlinx:kotlinx-coroutines-core</item>
+        <item>org.jetbrains.kotlin:kotlin-stdlib-jdk7</item>
+    </array>
+
+</resources>

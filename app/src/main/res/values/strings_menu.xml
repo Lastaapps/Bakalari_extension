@@ -36,5 +36,5 @@
     <string name="menu_google_play">Try more apps</string>
     <string name="menu_github">See code on Github</string>
     <string name="menu_api">Bakalari API doc</string>
-    <string name="menu_more">Try more apps</string>
+    <string name="menu_license">View license</string>
 </resources>

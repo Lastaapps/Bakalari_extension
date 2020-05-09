@@ -21,7 +21,7 @@
 
 <full-backup-content>
     <include domain="sharedpref" path="LOGIN.xml"/>
-    <include domain="sharedpref" path="LICENCE.xml"/>
+    <include domain="sharedpref" path="LICENSE.xml"/>
     <include domain="sharedpref" path="WHATS_NEW.xml"/>
     <!-- Settings -->
     <include domain="sharedpref" path="cz.lastaapps.bakalariextension_preferences.xml"/>
