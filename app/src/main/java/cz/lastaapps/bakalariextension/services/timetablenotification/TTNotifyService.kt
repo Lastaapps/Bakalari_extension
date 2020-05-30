@@ -35,7 +35,7 @@ import androidx.navigation.NavDeepLinkBuilder
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.MainActivity
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.timetable.Timetable
+import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import cz.lastaapps.bakalariextension.login.LoginData
 import cz.lastaapps.bakalariextension.tools.*
@@ -135,7 +135,7 @@ class TTNotifyService : BaseService() {
         //today
         val cal = TimeTools.today
         var week =
-            Timetable.loadFromStorage(
+            TimetableLoader.loadFromStorage(
                 cal
             )
 
@@ -144,7 +144,7 @@ class TTNotifyService : BaseService() {
             if (CheckInternet.canUseInternet() && CheckInternet.check()) {
 
                 week =
-                    Timetable.loadFromServer(
+                    TimetableLoader.loadFromServer(
                         cal
                     )
 

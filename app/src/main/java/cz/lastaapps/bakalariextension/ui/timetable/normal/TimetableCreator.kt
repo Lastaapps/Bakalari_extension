@@ -20,7 +20,6 @@
 
 package cz.lastaapps.bakalariextension.ui.timetable.normal
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,11 +27,11 @@ import android.widget.*
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.DataIdList
+import cz.lastaapps.bakalariextension.api.homework.data.Homework
 import cz.lastaapps.bakalariextension.api.timetable.data.Cycle
 import cz.lastaapps.bakalariextension.api.timetable.data.Hour
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import cz.lastaapps.bakalariextension.tools.TimeTools
-import cz.lastaapps.bakalariextension.tools.Timer
 import cz.lastaapps.bakalariextension.ui.timetable.CellSetup
 import kotlinx.coroutines.yield
 import org.threeten.bp.ZoneId
@@ -107,23 +106,22 @@ class TimetableCreator {
                         //holiday
 
                         //updates background of holiday, default w and h is match_parent
-                        view.getChildAt(0).layoutParams = RelativeLayout.LayoutParams(tableChildParams)
+                        view.getChildAt(0).layoutParams =
+                            RelativeLayout.LayoutParams(tableChildParams)
                     }
                 }
             }
         }
 
-        suspend fun createTimetable(root: View, week: Week, cycle: Cycle?) {
-
-            //TODO remove
-            val timer = Timer("TimetableCreator")
+        suspend fun createTimetable(
+            root: View,
+            week: Week,
+            cycle: Cycle?,
+            homework: DataIdList<Homework>?
+        ) {
 
             val daysTable = root.findViewById<LinearLayout>(R.id.table_days)
             val table = root.findViewById<TableLayout>(R.id.table)
-
-            val context = root.context
-            val inflater =
-                context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
             /**Height of one table row*/
             val height = root.findViewById<ViewGroup>(R.id.table_box).measuredHeight / 6
@@ -162,8 +160,6 @@ class TimetableCreator {
                     .visibility = View.GONE
             }
 
-            timer.print()
-
             yield()
 
             //sets up first row
@@ -175,17 +171,14 @@ class TimetableCreator {
 
             yield()
 
-            timer.print()
-
             //sets up oder rows
             setupLessons(
                 table,
                 week,
                 cycle,
-                validHours
+                validHours,
+                homework
             )
-
-            timer.print()
         }
 
         /**Sets up first column Mo-Fr except first edge cell*/
@@ -235,25 +228,22 @@ class TimetableCreator {
             for (i in 0 until validHours.size) {
                 val hour = validHours[i]
 
-                //TODO remove
-                //val timer = Timer("setupHours")
-
                 val viewGroup = numberRow.getChildAt(i)
-
-                //timer.print()
 
                 //sets texts
                 viewGroup.findViewById<TextView>(R.id.caption).text = hour.caption
                 viewGroup.findViewById<TextView>(R.id.begin).text = hour.begin
                 viewGroup.findViewById<TextView>(R.id.end).text = hour.end
-
-                //timer.print()
             }
         }
 
         /**Sets up lesson view for all the days*/
         private suspend fun setupLessons(
-            table: TableLayout, week: Week, cycle: Cycle?, validHours: DataIdList<Hour>
+            table: TableLayout,
+            week: Week,
+            cycle: Cycle?,
+            validHours: DataIdList<Hour>,
+            homework: DataIdList<Homework>?
         ) {
             //creating actual timetable
             for (i in 0 until week.days.size) {
@@ -268,12 +258,7 @@ class TimetableCreator {
                     for (j in 0 until validHours.size) {
                         val hour = validHours[j]
 
-                        //TODO remove
-                        //val timer = Timer("setupLesson")
-
                         val cell = row.getChildAt(j)
-
-                        //timer.print()
 
                         //updates texts in the cell
                         CellSetup.setUpCell(
@@ -281,10 +266,9 @@ class TimetableCreator {
                             week,
                             day,
                             hour,
-                            cycle
+                            cycle,
+                            homework
                         )
-
-                        //timer.print()
 
                         //shows info on click
                         val lesson = day.getLesson(hour, cycle)
@@ -294,7 +278,8 @@ class TimetableCreator {
                                     week,
                                     day,
                                     hour,
-                                    cycle
+                                    cycle,
+                                    homework
                                 )
                             )
                         }

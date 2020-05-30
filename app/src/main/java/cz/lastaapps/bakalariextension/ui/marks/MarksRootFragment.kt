@@ -31,7 +31,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.marks.Marks
+import cz.lastaapps.bakalariextension.api.marks.MarksLoader
 import cz.lastaapps.bakalariextension.api.marks.MarksStorage
 import cz.lastaapps.bakalariextension.api.marks.data.MarksAllSubjects
 import cz.lastaapps.bakalariextension.tools.lastUpdated
@@ -112,12 +112,12 @@ class MarksRootFragment : Fragment() {
 
             //loads marks from storage
             val allSubjectMarks = viewModel.marks.value
-                ?: Marks.loadFromStorage()
+                ?: MarksLoader.loadFromStorage()
 
             withContext(Dispatchers.Main) {
 
                 //refreshes marks from server if there ase no marks or they should be refreshed
-                if (Marks.shouldReload() || allSubjectMarks == null)
+                if (MarksLoader.shouldReload() || allSubjectMarks == null)
                     viewModel.onRefresh(requireContext())
 
                 loading.visibility = View.GONE

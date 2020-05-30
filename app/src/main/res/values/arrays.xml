@@ -25,6 +25,7 @@
     </array>
 
     <array name="license_apache">
+        <item>Android Studio icon clip art</item>
         <item>androidx.annotation:annotation</item>
         <item>androidx.appcompat:appcompat</item>
         <item>androidx.constraintlayout:constraintlayout</item>
@@ -47,6 +48,14 @@
         <item>org.jetbrains.kotlinx:kotlinx-coroutines-android</item>
         <item>org.jetbrains.kotlinx:kotlinx-coroutines-core</item>
         <item>org.jetbrains.kotlin:kotlin-stdlib-jdk7</item>
+    </array>
+
+    <array name="license_mit">
+        <item>https://github.com/edent/SuperTinyIcons</item>
+    </array>
+
+    <array name="license_mozilla">
+        <item>com.github.codekidX:storage-chooser</item>
     </array>
 
 </resources>

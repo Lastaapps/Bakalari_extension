@@ -56,6 +56,7 @@
         <item>cs</item>
         <item>en</item>
     </string-array>
+    <string name="sett_download_location">Download location</string>
 
     <!-- Timetable -->
     <string name="sett_timetable">Timetable</string>
@@ -110,6 +111,7 @@
     <string name="sett_key_dark_mode" translatable="false">dark_mode</string>
     <string name="sett_key_log_out" translatable="false">log_out</string>
     <string name="sett_key_language" translatable="false">language</string>
+    <string name="sett_key_download_location" translatable="false">download_location</string>
     <string name="sett_key_timetable_day" translatable="false">timetable_day</string>
     <string name="sett_key_timetable_notification" translatable="false">timetable_notification</string>
     <string name="sett_key_marks_new_mark" translatable="false">marks_new_mark</string>

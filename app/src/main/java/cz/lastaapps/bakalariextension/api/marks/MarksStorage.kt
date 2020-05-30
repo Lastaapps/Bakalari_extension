@@ -31,7 +31,7 @@ import java.io.File
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 
-/***/
+/**Manages marks saving and loading*/
 class MarksStorage {
 
     companion object {
@@ -45,7 +45,7 @@ class MarksStorage {
             marksCache = null
         }
 
-        /**Tries to load timetable for date given
+        /**Tries to load marks
          * @return json or null, if there isn't such a week saved*/
         fun load(): JSONObject? {
 
@@ -77,7 +77,7 @@ class MarksStorage {
             return json
         }
 
-        /**saves json for date given*/
+        /**saves json*/
         fun save(json: JSONObject) {
 
             marksCache = json
@@ -115,7 +115,7 @@ class MarksStorage {
             )
         }
 
-        /**deletes all saved timetables*/
+        /**deletes saved marks*/
         fun delete() {
             Log.e(TAG, "Deleting marks")
 

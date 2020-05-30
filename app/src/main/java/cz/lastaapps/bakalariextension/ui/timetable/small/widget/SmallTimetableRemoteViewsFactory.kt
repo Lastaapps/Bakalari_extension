@@ -22,14 +22,13 @@ package cz.lastaapps.bakalariextension.ui.timetable.small.widget
 
 import android.content.Context
 import android.content.Intent
-import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.LoadingActivity
 import cz.lastaapps.bakalariextension.MainActivity
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.timetable.Timetable
+import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
 import cz.lastaapps.bakalariextension.api.timetable.data.Day
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import cz.lastaapps.bakalariextension.ui.timetable.CellSetup
@@ -60,13 +59,13 @@ class SmallTimetableRemoteViewsFactory(private val context: Context, private val
         isEmpty = false
 
         //loads current week
-        var week = Timetable.loadFromStorage(date)
+        val week = TimetableLoader.loadFromStorage(date)
         if (week == null) {
             isEmpty = true
             return
         }
         //loads given day
-        var day = week.getDay(date)
+        val day = week.getDay(date)
         if (day == null) {
             isEmpty = true
             return
@@ -116,9 +115,6 @@ class SmallTimetableRemoteViewsFactory(private val context: Context, private val
 
         //sets background
         views.setInt(R.id.cell_main, "setBackgroundColor", color)
-
-        if (CellSetup.isHomeworkWarningVisible(week, day, hour, null))
-            views.setViewVisibility(R.id.homework_warning, View.VISIBLE)
 
         //sets text color based on widget theme
         val array = arrayOf(R.id.subject, R.id.teacher, R.id.room)

@@ -28,7 +28,7 @@ import androidx.lifecycle.ViewModel
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.DataIdList
-import cz.lastaapps.bakalariextension.api.marks.Marks
+import cz.lastaapps.bakalariextension.api.marks.MarksLoader
 import cz.lastaapps.bakalariextension.api.marks.data.Mark
 import cz.lastaapps.bakalariextension.api.marks.data.MarksAllSubjects
 import cz.lastaapps.bakalariextension.api.marks.data.SubjectMarks
@@ -55,7 +55,7 @@ class MarksViewModel : ViewModel() {
 
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
-            val newMarks = Marks.loadFromServer()
+            val newMarks = MarksLoader.loadFromServer()
 
             withContext(Dispatchers.Main) {
                 //hides refreshing icon
@@ -118,8 +118,7 @@ class MarksViewModel : ViewModel() {
     /**Contains predicted marks for all subjects, key is index of subject*/
     private val _predictorMarks = HashMap<Int, DataIdList<Mark>>()
 
-    /**@param index index of subject to load marks for, default #predictorSelected
-     * @return marks predicted and cashed (for selected subject)*/
+    /**@return marks predicted and cashed (for selected subject)*/
     val predictorMarks: DataIdList<Mark>
         get() {
             val index: Int = predictorSelected.value!!

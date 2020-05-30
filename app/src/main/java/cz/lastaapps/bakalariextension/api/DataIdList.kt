@@ -58,4 +58,11 @@ class DataIdList<T: DataID<*>>: ArrayList<T> {
         }
         return array
     }
+
+    fun getIndexById(id: Any?): Int {
+        getById(id)?.let {
+            return indexOf(it)
+        }
+        return -1
+    }
 }

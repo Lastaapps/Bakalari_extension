@@ -34,6 +34,7 @@ class TimeTools {
         const val TIME_FORMAT = "H:mm"
         val UTC = ZoneId.of("UTC")
         val CET = ZoneId.of("Europe/Prague")
+
         //used to request permanent timetable
         val PERMANENT: ZonedDateTime =
             toMonday(
@@ -97,6 +98,17 @@ class TimeTools {
         val monday: ZonedDateTime
             get() {
                 return toMonday(today)
+            }
+
+        /**The first September of this school year*/
+        val firstSeptember: ZonedDateTime
+            get() {
+                var firstSeptemberThisYear = today
+                    .withDayOfMonth(1)
+                    .withMonth(9 - 1)
+                while (firstSeptemberThisYear > today)
+                    firstSeptemberThisYear = firstSeptemberThisYear.minusYears(1)
+                return firstSeptemberThisYear
             }
 
         /**Trims dateTimes time to midnight

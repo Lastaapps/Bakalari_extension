@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
   ~
   ~     This file is part of Bakalari extension.
@@ -20,19 +19,78 @@
   -->
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <include
-        layout="@layout/timetable_lesson"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/cell_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        />
+        android:minWidth="@dimen/timetable_column_size"
+        android:minHeight="@dimen/timetable_row_height">
+
+        <RelativeLayout
+            android:id="@+id/cell_border"
+            style="@style/Timetable.Cell"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:minWidth="@dimen/timetable_column_size"
+            android:minHeight="@dimen/timetable_row_height">
+
+            <TextView
+                android:id="@+id/subject"
+                style="@style/Timetable.Lesson.Name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_centerInParent="true"
+                android:layout_margin="@dimen/timetable_margin"
+
+                android:text="ScvM" />
+
+            <TextView
+                android:id="@+id/teacher"
+                style="@style/Timetable.Lesson.Teacher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="@dimen/timetable_margin"
+
+                android:text="WK" />
+
+            <TextView
+                android:id="@+id/room"
+                style="@style/Timetable.Lesson.Room"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="@dimen/timetable_margin"
+
+                android:text="IVT-h" />
+
+            <ImageView
+                android:id="@+id/homework_warning"
+                style="@style/AppTheme.SmallImageButton"
+                android:layout_width="@dimen/timetable_homework_warning"
+                android:layout_height="@dimen/timetable_homework_warning"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="3dp"
+                android:visibility="gone"
+                app:srcCompat="@drawable/homework_warning" />
+        </RelativeLayout>
+    </FrameLayout>
 
     <ImageButton
         android:id="@+id/overlay_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/timetable_row_height"
         android:layout_gravity="center"
-        android:background="@null"/>
+        android:background="@null" />
 </FrameLayout>

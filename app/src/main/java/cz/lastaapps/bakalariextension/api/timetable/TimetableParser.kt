@@ -28,9 +28,9 @@ import org.json.JSONException
 import org.json.JSONObject
 import org.threeten.bp.ZonedDateTime
 
-class JSONParser {
+class TimetableParser {
     companion object {
-        private val TAG = JSONParser::class.java.simpleName
+        private val TAG = TimetableParser::class.java.simpleName
 
         /**Parses timetable from json, scheme on https://github.com/bakalari-api/bakalari-api-v3
          * @param loadedForDate which date was put into TTStorage or to API request*/
@@ -124,13 +124,13 @@ class JSONParser {
                 val item = Lesson(
                     json.getInt("HourId"),
                     groupIds,
-                    saveJson(json, "SubjectId"),
-                    saveJson(json, "TeacherId"),
-                    saveJson(json, "RoomId"),
+                    safeJson(json, "SubjectId"),
+                    safeJson(json, "TeacherId"),
+                    safeJson(json, "RoomId"),
                     cycleIds,
                     parseChange(change),
                     homeworkIds,
-                    saveJson(json, "Theme")
+                    safeJson(json, "Theme")
                 )
 
                 list.add(item)
@@ -143,11 +143,11 @@ class JSONParser {
             if (json == null) return null
 
             return Change(
-                saveJson(json, "ChangeSubject"),
+                safeJson(json, "ChangeSubject"),
                 json.getString("Day"),
                 json.getString("Hours"),
                 json.getString("ChangeType"),
-                saveJson(json, "description"),
+                safeJson(json, "description"),
                 json.getString("Time"),
                 json.getString("TypeAbbrev"),
                 json.getString("TypeName")
@@ -266,7 +266,7 @@ class JSONParser {
 
         /**try to get String for the key given, protection again JSONException
          * and replacing null object with ""*/
-        private fun saveJson(json: JSONObject, key: String): String {
+        private fun safeJson(json: JSONObject, key: String): String {
             return try {
                 return json.getString(key) ?: ""
             } catch (e: JSONException) {

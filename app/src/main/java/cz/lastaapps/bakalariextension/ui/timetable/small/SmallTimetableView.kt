@@ -31,6 +31,8 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
+import cz.lastaapps.bakalariextension.api.DataIdList
+import cz.lastaapps.bakalariextension.api.homework.data.Homework
 import cz.lastaapps.bakalariextension.api.timetable.data.Day
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
 
@@ -84,7 +86,7 @@ class SmallTimetableView : RelativeLayout {
         errorMessage.text = message
     }
 
-    fun updateTimetable(week: Week, day: Day) {
+    fun updateTimetable(week: Week, day: Day, homework: DataIdList<Homework>?) {
         progressBar.visibility = View.GONE
         errorMessage.visibility = View.GONE
 
@@ -92,7 +94,7 @@ class SmallTimetableView : RelativeLayout {
             table.visibility = View.VISIBLE
             holiday.visibility = View.GONE
 
-            createTimetable(week, day)
+            createTimetable(week, day, homework)
         } else {
             table.visibility = View.GONE
             holiday.visibility = View.VISIBLE
@@ -101,13 +103,14 @@ class SmallTimetableView : RelativeLayout {
         }
     }
 
-    private fun createTimetable(week: Week, day: Day) {
+    private fun createTimetable(week: Week, day: Day, homework: DataIdList<Homework>?) {
 
         val adapter =
             SmallTimetableAdapter(
                 context,
                 week,
-                day
+                day,
+                homework
             )
 
         if (!adapter.valid()) {

@@ -22,34 +22,43 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory app:title="@string/sett_general">
-        <SwitchPreferenceCompat app:key="@string/sett_key_mobile_data"
+        <SwitchPreferenceCompat
+            app:key="@string/sett_key_mobile_data"
             app:title="@string/sett_mobile_data"
-            app:defaultValue="@string/sett_dark_mode_default"/>
-        <ListPreference app:key="@string/sett_key_dark_mode"
+            app:defaultValue="@string/sett_dark_mode_default" />
+        <ListPreference
+            app:key="@string/sett_key_dark_mode"
             app:title="@string/sett_dark_mode"
             app:entries="@array/sett_dark_mode_entries"
             app:entryValues="@array/sett_dark_mode"
-            app:useSimpleSummaryProvider="true"/>
-        <Preference app:key="@string/sett_key_log_out"
-            app:title="@string/sett_log_out"/>
-        <ListPreference app:key="@string/sett_key_language"
+            app:useSimpleSummaryProvider="true" />
+        <Preference
+            app:key="@string/sett_key_log_out"
+            app:title="@string/sett_log_out" />
+        <ListPreference
+            app:key="@string/sett_key_language"
             app:title="@string/sett_language"
             app:entries="@array/sett_language_entries"
             app:entryValues="@array/sett_language"
-            app:useSimpleSummaryProvider="true"/>
+            app:useSimpleSummaryProvider="true" />
+        <Preference
+            app:key="@string/sett_key_download_location"
+            app:title="@string/sett_download_location" />
 
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/sett_timetable">
-        <ListPreference app:key="@string/sett_key_timetable_day"
+        <ListPreference
+            app:key="@string/sett_key_timetable_day"
             app:title="@string/sett_timetable_day_title"
             app:entries="@array/sett_timetable_day_entries"
             app:entryValues="@array/sett_timetable_day"
-            app:useSimpleSummaryProvider="true"/>
+            app:useSimpleSummaryProvider="true" />
 
-        <SwitchPreferenceCompat app:key="@string/sett_key_timetable_notification"
+        <SwitchPreferenceCompat
+            app:key="@string/sett_key_timetable_notification"
             app:title="@string/sett_timetable_notification_title"
-            app:defaultValue="@string/sett_timetable_notification_default"/>
+            app:defaultValue="@string/sett_timetable_notification_default" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/sett_marks">

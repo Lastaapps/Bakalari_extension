@@ -21,7 +21,7 @@
 
 <resources>
 
-    <style name="Marks.Text" parent="TextAppearance.AppCompat">
+    <style name="Marks.Text" parent="AppTheme.Text">
 
     </style>
     <style name="Marks.Mark" parent="Marks.Text">

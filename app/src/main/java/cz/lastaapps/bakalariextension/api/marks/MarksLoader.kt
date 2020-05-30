@@ -25,9 +25,9 @@ import cz.lastaapps.bakalariextension.api.ConnMgr
 import cz.lastaapps.bakalariextension.api.marks.data.MarksAllSubjects
 import cz.lastaapps.bakalariextension.tools.TimeTools
 
-class Marks {
+class MarksLoader {
     companion object {
-        private val TAG = Marks::class.java.simpleName
+        private val TAG = MarksLoader::class.java.simpleName
 
         /**Tries to load marks
          * At first from storage
@@ -58,11 +58,11 @@ class Marks {
             try {
                 Log.i(TAG, "Loading marks from server")
 
-                //downloads normal or permanent timetable
+                //downloads marks
                 val json = ConnMgr.serverGet("marks") ?: return null
 
                 //parses json
-                val week = JSONParser.parseJson(json)
+                val week = MarksParser.parseJson(json)
 
                 //saves json
                 MarksStorage.save(json)
@@ -85,7 +85,7 @@ class Marks {
 
                 //load json from storage
                 val json = MarksStorage.load() ?: return null
-                JSONParser.parseJson(json)
+                MarksParser.parseJson(json)
 
                 //for testing empty subject, subject with mixed marks and new marks
                 /*.apply {

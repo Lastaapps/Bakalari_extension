@@ -23,7 +23,6 @@ package cz.lastaapps.bakalariextension.api.timetable
 import android.util.Log
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.tools.TimeTools
-import cz.lastaapps.bakalariextension.tools.Timer
 import org.json.JSONObject
 import org.threeten.bp.Instant
 import org.threeten.bp.LocalTime
@@ -52,9 +51,6 @@ class TTStorage {
         /**Tries to load timetable for date given
          * @return json or null, if there isn't such a week saved*/
         fun load(cal: ZonedDateTime): JSONObject? {
-
-            //TODO remove
-            val timer = Timer(TAG)
 
             //check if the request is made for current week
             val isActual = isActual(cal)
@@ -85,8 +81,6 @@ class TTStorage {
             if (isActual) {
                 actualWeekCache = json
             }
-
-            timer.print()
 
             return json
         }

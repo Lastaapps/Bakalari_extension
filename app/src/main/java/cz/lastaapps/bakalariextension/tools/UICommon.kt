@@ -30,8 +30,11 @@ import org.threeten.bp.ZonedDateTime
 /**@return String representing when was something last updated in human readable form
  * Last updated 2 days ago*/
 fun lastUpdated(context: Context, lastUpdated: ZonedDateTime): String {
+    return formatTimeDifference(context, lastUpdated, TimeTools.now)
+}
 
-    val dur = Duration.between(lastUpdated, TimeTools.now)!!
+fun formatTimeDifference(context: Context, start: ZonedDateTime, end: ZonedDateTime): String {
+    val dur = Duration.between(start, end)!!
 
     //String in which are data formatted them, has %d and %s
     val lastUpdatedResource = context.getString(R.string.last_updated_template)
@@ -55,7 +58,10 @@ fun lastUpdated(context: Context, lastUpdated: ZonedDateTime): String {
             String.format(
                 lastUpdatedResource,
                 dur.toMinutes(),
-                context.resources.getStringArray(R.array.last_updated_minutes)[index]
+                context.resources.getQuantityString(
+                    R.plurals.last_updated_minutes,
+                    dur.toMinutes().toInt()
+                )
             )
         }
 
@@ -66,7 +72,10 @@ fun lastUpdated(context: Context, lastUpdated: ZonedDateTime): String {
             String.format(
                 lastUpdatedResource,
                 dur.toHours(),
-                context.resources.getStringArray(R.array.last_updated_hours)[index]
+                context.resources.getQuantityString(
+                    R.plurals.last_updated_hours,
+                    dur.toMinutes().toInt()
+                )
             )
         }
 
@@ -77,7 +86,10 @@ fun lastUpdated(context: Context, lastUpdated: ZonedDateTime): String {
             String.format(
                 lastUpdatedResource,
                 dur.toDays(),
-                context.resources.getStringArray(R.array.last_updated_days)[index]
+                context.resources.getQuantityString(
+                    R.plurals.last_updated_days,
+                    dur.toMinutes().toInt()
+                )
             )
         }
 
@@ -88,7 +100,10 @@ fun lastUpdated(context: Context, lastUpdated: ZonedDateTime): String {
             String.format(
                 lastUpdatedResource,
                 dur.toDays() / 7,
-                context.resources.getStringArray(R.array.last_updated_weeks)[index]
+                context.resources.getQuantityString(
+                    R.plurals.last_updated_weeks,
+                    dur.toMinutes().toInt()
+                )
             )
         }
     }

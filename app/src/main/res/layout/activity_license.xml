@@ -50,7 +50,7 @@
                     style="@style/License.Label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/licenses"
+                    android:text="@string/license_notices"
                     android:textColor="@android:color/primary_text_light"/>
 
                 <LinearLayout
@@ -111,14 +111,82 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/license_show"
-                        android:onClick="@{(view) -> license.onShowHideText(buttonApache, textApache)}"/>
+                        android:onClick="@{(view) -> license.onShowHideText(buttonApache, textApache)}" />
 
                     <TextView
                         style="@style/License.Content"
                         android:id="@+id/text_apache"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/License.Group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/License.Type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/license_mit" />
+
+                    <TextView
+                        style="@style/License.Package"
+                        android:id="@+id/usages_mit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        style="@style/License.ShowHide"
+                        android:id="@+id/button_mit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/license_show"
+                        android:onClick="@{(view) -> license.onShowHideText(buttonMit, textMit)}" />
+
+                    <TextView
+                        style="@style/License.Content"
+                        android:id="@+id/text_mit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/License.Group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/License.Type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/license_mozilla" />
+
+                    <TextView
+                        style="@style/License.Package"
+                        android:id="@+id/usages_mozilla"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        style="@style/License.ShowHide"
+                        android:id="@+id/button_mozilla"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/license_show"
+                        android:onClick="@{(view) -> license.onShowHideText(buttonMozilla, textMozilla)}" />
+
+                    <TextView
+                        style="@style/License.Content"
+                        android:id="@+id/text_mozilla"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone" />
                 </LinearLayout>
 
             </LinearLayout>

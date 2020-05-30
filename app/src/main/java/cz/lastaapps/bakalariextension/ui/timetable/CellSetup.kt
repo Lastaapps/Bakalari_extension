@@ -20,19 +20,26 @@
 
 package cz.lastaapps.bakalariextension.ui.timetable
 
-import android.content.Context
 import android.content.DialogInterface
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TableLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.databinding.DataBindingUtil
+import androidx.navigation.findNavController
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
+import cz.lastaapps.bakalariextension.api.DataIdList
+import cz.lastaapps.bakalariextension.api.homework.data.Homework
 import cz.lastaapps.bakalariextension.api.timetable.data.*
+import cz.lastaapps.bakalariextension.databinding.TimetableLessonInfoBinding
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.ui.homework.HmwRootFragment
 import kotlin.math.max
 
 /**Provides methods for settings up lesson cells*/
@@ -43,7 +50,12 @@ class CellSetup {
         /**updates text in view inflated from R.layout.timetable_lesson
          * @param highlight if should actual lesson highlighted*/
         fun setUpCell(
-            view: View, week: Week, day: Day, hour: Hour, cycle: Cycle?,
+            view: View,
+            week: Week,
+            day: Day,
+            hour: Hour,
+            cycle: Cycle?,
+            homework: DataIdList<Homework>?,
             highlight: Boolean = true
         ) {
             val map = getStrings(week, day, hour, cycle)
@@ -54,8 +66,11 @@ class CellSetup {
 
             view.setBackgroundColor(getBackgroundColor(week, day, hour, cycle, highlight))
 
-            if (isHomeworkWarningVisible(week, day, hour, cycle))
-                view.findViewById<ImageView>(R.id.homework_warning).visibility = View.VISIBLE
+            view.findViewById<ImageView>(R.id.homework_warning).visibility =
+                if (isHomeworkWarningVisible(week, day, hour, cycle, homework))
+                    View.VISIBLE
+                else
+                    View.GONE
         }
 
         /**@return Map<resource id of the TextView, text>*/
@@ -146,13 +161,16 @@ class CellSetup {
             return color
         }
 
+        /**If homework actually exists*/
         fun isHomeworkWarningVisible(
-            week: Week, day: Day, hour: Hour, cycle: Cycle?
+            week: Week, day: Day, hour: Hour, cycle: Cycle?, homework: DataIdList<Homework>?
         ): Boolean {
             if (!week.isPermanent()) {
                 val lesson = day.getLesson(hour, cycle)
                 if (lesson != null) {
-                    return lesson.homeworkIds.isNotEmpty()
+                    homework?.let {
+                        return it.getAllByIds(lesson.homeworkIds).isNotEmpty()
+                    }
                 }
             }
             return false
@@ -161,85 +179,132 @@ class CellSetup {
 
     /**Shows lesson info on click*/
     class ShowLessonInfo(
-        val week: Week, val day: Day, val hour: Hour, val cycle: Cycle?
+        val week: Week,
+        val day: Day,
+        val hour: Hour,
+        val cycle: Cycle?,
+        val homework: DataIdList<Homework>?
     ) : View.OnClickListener {
+
+        private lateinit var dialog: AlertDialog
 
         override fun onClick(view: View) {
 
+            val inflater = LayoutInflater.from(view.context)
+            val binding: TimetableLessonInfoBinding =
+                DataBindingUtil.inflate(inflater, R.layout.timetable_lesson_info, null, false)
+
+            addInfo(binding)
+
+            addHomework(view, binding)
+
+            //shows dialog with this info
+            dialog = AlertDialog.Builder(ContextThemeWrapper(view.context, R.style.Timetable_Info))
+                .setCancelable(true)
+                .setPositiveButton(R.string.close) { dialog: DialogInterface?, _: Int ->
+                    dialog?.dismiss()
+                }
+                .setView(binding.root)
+                .create()
+
+            dialog.show()
+        }
+
+        private fun addInfo(binding: TimetableLessonInfoBinding) {
+
             val lesson = day.getLesson(hour, cycle) ?: return
 
-            val inflater =
-                view.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            val root = inflater.inflate(R.layout.timetable_lesson_info, null)
-            val table = root.findViewById<TableLayout>(R.id.table)
-
             //function to add entry into dialog
-            val addInfoRow = { table: TableLayout, field: String?, fieldName: String ->
+            val addInfoRow = { table: TableLayout, field: String?, fieldNameId: Int ->
                 if (field != "" && field != null && field != "null") {
 
-                    val row = inflater.inflate(
+                    val row = LayoutInflater.from(table.context).inflate(
                         R.layout.timetable_lesson_info_row, table, false
                     )
                     //puts entry inside
-                    row.findViewById<TextView>(R.id.name).text = fieldName
+                    row.findViewById<TextView>(R.id.name).text =
+                        "${table.context.getString(fieldNameId)}:"
                     row.findViewById<TextView>(R.id.value).text = field
 
                     table.addView(row)
                 }
             }
+            binding.apply {
+                //adds all available info
+                addInfoRow(table, lesson.change?.typeName, R.string.info_name)
+                addInfoRow(
+                    table,
+                    week.subjects.getById(lesson.subjectId)?.name,
+                    R.string.info_subject
+                )
+                addInfoRow(
+                    table,
+                    week.teachers.getById(lesson.teacherId)?.name,
+                    R.string.info_teacher
+                )
+                addInfoRow(table, week.rooms.getById(lesson.roomId)?.name, R.string.info_room)
+                addInfoRow(table, lesson.theme, R.string.info_theme)
+                addInfoRow(table, {
+                    val builder = StringBuffer()
+                    for (group in lesson.groupIds) {
+                        builder.append(week.groups.getById(group)?.shortcut)
+                        builder.append(", ")
+                    }
+                    builder.toString().substring(0, max(0, builder.length - 2))
+                }.invoke(), R.string.info_group)
+                addInfoRow(table, lesson.change?.description, R.string.info_change)
+                addInfoRow(
+                    table, when (lesson.change?.changeType) {
+                        Change.ADDED -> App.getString(R.string.change_added)
+                        Change.REMOVED -> App.getString(R.string.change_removed)
+                        Change.CANCELED -> App.getString(R.string.change_canceled)
+                        else -> ""
+                    }, R.string.info_change_type
+                )
+                addInfoRow(table, lesson.change?.time, R.string.info_time)
+            }
+        }
 
-            //adds all available info
-            addInfoRow(table, lesson.change?.typeName, "${App.getString(R.string.info_name)}:")
-            addInfoRow(
-                table,
-                week.subjects.getById(lesson.subjectId)?.name,
-                "${App.getString(R.string.info_subject)}:"
-            )
-            addInfoRow(
-                table,
-                week.teachers.getById(lesson.teacherId)?.name,
-                "${App.getString(R.string.info_teacher)}:"
-            )
-            addInfoRow(
-                table,
-                week.rooms.getById(lesson.roomId)?.name,
-                "${App.getString(R.string.info_room)}:"
-            )
-            addInfoRow(table, lesson.theme, "${App.getString(R.string.info_theme)}:")
-            addInfoRow(table, {
-                val builder = StringBuffer()
-                for (group in lesson.groupIds) {
-                    builder.append(week.groups.getById(group)?.shortcut)
-                    builder.append(", ")
+        private fun addHomework(view: View, binding: TimetableLessonInfoBinding) {
+            if (homework != null) {
+
+                val lesson = day.getLesson(hour, cycle) ?: return
+                val homeworkContents = ArrayList<String>()
+                val homeworkList = homework.getAllByIds(lesson.homeworkIds)
+
+                if (homeworkList.isNotEmpty()) {
+
+                    for (homework in homeworkList) {
+                        homeworkContents.add(homework.content)
+                    }
+
+                    binding.homeworkList.apply {
+                        adapter = ArrayAdapter(
+                            binding.root.context,
+                            R.layout.timetable_lesson_info_homework_row,
+                            homeworkContents
+                        )
+                        setOnItemClickListener() { _, _, position, _ ->
+                            val homework = homeworkList[position]
+
+                            val data = Bundle().apply {
+                                putString(HmwRootFragment.navigateToHomeworkId, homework.id)
+                            }
+
+                            val controller = view.findNavController()
+                            controller.navigate(R.id.nav_homework, data)
+
+                            dialog.dismiss()
+                        }
+                    }
+
+                    return
                 }
-                builder.toString().substring(0, max(0, builder.length - 2))
-            }.invoke(), "${App.getString(R.string.info_group)}:")
-            addInfoRow(
-                table,
-                lesson.change?.description,
-                "${App.getString(R.string.info_change)}:"
-            )
-            addInfoRow(
-                table, when (lesson.change?.changeType) {
-                    Change.ADDED -> App.getString(R.string.change_added)
-                    Change.REMOVED -> App.getString(R.string.change_removed)
-                    Change.CANCELED -> App.getString(R.string.change_canceled)
-                    else -> ""
-                }, "${App.getString(R.string.info_change_type)}:"
-            )
-            addInfoRow(table, lesson.change?.time, "${App.getString(R.string.info_time)}:")
+            }
+            binding.homeworkLabel.apply {
+                text = context.getString(R.string.homework_no_homework)
+            }
 
-            //TODO Homework
-
-            //shows dialog with this info
-            AlertDialog.Builder(ContextThemeWrapper(view.context, R.style.Timetable_Info))
-                .setCancelable(true)
-                .setPositiveButton(R.string.close) { dialog: DialogInterface?, _: Int ->
-                    dialog?.dismiss()
-                }
-                .setView(root)
-                .create()
-                .show()
         }
     }
 }

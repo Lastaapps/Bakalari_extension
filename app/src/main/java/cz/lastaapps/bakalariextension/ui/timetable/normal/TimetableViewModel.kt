@@ -22,6 +22,8 @@ package cz.lastaapps.bakalariextension.ui.timetable.normal
 
 import androidx.lifecycle.ViewModel
 import cz.lastaapps.bakalariextension.App
+import cz.lastaapps.bakalariextension.api.DataIdList
+import cz.lastaapps.bakalariextension.api.homework.data.Homework
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import cz.lastaapps.bakalariextension.tools.Settings
 import cz.lastaapps.bakalariextension.tools.TimeTools
@@ -43,4 +45,6 @@ class TimetableViewModel : ViewModel() {
 
     //last loaded week
     var week: Week? = null
+
+    var homework: DataIdList<Homework>? = null
 }

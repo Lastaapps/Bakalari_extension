@@ -67,13 +67,4 @@
     <dimen name="timetable_bottom_text">12sp</dimen>
     <dimen name="timetable_bottom_sides">10dp</dimen>
     <dimen name="timetable_homework_warning">16dp</dimen>
-
-    <!-- Sizes of stoke in nav icons -->
-    <integer name="icons_stoke_thick">  3</integer>
-    <integer name="icons_stoke_medium"> 2</integer>
-    <integer name="icons_stoke_light">  1</integer>
-    <integer name="icons_stroke_border">2</integer>
-    <integer name="icons_stoke_thick_nav">  3</integer>
-    <integer name="icons_stoke_medium_nav"> 2</integer>
-    <integer name="icons_stoke_light_nav">  1</integer>
 </resources>

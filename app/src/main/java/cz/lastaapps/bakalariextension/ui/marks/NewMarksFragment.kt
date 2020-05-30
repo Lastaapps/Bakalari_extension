@@ -30,7 +30,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.DataIdList
-import cz.lastaapps.bakalariextension.api.marks.Marks
+import cz.lastaapps.bakalariextension.api.marks.MarksLoader
 import cz.lastaapps.bakalariextension.api.marks.data.Mark
 import cz.lastaapps.bakalariextension.api.marks.data.MarksAllSubjects
 import cz.lastaapps.bakalariextension.databinding.FragmentMarksNewBinding
@@ -91,7 +91,7 @@ class NewMarksFragment : Fragment() {
 
             //loads marks
             val marks = viewModel.marks.value
-                ?: Marks.loadMarks() ?: return@launch
+                ?: MarksLoader.loadMarks() ?: return@launch
 
             withContext(Dispatchers.Main) {
                 //puts marks into viewModel

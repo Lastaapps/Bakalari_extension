@@ -40,7 +40,7 @@ import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
 
-class LicenseActivity : BaseActivity(){
+class LicenseActivity : BaseActivity() {
 
 
     lateinit var binding: ActivityLicenseBinding
@@ -56,8 +56,18 @@ class LicenseActivity : BaseActivity(){
     }
 
     private fun loadPackages() {
-        val licensePackages = arrayOf(R.array.license_gnu3, R.array.license_apache)
-        val licenseViews = arrayOf(binding.usagesGnu3, binding.usagesApache)
+        val licensePackages = arrayOf(
+            R.array.license_gnu3,
+            R.array.license_apache,
+            R.array.license_mit,
+            R.array.license_mozilla
+        )
+        val licenseViews = arrayOf(
+            binding.usagesGnu3,
+            binding.usagesApache,
+            binding.usagesMit,
+            binding.usagesMozilla
+        )
 
         licensePackages.forEachIndexed { i: Int, it: Int ->
             val stringBuilder = StringBuilder()
@@ -71,8 +81,18 @@ class LicenseActivity : BaseActivity(){
     }
 
     private fun loadLicenseContent() {
-        val licenseViews = arrayOf(binding.textGnu3, binding.textApache)
-        val assetNames = arrayOf("gpl-3.0.txt", "apache-2.0.txt")
+        val licenseViews = arrayOf(
+            binding.textGnu3,
+            binding.textApache,
+            binding.textMit,
+            binding.textMozilla
+        )
+        val assetNames = arrayOf(
+            "gpl-3.0.txt",
+            "apache-2.0.txt",
+            "mit.txt",
+            "mozilla-2.0.txt"
+        )
 
         for (i in licenseViews.indices) {
             var reader: BufferedReader? = null;
@@ -119,7 +139,8 @@ class LicenseActivity : BaseActivity(){
 
         /**@return if user has agreed to license*/
         fun check(): Boolean {
-            return App.context.getSharedPreferences(SP_KEY, Context.MODE_PRIVATE).getBoolean(SP_AGREED, false)
+            return App.context.getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
+                .getBoolean(SP_AGREED, false)
         }
 
         /**called when user has agreed to license*/
@@ -144,8 +165,7 @@ class LicenseActivity : BaseActivity(){
                     agreed()
                     run.run()
                 }
-                .setNegativeButton(R.string.license_view) {
-                        _: DialogInterface, _: Int ->
+                .setNegativeButton(R.string.license_view) { _: DialogInterface, _: Int ->
                     viewLicense(context)
                 }
                 .setTitle(R.string.license)

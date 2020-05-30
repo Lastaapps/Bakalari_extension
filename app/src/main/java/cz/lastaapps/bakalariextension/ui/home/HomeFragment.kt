@@ -31,6 +31,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.User
+import cz.lastaapps.bakalariextension.ui.homework.HmwOverview
 import cz.lastaapps.bakalariextension.ui.marks.NewMarksFragment
 import cz.lastaapps.bakalariextension.ui.timetable.small.SmallTimetableFragment
 import org.threeten.bp.DayOfWeek
@@ -44,6 +45,7 @@ class HomeFragment : Fragment() {
         //tag (~= id) of small timetable fragment
         private const val TIMETABLE_SMALL_FRAGMENT_TAG = "TIMETABLE_SMALL_FRAGMENT_TAG"
         private const val NEW_MARKS_FRAGMENT_TAG = "NEW_MARKS_FRAGMENT_TAG"
+        private const val HOMEWORK_FRAGMENT_TAG = "HOMEWORK_FRAGMENT_TAG"
     }
 
     override fun onCreateView(
@@ -86,19 +88,6 @@ class HomeFragment : Fragment() {
         //first append of Fragments
         val fragmentTransaction = childFragmentManager.beginTransaction()
 
-        //checks if fragment wasn't added before
-        if (childFragmentManager.findFragmentByTag(NEW_MARKS_FRAGMENT_TAG) == null) {
-
-            val frag = NewMarksFragment()
-            //adds fragment to layout
-            fragmentTransaction.add(R.id.fragment_container, frag, NEW_MARKS_FRAGMENT_TAG)
-            //animation insert - not working
-            fragmentTransaction.setCustomAnimations(
-                R.anim.home_fragments,
-                android.R.anim.fade_out
-            )
-        }
-
         if (LocalDate.now().dayOfWeek.value in DayOfWeek.MONDAY.value..DayOfWeek.FRIDAY.value) {
             //checks if fragment wasn't added before
             if (childFragmentManager.findFragmentByTag(TIMETABLE_SMALL_FRAGMENT_TAG) == null) {
@@ -107,12 +96,38 @@ class HomeFragment : Fragment() {
                 val frag = SmallTimetableFragment()
                 //adds fragment to layout
                 fragmentTransaction.add(R.id.fragment_container, frag, TIMETABLE_SMALL_FRAGMENT_TAG)
-                //animation insert - not working
+                //animation insert
                 fragmentTransaction.setCustomAnimations(
                     R.anim.home_fragments,
                     android.R.anim.fade_out
                 )
             }
+        }
+
+        //checks if fragment wasn't added before
+        if (childFragmentManager.findFragmentByTag(NEW_MARKS_FRAGMENT_TAG) == null) {
+
+            val frag = NewMarksFragment()
+            //adds fragment to layout
+            fragmentTransaction.add(R.id.fragment_container, frag, NEW_MARKS_FRAGMENT_TAG)
+            //animation insert
+            fragmentTransaction.setCustomAnimations(
+                R.anim.home_fragments,
+                android.R.anim.fade_out
+            )
+        }
+
+        //checks if fragment wasn't added before
+        if (childFragmentManager.findFragmentByTag(HOMEWORK_FRAGMENT_TAG) == null) {
+
+            val frag = HmwOverview()
+            //adds fragment to layout
+            fragmentTransaction.add(R.id.fragment_container, frag, HOMEWORK_FRAGMENT_TAG)
+            //animation insert
+            fragmentTransaction.setCustomAnimations(
+                R.anim.home_fragments,
+                android.R.anim.fade_out
+            )
         }
 
         //finishes adding fragments, updates screen

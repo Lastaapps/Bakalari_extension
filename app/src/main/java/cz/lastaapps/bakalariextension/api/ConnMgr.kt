@@ -33,6 +33,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.net.URLEncoder
 
+
 /**
  * Connection manager for Bakalari API V3
  */
@@ -42,19 +43,15 @@ class ConnMgr {
         private val TAG = ConnMgr::class.java.simpleName
 
         /**@return json containing downloaded data of null if connection failed*/
-        fun serverGet(module: String): JSONObject? {
+        fun serverGet(module: String, dataPairs: Map<String, String> = HashMap()): JSONObject? {
             return try {
                 Log.i(TAG, "Loading api module GET $module")
 
                 //tries to obtain new ACCESS token, if the old one is expired
-                if (isExpired()) {
-                    if (!refreshAccessToken()) {
-                        throw Exception("Failed to obtain new access token")
-                    }
-                }
+                getValidAccessToken()
 
                 //creates URL connection
-                val url = URL("${getAPIUrl()}/3/$module")
+                val url = URL("${getAPIUrl()}/3/$module${getGetDataString(dataPairs)}")
                 val urlConnection = url.openConnection() as HttpURLConnection
                 urlConnection.setRequestProperty(
                     "Content-Type",
@@ -100,11 +97,7 @@ class ConnMgr {
                 Log.i(TAG, "Loading api module POST $module")
 
                 //tries to obtain new ACCESS token, if the old one is expired
-                if (isExpired()) {
-                    if (!refreshAccessToken()) {
-                        throw Exception("Failed to obtain new access token")
-                    }
-                }
+                getValidAccessToken()
 
                 //creates data to be send via POST
                 val data = getPostDataString(dataPairs)
@@ -158,7 +151,7 @@ class ConnMgr {
 
         /**Initial obtain on login, gets access and refresh tokens at same time*/
         fun obtainTokens(username: String, password: String): Int {
-            var json: JSONObject
+            val json: JSONObject
 
             try {
                 Log.i(TAG, "Obtaining new access token")
@@ -295,6 +288,17 @@ class ConnMgr {
             }
         }
 
+        /**refreshes access token if needed */
+        fun getValidAccessToken(): String {
+            //tries to obtain new ACCESS token, if the old one is expired
+            if (isExpired()) {
+                if (!refreshAccessToken()) {
+                    throw Exception("Failed to obtain new access token")
+                }
+            }
+            return LoginData.accessToken
+        }
+
         /**@return if refreshing access token is necessary*/
         fun isExpired(expireDate: Long = LoginData.tokenExpiration): Boolean {
             return System.currentTimeMillis() > expireDate - 5000 //5 sec just to make sure
@@ -308,6 +312,24 @@ class ConnMgr {
         /**@return url in format www.example.com/api */
         fun getAPIUrl(url: String = LoginData.url): String {
             return url.replace("/login.aspx", "/api")
+        }
+
+        /**converts map to data, which can be used in GET*/
+        private fun getGetDataString(params: Map<String, String>): String {
+            if (params.isEmpty())
+                return ""
+
+            val result = StringBuilder()
+            result.append("?")
+
+            var first = true
+            for ((key, value) in params.entries) {
+                if (first) first = false else result.append("&")
+                result.append(URLEncoder.encode(key, "UTF-8"))
+                result.append("=")
+                result.append(URLEncoder.encode(value, "UTF-8"))
+            }
+            return result.toString()
         }
 
         /**converts map to data, which can be used in POST*/

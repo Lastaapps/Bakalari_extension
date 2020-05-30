@@ -30,7 +30,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModel
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.timetable.Timetable
+import cz.lastaapps.bakalariextension.api.DataIdList
+import cz.lastaapps.bakalariextension.api.homework.HomeworkLoader
+import cz.lastaapps.bakalariextension.api.homework.data.Homework
+import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
+import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,7 +49,7 @@ class SmallTimetableFragment : Fragment {
     }
 
     private lateinit var view: SmallTimetableView
-    private lateinit var model: STViewModel
+    private lateinit var vm: STViewModel
     private var _date: ZonedDateTime? = null
 
     constructor(): super()
@@ -59,7 +63,7 @@ class SmallTimetableFragment : Fragment {
         super.onAttach(context)
 
         val model: STViewModel by activityViewModels()
-        this.model = model
+        this.vm = model
 
         if (model.date == null)
             model.date = _date ?: TimeTools.now
@@ -86,23 +90,27 @@ class SmallTimetableFragment : Fragment {
             //shows progress bar while loading
             view.setLoading()
 
-            withContext(Dispatchers.Default) {
+            withContext(Dispatchers.IO) {
 
                 //loads week
-                val date = model.date!!
-                val week = Timetable.loadTimetable(date)
+                val date = vm.date!!
+                if (vm.week == null)
+                    vm.week = TimetableLoader.loadTimetable(date)
+
+                if (vm.homework == null)
+                    vm.homework = HomeworkLoader.loadHomework()
 
                 withContext(Dispatchers.Main) {
 
                     //updates data
-                    if (week == null) {
+                    if (vm.week == null) {
                         view.setError(resources.getString(R.string.error_no_timetable_no_internet))
                     } else {
-                        val day = week.getDay(date)
+                        val day = vm.week!!.getDay(date)
                         if (day == null) {
                             view.setError(resources.getString(R.string.error_no_timetable_for_today))
                         } else {
-                            view.updateTimetable(week, day)
+                            view.updateTimetable(vm.week!!, day, vm.homework)
                         }
                     }
                 }
@@ -113,5 +121,7 @@ class SmallTimetableFragment : Fragment {
     //ViewModel holding date
     class STViewModel: ViewModel() {
         var date: ZonedDateTime? = null
+        var week: Week? = null
+        var homework: DataIdList<Homework>? = null
     }
 }

@@ -30,10 +30,10 @@ import cz.lastaapps.bakalariextension.tools.TimeTools
 import org.threeten.bp.ZonedDateTime
 
 /**Obtains week object containing all the data*/
-class Timetable {
+class TimetableLoader {
 
     companion object {
-        private val TAG = Timetable::class.java.simpleName
+        private val TAG = TimetableLoader::class.java.simpleName
 
         /**Tries to load timetable for date given
          * At first from storage
@@ -93,7 +93,7 @@ class Timetable {
                         ) ?: return null
 
                 //parses json
-                val week = JSONParser.parseJson(date, json)
+                val week = TimetableParser.parseJson(date, json)
 
                 //saves json
                 TTStorage.save(date, json)
@@ -126,7 +126,7 @@ class Timetable {
             return try {
 
                 val json = TTStorage.load(time) ?: return null
-                JSONParser.parseJson(date, json)
+                TimetableParser.parseJson(date, json)
 
             } catch (e: Exception) {
                 e.printStackTrace()

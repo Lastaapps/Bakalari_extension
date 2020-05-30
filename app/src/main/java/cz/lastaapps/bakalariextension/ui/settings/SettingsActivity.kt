@@ -22,10 +22,8 @@ package cz.lastaapps.bakalariextension.ui.settings
 
 import android.app.backup.BackupManager
 import android.content.Intent
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.Process
+import android.net.Uri
+import android.os.*
 import android.util.Log
 import android.view.MenuItem
 import androidx.preference.Preference
@@ -112,7 +110,7 @@ class SettingsActivity : BaseActivity() {
         super.onDestroy()
 
         if (isFinishing)
-            //notifies that backup should be made
+        //notifies that backup should be made
             BackupManager.dataChanged(App.context.packageName)
     }
 
@@ -172,6 +170,20 @@ class SettingsActivity : BaseActivity() {
                     true
                 }
 
+            fp(sett.DOWNLOAD_LOCATION)?.apply {
+                onPreferenceClickListener =
+                    Preference.OnPreferenceClickListener {
+                        Log.i(TAG, "Download location changing")
+
+                        sett.chooseDownloadDirectory(requireActivity()) {
+                            setDownloadLocationText(this)
+                        }
+
+                        true
+                    }
+                setDownloadLocationText(this)
+            }
+
             //from which day should be next week shown
             fp(sett.TIMETABLE_DAY)?.setOnPreferenceChangeListener { _, newValue ->
                 Log.i(TAG, "Show new timetable day changed to $newValue")
@@ -203,11 +215,94 @@ class SettingsActivity : BaseActivity() {
 
         }
 
+        override fun onResume() {
+            super.onResume()
+
+            //if location was changed by oder activity
+            fp(sett.DOWNLOAD_LOCATION)?.let {
+                setDownloadLocationText(it)
+            }
+        }
+
         /**
          * Represents findPreference<Preference>
          */
-        private inline fun fp(key: String): Preference? = findPreference(key)
+        private fun fp(key: String): Preference? = findPreference(key)
+
+        /**Sets readable text instead of content Uri on Q+
+         * replaces*/
+        private fun setDownloadLocationText(preference: Preference) {
+
+            var result: String? = ""
+            val stringUri = Uri.decode(sett.getDownloadLocation())
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+
+                if (stringUri != "") {
+                    val index = {
+                        var toReturn = -1
+                        var spotted = 0
+                        for (i in stringUri.indices) {
+                            val c = stringUri[i]
+                            if (c == '/') {
+                                if (spotted < 2)
+                                    spotted++
+                                else {
+                                    toReturn = i
+                                    break
+                                }
+                            }
+                        }
+
+                        toReturn
+                    }.invoke()
+                    result = stringUri.substring(index)
+                    /*}
+
+                        val uri = Uri.parse(stringUri)
+
+                        if (uri.scheme.equals("content")) {
+                            val cursor = requireContext().contentResolver.query(
+                                uri,
+                                arrayOf(OpenableColumns.DISPLAY_NAME, MediaStore.Files.FileColumns.TITLE),
+                                null,
+                                null,
+                                null
+                            )
+                            cursor.use { cursor ->
+                                if (cursor != null && cursor.moveToFirst()) {
+                                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+                                    if (result == null || result == "")
+                                        result = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.TITLE))
+                                }
+                            }
+                        }
+                        if (result == null) {
+                            result = uri.path!!
+                            val cut = result!!.lastIndexOf('/')
+                            if (cut != -1) {
+                                result = result!!.substring(cut + 1)
+                            }
+                        }*/
+                }
+
+                /*val string = sett.getSP().getString(sett.DOWNLOAD_LOCATION, "")
+                if (string != null && string != "") {
+                    try {
+                        val uri = Uri.parse(string)
+                        preference.summary = uri.lastPathSegment
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        preference.summary = string
+                    }
+                } else {
+                    preference.summary = ""
+                }*/
+            } else {
+                result = stringUri
+            }
+            preference.summary = result ?: ""
+        }
 
     }
-
 }

@@ -30,9 +30,9 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
-class JSONParser {
+class MarksParser {
     companion object {
-        private val TAG = JSONParser::class.java.simpleName
+        private val TAG = MarksParser::class.java.simpleName
 
         /**Parses marks from json, scheme on https://github.com/bakalari-api/bakalari-api-v3*/
         fun parseJson(root: JSONObject): MarksAllSubjects {
@@ -90,7 +90,7 @@ class JSONParser {
                     json.getBoolean("IsNew"),
                     json.getBoolean("IsPoints"),
                     json.getString("CalculatedMarkText"),
-                    saveJson(json, "ClassRankText"), //seen only as null
+                    safeJson(json, "ClassRankText"), //seen only as null
                     json.getString("Id"),
                     json.getString("PointsText"),
                     json.getInt("MaxPoints")
@@ -114,7 +114,7 @@ class JSONParser {
 
         /**try to get String for the key given, protection again JSONException
          * and replacing null object with ""*/
-        private fun saveJson(json: JSONObject, key: String): String {
+        private fun safeJson(json: JSONObject, key: String): String {
             return try {
                 return json.getString(key) ?: ""
             } catch (e: JSONException) {

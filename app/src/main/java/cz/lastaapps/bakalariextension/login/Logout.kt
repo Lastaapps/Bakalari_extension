@@ -26,6 +26,7 @@ import android.content.pm.PackageManager
 import android.util.Log
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.api.User
+import cz.lastaapps.bakalariextension.api.homework.HomeworkStorage
 import cz.lastaapps.bakalariextension.api.marks.MarksStorage
 import cz.lastaapps.bakalariextension.api.timetable.TTStorage
 import cz.lastaapps.bakalariextension.receivers.BootReceiver
@@ -53,6 +54,9 @@ class Logout {
 
             //deletes marks
             MarksStorage.delete()
+
+            //deletes homework
+            HomeworkStorage.delete()
 
             //disables receivers
             val receivers = arrayOf(

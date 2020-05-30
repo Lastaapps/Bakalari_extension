@@ -33,8 +33,9 @@ import androidx.fragment.app.Fragment
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.MainActivity
 import cz.lastaapps.bakalariextension.R
+import cz.lastaapps.bakalariextension.api.homework.HomeworkLoader
 import cz.lastaapps.bakalariextension.api.timetable.TTStorage
-import cz.lastaapps.bakalariextension.api.timetable.Timetable
+import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
 import cz.lastaapps.bakalariextension.databinding.FragmentTimetableBinding
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import cz.lastaapps.bakalariextension.tools.Timer
@@ -229,8 +230,11 @@ class TimetableFragment : Fragment() {
                     else
                         TimeTools.PERMANENT
 
-                val week = Timetable.loadTimetable(toLoad, forceReload)
+                val week = TimetableLoader.loadTimetable(toLoad, forceReload)
                 vm.week = week
+
+                if (vm.homework == null)
+                    vm.homework = HomeworkLoader.loadHomework()
 
                 //waits until view is laid out
                 while (height <= 0)
@@ -265,28 +269,21 @@ class TimetableFragment : Fragment() {
 
                         yield()
 
-                        //TODO remove
-                        val timer = Timer(TAG)
-
                         val lessons = week.trimFreeMorning().size
                         if (setOnLessons != lessons) {
                             TimetableCreator.prepareTimetable(binding.root, height, lessons)
                             setOnLessons = lessons
                         }
 
-                        timer.print()
-
                         yield()
-
-                        timer.print()
 
                         //creates actual timetable
                         TimetableCreator.createTimetable(
                             binding.root,
                             week,
-                            cycle
+                            cycle,
+                            vm.homework
                         )
-                        timer.print()
 
                         yield()
 

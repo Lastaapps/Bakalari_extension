@@ -39,6 +39,24 @@
     <string name="share_message">Try this better Bakalari app as i did!</string>
 
 
+    <!-- Global -->
+    <plurals name="attachment">
+        <item quantity="one">%d attachment</item>
+        <item quantity="other">%d attachments</item>
+    </plurals>
+    <string name="close">Close</string>
+    <string name="downloading">Downloading</string>
+    <string name="select_download_location">Choose download location</string>
+
+
+    <!-- Permissions -->
+    <string name="permission_granted">Permission granted!</string>
+    <string name="permission_denied">Function wouldn\'t work.</string>
+    <string name="permission_required">App needs permission to do this.</string>
+    <string name="permission_disabled">Permission needed, turn it on in settings.</string>
+
+
+    <!-- General errors -->
     <string name="error_no_internet">Cannot connect to internet</string>
     <string name="error_server_unavailable">Cannot connect to school server</string>
 
@@ -60,11 +78,10 @@
     <string name="error_no_timetable_open_app">Failed to download timetable, open app</string>
 
 
+    <!--Notification channels-->
     <string name="timetable_chanel_name">Current lesson</string>
     <string name="timetable_chanel_description">The notification showing current and next lesson
         - it\'s class, teacher, …</string>
-
-    <string name="close">Close</string>
 
     <!-- About -->
     <string name="about_thanks">I want to thank all the people who created documentation of Bakalari API on Github.
@@ -73,7 +90,7 @@
 
     <!-- License -->
     <string name="license">License</string>
-    <string name="licenses">Licenses</string>
+    <string name="license_notices">License notices</string>
     <string name="license_agree">Agree</string>
     <string name="license_view">View license</string>
     <string name="license_agreement">This apps is distributed under GNU GPL-3.0 or later license, open source code license.\n
@@ -86,21 +103,8 @@
     <string name="license_hide">Hide license</string>
     <string name="license_gnu3">GNU GPL-3.0</string>
     <string name="license_apache">Apache 2.0</string>
-
-    <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
-
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
-
-    <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="license_mit">MIT License</string>
+    <string name="license_mozilla">Mozilla Public License 2.0</string>
 
     <!-- Timetable -->
     <string name="monday_shortut">Mo</string>
@@ -160,22 +164,22 @@
     <string name="last_updated_template">Last updated %d %s ago</string>
     <string name="last_updated_right_now">Last updated right now</string>
     <string name="last_updated_in_future">Last updated in future</string>
-    <string-array name="last_updated_minutes">
-        <item>minute</item>
-        <item>minutes</item>
-    </string-array>
-    <string-array name="last_updated_hours">
-        <item>hour</item>
-        <item>hours</item>
-    </string-array>
-    <string-array name="last_updated_days">
-        <item>day</item>
-        <item>days</item>
-    </string-array>
-    <string-array name="last_updated_weeks">
-        <item>week</item>
-        <item>weeks</item>
-    </string-array>
+    <plurals name="last_updated_minutes">
+        <item quantity="one">minute</item>
+        <item quantity="other">minutes</item>
+    </plurals>
+    <plurals name="last_updated_hours">
+        <item quantity="one">hour</item>
+        <item quantity="other">hours</item>
+    </plurals>
+    <plurals name="last_updated_days">
+        <item quantity="one">day</item>
+        <item quantity="other">days</item>
+    </plurals>
+    <plurals name="last_updated_weeks">
+        <item quantity="one">week</item>
+        <item quantity="other">weeks</item>
+    </plurals>
 
     <!-- Marks -->
     <string name="marks_by_date">By date</string>
@@ -195,6 +199,25 @@
     <string name="marks_predictor_add_mark_button">Update</string>
     <string name="marks_predictor_enter_valid_data">Enter valid data</string>
 
+
+    <!-- Homework -->
+    <string name="homework_show_more">Show more</string>
+    <string name="homework_show_less">Show less</string>
+    <string name="homework_current">Current</string>
+    <string name="homework_old">Old</string>
+    <string name="homework_search">Search</string>
+    <string name="homework_no_current">No current homework</string>
+    <string name="homework_no_old">No old homework</string>
+    <string name="homework_failed_to_load">Failed to load homework</string>
+    <string name="homework_search_all">All subjects</string>
+    <string name="homework_search_hint">Search text</string>
+    <string name="homework_plural">Homework</string>
+    <string name="homework_no_homework">No homework</string>
+    <plurals name="homework_current_homework_template">
+        <item quantity="other">%d current homework</item>
+    </plurals>
+
+
     <!-- Widget small timetable strings -->
     <string name="widget_small_timetable_title">Widget setup</string>
     <string name="widget_small_timetable_alpha">Set how much is widget transparent</string>
@@ -205,4 +228,37 @@
     <string name="widget_small_timetable_light">Light</string>
     <string name="widget_small_timetable_dark">Dark</string>
     <string name="widget_small_timetable_submit">Update widget</string>
+
+    <!-- Attachment -->
+    <string name="attachment">Attachment</string>
+    <string name="attachment_label">Attachments</string>
+    <string name="attachment_change_location">Change download location</string>
+    <string name="attachment_downloading_subtitle">Downloading attachment…</string>
+    <string name="attachment_downloading_subtitle_done">Attachment downloaded</string>
+    <string name="attachment_downloading_chanel_name">Attachment downloads</string>
+    <string name="attachment_downloading_chanel_description">Shows downloaded attachments to open them fast</string>
+    <string name="attachment_downlaod_started">Download started!</string>
+    <string name="attachment_choose_again">Error, please choose download location again</string>
+    <string name="attachment_error_file_system">Error while working with file system</string>
+    <string name="attachment_error_no_internet">No internet connection</string>
+    <string name="attachment_file_exists_label">File already exists</string>
+    <string name="attachment_file_exists_open">Open</string>
+    <string name="attachment_file_exists_replace">Replace</string>
+    <string name="attachment_file_exists_cancel">Cancel</string>
+    <string name="attachment_file_exists_rename">Rename to %s</string>
+
+
+    <!-- File chooser -->
+    <string name="filechoooser_selectLabel">Select</string>
+    <string name="filechoooser_createLabel">Create</string>
+    <string name="filechoooser_newFolderLabel">New Folder</string>
+    <string name="filechoooser_cancelLabel">Cancel</string>
+    <string name="filechoooser_overviewHeading">Choose Storage</string>
+    <string name="filechoooser_internalStorageText">Internal Storage</string>
+    <string name="filechoooser_freeSpaceText">%s free</string>
+    <string name="filechoooser_folderCreatedToastText">Folder Created</string>
+    <string name="filechoooser_folderErrorToastText">Error occurred while creating folder. Try again.</string>
+    <string name="filechoooser_textfieldHintText">Folder Name</string>
+    <string name="filechoooser_textfieldErrorText">Empty Folder Name</string>
+
 </resources>

@@ -33,7 +33,7 @@
         <action
             android:id="@+id/action_nav_home_to_nav_about"
             app:destination="@id/nav_about"
-            app:enterAnim="@anim/fragment_fade_enter"
+            app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out" />
         <action
             android:id="@+id/action_nav_home_to_nav_timetable"
@@ -45,6 +45,9 @@
         <action
             android:id="@+id/action_nav_home_to_nav_marks"
             app:destination="@id/nav_marks" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_homework"
+            app:destination="@id/nav_homework" />
     </fragment>
 
     <fragment
@@ -64,5 +67,11 @@
         android:name="cz.lastaapps.bakalariextension.ui.marks.MarksRootFragment"
         android:label="@string/menu_marks"
         tools:layout="@layout/fragment_marks_root" />
+
+    <fragment
+        android:id="@+id/nav_homework"
+        android:name="cz.lastaapps.bakalariextension.ui.homework.HmwRootFragment"
+        android:label="@string/menu_homework"
+        tools:layout="@layout/fragment_homework_root" />
 
 </navigation>

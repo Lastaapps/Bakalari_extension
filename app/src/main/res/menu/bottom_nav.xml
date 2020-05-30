@@ -33,4 +33,8 @@
         android:id="@+id/nav_marks"
         android:icon="@drawable/nav_marks"
         android:title="@string/menu_marks" />
+    <item
+        android:id="@+id/nav_homework"
+        android:icon="@drawable/nav_homework"
+        android:title="@string/menu_homework" />
 </menu>

@@ -1,0 +1,144 @@
+<!--
+  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~
+  ~     This file is part of Bakalari extension.
+  ~
+  ~     Bakalari extension is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Bakalari extension is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="128dp"
+    android:height="128dp"
+    android:viewportWidth="128"
+    android:viewportHeight="128">
+    <path
+        android:pathData="m119.334,31.841 l0.184,64 -55.334,32.159 -55.517,-31.841 -0.184,-64 55.334,-32.159z"
+        android:strokeWidth="@integer/icons_stroke_border"
+        android:fillColor="#0A0"
+        android:strokeColor="#00000000"
+        android:fillAlpha="1" />
+    <path
+        android:pathData="M86.141,56.594L86.141,46.574"
+        android:strokeAlpha="1"
+        android:strokeLineJoin="miter"
+        android:strokeWidth="@integer/icons_stoke_medium"
+        android:fillColor="#00000000"
+        android:strokeColor="#000000"
+        android:strokeLineCap="butt" />
+    <path
+        android:pathData="M79.218,86.262L79.306,86.262"
+        android:strokeAlpha="1"
+        android:strokeLineJoin="miter"
+        android:strokeWidth="@integer/icons_stoke_medium"
+        android:fillColor="#00000000"
+        android:strokeColor="#000000"
+        android:strokeLineCap="butt" />
+    <path
+        android:pathData="M43.808,46.574L43.808,86.262L53.862,86.262"
+        android:strokeAlpha="1"
+        android:strokeLineJoin="miter"
+        android:strokeWidth="@integer/icons_stoke_medium"
+        android:fillColor="#00000000"
+        android:strokeColor="#000000"
+        android:strokeLineCap="butt" />
+    <path
+        android:pathData="M35.871,51.866 L64.975,22.762 94.079,51.866"
+        android:strokeAlpha="1"
+        android:strokeLineJoin="miter"
+        android:strokeWidth="@integer/icons_stoke_medium"
+        android:fillColor="#00000000"
+        android:strokeColor="#000000"
+        android:strokeLineCap="butt" />
+    <path
+        android:pathData="m53.914,94.431c7.953,-5.123 16.282,-6.384 25.356,0v-34.608c-9.806,-6.907 -17.791,-4.521 -25.356,0z"
+        android:strokeAlpha="1"
+        android:strokeLineJoin="round"
+        android:strokeWidth="@integer/icons_stoke_medium"
+        android:fillColor="#00000000"
+        android:strokeColor="#000000"
+        android:strokeLineCap="butt" />
+    <path
+        android:pathData="m58.14,83.616c5.425,-2.688 11.03,-3.075 16.904,0"
+        android:strokeAlpha="1"
+        android:strokeLineJoin="miter"
+        android:strokeWidth="@integer/icons_stoke_light"
+        android:fillColor="#00000000"
+        android:strokeColor="#000000"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="m58.14,77.127c5.696,-2.937 11.328,-2.831 16.904,0"
+        android:strokeAlpha="1"
+        android:strokeLineJoin="miter"
+        android:strokeWidth="@integer/icons_stoke_light"
+        android:fillColor="#00000000"
+        android:strokeColor="#000000"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="m58.14,70.638c5.425,-2.688 11.03,-3.075 16.904,0"
+        android:strokeAlpha="1"
+        android:strokeLineJoin="miter"
+        android:strokeWidth="@integer/icons_stoke_light"
+        android:fillColor="#00000000"
+        android:strokeColor="#000000"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="m58.14,64.149c6.013,-3.169 11.578,-2.586 16.904,0"
+        android:strokeAlpha="1"
+        android:strokeLineJoin="miter"
+        android:strokeWidth="@integer/icons_stoke_light"
+        android:fillColor="#00000000"
+        android:strokeColor="#000000"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="m79.27,94.431c7.953,-5.123 16.282,-6.384 25.356,0v-34.608c-9.806,-6.907 -17.791,-4.521 -25.356,0z"
+        android:strokeAlpha="1"
+        android:strokeLineJoin="round"
+        android:strokeWidth="@integer/icons_stoke_medium"
+        android:fillColor="#00000000"
+        android:strokeColor="#000000"
+        android:strokeLineCap="butt" />
+    <path
+        android:pathData="m83.496,83.616c5.425,-2.688 11.03,-3.075 16.904,0"
+        android:strokeAlpha="1"
+        android:strokeLineJoin="miter"
+        android:strokeWidth="@integer/icons_stoke_light"
+        android:fillColor="#00000000"
+        android:strokeColor="#000000"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="m83.496,77.127c5.696,-2.937 11.328,-2.831 16.904,0"
+        android:strokeAlpha="1"
+        android:strokeLineJoin="miter"
+        android:strokeWidth="@integer/icons_stoke_light"
+        android:fillColor="#00000000"
+        android:strokeColor="#000000"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="m83.496,70.638c5.425,-2.688 11.03,-3.075 16.904,0"
+        android:strokeAlpha="1"
+        android:strokeLineJoin="miter"
+        android:strokeWidth="@integer/icons_stoke_light"
+        android:fillColor="#00000000"
+        android:strokeColor="#000000"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="m83.496,64.149c6.013,-3.169 11.578,-2.586 16.904,0"
+        android:strokeAlpha="1"
+        android:strokeLineJoin="miter"
+        android:strokeWidth="@integer/icons_stoke_light"
+        android:fillColor="#00000000"
+        android:strokeColor="#000000"
+        android:strokeLineCap="round" />
+</vector>

@@ -32,14 +32,16 @@ import android.os.Looper
 import android.util.Log
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.User
-import cz.lastaapps.bakalariextension.api.marks.Marks
-import cz.lastaapps.bakalariextension.api.timetable.Timetable
+import cz.lastaapps.bakalariextension.api.homework.HomeworkLoader
+import cz.lastaapps.bakalariextension.api.marks.MarksLoader
+import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
 import cz.lastaapps.bakalariextension.receivers.BootReceiver
 import cz.lastaapps.bakalariextension.receivers.TimeChangeReceiver
 import cz.lastaapps.bakalariextension.services.timetablenotification.TTNotifyService
 import cz.lastaapps.bakalariextension.services.timetablenotification.TTReceiver
 import cz.lastaapps.bakalariextension.tools.CheckInternet
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.ui.attachment.AttachmentDownload
 import cz.lastaapps.bakalariextension.ui.timetable.small.widget.SmallTimetableWidget
 
 /**Run when user logs in*/
@@ -114,11 +116,14 @@ class OnLogin {
                 )
 
                 for (it in array)
-                    Timetable.loadFromServer(it)
+                    TimetableLoader.loadFromServer(it)
 
 
                 //downloads marks
-                Marks.loadFromServer()
+                MarksLoader.loadFromServer()
+
+                //download homework
+                HomeworkLoader.loadFromServer()
             }
 
             return true
@@ -128,27 +133,53 @@ class OnLogin {
         private fun initNotificationChannels(context: Context) {
             //Timetable notify service
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val name =
-                    context.getString(R.string.timetable_chanel_name)
-                val descriptionText =
-                    context.getString(R.string.timetable_chanel_description)
-                val importance = NotificationManager.IMPORTANCE_DEFAULT
-                val mChannel = NotificationChannel(
-                    TTNotifyService.NOTIFICATION_CHANEL_ID,
-                    name,
-                    importance
-                )
-                mChannel.description = descriptionText
-                mChannel.setShowBadge(false)
-                mChannel.setSound(null, null)
-                mChannel.enableVibration(false)
-                mChannel.enableLights(false)
-                mChannel.importance = NotificationManager.IMPORTANCE_HIGH
+                //Timetable notification
+                {
+                    val name =
+                        context.getString(R.string.timetable_chanel_name)
+                    val descriptionText =
+                        context.getString(R.string.timetable_chanel_description)
+                    val importance = NotificationManager.IMPORTANCE_DEFAULT
+                    val mChannel = NotificationChannel(
+                        TTNotifyService.NOTIFICATION_CHANEL_ID,
+                        name,
+                        importance
+                    )
+                    mChannel.description = descriptionText
+                    mChannel.setShowBadge(false)
+                    mChannel.setSound(null, null)
+                    mChannel.enableVibration(false)
+                    mChannel.enableLights(false)
+                    mChannel.importance = NotificationManager.IMPORTANCE_HIGH
 
-                val notificationManager =
-                    context.getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
-                //notificationManager.deleteNotificationChannel(mChannel.id)
-                notificationManager.createNotificationChannel(mChannel)
+                    val notificationManager =
+                        context.getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
+                    //notificationManager.deleteNotificationChannel(mChannel.id)
+                    notificationManager.createNotificationChannel(mChannel)
+                }.invoke();
+
+                //Download attachment notification
+                {
+                    val name =
+                        context.getString(R.string.attachment_downloading_chanel_name)
+                    val descriptionText =
+                        context.getString(R.string.attachment_downloading_chanel_description)
+
+                    val mChannel = NotificationChannel(
+                        AttachmentDownload.ATTACHMENT_DOWNLOAD_CHANEL,
+                        name,
+                        NotificationManager.IMPORTANCE_LOW
+                    )
+                    mChannel.description = descriptionText
+                    mChannel.setShowBadge(true)
+                    mChannel.setSound(null, null)
+                    mChannel.enableVibration(false)
+                    mChannel.enableLights(false)
+
+                    val notificationManager =
+                        context.getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
+                    notificationManager.createNotificationChannel(mChannel)
+                }.invoke();
             }
         }
     }

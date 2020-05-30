@@ -20,19 +20,29 @@
 
 package cz.lastaapps.bakalariextension.tools
 
+import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Resources
 import android.os.Build
+import android.os.Environment
+import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
+import com.codekidlabs.storagechooser.Content
+import com.codekidlabs.storagechooser.StorageChooser
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
+
 
 class Settings(val context: Context) {
 
     companion object {
         private val TAG = Settings::class.java.simpleName
+        const val FILE_SELECT_CODE = 65132
 
         private var _withAppContext: Settings? = null
         fun withAppContext(): Settings {
@@ -52,6 +62,8 @@ class Settings(val context: Context) {
         get() = getString(R.string.sett_key_language)
     val LOGOUT
         get() = getString(R.string.sett_key_log_out)
+    val DOWNLOAD_LOCATION
+        get() = getString(R.string.sett_key_download_location)
     val TIMETABLE_DAY
         get() = getString(R.string.sett_key_timetable_day)
     val TIMETABLE_NOTIFICATION
@@ -91,13 +103,22 @@ class Settings(val context: Context) {
             if (sp.getString(MARKS_SHOW_NEW, "") == "")
                 editor.putString(MARKS_SHOW_NEW, getString(R.string.sett_marks_new_mark_default))
 
+            if (sp.getString(DOWNLOAD_LOCATION, "") == "")
+                editor.putString(
+                    DOWNLOAD_LOCATION,
+                    if (Build.VERSION.SDK_INT >= 29) {
+                        ""
+                    } else {
+                        context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)!!.absolutePath
+                    }
+                )
 
             editor.apply()
         }
     }
 
     /**@return currently selected language code (en, cs, ...)*/
-    fun getLanguageCode(value: String = getSP().getString(LANGUAGE, "")?: ""): String {
+    fun getLanguageCode(value: String = getSP().getString(LANGUAGE, "") ?: ""): String {
         val languageNamesArray: Array<String> = getArray(R.array.sett_language)
         val index = languageNamesArray.indexOf(value)
 
@@ -151,6 +172,93 @@ class Settings(val context: Context) {
     /**@return for how many days should be mark shown as new*/
     fun getNewMarkDuration(): Int {
         return getSP().getString(MARKS_SHOW_NEW, "2")!!.toInt()
+    }
+
+    fun getDownloadLocation(): String =
+        getSP().getString(DOWNLOAD_LOCATION, "")!!
+
+    fun setDownloadLocation(path: String) {
+        getSP().edit().putString(DOWNLOAD_LOCATION, path).apply()
+    }
+
+    /**Pops up dialog, in which user chooses default download location*/
+    fun chooseDownloadDirectory(activity: Activity, onDone: ((newPath: String) -> Unit)) {
+
+        Toast.makeText(activity, R.string.select_download_location, Toast.LENGTH_LONG).show()
+
+        if (Build.VERSION.SDK_INT >= 29) {
+
+            //    val intent = Intent("com.sec.android.app.myfiles.PICK_DATA")
+            //    intent.putExtra("CONTENT_TYPE", DocumentsContract.Document.MIME_TYPE_DIR)
+            //    intent.addCategory(Intent.CATEGORY_DEFAULT)
+            //    startActivityForResult(intent, REQUEST_CODE)
+
+            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
+                flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or
+                        Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
+            }
+            //intent.type = DocumentsContract.Document.MIME_TYPE_DIR
+            //intent.addCategory(Intent.CATEGORY_OPENABLE)
+
+            try {
+                //response
+                activity.startActivityForResult(
+                    //Intent.createChooser(intent, "Select a File to Upload"),
+                    intent,
+                    FILE_SELECT_CODE
+                )
+            } catch (ex: ActivityNotFoundException) {
+                // Potentially direct the user to the Market with a Dialog
+                Toast.makeText(
+                    activity,
+                    "Please install a File Manager.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        } else {
+            val chooser = StorageChooser.Builder()
+                .withActivity(activity)
+                .withFragmentManager(activity.fragmentManager)
+                .withMemoryBar(true)
+                .allowCustomPath(true)
+                .disableMultiSelect()
+                .withContent(object : Content() {
+                    init {
+                        activity.apply {
+                            selectLabel = getString(R.string.filechoooser_selectLabel)
+                            createLabel = getString(R.string.filechoooser_createLabel)
+                            newFolderLabel = getString(R.string.filechoooser_newFolderLabel)
+                            cancelLabel = getString(R.string.filechoooser_cancelLabel)
+                            overviewHeading = getString(R.string.filechoooser_overviewHeading)
+                            internalStorageText =
+                                getString(R.string.filechoooser_internalStorageText)
+                            freeSpaceText = getString(R.string.filechoooser_freeSpaceText)
+                            folderCreatedToastText =
+                                getString(R.string.filechoooser_folderCreatedToastText)
+                            folderErrorToastText =
+                                getString(R.string.filechoooser_folderErrorToastText)
+                            textfieldHintText = getString(R.string.filechoooser_textfieldHintText)
+                            textfieldErrorText = getString(R.string.filechoooser_textfieldErrorText)
+                        }
+                    }
+                })
+                .setType(StorageChooser.DIRECTORY_CHOOSER)
+                .allowAddFolder(true)
+                .setDialogTitle(activity.getString(R.string.select_download_location))
+                .withPredefinedPath(getDownloadLocation())
+                .build()
+
+            // Show dialog whenever you want by
+            chooser.show()
+
+            // get path that the user has chosen
+            chooser.setOnSelectListener { path ->
+                Log.i(TAG, "New download directory $path")
+                setDownloadLocation(path)
+                onDone(path)
+            }
+        }
+
     }
 
     /**@return Setting's shared preferences*/

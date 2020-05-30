@@ -33,7 +33,7 @@ import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.LoadingActivity
 import cz.lastaapps.bakalariextension.MainActivity
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.timetable.Timetable
+import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
 import cz.lastaapps.bakalariextension.tools.TimeTools
 
 
@@ -123,7 +123,7 @@ class SmallTimetableWidget : AppWidgetProvider() {
             views.setPendingIntentTemplate(R.id.grid_view, pendingIntent)
 
             //loads week
-            val week = Timetable.loadFromStorage(TimeTools.monday)
+            val week = TimetableLoader.loadFromStorage(TimeTools.monday)
 
             //week is not downloaded yet
             if (week == null) {

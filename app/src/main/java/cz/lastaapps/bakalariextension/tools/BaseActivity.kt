@@ -20,15 +20,26 @@
 
 package cz.lastaapps.bakalariextension.tools
 
+import android.Manifest
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import cz.lastaapps.bakalariextension.R
 
 /**The parent of all activities
- * changed language*/
-open class BaseActivity: AppCompatActivity() {
+ * changed language
+ * manages permissions*/
+open class BaseActivity : AppCompatActivity() {
+
+    companion object {
+        private val TAG = BaseActivity::class.java.simpleName
+    }
 
     override fun attachBaseContext(newBase: Context) {
         //sets up with context with changed language
@@ -38,6 +49,42 @@ open class BaseActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         resetTitles()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        //manages WRITE_STORAGE permission
+        val storagePermission = Manifest.permission.WRITE_EXTERNAL_STORAGE
+
+        if (permissions.contains(storagePermission)) {
+            if (grantResults[permissions.indexOf(storagePermission)] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, R.string.permission_granted, Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_LONG).show()
+            }
+        } else
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+        if (requestCode == Settings.FILE_SELECT_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                val uri = data!!.data!!
+
+                Log.i(TAG, "Folder selected, uri: $uri")
+
+                Settings.withAppContext().setDownloadLocation(uri.toString())
+                contentResolver.takePersistableUriPermission(
+                    uri,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                )
+            }
+        } else
+            super.onActivityResult(requestCode, resultCode, data)
     }
 
     /**Updates navigation appbar's titles with new language*/
