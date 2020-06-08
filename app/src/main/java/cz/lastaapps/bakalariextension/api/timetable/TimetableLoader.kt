@@ -20,14 +20,20 @@
 
 package cz.lastaapps.bakalariextension.api.timetable
 
+import android.content.Context
 import android.util.Log
 import cz.lastaapps.bakalariextension.App
-import cz.lastaapps.bakalariextension.WidgetUpdater
 import cz.lastaapps.bakalariextension.api.ConnMgr
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import cz.lastaapps.bakalariextension.services.timetablenotification.TTNotifyService
 import cz.lastaapps.bakalariextension.tools.TimeTools
-import org.threeten.bp.ZonedDateTime
+import cz.lastaapps.bakalariextension.widgets.WidgetUpdater
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.time.ZonedDateTime
 
 /**Obtains week object containing all the data*/
 class TimetableLoader {
@@ -42,46 +48,40 @@ class TimetableLoader {
          * if fails, return null
          *
          * For permanent timetable use date *.tools.TimeTools#PERMANENT*/
-        fun loadTimetable(cal: ZonedDateTime, forceReload: Boolean = false): Week? {
+        suspend fun loadTimetable(date: ZonedDateTime, forceReload: Boolean = false): Week? {
+            return withContext(Dispatchers.Default) {
 
-            val time = TimeTools.toMidnight(TimeTools.toMonday(cal))
+                val monday = TimeTools.toMidnight(TimeTools.toMonday(date))
 
-            var toReturn: Week? = null
-
-            if (forceReload || TTStorage.lastUpdated(time) == null) {
-                toReturn = loadFromServer(time)
-            } else {
-                val lastUpdated = TTStorage.lastUpdated(time)
-                if (lastUpdated != null)
-                    if (lastUpdated.isAfter(TimeTools.now.minusDays(1))
-                        || cal == TimeTools.PERMANENT
-                    ) {
-                        toReturn = loadFromStorage(time)
+                return@withContext if (forceReload) {
+                    loadFromServer(monday)
+                } else {
+                    if (shouldReload(monday)) {
+                        loadFromServer(monday) ?: loadFromStorage(monday)
+                    } else {
+                        loadFromStorage(monday)
                     }
-
-                if (toReturn == null) {
-                    toReturn = loadFromServer(time)
                 }
             }
-
-            return toReturn
         }
 
         /**Tries load timetable from server and save him to local storage
          * @return downloaded Week object or null, if download failed*/
-        fun loadFromServer(date: ZonedDateTime): Week? {
-            try {
-                Log.i(
-                    TAG,
-                    "Loading timetable from server - ${TimeTools.format(
-                        date,
-                        TimeTools.DATE_FORMAT
-                    )}"
-                )
+        suspend fun loadFromServer(date: ZonedDateTime): Week? {
+            return withContext(Dispatchers.Default) {
+                try {
+                    Log.i(
+                        TAG,
+                        "Loading timetable from server - ${TimeTools.format(
+                            date,
+                            TimeTools.DATE_FORMAT
+                        )}"
+                    )
 
-                //downloads normal or permanent timetable
-                val json = (
-                        if (date != TimeTools.PERMANENT)
+                    val json = withContext(Dispatchers.IO) {
+
+                        //downloads normal or permanent timetable
+                        (if (date != TimeTools.PERMANENT)
                             ConnMgr.serverGet(
                                 "timetable/actual?date=${TimeTools.format(
                                     date,
@@ -89,48 +89,80 @@ class TimetableLoader {
                                 )}"
                             )
                         else
-                            ConnMgr.serverGet("timetable/permanent")
-                        ) ?: return null
+                            ConnMgr.serverGet("timetable/permanent"))
+                    } ?: return@withContext null
 
-                //parses json
-                val week = TimetableParser.parseJson(date, json)
+                    //parses json
+                    val week = TimetableParser.parseJson(date, json)
 
-                //saves json
-                TTStorage.save(date, json)
+                    //saves json
+                    TTStorage.save(date, json)
 
-                //updates notification service, if it is running
-                TTNotifyService.startService(App.context)
-                WidgetUpdater.update(App.context)
+                    //updates notification service, if it is running
+                    TTNotifyService.startService(App.context)
+                    WidgetUpdater.update(App.context)
 
-                return week
+                    return@withContext week
 
-            } catch (e: Exception) {
-                e.printStackTrace()
-                return null
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    return@withContext null
+                }
             }
         }
 
         /**Loads timetable from local storage
          * @return Week or null, if there is no week of the date save yet*/
-        fun loadFromStorage(date: ZonedDateTime): Week? {
+        suspend fun loadFromStorage(date: ZonedDateTime): Week? {
+            return withContext(Dispatchers.Default) {
 
-            val time = TimeTools.toMidnight(
-                TimeTools.toMonday(date)
-            )
+                val time = TimeTools.toMidnight(TimeTools.toMonday(date))
 
-            Log.i(
-                TAG,
-                "Loading timetable from storage - ${TimeTools.format(time, TimeTools.DATE_FORMAT)}"
-            )
+                Log.i(
+                    TAG,
+                    "Loading timetable from storage - ${TimeTools.format(
+                        time,
+                        TimeTools.DATE_FORMAT
+                    )}"
+                )
 
-            return try {
+                return@withContext try {
 
-                val json = TTStorage.load(time) ?: return null
-                TimetableParser.parseJson(date, json)
+                    val json = withContext(Dispatchers.IO) { TTStorage.load(time) }
+                        ?: return@withContext null
 
-            } catch (e: Exception) {
-                e.printStackTrace()
-                null
+                    TimetableParser.parseJson(date, json)
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    null
+                }
+            }
+        }
+
+
+        /**@return if the timetable for this date is outdated - should be refreshed/downloaded*/
+        fun shouldReload(date: ZonedDateTime): Boolean {
+            val lastUpdated = TTStorage.lastUpdated(date) ?: return true
+
+            return (lastUpdated <= TimeTools.now.minusDays(1)
+                    || date == TimeTools.PERMANENT)
+        }
+
+        /**Loads timetable from assets which is used later as example, for example in widget*/
+        suspend fun loadDefault(context: Context): Week {
+
+            return withContext(Dispatchers.Default) {
+                val string = withContext(Dispatchers.IO) {
+
+                    val stream = context.assets.open("timetable_default.json")
+                    val reader = BufferedReader(InputStreamReader(stream))
+                    reader.readText().also {
+                        reader.close()
+                    }
+                }
+
+                return@withContext TimetableParser.parseJson(TimeTools.now, JSONObject(string))
             }
         }
     }

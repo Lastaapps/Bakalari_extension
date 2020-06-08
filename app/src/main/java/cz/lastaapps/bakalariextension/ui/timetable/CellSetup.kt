@@ -34,8 +34,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.DataIdList
-import cz.lastaapps.bakalariextension.api.homework.data.Homework
+import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
 import cz.lastaapps.bakalariextension.api.timetable.data.*
 import cz.lastaapps.bakalariextension.databinding.TimetableLessonInfoBinding
 import cz.lastaapps.bakalariextension.tools.TimeTools
@@ -55,7 +54,7 @@ class CellSetup {
             day: Day,
             hour: Hour,
             cycle: Cycle?,
-            homework: DataIdList<Homework>?,
+            homework: HomeworkList?,
             highlight: Boolean = true
         ) {
             val map = getStrings(week, day, hour, cycle)
@@ -100,8 +99,7 @@ class CellSetup {
             //for absence
             if (day.isAbsence(hour, cycle)) {
                 lesson?.let {
-                    map[R.id.subject] =
-                        lesson.change!!.typeShortcut
+                    map[R.id.subject] = lesson.change!!.typeShortcut
                     map[R.id.room] = ""
                     map[R.id.teacher] = ""
                 }
@@ -163,7 +161,7 @@ class CellSetup {
 
         /**If homework actually exists*/
         fun isHomeworkWarningVisible(
-            week: Week, day: Day, hour: Hour, cycle: Cycle?, homework: DataIdList<Homework>?
+            week: Week, day: Day, hour: Hour, cycle: Cycle?, homework: HomeworkList?
         ): Boolean {
             if (!week.isPermanent()) {
                 val lesson = day.getLesson(hour, cycle)
@@ -183,7 +181,7 @@ class CellSetup {
         val day: Day,
         val hour: Hour,
         val cycle: Cycle?,
-        val homework: DataIdList<Homework>?
+        val homework: HomeworkList?
     ) : View.OnClickListener {
 
         private lateinit var dialog: AlertDialog
@@ -252,7 +250,7 @@ class CellSetup {
                     }
                     builder.toString().substring(0, max(0, builder.length - 2))
                 }.invoke(), R.string.info_group)
-                addInfoRow(table, lesson.change?.description, R.string.info_change)
+
                 addInfoRow(
                     table, when (lesson.change?.changeType) {
                         Change.ADDED -> App.getString(R.string.change_added)
@@ -261,6 +259,7 @@ class CellSetup {
                         else -> ""
                     }, R.string.info_change_type
                 )
+                addInfoRow(table, lesson.change?.description, R.string.info_change)
                 addInfoRow(table, lesson.change?.time, R.string.info_time)
             }
         }
@@ -284,7 +283,7 @@ class CellSetup {
                             R.layout.timetable_lesson_info_homework_row,
                             homeworkContents
                         )
-                        setOnItemClickListener() { _, _, position, _ ->
+                        setOnItemClickListener { _, _, position, _ ->
                             val homework = homeworkList[position]
 
                             val data = Bundle().apply {

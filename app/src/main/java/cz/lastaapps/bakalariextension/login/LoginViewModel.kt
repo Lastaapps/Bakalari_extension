@@ -29,5 +29,4 @@ class LoginViewModel: ViewModel() {
     var townIndex = -1
     var schoolList: ArrayList<String> = ArrayList()
     var schoolIndex = -1
-
 }

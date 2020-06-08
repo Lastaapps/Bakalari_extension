@@ -22,6 +22,7 @@ package cz.lastaapps.bakalariextension.ui.timetable.small
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.GridView
@@ -31,8 +32,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.DataIdList
-import cz.lastaapps.bakalariextension.api.homework.data.Homework
+import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
 import cz.lastaapps.bakalariextension.api.timetable.data.Day
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
 
@@ -49,6 +49,8 @@ class SmallTimetableView : RelativeLayout {
     var holiday: RelativeLayout
 
     init {
+        Log.i(TAG, "Init")
+
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         root = inflater.inflate(R.layout.timetable_small, this, false)
         progressBar = root.findViewById(R.id.progress_bar)
@@ -72,6 +74,8 @@ class SmallTimetableView : RelativeLayout {
     constructor(context: Context, set: AttributeSet): super(context, set)
 
     fun setLoading() {
+        Log.i(TAG, "Loading")
+
         progressBar.visibility = View.VISIBLE
         errorMessage.visibility = View.GONE
         table.visibility = View.INVISIBLE
@@ -79,6 +83,8 @@ class SmallTimetableView : RelativeLayout {
     }
 
     fun setError(message: String) {
+        Log.i(TAG, "Error: $message")
+
         progressBar.visibility = View.GONE
         errorMessage.visibility = View.VISIBLE
         table.visibility = View.INVISIBLE
@@ -86,7 +92,7 @@ class SmallTimetableView : RelativeLayout {
         errorMessage.text = message
     }
 
-    fun updateTimetable(week: Week, day: Day, homework: DataIdList<Homework>?) {
+    fun updateTimetable(week: Week, day: Day, homework: HomeworkList?) {
         progressBar.visibility = View.GONE
         errorMessage.visibility = View.GONE
 
@@ -94,8 +100,11 @@ class SmallTimetableView : RelativeLayout {
             table.visibility = View.VISIBLE
             holiday.visibility = View.GONE
 
+            Log.i(TAG, "Creating timetable")
             createTimetable(week, day, homework)
         } else {
+            Log.i(TAG, "Showing holidays")
+
             table.visibility = View.GONE
             holiday.visibility = View.VISIBLE
 
@@ -103,15 +112,14 @@ class SmallTimetableView : RelativeLayout {
         }
     }
 
-    private fun createTimetable(week: Week, day: Day, homework: DataIdList<Homework>?) {
+    private fun createTimetable(week: Week, day: Day, homework: HomeworkList?) {
 
-        val adapter =
-            SmallTimetableAdapter(
-                context,
-                week,
-                day,
-                homework
-            )
+        val adapter = SmallTimetableAdapter(
+            context,
+            week,
+            day,
+            homework
+        )
 
         if (!adapter.valid()) {
             setError(resources.getString(R.string.empty_timetable))

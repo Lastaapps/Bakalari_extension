@@ -21,36 +21,42 @@
 package cz.lastaapps.bakalariextension.ui.marks
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.DataIdList
-import cz.lastaapps.bakalariextension.api.marks.MarksLoader
 import cz.lastaapps.bakalariextension.api.marks.data.Mark
 import cz.lastaapps.bakalariextension.api.marks.data.MarksAllSubjects
 import cz.lastaapps.bakalariextension.databinding.FragmentMarksNewBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**Fragment shown in HomeFragment
  * shown new marks*/
 class NewMarksFragment : Fragment() {
+    companion object {
+        private val TAG = NewMarksFragment::class.java.simpleName
+    }
 
     //views
     lateinit var binding: FragmentMarksNewBinding
+
     //data - marks
     lateinit var viewModel: MarksViewModel
 
     //updates hen new marks are downloaded
-    private val marksObserver = { _: MarksAllSubjects ->
+    private val marksObserver = { _: MarksAllSubjects? ->
+        Log.i(TAG, "Updating with new marks")
         loadMarks()
+    }
+
+    private val failObserver = { _: Any ->
+        onFail()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,14 +67,8 @@ class NewMarksFragment : Fragment() {
         this.viewModel = viewModel
 
         //observes for marks update
-        viewModel.marks.observe({lifecycle}, marksObserver)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        //stops observing
-        viewModel.marks.removeObserver(marksObserver)
+        viewModel.marks.observe({ lifecycle }, marksObserver)
+        viewModel.failObserve.observe({ lifecycle }, failObserver)
     }
 
     override fun onCreateView(
@@ -76,47 +76,47 @@ class NewMarksFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.i(TAG, "Creating view")
+
         //creates view
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_marks_new, container, false)
+        binding.viewmodel = viewModel
+        binding.lifecycleOwner = LifecycleOwner { lifecycle }
 
-        //inits
-        loadMarks()
+        if (viewModel.marks.value != null) {
+            marksObserver(null)
+        } else {
+            viewModel.onRefresh(requireContext())
+        }
 
         return binding.root
     }
 
     /**Loads marks*/
     private fun loadMarks() {
-        CoroutineScope(Dispatchers.IO).launch {
+        val marks = viewModel.marks.value!!
+        val allMarks = marks.getAllMarks()
+        val newMarks = DataIdList<Mark>()
 
-            //loads marks
-            val marks = viewModel.marks.value
-                ?: MarksLoader.loadMarks() ?: return@launch
+        //filters new marks
+        for (mark in allMarks)
+            if (mark.showAsNew())
+                newMarks.add(mark)
 
-            withContext(Dispatchers.Main) {
-                //puts marks into viewModel
-                if (viewModel.marks.value == null)
-                    viewModel.marks.value = marks
-
-                val allMarks = marks.getAllMarks().reversed()
-                val newMarks = DataIdList<Mark>()
-
-                //filters new marks
-                for (mark in allMarks)
-                    if (mark.showAsNew())
-                        newMarks.add(mark)
-
-                //is hidden when on no marks
-                if (newMarks.isEmpty()) {
-                    return@withContext
-                }
-
-                //puts views in
-                val marksListView = binding.marksList
-                marksListView.setHasFixedSize(true)
-                marksListView.layoutManager = LinearLayoutManager(marksListView.context)
-                marksListView.adapter = MarksAdapter(marks, newMarks)
-            }
+        //is hidden when on no marks
+        if (newMarks.isEmpty()) {
+            return
         }
+
+        //puts views in
+        val marksListView = binding.marksList
+        marksListView.setHasFixedSize(true)
+        marksListView.layoutManager = LinearLayoutManager(marksListView.context)
+        marksListView.adapter = MarksAdapter(marks, newMarks)
+    }
+
+    /**When marks failed to load*/
+    private fun onFail() {
+        binding.marksList.adapter = null
     }
 }

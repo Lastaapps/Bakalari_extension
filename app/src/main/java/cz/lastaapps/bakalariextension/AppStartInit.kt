@@ -26,6 +26,7 @@ import androidx.work.*
 import cz.lastaapps.bakalariextension.api.timetable.TTStorage
 import cz.lastaapps.bakalariextension.services.timetablenotification.TTNotifyService
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.widgets.WidgetUpdater
 import cz.lastaapps.bakalariextension.workers.WifiChargerWorker
 import kotlinx.coroutines.delay
 import java.util.concurrent.TimeUnit
@@ -40,7 +41,7 @@ class AppStartInit(val context: Context) {
     /**Inits services, widgets and alarms*/
     suspend fun appStartInit() {
 
-        delay(1000)
+        delay(2000)
 
         Log.i(TAG, "Running init of app's background")
 

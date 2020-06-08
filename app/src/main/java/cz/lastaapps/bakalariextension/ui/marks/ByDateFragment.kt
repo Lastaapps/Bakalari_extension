@@ -21,6 +21,7 @@
 package cz.lastaapps.bakalariextension.ui.marks
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,14 +42,19 @@ import kotlinx.coroutines.yield
 /**Shows marks from all subjects sorted by date
  * placed in MarksRootFragment*/
 class ByDateFragment : Fragment() {
+    companion object {
+        private val TAG = ByDateFragment::class.java.simpleName
+    }
 
     //root view
     lateinit var binding: FragmentMarksDateBinding
+
     //ViewModel with marks
     lateinit var viewModel: MarksViewModel
 
     //executed on marks update
-    private val marksObserver = {_: MarksAllSubjects ->
+    private val marksObserver = { _: MarksAllSubjects ->
+        Log.i(TAG, "Updating based on new marks")
         loadMarks()
     }
 
@@ -63,13 +69,6 @@ class ByDateFragment : Fragment() {
         viewModel.marks.observe({lifecycle}, marksObserver)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-
-        //stops observing for marks update
-        viewModel.marks.removeObserver(marksObserver)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -77,12 +76,15 @@ class ByDateFragment : Fragment() {
     ): View? {
         //inflates view
         if (!this::binding.isInitialized) {
+            Log.i(TAG, "Creating view")
             binding =
                 DataBindingUtil.inflate(inflater, R.layout.fragment_marks_date, container, false)
             binding.viewmodel = viewModel
             binding.lifecycleOwner = LifecycleOwner { lifecycle }
 
             loadMarks()
+        } else {
+            Log.i(TAG, "Already created")
         }
 
         return binding.root

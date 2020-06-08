@@ -28,7 +28,7 @@ import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.ui.marks.predictor.PredictorFragment
 
 /**Changes fragments for tab selection*/
-class FragmentPager(val context: Context, fragmentManager: FragmentManager) :
+class MarksPager(val context: Context, fragmentManager: FragmentManager) :
     FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     private val fragments = Array<Fragment?>(3) { null }

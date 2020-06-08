@@ -18,12 +18,13 @@
  *
  */
 
-package cz.lastaapps.bakalariextension.ui.settings
+package cz.lastaapps.bakalariextension.ui
 
 import android.app.backup.BackupManager
 import android.content.Intent
 import android.net.Uri
 import android.os.*
+import android.provider.Settings
 import android.util.Log
 import android.view.MenuItem
 import androidx.preference.Preference
@@ -31,11 +32,10 @@ import androidx.preference.PreferenceFragmentCompat
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.LoadingActivity
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.WhatsNew
 import cz.lastaapps.bakalariextension.login.Logout
 import cz.lastaapps.bakalariextension.services.timetablenotification.TTNotifyService
 import cz.lastaapps.bakalariextension.tools.BaseActivity
-import cz.lastaapps.bakalariextension.tools.Settings
+import cz.lastaapps.bakalariextension.tools.MySettings
 
 
 /**
@@ -65,7 +65,10 @@ class SettingsActivity : BaseActivity() {
         //puts in Fragment containing settings
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.settings, SettingsFragment())
+            .replace(
+                R.id.settings,
+                SettingsFragment()
+            )
             .commit()
 
         //puts back arrow into the top left corner
@@ -87,6 +90,8 @@ class SettingsActivity : BaseActivity() {
         BackupManager.dataChanged(App.context.packageName)
 
         if (relaunchApp) {
+            Log.i(TAG, "Killing app process")
+
             //restarts app
             /*val intent = Intent(this, LoadingActivity::class.java)
             val mgr = getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -117,17 +122,49 @@ class SettingsActivity : BaseActivity() {
     /**Fragment with all the settings*/
     class SettingsFragment : PreferenceFragmentCompat() {
 
-        lateinit var sett: Settings
+        lateinit var sett: MySettings
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
 
+            Log.i(TAG, "Creating preferences")
+
             //reference to actual Settings
-            sett = Settings(requireContext())
+            sett = MySettings(requireContext())
 
             sett.initSettings()
             setPreferencesFromResource(R.xml.settings_preferences, rootKey)
 
             //sets actions for all the actions
+
+            //notification settings
+            fp(sett.NOTIFICATION_SETTINGS)?.onPreferenceClickListener =
+                Preference.OnPreferenceClickListener {
+                    Log.i(TAG, "Opening notification settings")
+
+                    val intent = Intent()
+                    val context = requireContext()
+
+                    when {
+                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
+                            intent.action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+                            intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                        }
+                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> {
+                            intent.action = "android.settings.APP_NOTIFICATION_SETTINGS"
+                            intent.putExtra("app_package", context.packageName)
+                            intent.putExtra("app_uid", context.applicationInfo.uid)
+                        }
+                        else -> {
+                            intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                            intent.addCategory(Intent.CATEGORY_DEFAULT)
+                            intent.data = Uri.parse("package:" + context.packageName)
+                        }
+                    }
+
+                    startActivity(intent)
+
+                    true
+                }
 
             //if app can use mobile data in background
             fp(sett.MOBILE_DATA)?.setOnPreferenceChangeListener { preference, newValue ->
@@ -170,6 +207,7 @@ class SettingsActivity : BaseActivity() {
                     true
                 }
 
+            //download location
             fp(sett.DOWNLOAD_LOCATION)?.apply {
                 onPreferenceClickListener =
                     Preference.OnPreferenceClickListener {
@@ -199,16 +237,55 @@ class SettingsActivity : BaseActivity() {
                 true
             }
 
+            //from which day should be next week shown
+            fp(sett.TIMETABLE_PREVIEW)?.setOnPreferenceChangeListener { _, newValue ->
+                Log.i(TAG, "Show preview for tomorrow day changed to $newValue")
+                true
+            }
+
             //if user's town and school can be send in analytics and reports
             fp(sett.SEND_TOWN_SCHOOL)?.setOnPreferenceChangeListener { _, newValue ->
                 Log.i(TAG, "Send town and school changed to $newValue")
                 true
             }
 
+            //resets settings
+            fp(sett.RESET)?.setOnPreferenceClickListener { _ ->
+                Log.i(TAG, "!!! Resetting settings !!!")
+
+                sett.getSP().edit().clear().apply()
+                sett.initSettings()
+
+                preferenceScreen = null
+                addPreferencesFromResource(R.xml.settings_preferences)
+
+                //relaunches app
+                Handler(Looper.getMainLooper()).postDelayed({
+
+                    val intent = Intent(activity, SettingsActivity::class.java)
+                    intent.putExtra(RELAUNCH_APP, true)
+                    activity?.startActivity(intent)
+                    activity?.finish()
+
+                }, 10)
+
+                true
+            }
+
+            //shows whats new
             fp(sett.SHOW_WHATS_NEW)?.setOnPreferenceClickListener { _ ->
                 Log.i(TAG, "Showing What's new")
 
                 WhatsNew(requireContext()).showDialog()
+
+                true
+            }
+
+            //shows license
+            fp(sett.LICENSE)?.setOnPreferenceClickListener { _ ->
+                Log.i(TAG, "Showing license")
+
+                LicenseActivity.viewLicense(requireContext())
 
                 true
             }
@@ -257,47 +334,8 @@ class SettingsActivity : BaseActivity() {
                         toReturn
                     }.invoke()
                     result = stringUri.substring(index)
-                    /*}
-
-                        val uri = Uri.parse(stringUri)
-
-                        if (uri.scheme.equals("content")) {
-                            val cursor = requireContext().contentResolver.query(
-                                uri,
-                                arrayOf(OpenableColumns.DISPLAY_NAME, MediaStore.Files.FileColumns.TITLE),
-                                null,
-                                null,
-                                null
-                            )
-                            cursor.use { cursor ->
-                                if (cursor != null && cursor.moveToFirst()) {
-                                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-                                    if (result == null || result == "")
-                                        result = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.TITLE))
-                                }
-                            }
-                        }
-                        if (result == null) {
-                            result = uri.path!!
-                            val cut = result!!.lastIndexOf('/')
-                            if (cut != -1) {
-                                result = result!!.substring(cut + 1)
-                            }
-                        }*/
                 }
 
-                /*val string = sett.getSP().getString(sett.DOWNLOAD_LOCATION, "")
-                if (string != null && string != "") {
-                    try {
-                        val uri = Uri.parse(string)
-                        preference.summary = uri.lastPathSegment
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        preference.summary = string
-                    }
-                } else {
-                    preference.summary = ""
-                }*/
             } else {
                 result = stringUri
             }

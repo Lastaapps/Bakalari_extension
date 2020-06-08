@@ -46,8 +46,9 @@ import cz.lastaapps.bakalariextension.login.Logout
 import cz.lastaapps.bakalariextension.send.ReportIssueActivity
 import cz.lastaapps.bakalariextension.send.SendIdeaActivity
 import cz.lastaapps.bakalariextension.tools.BaseActivity
-import cz.lastaapps.bakalariextension.ui.license.LicenseActivity
-import cz.lastaapps.bakalariextension.ui.settings.SettingsActivity
+import cz.lastaapps.bakalariextension.ui.LicenseActivity
+import cz.lastaapps.bakalariextension.ui.SettingsActivity
+import cz.lastaapps.bakalariextension.ui.WhatsNew
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -72,7 +73,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         //goes fullscreen in landscape mode
         val orientation = resources.configuration.orientation
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         }
 
         setContentView(R.layout.activity_main)

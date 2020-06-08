@@ -35,6 +35,10 @@ class SubjectMarks(
 ) {
     companion object {
         val default: SubjectMarks
-            get() = SubjectMarks(DataIdList(), Subject("", "", ""), "0,00", "", "", "", false, false)
+            get() = SubjectMarks(
+                DataIdList(), Subject("", "", ""), "0,00", "", "", "",
+                pointsOnly = false,
+                predictorEnabled = false
+            )
     }
 }

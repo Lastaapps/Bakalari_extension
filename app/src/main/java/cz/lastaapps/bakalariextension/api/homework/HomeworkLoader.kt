@@ -22,11 +22,13 @@ package cz.lastaapps.bakalariextension.api.homework
 
 import android.util.Log
 import cz.lastaapps.bakalariextension.api.ConnMgr
-import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.homework.data.Homework
+import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
-import org.threeten.bp.ZonedDateTime
+import java.time.ZonedDateTime
 
 class HomeworkLoader {
     companion object {
@@ -37,66 +39,76 @@ class HomeworkLoader {
          * if it can be outdated or isn't downloaded yet,
          * tries to download from server
          * if fails, return null*/
-        fun loadHomework(
+        suspend fun loadHomework(
             from: ZonedDateTime = TimeTools.firstSeptember,
             forceReload: Boolean = false
-        ): DataIdList<Homework>? {
+        ): HomeworkList? {
+            return withContext(Dispatchers.Default) {
 
-            var toReturn: DataIdList<Homework>? = null
+                var toReturn: HomeworkList? = null
 
-            if (forceReload || HomeworkStorage.lastUpdated() == null) {
-                toReturn = loadFromServer(from)
-            } else {
-                if (!shouldReload())
-                    toReturn = loadFromStorage()
-
-                if (toReturn == null) {
+                if (forceReload || HomeworkStorage.lastUpdated() == null) {
                     toReturn = loadFromServer(from)
-                }
-            }
+                } else {
+                    if (!shouldReload())
+                        toReturn = loadFromStorage()
 
-            return toReturn
+                    if (toReturn == null) {
+                        toReturn = loadFromServer(from)
+                    }
+                }
+
+                return@withContext toReturn
+            }
         }
 
         /**Tries load homework from server and save him to local storage
          * @return downloaded AllSubjects object or null, if download failed*/
-        fun loadFromServer(from: ZonedDateTime = TimeTools.firstSeptember): DataIdList<Homework>? {
-            try {
-                Log.i(TAG, "Loading homework from server")
+        suspend fun loadFromServer(from: ZonedDateTime = TimeTools.firstSeptember): HomeworkList? {
+            return withContext(Dispatchers.Default) {
+                try {
+                    Log.i(TAG, "Loading homework from server")
 
-                //downloads homework
-                val dataMap = mapOf(Pair("from", TimeTools.format(from, TimeTools.DATE_FORMAT)))
-                val json = ConnMgr.serverGet("homeworks", dataMap) ?: return null
+                    //downloads homework
+                    val dataMap = mapOf(Pair("from", TimeTools.format(from, TimeTools.DATE_FORMAT)))
+                    val json =
+                        withContext(Dispatchers.IO) { ConnMgr.serverGet("homeworks", dataMap) }
+                            ?: return@withContext null
 
-                //parses json
-                val week = HomeworkParser.parseJson(json)
+                    //parses json
+                    val week = HomeworkParser.parseJson(json)
 
-                //saves json
-                save(json)
+                    //saves json
+                    save(json)
 
-                return week
+                    return@withContext week
 
-            } catch (e: Exception) {
-                e.printStackTrace()
-                return null
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    return@withContext null
+                }
             }
         }
 
         /**Loads homework from local storage
          * @return AllSubjects or null, if there is no week of the date save yet*/
-        fun loadFromStorage(): DataIdList<Homework>? {
+        suspend fun loadFromStorage(): HomeworkList? {
+            return withContext(Dispatchers.Default) {
 
-            Log.i(TAG, "Loading homework from storage")
+                Log.i(TAG, "Loading homework from storage")
 
-            return try {
+                return@withContext try {
 
-                //load json from storage
-                val json = HomeworkStorage.load() ?: return null
-                HomeworkParser.parseJson(json)
+                    //load json from storage
+                    val json = withContext(Dispatchers.IO) { HomeworkStorage.load() }
+                        ?: return@withContext null
 
-            } catch (e: Exception) {
-                e.printStackTrace()
-                null
+                    HomeworkParser.parseJson(json)
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    null
+                }
             }
         }
 

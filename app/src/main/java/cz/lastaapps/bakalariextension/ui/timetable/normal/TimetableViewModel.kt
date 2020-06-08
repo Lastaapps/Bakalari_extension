@@ -22,19 +22,18 @@ package cz.lastaapps.bakalariextension.ui.timetable.normal
 
 import androidx.lifecycle.ViewModel
 import cz.lastaapps.bakalariextension.App
-import cz.lastaapps.bakalariextension.api.DataIdList
-import cz.lastaapps.bakalariextension.api.homework.data.Homework
+import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
-import cz.lastaapps.bakalariextension.tools.Settings
+import cz.lastaapps.bakalariextension.tools.MySettings
 import cz.lastaapps.bakalariextension.tools.TimeTools
-import org.threeten.bp.ZonedDateTime
+import java.time.ZonedDateTime
 
 /**Contains data for */
 class TimetableViewModel : ViewModel() {
     //current date for actual timetable
     var dateTime: ZonedDateTime =
         TimeTools.monday.plusDays(
-            Settings(App.context).getTimetableDayOffset().toLong()
+            MySettings(App.context).getTimetableDayOffset().toLong()
         )
 
     //if permanent timetable is shown now
@@ -46,5 +45,5 @@ class TimetableViewModel : ViewModel() {
     //last loaded week
     var week: Week? = null
 
-    var homework: DataIdList<Homework>? = null
+    var homework: HomeworkList? = null
 }

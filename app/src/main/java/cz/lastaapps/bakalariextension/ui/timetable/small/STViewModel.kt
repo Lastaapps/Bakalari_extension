@@ -18,7 +18,7 @@
  *
  */
 
-package cz.lastaapps.bakalariextension.ui.homework
+package cz.lastaapps.bakalariextension.ui.timetable.small
 
 import android.content.Context
 import android.util.Log
@@ -26,32 +26,48 @@ import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.homework.HomeworkLoader
-import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
+import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
+import cz.lastaapps.bakalariextension.api.timetable.data.Week
+import cz.lastaapps.bakalariextension.tools.MySettings
+import cz.lastaapps.bakalariextension.tools.TimeTools
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.DayOfWeek
+import java.time.ZonedDateTime
 
-class HmwViewModel : ViewModel() {
-
+/**Holds data for SmallTimetableFragment*/
+class STViewModel : ViewModel() {
     companion object {
-        private val TAG = HmwViewModel::class.java.simpleName
+        private val TAG = STViewModel::class.java.simpleName
     }
 
-    /**Hold loaded homework*/
-    val homework = MutableLiveData<HomeworkList>()
+    /**date of currently loaded week*/
+    val date = MutableLiveData(defaultDate())
+
+    /**changes date for weekend*/
+    private fun defaultDate(): ZonedDateTime {
+        val now = TimeTools.now
+
+        return if (arrayOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
+                .contains(now.dayOfWeek)
+        ) {
+            MySettings.withAppContext().showTomorrowsPreview(now, now)
+        } else
+            now
+    }
+
+    /**Timetable data in for of Week object*/
+    val week = MutableLiveData<Week>()
+
+    /**triggered when attempts to load marks fail*/
+    val failObserve = MutableLiveData<Any>()
 
     /**If SwipeRefreshLayouts are refreshing now*/
     val isRefreshing = MutableLiveData(false)
 
-    /**Notifies root fragment, that no data will be shows*/
-    val failObserve = MutableLiveData<Any>()
-
-    /**The id of the homework to scroll to*/
-    val selectedHomeworkId = MutableLiveData<String>()
-
-    /**When user refreshes marks with swipe from the top of the screen*/
+    /**Loads timetable for the date in the variable #date*/
     fun onRefresh(context: Context, forceReload: Boolean = false) {
 
         if (isRefreshing.value == true)
@@ -62,54 +78,44 @@ class HmwViewModel : ViewModel() {
 
         val scope = CoroutineScope(Dispatchers.Default)
         scope.launch {
+            Log.i(TAG, "Loading timetable")
 
-            Log.i(TAG, "Loading homework list")
+            var loaded: Week?
 
-            var loaded: HomeworkList?
             if (forceReload) {
-                loaded = HomeworkLoader.loadFromServer()
-
+                loaded = TimetableLoader.loadFromServer(date.value!!)
             } else {
 
-                loaded = HomeworkLoader.loadFromStorage()
+                loaded = TimetableLoader.loadFromStorage(date.value!!)
 
-                if (HomeworkLoader.shouldReload() || loaded == null) {
+                if (TimetableLoader.shouldReload(date.value!!) || loaded == null) {
                     loaded?.let {
                         withContext(Dispatchers.Main) {
-                            homework.value = it
+                            week.value = it
                         }
                     }
 
-                    loaded = HomeworkLoader.loadFromServer()
+                    loaded = TimetableLoader.loadFromServer(date.value!!)
                 }
             }
 
             withContext(Dispatchers.Main) {
 
-                //when download failed
-                if (loaded == null) {
-                    Toast.makeText(
-                        context, R.string.homework_failed_to_load, Toast.LENGTH_LONG
-                    ).show()
-                    Log.e(TAG, "Download failed")
-                    failObserve.value = Any()
-                } else {
-
-                    //updates marks with new value
-                    homework.value = loaded
-                }
-
                 //hides refreshing icon
                 isRefreshing.value = false
+
+                //when download failed
+                if (loaded == null) {
+                    Log.e(TAG, "Loading failed")
+                    Toast.makeText(
+                        context, R.string.error_cannot_download_timetable, Toast.LENGTH_LONG
+                    ).show()
+                    failObserve.value = Any()
+                } else {
+                    //updates marks with new value
+                    week.value = loaded
+                }
             }
         }
     }
-
-    // Search fragment
-    /**Text of the search field*/
-    val searchText = MutableLiveData("")
-
-    /**Index of selected subject*/
-    val subjectIndex = MutableLiveData(0)
-
 }

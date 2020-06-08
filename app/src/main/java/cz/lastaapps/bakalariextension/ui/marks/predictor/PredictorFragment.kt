@@ -22,6 +22,7 @@ package cz.lastaapps.bakalariextension.ui.marks.predictor
 
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,6 +43,9 @@ import cz.lastaapps.bakalariextension.ui.marks.MarksViewModel
 
 
 class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnClickListener {
+    companion object {
+        private val TAG = PredictorFragment::class.java.simpleName
+    }
 
     //layout
     lateinit var binding: FragmentMarksPredictorBinding
@@ -51,6 +55,7 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
 
     /**Updates on marks changed*/
     private val marksObserver = { _: MarksAllSubjects ->
+        Log.i(TAG, "updating based on new marks")
         loadSubjects()
         loadMarks()
     }
@@ -66,13 +71,6 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
         viewModel.marks.observe({ lifecycle }, marksObserver)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-
-        //stops observing marks change
-        viewModel.marks.removeObserver(marksObserver)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -80,6 +78,8 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
     ): View? {
         //inflates views
         if (!this::binding.isInitialized) {
+            Log.i(TAG, "Creating view")
+
             binding = DataBindingUtil.inflate(
                 inflater, R.layout.fragment_marks_predictor, container, false
             )
@@ -100,6 +100,8 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
             loadMarks()
             loadAddedMarks()
             updateNewAverage()
+        } else {
+            Log.i(TAG, "Already created")
         }
 
         return binding.root
@@ -234,7 +236,7 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
         viewModel.newAverageColor.value =
             when {
                 comparison == 0 || marks.isEmpty() || Mark.isMixed(marks) -> {
-                    ColorStateList.valueOf(resources.getColor(android.R.color.primary_text_light))
+                    ColorStateList.valueOf(resources.getColor(R.color.primary_text_light))
                 }
                 (comparison > 0) == Mark.isAllNormal(marks) -> {
                     ColorStateList.valueOf(resources.getColor(android.R.color.holo_green_light))

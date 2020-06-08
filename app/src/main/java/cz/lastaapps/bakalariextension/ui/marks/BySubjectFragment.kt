@@ -21,6 +21,7 @@
 package cz.lastaapps.bakalariextension.ui.marks
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,14 +42,19 @@ import kotlinx.coroutines.yield
 /**Shows subjects and their marks
  * placed in MarksRootFragment*/
 class BySubjectFragment : Fragment() {
+    companion object {
+        private val TAG = BySubjectFragment::class.java.simpleName
+    }
 
     //views
     lateinit var binding: FragmentMarksSubjectBinding
+
     //ViewModel with views
     lateinit var viewModel: MarksViewModel
 
     //updates fragment on marks update
-    private val marksObserver = {_: MarksAllSubjects ->
+    private val marksObserver = { _: MarksAllSubjects ->
+        Log.i(TAG, "Updating based on new marks")
         loadSubjects()
     }
 
@@ -63,20 +69,16 @@ class BySubjectFragment : Fragment() {
         viewModel.marks.observe({ lifecycle }, marksObserver)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-
-        //stops observing for marks update
-        viewModel.marks.removeObserver(marksObserver)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         //inflates views
         if (!this::binding.isInitialized) {
+            Log.i(TAG, "Creating view")
+
             binding =
                 DataBindingUtil.inflate(inflater, R.layout.fragment_marks_subject, container, false)
             binding.viewmodel = viewModel
@@ -84,12 +86,14 @@ class BySubjectFragment : Fragment() {
 
             //fills up list
             loadSubjects()
+        } else {
+            Log.i(TAG, "View already created")
         }
 
         return binding.root
     }
 
-    /**fills up list with subjets*/
+    /**fills up list with subjects*/
     private fun loadSubjects() {
         val loading: ProgressBar = binding.loading
         val errorMessage = binding.errorMessage

@@ -43,11 +43,11 @@
         android:theme="@style/AppTheme">
 
         <receiver
-            android:name=".WidgetUpdater"
+            android:name=".widgets.WidgetUpdater"
             android:enabled="true"
             android:exported="true" /> <!-- TODO disable receiver before user is logged in -->
         <receiver
-            android:name=".ui.timetable.small.widget.SmallTimetableWidget"
+            android:name=".widgets.smalltimetable.SmallTimetableWidget"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -83,12 +83,12 @@
             android:name=".services.timetablenotification.TTNotifyService"
             android:enabled="true" />
         <service
-            android:name=".ui.timetable.small.widget.SmallTimetableRemoteAdapterService"
+            android:name=".widgets.smalltimetable.SmallTimetableRemoteAdapterService"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
-        <activity android:name=".ui.settings.SettingsActivity" />
+        <activity android:name=".ui.SettingsActivity" />
         <activity
             android:name=".LoadingActivity"
             android:exported="true"
@@ -117,11 +117,11 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ui.license.LicenseActivity"
+            android:name=".ui.LicenseActivity"
             android:label="@string/app_name"
             android:theme="@style/License.Activity" />
         <activity
-            android:name=".ui.timetable.small.widget.SmallTimetableWidgetConfig"
+            android:name=".widgets.smalltimetable.SmallTimetableWidgetConfig"
             android:theme="@style/AppTheme.Transparent"
             android:exported="true">
             <intent-filter>

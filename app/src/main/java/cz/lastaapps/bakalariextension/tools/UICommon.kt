@@ -22,8 +22,8 @@ package cz.lastaapps.bakalariextension.tools
 
 import android.content.Context
 import cz.lastaapps.bakalariextension.R
-import org.threeten.bp.Duration
-import org.threeten.bp.ZonedDateTime
+import java.time.Duration
+import java.time.ZonedDateTime
 
 //contains methods used through whole UI section
 

@@ -19,118 +19,154 @@
   ~
   -->
 
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    style="@style/AppTheme"
-    tools:context=".MainActivity">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <data>
+
+    </data>
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/idea_margin"
-        android:orientation="vertical">
+        style="@style/AppTheme">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_margin="@dimen/idea_margin"
+            android:orientation="vertical">
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/report_fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/idea_margin"
-                app:backgroundTint="@color/colorAccent"
-                app:srcCompat="@drawable/nav_idea"
-
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"/>
-
-            <TextView
-                style="@style/AppTheme.Heading"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/report_label"
+                android:orientation="horizontal">
 
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_toStartOf="@id/report_fab"/>
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/report_fab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/idea_margin"
+                    app:backgroundTint="@color/colorAccent"
+                    app:srcCompat="@drawable/nav_idea"
 
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/emailbox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_toStartOf="@id/github_fab">
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true" />
 
                 <TextView
+                    style="@style/AppTheme.Heading"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/idea_margin"
-                    android:text="@string/report_email_label" />
+                    android:text="@string/report_label"
 
-                <EditText
-                    android:id="@+id/email"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_toStartOf="@id/report_fab" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/emailbox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/idea_margin"
-                    android:hint="@string/report_email_prompt"
-                    android:inputType="textEmailAddress" />
-            </LinearLayout>
+                    android:orientation="vertical"
+                    android:layout_toStartOf="@id/github_fab">
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/github_fab"
-                android:layout_width="wrap_content"
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/idea_margin"
+                        android:text="@string/report_email_label" />
+
+                    <EditText
+                        android:id="@+id/email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/idea_margin"
+                        android:hint="@string/report_email_prompt"
+                        android:inputType="textEmailAddress" />
+                </LinearLayout>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/github_fab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_margin="@dimen/idea_margin"
+
+                    app:backgroundTint="@color/github_background"
+                    app:srcCompat="@drawable/github" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_margin="@dimen/idea_margin"
+                android:layout_marginTop="@dimen/idea_margin"
+                android:text="@string/report_message_label" />
 
-                app:backgroundTint="@color/github_background"
-                app:srcCompat="@drawable/github" />
+            <EditText
+                android:id="@+id/message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/idea_margin"
+                android:hint="@string/report_message_prompt"
+                android:inputType="textLongMessage|textAutoCorrect|textMultiLine|text|textAutoComplete|textImeMultiLine" />
 
-        </RelativeLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/report_data_collected" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/idea_margin"
-            android:text="@string/report_message_label" />
+            <CheckBox
+                android:id="@+id/include_timetable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/report_include_timetable"
+                android:layout_margin="@dimen/margin_basic" />
 
-        <EditText
-            android:id="@+id/message"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/idea_margin"
-            android:hint="@string/report_message_prompt"
-            android:inputType="textLongMessage|textAutoCorrect|textMultiLine|text|textAutoComplete|textImeMultiLine" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/report_include_timetable_warning"
+                android:paddingStart="@dimen/report_warning_margin"
+                android:paddingEnd="@dimen/report_warning_margin" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/report_data_collected" />
+            <CheckBox
+                android:id="@+id/include_marks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/report_include_marks"
+                android:layout_margin="@dimen/margin_basic" />
 
-        <CheckBox
-            android:id="@+id/include_timetable"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/report_include_timetable"
-            android:layout_margin="@dimen/margin_basic" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/report_include_marks_warning"
+                android:paddingStart="@dimen/report_warning_margin"
+                android:paddingEnd="@dimen/report_warning_margin" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/report_include_timetable_warning"
-            android:paddingStart="15dp"/>
-    </LinearLayout>
+            <CheckBox
+                android:id="@+id/include_homework"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/report_include_timetable"
+                android:layout_margin="@dimen/margin_basic" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/report_include_timetable_warning"
+                android:paddingStart="@dimen/report_warning_margin"
+                android:paddingEnd="@dimen/report_warning_margin" />
+
+
+        </LinearLayout>
+
+    </ScrollView>
+</layout>

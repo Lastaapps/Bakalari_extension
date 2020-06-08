@@ -78,6 +78,7 @@ class TTReceiver : BroadcastReceiver() {
                         break
                     }
                 }
+                Log.i(TAG, "Wakelock released")
             }
         }
 

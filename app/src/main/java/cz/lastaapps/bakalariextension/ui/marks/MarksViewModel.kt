@@ -22,6 +22,7 @@ package cz.lastaapps.bakalariextension.ui.marks
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -40,37 +41,67 @@ import kotlinx.coroutines.withContext
 /**ViewModel common for all mark fragments
  * holds loaded marks and some data for each fragment*/
 class MarksViewModel : ViewModel() {
+    companion object {
+        private val TAG = MarksViewModel::class.java.simpleName
+    }
 
     /**Loaded subjects and their marks*/
     val marks = MutableLiveData<MarksAllSubjects>()
+
+    /**triggered when attempts to load marks fail*/
+    val failObserve = MutableLiveData<Any>()
 
     /**If SwipeRefreshLayouts are refreshing now*/
     val isRefreshing = MutableLiveData(false)
 
     /**When user refreshes marks with swipe from the top of the screen*/
-    fun onRefresh(context: Context) {
+    fun onRefresh(context: Context, forceReload: Boolean = false) {
+
+        if (isRefreshing.value == true)
+            return
 
         //set state refreshing
         isRefreshing.value = true
 
-        val scope = CoroutineScope(Dispatchers.IO)
+        val scope = CoroutineScope(Dispatchers.Default)
         scope.launch {
-            val newMarks = MarksLoader.loadFromServer()
+            Log.i(TAG, "Loading marks")
+
+            var loaded: MarksAllSubjects?
+
+            if (forceReload) {
+                loaded = MarksLoader.loadFromServer()
+            } else {
+
+                loaded = MarksLoader.loadFromStorage()
+
+                if (MarksLoader.shouldReload() || loaded == null) {
+                    loaded?.let {
+                        withContext(Dispatchers.Main) {
+                            marks.value = it
+                        }
+                    }
+
+                    loaded = MarksLoader.loadFromServer()
+                }
+            }
 
             withContext(Dispatchers.Main) {
-                //hides refreshing icon
-                isRefreshing.value = false
 
                 //when download failed
-                if (newMarks == null) {
+                if (loaded == null) {
+                    Log.e(TAG, "Loading failed")
                     Toast.makeText(
-                        context, R.string.marks_failed_to_load, Toast.LENGTH_LONG
+                        context, R.string.homework_failed_to_load, Toast.LENGTH_LONG
                     ).show()
-                    return@withContext
+                    failObserve.value = Any()
+                } else {
+                    //updates marks with new value
+                    marks.value = loaded
                 }
 
-                //updates marks with new value
-                marks.value = newMarks
+                //hides refreshing icon
+                isRefreshing.value = false
             }
         }
     }
@@ -84,7 +115,8 @@ class MarksViewModel : ViewModel() {
     val newAverage = MutableLiveData("")
 
     //color of new average
-    val newAverageColor = MutableLiveData(ColorStateList.valueOf(App.getColor(android.R.color.primary_text_dark)))
+    val newAverageColor =
+        MutableLiveData(ColorStateList.valueOf(App.getColor(R.color.primary_text_light)))
 
     /**Which subject was selected in predictor*/
     val predictorSelected = MutableLiveData(0)

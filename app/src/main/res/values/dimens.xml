@@ -30,18 +30,21 @@
     <dimen name="padding_basic">10dp</dimen>
     <dimen name="margin_basic">5dp</dimen>
 
+    <dimen name="heading_text_size">32sp</dimen>
+
+    <dimen name="image_button">64dp</dimen>
+    <dimen name="small_image_button">40dp</dimen>
+
+    <!-- Login -->
     <dimen name="login_margin_sides">24dp</dimen>
     <dimen name="login_margin_sides_button">48dp</dimen>
     <dimen name="login_margin_between">8dp</dimen>
     <dimen name="login_margin_between_button">10dp</dimen>
     <dimen name="login_margin_top">96dp</dimen>
 
+    <!-- Send idea and report issue-->
     <dimen name="idea_margin">10dp</dimen>
-
-    <dimen name="heading_text_size">32sp</dimen>
-
-    <dimen name="image_button">64dp</dimen>
-    <dimen name="small_image_button">40dp</dimen>
+    <dimen name="report_warning_margin">15dp</dimen>
 
     <!-- Widget -->
     <dimen name="widget_margin">5dp</dimen>

@@ -22,6 +22,7 @@ package cz.lastaapps.bakalariextension.services.timetablenotification
 
 import android.content.Context
 import android.text.Html
+import android.util.Log
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.timetable.data.Hour
 import cz.lastaapps.bakalariextension.api.timetable.data.Lesson
@@ -30,6 +31,10 @@ import cz.lastaapps.bakalariextension.tools.TimeTools
 
 /**Generates text to timetable notification*/
 class NotificationContent(val context: Context) {
+
+    companion object {
+        private val TAG = NotificationContent::class.java.simpleName
+    }
 
     //strings in message
     private val nextStr = getString(R.string.next)
@@ -43,7 +48,10 @@ class NotificationContent(val context: Context) {
     /** @return map of all available texts
      * Int is representing seconds since midnight
      * for data {100, 200, 300} at time 150s will be texts for 200 returned!*/
-    fun generateActions(week: Week): HashMap<Int, Array<String>?>? {
+    fun generateActions(week: Week): HashMap<Int, Array<CharSequence>?>? {
+
+        Log.i(TAG, "Generating actions")
+
         //will be returned
         val actions = HashMap<Int, Array<String>?>()
 
@@ -83,40 +91,44 @@ class NotificationContent(val context: Context) {
                 actions[begin - (60 * 60)] = null
             }
 
-        // @formatter:off
+            // @formatter:off
             //normal lesson
             if (day.isNormal(hour)) {
 
                 //lesson is null only during free lesson, line only because of compiler
                 if (lesson == null) continue
 
-                if (nextLesson == null || nextHour == null) {
-                    lessonLast(actions, begin, end, week, hour, lesson)
-                }
-                else if (day.isNormal(nextHour)) {
-                    lessonNextLesson(actions, begin, end, week, hour, nextHour, lesson, nextLesson)
-                }
-                else if (day.isFree(nextHour)) {
-                    lessonNextFree(actions, begin, end, week, hour, nextHour, lesson, nextLesson)
-                }
-                else if (day.isAbsence(nextHour)) {
-                    lessonNextAbsence(actions, begin, end, week, hour, nextHour, lesson, nextLesson)
+                when {
+                    nextHour == null -> {
+                        lessonLast(actions, begin, end, week, hour, lesson)
+                    }
+                    day.isNormal(nextHour) -> {
+                        lessonNextLesson(actions, begin, end, week, hour, nextHour, lesson, nextLesson!!)
+                    }
+                    day.isFree(nextHour) -> {
+                        lessonNextFree(actions, begin, end, week, hour, nextHour, lesson)
+                    }
+                    day.isAbsence(nextHour) -> {
+                        lessonNextAbsence(actions, begin, end, week, hour, nextHour, lesson, nextLesson!!)
+                    }
                 }
             }
             else if (day.isFree(hour)) {
                 //lunch lesson
 
-                if (nextLesson == null || nextHour == null) {
-                    freeLast(actions, begin, end, week, hour)
-                }
-                else if (day.isNormal(nextHour)) {
-                    freeNextLesson(actions, begin, end, week, hour, nextHour, nextLesson)
-                }
-                else if (day.isFree(nextHour)) {
-                    freeNextFree(actions, begin, end, week, hour, nextHour)
-                }
-                else if (day.isAbsence(nextHour)) {
-                    freeNextAbsence(actions, begin, end, week, hour, nextHour, nextLesson)
+                when {
+                    nextHour == null -> {
+                        freeLast(actions, begin, end, week, hour)
+                    }
+                    day.isNormal(nextHour) -> {
+                        freeNextLesson(actions, begin, end, week, hour, nextHour, nextLesson!!)
+                    }
+                    day.isFree(nextHour) -> {
+                        freeNextFree(actions, begin, end, week, hour, nextHour)
+                    }
+                    day.isAbsence(nextHour) -> {
+                        freeNextAbsence(actions, begin, end, week, hour, nextHour, nextLesson!!)
+                    }
                 }
             }
             else if (day.isAbsence(hour)) {
@@ -125,21 +137,38 @@ class NotificationContent(val context: Context) {
                 //lesson is null only during free lesson, line only because of compiler
                 if (lesson == null) continue
 
-                if (nextLesson == null || nextHour == null) {
-                    absenceLast(actions, begin, end, week, hour, lesson)
-                }
-                else if (day.isNormal(nextHour)) {
-                    absenceNextLesson(actions, begin, end, week, hour, nextHour, lesson, nextLesson)
-                }
-                else if (day.isFree(nextHour)) {
-                    absenceNextFree(actions, begin, end, week, hour, nextHour, lesson, nextLesson)
-                }
-                else if (day.isAbsence(nextHour)) {
-                    absenceNextAbsence(actions, begin, end, week, hour, nextHour, lesson, nextLesson)
+                when {
+                    nextHour == null -> {
+                        absenceLast(actions, begin, end, week, hour, lesson)
+                    }
+                    day.isNormal(nextHour) -> {
+                        absenceNextLesson(actions, begin, end, week, hour, nextHour, lesson, nextLesson!!)
+                    }
+                    day.isFree(nextHour) -> {
+                        absenceNextFree(actions, begin, end, week, hour, nextHour, lesson)
+                    }
+                    day.isAbsence(nextHour) -> {
+                        absenceNextAbsence(actions, begin, end, week, hour, nextHour, lesson, nextLesson!!)
+                    }
                 }
             }
         }
-        return actions
+
+        //converts Strings into CharSequences (Spannable)
+        val charSequenceActions = HashMap<Int, Array<CharSequence>?>()
+        for (key in actions.keys) {
+            val array = actions[key]
+            if (array == null) {
+                charSequenceActions[key] = null
+                continue
+            }
+            charSequenceActions[key] = arrayOf(
+                Html.fromHtml(array[0]) as CharSequence,
+                Html.fromHtml(array[1]) as CharSequence
+            )
+        }
+
+        return charSequenceActions
     }
 
     private fun lessonLast(
@@ -151,13 +180,13 @@ class NotificationContent(val context: Context) {
 
         //before lesson starts
         actions[begin] = arrayOf(
-            "${pattern.begin} ${Html.fromHtml("<b>" + week.rooms.getById(lesson.roomId)?.shortcut + "</b>")} - ${week.subjects.getById(lesson.subjectId)?.name}",
+            "${pattern.begin} ${"<b>" + week.rooms.getById(lesson.roomId)?.shortcut + "</b>"} - ${week.subjects.getById(lesson.subjectId)?.name}",
             "${week.teachers.getById(lesson.teacherId)?.name}${if (lesson.theme != "") " ${lesson.theme}" else ""}, $groupStr ${week.groups.getByIds(lesson.groupIds)?.shortcut}"
         )
 
         //during lesson
         actions[end - 10 * 60] = arrayOf(
-            "${Html.fromHtml("<b>" + week.rooms.getById(lesson.roomId)?.shortcut + "</b>")} - ${week.subjects.getById(lesson.subjectId)?.name}",
+            "${"<b>" + week.rooms.getById(lesson.roomId)?.shortcut + "</b>"} - ${week.subjects.getById(lesson.subjectId)?.name}",
             "${pattern.begin} - ${pattern.end}"
         )
 
@@ -177,13 +206,13 @@ class NotificationContent(val context: Context) {
 
         //before lesson starts
         actions[begin] = arrayOf(
-            "${pattern.begin} ${Html.fromHtml("<b>" + week.rooms.getById(lesson.roomId)?.shortcut + "</b>")} - ${week.subjects.getById(lesson.subjectId)?.name}",
+            "${pattern.begin} ${"<b>" + week.rooms.getById(lesson.roomId)?.shortcut + "</b>"} - ${week.subjects.getById(lesson.subjectId)?.name}",
             "${week.teachers.getById(lesson.teacherId)?.name}${if (lesson.theme != "") " ${lesson.theme}" else ""}, $groupStr ${week.groups.getByIds(lesson.groupIds)?.shortcut}"
         )
 
         //during lesson
         actions[end - 10 * 60] = arrayOf(
-            "${Html.fromHtml("<b>" + week.rooms.getById(lesson.roomId)?.shortcut + "</b>")} - ${week.subjects.getById(lesson.subjectId)?.name}",
+            "${"<b>" + week.rooms.getById(lesson.roomId)?.shortcut + "</b>"} - ${week.subjects.getById(lesson.subjectId)?.name}",
             "${pattern.begin} - ${pattern.end}, $nextStr: ${week.rooms.getById(nextLesson.roomId)?.shortcut} - ${week.subjects.getById(nextLesson.subjectId)?.name}"
         )
 
@@ -197,19 +226,19 @@ class NotificationContent(val context: Context) {
     private fun lessonNextFree(
         actions: HashMap<Int, Array<String>?>, begin: Int, end: Int,
         week: Week, pattern: Hour, nextPattern: Hour,
-        lesson: Lesson, nextLesson: Lesson
+        lesson: Lesson
     ) {
         //before free lesson
 
         //before lesson starts
         actions[begin] = arrayOf(
-            "${pattern.begin} ${Html.fromHtml("<b>" + week.rooms.getById(lesson.roomId)?.shortcut + "</b>")} - ${week.subjects.getById(lesson.subjectId)?.name}",
+            "${pattern.begin} ${"<b>" + week.rooms.getById(lesson.roomId)?.shortcut + "</b>"} - ${week.subjects.getById(lesson.subjectId)?.name}",
             "${week.teachers.getById(lesson.teacherId)?.name}${if (lesson.theme != "") " ${lesson.theme}" else ""}"
         )
 
         //during lesson
         actions[end - 10 * 60] = arrayOf(
-            "${Html.fromHtml("<b>" + week.rooms.getById(lesson.roomId)?.shortcut + "</b>")} - ${week.subjects.getById(lesson.subjectId)?.name}",
+            "${"<b>" + week.rooms.getById(lesson.roomId)?.shortcut + "</b>"} - ${week.subjects.getById(lesson.subjectId)?.name}",
             "${pattern.begin} - ${pattern.end}, $nextStr: $freeLessonStr"
         )
 
@@ -229,20 +258,20 @@ class NotificationContent(val context: Context) {
 
         //before lesson starts
         actions[begin] = arrayOf(
-            "${pattern.begin} ${Html.fromHtml("<b>" + week.rooms.getById(lesson.roomId)?.shortcut + "</b>")} - ${week.subjects.getById(lesson.subjectId)?.name}",
+            "${pattern.begin} ${"<b>" + week.rooms.getById(lesson.roomId)?.shortcut + "</b>"} - ${week.subjects.getById(lesson.subjectId)?.name}",
             "${week.teachers.getById(lesson.teacherId)?.name}${if (lesson.theme != "") " ${lesson.theme}" else ""}, $groupStr ${week.groups.getByIds(lesson.groupIds)?.shortcut}"
         )
 
         //during lesson
         actions[end - 10 * 60] = arrayOf(
-            "${Html.fromHtml("<b>" + week.rooms.getById(lesson.roomId)?.shortcut + "</b>")} - ${week.subjects.getById(lesson.subjectId)?.name}",
+            "${"<b>" + week.rooms.getById(lesson.roomId)?.shortcut + "</b>"} - ${week.subjects.getById(lesson.subjectId)?.name}",
             "${pattern.begin} - ${pattern.end}, $nextStr: ${lesson.change?.typeShortcut} ${lesson.change?.typeName}"
         )
 
         //last 10 minutes of the lesson
         actions[end] = arrayOf(
-            "$nextStr: ${lesson.change?.typeShortcut} ${lesson.change?.typeName}",
-            "${pattern.begin} - ${pattern.end}"
+            "$nextStr: ${nextLesson.change?.typeShortcut} ${nextLesson.change?.typeName}",
+            "${nextPattern.begin} - ${nextPattern.end}"
         )
     }
 
@@ -262,8 +291,8 @@ class NotificationContent(val context: Context) {
 
         //last 10 minutes of a lesson
         actions[end] = arrayOf(
-            "$lastLessonStr",
-            "${getString(R.string.finally_home)}"
+            lastLessonStr,
+            getString(R.string.finally_home)
         )
     }
 
@@ -307,7 +336,7 @@ class NotificationContent(val context: Context) {
 
         //last 10 minutes of the lesson
         actions[end] = arrayOf(
-            "$freeLessonStr",
+            freeLessonStr,
             "$nextStr: $freeLessonStr $untilStr ${nextPattern.end}"
         )
     }
@@ -351,7 +380,7 @@ class NotificationContent(val context: Context) {
         //last 10 minutes of a lesson
         actions[end] = arrayOf(
             "${lesson.change?.typeShortcut} ${lesson.change?.typeName}",
-            "${lastLessonStr} ${getString(R.string.finally_home)}"
+            "$lastLessonStr ${getString(R.string.finally_home)}"
         )
     }
 
@@ -387,7 +416,7 @@ class NotificationContent(val context: Context) {
     private fun absenceNextFree(
         actions: HashMap<Int, Array<String>?>, begin: Int, end: Int,
         week: Week, pattern: Hour, nextPattern: Hour,
-        lesson: Lesson, nextLesson: Lesson
+        lesson: Lesson
     ) {
         //before free lesson
 

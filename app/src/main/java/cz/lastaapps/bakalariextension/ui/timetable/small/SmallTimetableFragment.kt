@@ -20,7 +20,6 @@
 
 package cz.lastaapps.bakalariextension.ui.timetable.small
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -28,21 +27,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModel
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.DataIdList
-import cz.lastaapps.bakalariextension.api.homework.HomeworkLoader
-import cz.lastaapps.bakalariextension.api.homework.data.Homework
-import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
-import cz.lastaapps.bakalariextension.api.timetable.data.Week
+import cz.lastaapps.bakalariextension.tools.MySettings
 import cz.lastaapps.bakalariextension.tools.TimeTools
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.threeten.bp.ZonedDateTime
+import cz.lastaapps.bakalariextension.ui.homework.HmwViewModel
+import java.time.ZonedDateTime
 
-class SmallTimetableFragment : Fragment {
+class SmallTimetableFragment : Fragment() {
 
     companion object {
         private val TAG = SmallTimetableFragment::class.java.simpleName
@@ -50,78 +41,137 @@ class SmallTimetableFragment : Fragment {
 
     private lateinit var view: SmallTimetableView
     private lateinit var vm: STViewModel
-    private var _date: ZonedDateTime? = null
+    private lateinit var vmHomework: HmwViewModel
 
-    constructor(): super()
-
-    //TODO show tomorrow in the evening
-    constructor(date: ZonedDateTime): super() {
-        _date = date
+    /**Called when timetable or homework list was successfully loaded*/
+    private val onSuccess = { _: Any? ->
+        onSuccess()
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
+    /**Called when timetable cannot be loaded*/
+    private val onFail = { _: Any? ->
+        onFail()
+    }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        //loads ViewModels
         val model: STViewModel by activityViewModels()
         this.vm = model
 
-        if (model.date == null)
-            model.date = _date ?: TimeTools.now
+        val model2: HmwViewModel by activityViewModels()
+        this.vmHomework = model2
 
+        //observes for data changes
+        vm.week.observe({ lifecycle }, onSuccess)
+        vmHomework.homework.observe({ lifecycle }, onSuccess)
+        vm.failObserve.observe({ lifecycle }, onFail)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.i(TAG, "Creating view for SmallTimetable fragment")
+        Log.i(TAG, "Creating view")
 
         view = SmallTimetableView(inflater.context)
+        vm.isRefreshing.observe({ lifecycle }) { state: Boolean ->
+            if (state) {
+                view.setLoading()
+            }
+        }
+
+        //loads the timetable if it wasn't already done
+        if (vm.week.value != null) {
+            onSuccess(null)
+        } else {
+            vm.onRefresh(requireContext())
+        }
+
+        //loads the homework list if it wasn't already done
+        if (vmHomework.homework.value != null) {
+            onSuccess(null)
+        } else {
+            vmHomework.onRefresh(requireContext())
+        }
 
         return view
     }
 
-    override fun onStart() {
-        super.onStart()
+    /**
+     * Gets date to load final timetable and saves it to ViewModel
+     * @return if request for other Timetable was made
+     */
+    private fun initDate(): Boolean {
+        //gets date to load final timetable
+        if (vm.week.value != null) {
+            val oldDate = vm.date.value!!
 
-        val scope = CoroutineScope(Dispatchers.Main)
-        scope.launch {
+            val hours = vm.week.value!!.hours
+            val today = vm.week.value!!.today()
 
-            //shows progress bar while loading
-            view.setLoading()
+            //in the evening tomorrows timetable can be loaded
+            vm.date.value = MySettings(requireContext()).showTomorrowsPreview(
+                TimeTools.now,
 
-            withContext(Dispatchers.IO) {
+                if (today != null) {
+                    val index = today.lastLessonIndex(hours, null)
+                    if (index >= 0) {
+                        //for normal days, gets end of the last lesson
+                        val hour = hours[index]
+                        val endTime =
+                            TimeTools.parseTime(
+                                hour.end,
+                                TimeTools.TIME_FORMAT,
+                                TimeTools.CET
+                            )
 
-                //loads week
-                val date = vm.date!!
-                if (vm.week == null)
-                    vm.week = TimetableLoader.loadTimetable(date)
-
-                if (vm.homework == null)
-                    vm.homework = HomeworkLoader.loadHomework()
-
-                withContext(Dispatchers.Main) {
-
-                    //updates data
-                    if (vm.week == null) {
-                        view.setError(resources.getString(R.string.error_no_timetable_no_internet))
+                        ZonedDateTime.of(
+                            TimeTools.today.toLocalDate(),
+                            endTime,
+                            TimeTools.CET
+                        )
                     } else {
-                        val day = vm.week!!.getDay(date)
-                        if (day == null) {
-                            view.setError(resources.getString(R.string.error_no_timetable_for_today))
-                        } else {
-                            view.updateTimetable(vm.week!!, day, vm.homework)
-                        }
+                        //for holidays and empty days
+                        TimeTools.today.withHour(14)
                     }
+                } else {
+                    //for weekend, returns next Monday
+                    TimeTools.now
                 }
+            )
+
+            if (TimeTools.toMonday(oldDate).toLocalDate()
+                != TimeTools.toMonday(vm.date.value!!).toLocalDate()
+            ) {
+                vm.onRefresh(requireContext())
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun onSuccess() {
+        if (!initDate() && !vm.isRefreshing.value!!) {
+
+            Log.i(TAG, "Showing data")
+
+            //updates data
+            val week = vm.week.value!!
+            val date = vm.date.value!!
+            val homework = vmHomework.homework.value
+
+            val day = week.getDay(date)
+            if (day == null) {
+                view.setError(resources.getString(R.string.error_no_timetable_for_today))
+            } else {
+                view.updateTimetable(week, day, homework)
             }
         }
     }
 
-    //ViewModel holding date
-    class STViewModel: ViewModel() {
-        var date: ZonedDateTime? = null
-        var week: Week? = null
-        var homework: DataIdList<Homework>? = null
+    private fun onFail() {
+        view.setError(resources.getString(R.string.error_no_timetable_no_internet))
     }
 }

@@ -30,6 +30,9 @@
     <color name="bottom_nav_background">#AAA</color>
     <color name="bottom_nav_foreground">#00ACC1</color>
 
+    <color name="primary_text_light">#F000</color>
+    <color name="primary_text_dark">#FFFF</color>
+
     <color name="light">#FFF</color>
     <color name="dark">#000</color>
     <color name="gray_background">#888</color>

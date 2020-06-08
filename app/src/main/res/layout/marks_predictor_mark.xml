@@ -58,7 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{@string/marks_weight + ` ` + String.valueOf(markData.weight)}"
-                android:textColor="@{markData.showAsNew() ? @color/marks_new_mark : @android:color/primary_text_light}"
+                android:textColor="@{markData.showAsNew() ? @color/marks_new_mark : @color/primary_text_light}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

@@ -25,6 +25,7 @@ import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.SimpleData
 import cz.lastaapps.bakalariextension.api.attachment.data.Attachment
 import cz.lastaapps.bakalariextension.api.homework.data.Homework
+import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -34,17 +35,17 @@ class HomeworkParser {
         private val TAG = HomeworkParser::class.java.simpleName
 
         /**Parses marks from json, scheme on https://github.com/bakalari-api/bakalari-api-v3*/
-        fun parseJson(root: JSONObject): DataIdList<Homework> {
+        fun parseJson(root: JSONObject): HomeworkList {
 
             Log.i(TAG, "Parsing homework json")
 
             //parses whole json
-            return DataIdList(parseHomework(root.getJSONArray("Homeworks")).sorted().reversed())
+            return HomeworkList(parseHomework(root.getJSONArray("Homeworks")).sorted().reversed())
         }
 
         /**parse array in /Homework */
-        private fun parseHomework(jsonArray: JSONArray): DataIdList<Homework> {
-            val list = DataIdList<Homework>()
+        private fun parseHomework(jsonArray: JSONArray): HomeworkList {
+            val list = HomeworkList()
 
             for (i in 0 until jsonArray.length()) {
                 val json = jsonArray.getJSONObject(i)
@@ -108,7 +109,10 @@ class HomeworkParser {
          * and replacing null object with ""*/
         private fun safeJson(json: JSONObject, key: String): String {
             return try {
-                return json.getString(key) ?: ""
+                if (!json.isNull(key))
+                    return json.getString(key)
+                else
+                    ""
             } catch (e: JSONException) {
                 ""
             }

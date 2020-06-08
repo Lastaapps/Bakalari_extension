@@ -26,12 +26,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.DataIdList
-import cz.lastaapps.bakalariextension.api.homework.data.Homework
+import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
 import cz.lastaapps.bakalariextension.databinding.HomeworkEntryBinding
 
 /** Adapter to show homework list - uses homework_entry layout*/
-class HmwAdapter(var list: DataIdList<Homework>, private val activity: AppCompatActivity) :
+class HmwAdapter(var list: HomeworkList, private val activity: AppCompatActivity) :
     RecyclerView.Adapter<HmwAdapter.BindingHolder>() {
 
     /**holds binding instead of view*/

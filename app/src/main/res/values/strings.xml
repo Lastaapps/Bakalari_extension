@@ -105,6 +105,10 @@
     <string name="license_apache">Apache 2.0</string>
     <string name="license_mit">MIT License</string>
     <string name="license_mozilla">Mozilla Public License 2.0</string>
+    <string name="licence_inspiration_title">I took some inspiration (not copied main functions ideas) from these apps:</string>
+    <string name="licence_inspiration_better_schedule"><a href="https://play.google.com/store/apps/details?id=cz.vitskalicky.lepsirozvrh">Better schedule</a></string>
+    <string name="licence_inspiration_bakalari"><a href="https://play.google.com/store/apps/details?id=cz.impire.bakalari.student">Bakalari</a></string>
+    <string name="licence_inspiration_bakalari_online"><a href="https://play.google.com/store/apps/details?id=cz.bakalari.mobile">Bakalari OnLine</a></string>
 
     <!-- Timetable -->
     <string name="monday_shortut">Mo</string>

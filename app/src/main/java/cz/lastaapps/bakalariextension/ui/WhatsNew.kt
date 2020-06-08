@@ -18,28 +18,38 @@
  *
  */
 
-package cz.lastaapps.bakalariextension
+package cz.lastaapps.bakalariextension.ui
 
 import android.content.Context
 import android.content.DialogInterface
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
+import cz.lastaapps.bakalariextension.BuildConfig
+import cz.lastaapps.bakalariextension.R
+import java.util.*
 
 class WhatsNew(val context: Context) {
 
     companion object {
+        private val TAG = WhatsNew::class.java.simpleName
+
         private const val SP_KEY = "WHATS_NEW"
         private const val LAST_VERSION_SHOWN = "LAST_VERSION_SHOWN"
     }
 
     /**@return If What's new message was shown*/
     fun shouldShow(): Boolean {
-        return BuildConfig.VERSION_CODE > getSP().getLong(LAST_VERSION_SHOWN, 0)
+        return BuildConfig.VERSION_CODE > getSP().getLong(
+            LAST_VERSION_SHOWN, 0
+        )
     }
 
     /**Shows dialog with whats new text and saves, that this version's updates was seen*/
     fun showDialog() {
+        Log.i(TAG, "Showing dialog")
+
         //shows dialog with whats new text
         AlertDialog.Builder(context).apply {
 
@@ -49,7 +59,7 @@ class WhatsNew(val context: Context) {
             }
             setTitle(R.string.whats_new_title)
             //shows beta updates to beta users only
-            if (!BuildConfig.VERSION_NAME.toLowerCase().contains("beta")) {
+            if (!BuildConfig.VERSION_NAME.toLowerCase(Locale.ROOT).contains("beta")) {
                 setMessage(R.string.whats_new)
             } else {
                 setMessage(R.string.whats_new_beta)

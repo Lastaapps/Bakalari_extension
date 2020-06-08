@@ -87,10 +87,13 @@ class LoginToServer(
 
                     //downloads default user info
                     if (OnLogin.onLogin(App.context)) {
+                        Log.i(TAG, "Login succeed")
                         LoginData.saveData(username, url, town, school)
                         VALID_TOKEN
-                    } else
+                    } else {
+                        Log.i(TAG, "Login failed")
                         NO_INTERNET
+                    }
                 }
                 ConnMgr.LOGIN_WRONG -> WRONG_LOGIN
                 else -> NO_INTERNET
@@ -104,6 +107,7 @@ class LoginToServer(
                 )
                     .show()
             }
+            Log.e(TAG, "Error while connecting")
             e.printStackTrace()
 
             return NO_INTERNET

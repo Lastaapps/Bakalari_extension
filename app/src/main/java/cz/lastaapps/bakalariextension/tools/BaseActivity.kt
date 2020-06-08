@@ -43,7 +43,7 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun attachBaseContext(newBase: Context) {
         //sets up with context with changed language
-        super.attachBaseContext(LocaleManager.updateLocale(newBase));
+        super.attachBaseContext(LocaleManager.updateLocale(newBase))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,8 +61,10 @@ open class BaseActivity : AppCompatActivity() {
 
         if (permissions.contains(storagePermission)) {
             if (grantResults[permissions.indexOf(storagePermission)] == PackageManager.PERMISSION_GRANTED) {
+                Log.i(TAG, "Write external storage permission granted")
                 Toast.makeText(this, R.string.permission_granted, Toast.LENGTH_LONG).show()
             } else {
+                Log.i(TAG, "Write external storage permission denied")
                 Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_LONG).show()
             }
         } else
@@ -71,13 +73,13 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 
-        if (requestCode == Settings.FILE_SELECT_CODE) {
+        if (requestCode == MySettings.FILE_SELECT_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 val uri = data!!.data!!
 
                 Log.i(TAG, "Folder selected, uri: $uri")
 
-                Settings.withAppContext().setDownloadLocation(uri.toString())
+                MySettings.withAppContext().setDownloadLocation(uri.toString())
                 contentResolver.takePersistableUriPermission(
                     uri,
                     Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION

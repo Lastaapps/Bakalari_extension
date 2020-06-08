@@ -21,6 +21,7 @@
 package cz.lastaapps.bakalariextension.ui.homework
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,16 +34,21 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.homework.data.Homework
+import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
 import cz.lastaapps.bakalariextension.databinding.FragmentHomeworkOldBindingImpl
 
 /**shows old homework list - done and outdated homework*/
 class HmwOldFragment : Fragment() {
+    companion object {
+        private val TAG = HmwOldFragment::class.java.simpleName
+    }
 
     lateinit var binding: FragmentHomeworkOldBindingImpl
     lateinit var viewModel: HmwViewModel
 
     /**observes for marks update*/
-    private var homeworkObserver = { _: DataIdList<Homework> ->
+    private var homeworkObserver = { _: HomeworkList ->
+        Log.i(TAG, "Homework list updated")
         updateHomework()
     }
 
@@ -57,26 +63,23 @@ class HmwOldFragment : Fragment() {
         viewModel.homework.observe({ lifecycle }, homeworkObserver)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-
-        //stops observing
-        viewModel.homework.removeObserver(homeworkObserver)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         //inflates only layout once
         if (!this::binding.isInitialized) {
+            Log.i(TAG, "Creating view")
+
             binding = DataBindingUtil.inflate(
                 inflater,
                 R.layout.fragment_homework_old,
                 container,
                 false
             )
+
             //init
             binding.apply {
                 lifecycleOwner = LifecycleOwner { lifecycle }
@@ -87,6 +90,8 @@ class HmwOldFragment : Fragment() {
 
             //shows homework list
             updateHomework()
+        } else {
+            Log.i(TAG, "Already created")
         }
 
         return binding.root
@@ -115,7 +120,9 @@ class HmwOldFragment : Fragment() {
     }
 
     /**If there was request to show specific homework, scrolls there*/
-    private fun scrollToHomework(homeworkList: DataIdList<Homework>) {
+    private fun scrollToHomework(homeworkList: HomeworkList) {
+        Log.i(TAG, "Scrolling to specific homework")
+
         viewModel.selectedHomeworkId.value?.let {
             val index = homeworkList.getIndexById(it)
             if (index >= 0) {

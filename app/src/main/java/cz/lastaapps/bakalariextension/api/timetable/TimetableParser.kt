@@ -26,7 +26,7 @@ import cz.lastaapps.bakalariextension.api.timetable.data.*
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import org.threeten.bp.ZonedDateTime
+import java.time.ZonedDateTime
 
 class TimetableParser {
     companion object {
@@ -144,13 +144,13 @@ class TimetableParser {
 
             return Change(
                 safeJson(json, "ChangeSubject"),
-                json.getString("Day"),
-                json.getString("Hours"),
-                json.getString("ChangeType"),
-                safeJson(json, "description"),
-                json.getString("Time"),
-                json.getString("TypeAbbrev"),
-                json.getString("TypeName")
+                safeJson(json, "Day"),
+                safeJson(json, "Hours"),
+                safeJson(json, "ChangeType"),
+                safeJson(json, "Description"),
+                safeJson(json, "Time"),
+                safeJson(json, "TypeAbbrev"),
+                safeJson(json, "TypeName")
             )
         }
 
@@ -268,7 +268,10 @@ class TimetableParser {
          * and replacing null object with ""*/
         private fun safeJson(json: JSONObject, key: String): String {
             return try {
-                return json.getString(key) ?: ""
+                if (!json.isNull(key))
+                    return json.getString(key)
+                else
+                    ""
             } catch (e: JSONException) {
                 ""
             }

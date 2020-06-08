@@ -21,17 +21,25 @@
 package cz.lastaapps.bakalariextension.workers
 
 import android.content.Context
-import androidx.work.Worker
+import android.util.Log
+import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import cz.lastaapps.bakalariextension.api.User
 import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
 import cz.lastaapps.bakalariextension.tools.TimeTools
 
-/**Runs some tasks on charger when unmetered connection to internet is available*/
-class WifiChargerWorker(context: Context, workerParameters: WorkerParameters):
-    Worker(context, workerParameters) {
+/**Runs some tasks on charger when not metered connection to internet is available*/
+class WifiChargerWorker(context: Context, workerParameters: WorkerParameters) :
+    CoroutineWorker(context, workerParameters) {
 
-    override fun doWork(): Result {
+    companion object {
+        private val TAG = WifiChargerWorker::class.java.simpleName
+    }
+
+    override suspend fun doWork(): Result {
+
+        Log.i(TAG, "Working...")
+
         //if all actions succeed
         var success = true
 

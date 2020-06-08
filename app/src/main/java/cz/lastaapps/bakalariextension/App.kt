@@ -26,15 +26,15 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.util.Log
+import androidx.core.content.ContextCompat
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.jakewharton.threetenabp.AndroidThreeTen
 import cz.lastaapps.bakalariextension.tools.LocaleManager
-import cz.lastaapps.bakalariextension.tools.Settings
+import cz.lastaapps.bakalariextension.tools.MySettings
 
 /**
  * Stores static context
  */
-class App() : Application() {
+class App : Application() {
 
     companion object {
         private val TAG = App::class.java.simpleName
@@ -73,12 +73,12 @@ class App() : Application() {
 
         /**@return color from app's resources*/
         fun getColor(id: Int): Int {
-            return resources.getColor(id)
+            return ContextCompat.getColor(context, id)
         }
 
         /**@return drawable from app's resources*/
-        fun getDrawable(id: Int): Drawable {
-            return resources.getDrawable(id)
+        fun getDrawable(id: Int): Drawable? {
+            return ContextCompat.getDrawable(context, id)
         }
 
         /**@return dimen from app's resources*/
@@ -99,11 +99,8 @@ class App() : Application() {
         super.onCreate()
         Log.i(TAG, "App object created")
 
-        //init for java.time support library
-        AndroidThreeTen.init(this);
-
         //sets selected theme from Settings
-        Settings(this).apply {
+        MySettings(this).apply {
             initSettings()
             updateDarkTheme()
         }
@@ -114,9 +111,7 @@ class App() : Application() {
         //updates Application's context language
         super.attachBaseContext(
             {
-                val context = LocaleManager.updateLocale(
-                    base
-                )
+                val context = LocaleManager.updateLocale(base)
 
                 context
             }.invoke()
@@ -130,5 +125,4 @@ class App() : Application() {
             this
         )
     }
-
 }

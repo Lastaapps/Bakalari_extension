@@ -202,9 +202,7 @@ class ConnMgr {
                 json = JSONObject(response)
 
                 //saves data
-                LoginData.accessToken = json.getString("access_token")
-                LoginData.refreshToken = json.getString("refresh_token")
-                LoginData.tokenExpiration = json.getInt("expires_in").toLong()
+                saveData(json)
 
                 //notifies that backup should be made
                 BackupManager.dataChanged(App.context.packageName)
@@ -223,7 +221,7 @@ class ConnMgr {
         }
 
         /**Refreshes the access token*/
-        fun refreshAccessToken(refreshToken: String = LoginData.refreshToken): Boolean {
+        private fun refreshAccessToken(refreshToken: String = LoginData.refreshToken): Boolean {
             return try {
                 Log.i(TAG, "Obtaining new access token")
 
@@ -273,9 +271,7 @@ class ConnMgr {
                 val json = JSONObject(response)
 
                 //saves data
-                LoginData.accessToken = json.getString("access_token")
-                LoginData.refreshToken = json.getString("refresh_token")
-                LoginData.tokenExpiration = json.getInt("expires_in").toLong()
+                saveData(json)
 
                 //notifies that backup should be made
                 BackupManager.dataChanged(App.context.packageName)
@@ -285,6 +281,19 @@ class ConnMgr {
                 e.printStackTrace()
                 Log.e(TAG, "Failed to obtain new tokens")
                 false
+            }
+        }
+
+        /**saves login data*/
+        private fun saveData(json: JSONObject) {
+            LoginData.apply {
+                accessToken = json.getString("access_token")
+                refreshToken = json.getString("refresh_token")
+                tokenExpiration = json.getLong("expires_in")
+                tokenType = json.getString("token_type")
+                apiVersion = json.getString("bak:ApiVersion")
+                appVersion = json.getString("bak:AppVersion")
+                userID = json.getString("bak:UserId")
             }
         }
 
@@ -300,12 +309,12 @@ class ConnMgr {
         }
 
         /**@return if refreshing access token is necessary*/
-        fun isExpired(expireDate: Long = LoginData.tokenExpiration): Boolean {
+        private fun isExpired(expireDate: Long = LoginData.tokenExpiration): Boolean {
             return System.currentTimeMillis() > expireDate - 5000 //5 sec just to make sure
         }
 
         /**@return url in format example www.example.com */
-        fun getRawUrl(url: String = LoginData.url): String {
+        private fun getRawUrl(url: String = LoginData.url): String {
             return url.replace("/login.aspx", "")
         }
 

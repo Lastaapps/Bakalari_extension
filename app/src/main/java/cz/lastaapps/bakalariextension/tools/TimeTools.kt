@@ -20,20 +20,18 @@
 
 package cz.lastaapps.bakalariextension.tools
 
-import org.threeten.bp.*
-import org.threeten.bp.format.DateTimeFormatter
+import java.time.*
+import java.time.format.DateTimeFormatter
 
-/**Tool with presets times, parsing and formating methods and templates*/
+/**Tool with presets times, parsing and formatting methods and templates*/
 class TimeTools {
     companion object {
-        private val TAG = TimeTools::class.java.simpleName
 
         const val COMPLETE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssXXX"
-        const val NORMAL_DATE_TIME = "HH:mm d.M."
         const val DATE_FORMAT = "yyyy-MM-dd"
         const val TIME_FORMAT = "H:mm"
-        val UTC = ZoneId.of("UTC")
-        val CET = ZoneId.of("Europe/Prague")
+        val UTC: ZoneId = ZoneId.of("UTC")
+        val CET: ZoneId = ZoneId.of("Europe/Prague")
 
         //used to request permanent timetable
         val PERMANENT: ZonedDateTime =

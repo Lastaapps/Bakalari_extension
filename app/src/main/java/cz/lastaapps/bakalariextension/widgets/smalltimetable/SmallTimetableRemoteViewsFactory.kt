@@ -18,10 +18,11 @@
  *
  */
 
-package cz.lastaapps.bakalariextension.ui.timetable.small.widget
+package cz.lastaapps.bakalariextension.widgets.smalltimetable
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import cz.lastaapps.bakalariextension.App
@@ -31,14 +32,27 @@ import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
 import cz.lastaapps.bakalariextension.api.timetable.data.Day
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
+import cz.lastaapps.bakalariextension.tools.TimeTools
 import cz.lastaapps.bakalariextension.ui.timetable.CellSetup
-import org.threeten.bp.ZonedDateTime
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.time.ZonedDateTime
 import kotlin.math.max
 import kotlin.math.min
 
 /**Creates views for SmallTimetable widget*/
-class SmallTimetableRemoteViewsFactory(private val context: Context, private val widgetId: Int, val date: ZonedDateTime) :
-    RemoteViewsService.RemoteViewsFactory {
+class SmallTimetableRemoteViewsFactory(
+    val context: Context,
+    val widgetId: Int,
+    val date: ZonedDateTime,
+    val loadDefault: Boolean,
+    val cache: SmallTimetableRemoteAdapterService.FactoryCache
+) : RemoteViewsService.RemoteViewsFactory {
+
+    companion object {
+        private val TAG = RemoteViewsService::class.java.simpleName
+    }
 
     //indexes of edge lessons
     private var firstIndex = 0
@@ -55,22 +69,53 @@ class SmallTimetableRemoteViewsFactory(private val context: Context, private val
 
     /**Called after #onCreate and before #getCount*/
     override fun onDataSetChanged() {
+        var coroutineRunning = true
+
+        CoroutineScope(Dispatchers.Default).launch {
+            coroutineLoading()
+
+            coroutineRunning = false
+        }
+
+        while (coroutineRunning)
+            Thread.sleep(1)
+    }
+
+    private suspend fun coroutineLoading() {
 
         isEmpty = false
 
-        //loads current week
-        val week = TimetableLoader.loadFromStorage(date)
-        if (week == null) {
-            isEmpty = true
-            return
+        val day: Day?
+
+        if (!loadDefault) {
+
+            Log.i(TAG, "Loading " + TimeTools.format(date, TimeTools.DATE_FORMAT))
+
+            //loads current week
+            if (cache.currentWeek == null)
+                cache.currentWeek = TimetableLoader.loadFromStorage(date)
+
+            if (cache.currentWeek == null) {
+                isEmpty = true
+                return
+            }
+
+            week = cache.currentWeek!!
+
+            //loads given day
+            day = cache.currentWeek!!.getDay(date)
+            if (day == null) {
+                isEmpty = true
+                return
+            }
+        } else {
+            Log.i(TAG, "Loading default")
+
+            //loads default timetable as preview
+            week = TimetableLoader.loadDefault(context)
+            day = week.days[0]
         }
-        //loads given day
-        val day = week.getDay(date)
-        if (day == null) {
-            isEmpty = true
-            return
-        }
-        this.week = week
+
         this.day = day
 
         //indexes init
@@ -81,6 +126,7 @@ class SmallTimetableRemoteViewsFactory(private val context: Context, private val
         if (min(firstIndex, lastIndex) < 0) {
             isEmpty = true
         }
+
     }
 
     /**@return Timetable cell*/

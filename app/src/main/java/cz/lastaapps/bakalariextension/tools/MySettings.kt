@@ -36,24 +36,29 @@ import com.codekidlabs.storagechooser.Content
 import com.codekidlabs.storagechooser.StorageChooser
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
+import java.time.DayOfWeek
+import java.time.Duration
+import java.time.ZonedDateTime
 
-
-class Settings(val context: Context) {
+/**Contains app settings and methods to access them usefully*/
+class MySettings(val context: Context) {
 
     companion object {
-        private val TAG = Settings::class.java.simpleName
+        private val TAG = MySettings::class.java.simpleName
         const val FILE_SELECT_CODE = 65132
 
-        private var _withAppContext: Settings? = null
-        fun withAppContext(): Settings {
-            if (_withAppContext == null) {
-                _withAppContext = Settings(App.context)
+        private var withAppContext: MySettings? = null
+        fun withAppContext(): MySettings {
+            if (withAppContext == null) {
+                withAppContext = MySettings(App.context)
             }
-            return _withAppContext!!
+            return withAppContext!!
         }
     }
 
     //preferences keys
+    val NOTIFICATION_SETTINGS
+        get() = getString(R.string.sett_key_notification_settings)
     val MOBILE_DATA
         get() = getString(R.string.sett_key_mobile_data)
     val DARK_MODE
@@ -68,17 +73,27 @@ class Settings(val context: Context) {
         get() = getString(R.string.sett_key_timetable_day)
     val TIMETABLE_NOTIFICATION
         get() = getString(R.string.sett_key_timetable_notification)
+    val TIMETABLE_PREVIEW
+        get() = getString(R.string.sett_key_timetable_preview)
     val MARKS_SHOW_NEW
         get() = getString(R.string.sett_key_marks_new_mark)
     val SEND_TOWN_SCHOOL
         get() = getString(R.string.sett_key_send_town_school)
+    val RESET
+        get() = getString(R.string.sett_key_reset)
     val SHOW_WHATS_NEW
         get() = getString(R.string.sett_key_show_whats_new)
+    val ABOUT
+        get() = getString(R.string.sett_key_about)
+    val LICENSE
+        get() = getString(R.string.sett_key_license)
 
     /**Inits settings if they aren't yet*/
     fun initSettings() {
         val sp = getSP()
         if (sp.all.isEmpty()) {
+            Log.i(TAG, "Initializing settings to default values")
+
             val editor = sp.edit()
 
             /*
@@ -91,17 +106,11 @@ class Settings(val context: Context) {
             */
 
             //sets default values
-            if (sp.getString(LANGUAGE, "") == "")
-                editor.putString(LANGUAGE, getArray(R.array.sett_language)[0])
-
             if (sp.getString(DARK_MODE, "") == "")
                 editor.putString(DARK_MODE, getArray(R.array.sett_dark_mode)[2])
 
-            if (sp.getString(TIMETABLE_DAY, "") == "")
-                editor.putString(TIMETABLE_DAY, getArray(R.array.sett_timetable_day)[2])
-
-            if (sp.getString(MARKS_SHOW_NEW, "") == "")
-                editor.putString(MARKS_SHOW_NEW, getString(R.string.sett_marks_new_mark_default))
+            if (sp.getString(LANGUAGE, "") == "")
+                editor.putString(LANGUAGE, getArray(R.array.sett_language)[0])
 
             if (sp.getString(DOWNLOAD_LOCATION, "") == "")
                 editor.putString(
@@ -112,6 +121,15 @@ class Settings(val context: Context) {
                         context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)!!.absolutePath
                     }
                 )
+
+            if (sp.getString(TIMETABLE_DAY, "") == "")
+                editor.putString(TIMETABLE_DAY, getArray(R.array.sett_timetable_day)[2])
+
+            if (sp.getString(TIMETABLE_PREVIEW, "") == "")
+                editor.putString(TIMETABLE_PREVIEW, getArray(R.array.sett_timetable_preview)[0])
+
+            if (sp.getString(MARKS_SHOW_NEW, "") == "")
+                editor.putString(MARKS_SHOW_NEW, getString(R.string.sett_marks_new_mark_default))
 
             editor.apply()
         }
@@ -153,6 +171,7 @@ class Settings(val context: Context) {
                 else
                     AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
         }
+        Log.i(TAG, "Dark mode set to $toChange")
 
         AppCompatDelegate.setDefaultNightMode(toChange)
 
@@ -161,12 +180,45 @@ class Settings(val context: Context) {
     /**@return when should be timetable for the next week shown*/
     fun getTimetableDayOffset(): Int {
         val array = getArray(R.array.sett_timetable_day)
-        return 2 - array.indexOf(getSP().getString(TIMETABLE_DAY, ""))
+        return 2 - array.indexOf(getSP().getString(TIMETABLE_DAY, "")).also {
+            Log.i(TAG, "Timetable offset set to $it")
+        }
     }
 
     /**@return if timetable notification should be shown*/
     fun isTimetableNotificationEnabled(): Boolean {
         return getSP().getBoolean(TIMETABLE_NOTIFICATION, true)
+    }
+
+    /**@return if the timetable preview for tomorrow should be shown*/
+    fun showTomorrowsPreview(now: ZonedDateTime, lessonsEnd: ZonedDateTime): ZonedDateTime {
+
+        if (lessonsEnd.dayOfWeek == DayOfWeek.FRIDAY) return now
+        if (lessonsEnd.dayOfWeek == DayOfWeek.SATURDAY) return now.plusDays(2)
+        if (lessonsEnd.dayOfWeek == DayOfWeek.SUNDAY) return now.plusDays(1)
+
+        if (now < lessonsEnd) return now
+
+        val invalidDuration = when (getArray(R.array.sett_timetable_preview).indexOf(
+            getSP().getString(TIMETABLE_PREVIEW, "")
+        )) {
+            0 -> Duration.between(lessonsEnd, TimeTools.toMidnight(lessonsEnd.plusDays(1)))
+            1 -> Duration.ZERO
+            2 -> Duration.ofHours(1)
+            3 -> Duration.ofHours(2)
+            4 -> Duration.ofHours(3)
+            5 -> Duration.between(lessonsEnd, TimeTools.toMidnight(lessonsEnd).withHour(17))
+            6 -> Duration.between(lessonsEnd, TimeTools.toMidnight(lessonsEnd).withHour(18))
+            7 -> Duration.between(lessonsEnd, TimeTools.toMidnight(lessonsEnd).withHour(19))
+            else -> return now
+        }
+        val currentDuration = Duration.between(lessonsEnd, now)
+
+        return if (currentDuration >= invalidDuration) {
+            now.plusDays(1)
+        } else {
+            now
+        }
     }
 
     /**@return for how many days should be mark shown as new*/

@@ -28,10 +28,11 @@ import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.homework.HomeworkStorage
 import cz.lastaapps.bakalariextension.api.homework.data.Homework
+import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
 import cz.lastaapps.bakalariextension.databinding.FragmentHomeworkRootBinding
 
 /**Contains all oder homework related homework*/
@@ -46,7 +47,9 @@ class HmwRootFragment : Fragment() {
     lateinit var viewModel: HmwViewModel
 
     /**updates data when homework list is loaded*/
-    private val homeworkObserver = { _: DataIdList<Homework> ->
+    private val homeworkObserver = { _: HomeworkList ->
+        Log.i(TAG, "Updating based on new data")
+
         onHomeworkValid()
         setupViewPager()
         lastUpdated()
@@ -71,25 +74,20 @@ class HmwRootFragment : Fragment() {
         viewModel.failObserve.observe({ lifecycle }, failObserver)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-
-        //stops observing
-        viewModel.homework.removeObserver(homeworkObserver)
-        viewModel.failObserve.removeObserver(failObserver)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.i(TAG, "Creating view")
 
         //inflates views only once
         if (!this::binding.isInitialized) {
+            Log.i(TAG, "Creating view")
             binding =
                 DataBindingUtil.inflate(inflater, R.layout.fragment_homework_root, container, false)
+            binding.lifecycleOwner = LifecycleOwner { lifecycle }
+        } else {
+            Log.i(TAG, "Already created")
         }
 
         //updates if the homework list is loaded or starts loading

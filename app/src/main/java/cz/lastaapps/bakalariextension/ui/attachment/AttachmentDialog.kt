@@ -30,7 +30,7 @@ import androidx.fragment.app.DialogFragment
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.attachment.data.Attachment
-import cz.lastaapps.bakalariextension.tools.Settings
+import cz.lastaapps.bakalariextension.tools.MySettings
 
 /**Shows the list on attachments and makes them available to download*/
 class AttachmentDialog : DialogFragment() {
@@ -39,7 +39,7 @@ class AttachmentDialog : DialogFragment() {
         const val FRAGMENT_TAG = "cz.lastaapps.bakalariextension.ui.attachment.AttachmentDialog"
         val TAG = AttachmentDialog::class.java.simpleName
 
-        /**creates instalce of dialog*/
+        /**creates an instance of dialog*/
         fun newInstance(attachments: DataIdList<Attachment>): AttachmentDialog {
             val frag = AttachmentDialog()
             val args = Bundle()
@@ -89,7 +89,7 @@ class AttachmentDialog : DialogFragment() {
 
     //alternative show method
     fun show(activity: AppCompatActivity, tag: String?) {
-        val sett = Settings.withAppContext()
+        val sett = MySettings.withAppContext()
         if (sett.getDownloadLocation() == "") {
             sett.chooseDownloadDirectory(activity) {}
         } else
@@ -99,12 +99,14 @@ class AttachmentDialog : DialogFragment() {
     /**creates dialog*/
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
+        Log.i(TAG, "Creating dialog")
+
         //gets attachment
         attachments = requireArguments().getSerializable("attachments")!! as DataIdList<Attachment>
 
         //list of filenames
         val filenames = Array(attachments.size) { "" }
-        attachments.forEachIndexed() { i, it ->
+        attachments.forEachIndexed { i, it ->
             filenames[i] = it.fileName
         }
 
@@ -126,7 +128,7 @@ class AttachmentDialog : DialogFragment() {
             //dialog is not dismissed on button click
             setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.attachment_change_location))
             { _, _ ->
-                Settings(requireContext()).chooseDownloadDirectory(requireActivity()) {}
+                MySettings(requireContext()).chooseDownloadDirectory(requireActivity()) {}
             }
         }
     }

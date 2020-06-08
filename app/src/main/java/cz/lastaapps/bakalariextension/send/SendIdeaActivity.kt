@@ -22,6 +22,7 @@ package cz.lastaapps.bakalariextension.send
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -33,10 +34,10 @@ import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.login.LoginData
 import cz.lastaapps.bakalariextension.tools.BaseActivity
 import cz.lastaapps.bakalariextension.tools.TimeTools
-import org.threeten.bp.Instant
-import org.threeten.bp.ZoneId
-import org.threeten.bp.ZonedDateTime
 import java.io.IOException
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 /**
  * Sends idea to Firebase database
@@ -54,6 +55,8 @@ class SendIdeaActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Log.i(TAG, "Creating activity")
 
         if (timeCheck()) {
             setContentView(R.layout.activity_send_idea)
@@ -73,6 +76,8 @@ class SendIdeaActivity : BaseActivity() {
                 send()
             }
         } else {
+            Log.i(TAG, "Error check failed")
+
             //If limit per day was reached
             AlertDialog.Builder(this)
                 .setMessage(R.string.idea_overload)
@@ -109,6 +114,8 @@ class SendIdeaActivity : BaseActivity() {
      * Sends needed data to Firebase
      */
     private fun send() {
+        Log.i(TAG, "Sending data")
+
         val email = findViewById<EditText>(R.id.email).text.trim().toString()
         val message = findViewById<EditText>(R.id.message).text.trim().toString()
 

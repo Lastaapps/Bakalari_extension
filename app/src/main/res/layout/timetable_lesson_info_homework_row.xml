@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
   ~
   ~     This file is part of Bakalari extension.
@@ -19,14 +18,13 @@
   ~
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/nav_settings"
-        android:title="@string/menu_settings"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/nav_logout"
-        android:title="@string/menu_logout"
-        android:checkable="false" />
-</menu>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/text1"
+    style="@style/AppTheme.Text"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/margin_basic"
+    android:ellipsize="end"
+    android:maxLines="1"
+    android:scrollHorizontally="false"
+    android:layout_marginEnd="5dp" />

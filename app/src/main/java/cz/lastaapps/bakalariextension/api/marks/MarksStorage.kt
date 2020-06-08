@@ -24,12 +24,12 @@ import android.util.Log
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import org.json.JSONObject
-import org.threeten.bp.Instant
-import org.threeten.bp.ZonedDateTime
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
+import java.time.Instant
+import java.time.ZonedDateTime
 
 /**Manages marks saving and loading*/
 class MarksStorage {
@@ -41,7 +41,7 @@ class MarksStorage {
         private const val FILE_SUFFIX = ".json"
 
         private var marksCache: JSONObject? = null
-        fun releaseCache() {
+        private fun releaseCache() {
             marksCache = null
         }
 

@@ -25,9 +25,12 @@ import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.SimpleData
 import cz.lastaapps.bakalariextension.api.attachment.data.Attachment
 import cz.lastaapps.bakalariextension.tools.TimeTools
-import org.threeten.bp.ZonedDateTime
 import java.text.Normalizer
+import java.time.ZonedDateTime
 import java.util.*
+
+/**defines Homework list to make code simpler to read*/
+typealias HomeworkList = DataIdList<Homework>
 
 /** All data from homework json*/
 class Homework(
@@ -103,8 +106,8 @@ class Homework(
     companion object {
 
         /**Filters given homework list and filterers current and not finished yet ones*/
-        fun getCurrent(list: DataIdList<Homework>): DataIdList<Homework> {
-            val toReturn = DataIdList<Homework>()
+        fun getCurrent(list: HomeworkList): HomeworkList {
+            val toReturn = HomeworkList()
 
             for (homework in list) {
                 //haven't ended yet
@@ -121,8 +124,8 @@ class Homework(
         }
 
         /** Filters old and done homework list*/
-        fun getOld(list: DataIdList<Homework>): DataIdList<Homework> {
-            val toReturn = DataIdList<Homework>()
+        fun getOld(list: HomeworkList): HomeworkList {
+            val toReturn = HomeworkList()
 
             for (homework in list) {
                 if (homework.dateEndDate.toLocalDate() < TimeTools.today.toLocalDate() && homework.done) {
@@ -134,15 +137,15 @@ class Homework(
         }
 
         /** Filters homework only from given subject*/
-        fun getBySubject(list: DataIdList<Homework>, subjectId: String): DataIdList<Homework> {
-            return DataIdList(list.filter { homework ->
+        fun getBySubject(list: HomeworkList, subjectId: String): HomeworkList {
+            return HomeworkList(list.filter { homework ->
                 homework.subject.id == subjectId
             })
         }
 
         /** Filters homework only with given text in content or notice, ignores diacritics*/
-        fun getByText(list: DataIdList<Homework>, text: String): DataIdList<Homework> {
-            return DataIdList(list.filter { homework ->
+        fun getByText(list: HomeworkList, text: String): HomeworkList {
+            return HomeworkList(list.filter { homework ->
                 val content = searchableText(homework.content)
                 val notice = searchableText(homework.notice)
                 val toSearch = searchableText(text)
@@ -155,7 +158,7 @@ class Homework(
         private fun searchableText(text: String): String {
             val lower = text.toLowerCase(Locale.ROOT)
             return Normalizer.normalize(lower, Normalizer.Form.NFD)
-                .replace("\\p{InCombiningDiacriticalMarks}+", "");
+                .replace("\\p{InCombiningDiacriticalMarks}+", "")
         }
     }
 }

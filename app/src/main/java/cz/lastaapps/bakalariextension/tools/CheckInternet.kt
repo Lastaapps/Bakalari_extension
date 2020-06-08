@@ -66,7 +66,9 @@ class CheckInternet {
                     urlc.connect()
 
                     //connection succeed
-                    urlc.responseCode == 200
+                    (urlc.responseCode == 200).also {
+                        Log.i(TAG, "Connection state: $it")
+                    }
                 } catch (e: IOException) {
                     Log.i(TAG, "Error checking internet connection", e)
                     false
@@ -76,20 +78,24 @@ class CheckInternet {
 
         /**@return if app can obtain data trough internet now*/
         fun canUseInternet(): Boolean {
-            return if (Settings(App.context)
+            return if (MySettings(App.context)
                     .getSP()
-                    .getBoolean(Settings(App.context).MOBILE_DATA, true)) {
+                    .getBoolean(MySettings(App.context).MOBILE_DATA, true)
+            ) {
                 true
             } else {
                 connectedMobileData()
-            }
+            }.also { Log.i(TAG, "Can use internet: $it") }
         }
 
         /**@return if user is connected to metered network*/
         fun connectedMobileData(): Boolean {
 
-            val cm = App.context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            return cm.isActiveNetworkMetered
+            val cm =
+                App.context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            return cm.isActiveNetworkMetered.also {
+                Log.i(TAG, "Connected to mobile data: $it")
+            }
 
             // Get connect manager
             /*val connMgr =

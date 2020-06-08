@@ -31,13 +31,6 @@ import android.os.Looper
 )
 class MyToast {
 
-    companion object {
-        private val TAG = MyToast::class.java.simpleName
-
-        const val LENGTH_SHORT = 0
-        const val LENGTH_LONG = 1
-
-    }
     /**Creates Toast object*/
     class makeText {
         private var context: Context

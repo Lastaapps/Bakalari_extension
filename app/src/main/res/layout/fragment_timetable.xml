@@ -282,7 +282,7 @@
 
                         android:visibility="gone"
 
-                        app:srcCompat="@drawable/nav_home" />
+                        app:srcCompat="@drawable/home" />
 
                     <ImageButton
                         android:id="@+id/reload"

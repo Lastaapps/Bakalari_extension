@@ -24,8 +24,8 @@ import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.tools.TimeTools
-import org.threeten.bp.ZonedDateTime
 import java.io.Serializable
+import java.time.ZonedDateTime
 
 /**Represent day of week containing lessons*/
 data class Day(

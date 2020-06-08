@@ -23,6 +23,7 @@ package cz.lastaapps.bakalariextension.ui.homework
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,13 +35,17 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.SimpleData
 import cz.lastaapps.bakalariextension.api.homework.data.Homework
+import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
 import cz.lastaapps.bakalariextension.databinding.FragmentHomeworkSearchBinding
 
 /**searches in all homework*/
 class HmwSearchFragment : Fragment() {
+
+    companion object {
+        private val TAG = HmwSearchFragment::class.java.simpleName
+    }
 
     lateinit var binding: FragmentHomeworkSearchBinding
     lateinit var viewModel: HmwViewModel
@@ -49,7 +54,9 @@ class HmwSearchFragment : Fragment() {
     private lateinit var subjectList: ArrayList<SimpleData>
 
     /**On homework list updated*/
-    private val homeworkObserver = { _: DataIdList<Homework> ->
+    private val homeworkObserver = { _: HomeworkList ->
+        Log.i(TAG, "Updating with new homework list")
+
         initSubjects()
         spinnerAdapterSetup()
         updateList()
@@ -66,18 +73,14 @@ class HmwSearchFragment : Fragment() {
         viewModel.homework.observe({ lifecycle }, homeworkObserver)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-
-        //stop observing
-        viewModel.homework.removeObserver(homeworkObserver)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        Log.i(TAG, "Creating fragment view")
+
         //init views, called only once
         if (!this::binding.isInitialized) {
             //inflates views

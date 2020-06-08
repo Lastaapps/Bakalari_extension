@@ -37,10 +37,10 @@ class User {
         //shared preferences saving
         private const val SP_KEY = "API_USER"
         const val UID = "uid"
-        const val NAME = "fullname"
+        const val NAME = "fullName"
         const val ROLE = "role"
         const val SCHOOL = "school"
-        const val SCHOOL_TYPE = "typskoly"
+        const val SCHOOL_TYPE = "schoolType"
         const val CLASS_ID = "class_id"
         const val CLASS_SHORTCUT = "class_shortcut"
         const val CLASS_NAME = "class_name"

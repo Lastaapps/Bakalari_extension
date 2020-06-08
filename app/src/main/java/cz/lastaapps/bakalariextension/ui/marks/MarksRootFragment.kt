@@ -21,37 +21,37 @@
 package cz.lastaapps.bakalariextension.ui.marks
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.viewpager.widget.ViewPager
-import com.google.android.material.tabs.TabLayout
+import androidx.lifecycle.LifecycleOwner
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.marks.MarksLoader
 import cz.lastaapps.bakalariextension.api.marks.MarksStorage
 import cz.lastaapps.bakalariextension.api.marks.data.MarksAllSubjects
+import cz.lastaapps.bakalariextension.databinding.FragmentMarksRootBinding
 import cz.lastaapps.bakalariextension.tools.lastUpdated
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /** Fragment placed in MainActivity in HomeFragment
  * contains ViewPaper with oder mark related fragments - by date, by subject and predictor*/
 class MarksRootFragment : Fragment() {
+    companion object {
+        private val TAG = MarksRootFragment::class.java.simpleName
+    }
 
     //root view
-    lateinit var root: View
+    lateinit var binding: FragmentMarksRootBinding
 
     //data with marks - puts new marks in
     lateinit var viewModel: MarksViewModel
 
     /**observers for mark change, updates last updated text*/
-    private val lastUpdatedObserver = { _: MarksAllSubjects ->
+    private val marksObserver = { _: MarksAllSubjects? ->
+
+        Log.i(TAG, "Updating based on mew marks")
 
         var text = getString(R.string.marks_failed_to_load)
         val lastUpdated = MarksStorage.lastUpdated()
@@ -59,7 +59,13 @@ class MarksRootFragment : Fragment() {
             text = lastUpdated(requireContext(), it)
         }
 
-        root.findViewById<TextView>(R.id.last_updated).text = text
+        binding.lastUpdated.text = text
+
+        loadMarks()
+    }
+
+    private val failObserver = { _: Any ->
+        onFail()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,14 +76,8 @@ class MarksRootFragment : Fragment() {
         this.viewModel = viewModel
 
         //observes for marks change
-        viewModel.marks.observe({ lifecycle }, lastUpdatedObserver)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        //stops observing for marks update
-        viewModel.marks.removeObserver(lastUpdatedObserver)
+        viewModel.marks.observe({ lifecycle }, marksObserver)
+        viewModel.failObserve.observe({ lifecycle }, failObserver)
     }
 
     override fun onCreateView(
@@ -85,68 +85,63 @@ class MarksRootFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //inflates views
-        root = inflater.inflate(R.layout.fragment_marks_root, container, false)
 
-        loadMarks()
+        if (!this::binding.isInitialized) {
+            Log.i(TAG, "Creating views")
+            //inflates views
+            binding =
+                DataBindingUtil.inflate(inflater, R.layout.fragment_marks_root, container, false)
+            binding.viewmodel = viewModel
+            binding.lifecycleOwner = LifecycleOwner { lifecycle }
+        } else {
+            Log.i(TAG, "Already created")
+        }
 
-        return root
+        if (viewModel.marks.value != null) {
+            marksObserver(null)
+        } else {
+            viewModel.onRefresh(requireContext())
+        }
+
+        return binding.root
     }
 
     /**loads marks to ViewModel*/
     private fun loadMarks() {
-        val loading = root.findViewById<ProgressBar>(R.id.loading)
-        val errorMessage = root.findViewById<TextView>(R.id.error_message)
-        val pager = root.findViewById<ViewPager>(R.id.marks_pager)
-        val tabs = root.findViewById<TabLayout>(R.id.tabs)
-        val lastUpdated = root.findViewById<TextView>(R.id.last_updated)
 
         //hides view until marks are loaded
-        loading.visibility = View.VISIBLE
-        pager.visibility = View.GONE
-        errorMessage.visibility = View.GONE
-        lastUpdated.visibility = View.GONE
+        binding.apply {
+            pager.visibility = View.GONE
+            errorMessage.visibility = View.GONE
+            lastUpdated.visibility = View.GONE
 
-        val scope = CoroutineScope(Dispatchers.IO)
-        scope.launch {
+            //error - no marks
+            if (viewModel.marks.value!!.subjects.isEmpty()) {
+                errorMessage.setText(R.string.marks_no_marks)
+                errorMessage.visibility = View.VISIBLE
+                return
+            }
 
-            //loads marks from storage
-            val allSubjectMarks = viewModel.marks.value
-                ?: MarksLoader.loadFromStorage()
+            pager.visibility = View.VISIBLE
+            lastUpdated.visibility = View.VISIBLE
 
-            withContext(Dispatchers.Main) {
-
-                //refreshes marks from server if there ase no marks or they should be refreshed
-                if (MarksLoader.shouldReload() || allSubjectMarks == null)
-                    viewModel.onRefresh(requireContext())
-
-                loading.visibility = View.GONE
-
-                //error message - loading error
-                if (allSubjectMarks == null) {
-                    errorMessage.setText(R.string.marks_failed_to_load)
-                    errorMessage.visibility = View.VISIBLE
-                    return@withContext
-                }
-
-                //error - no marks
-                if (allSubjectMarks.subjects.isEmpty()) {
-                    errorMessage.setText(R.string.marks_no_marks)
-                    errorMessage.visibility = View.VISIBLE
-                    return@withContext
-                }
-
-                //updates marks
-                if (viewModel.marks.value == null)
-                    viewModel.marks.value = allSubjectMarks
-
-                pager.visibility = View.VISIBLE
-                lastUpdated.visibility = View.VISIBLE
-
-                //sets up ViewPager for oder fragments
-                pager.adapter = FragmentPager(requireContext(), childFragmentManager)
+            //sets up ViewPager for oder fragments
+            if (pager.adapter == null) {
+                pager.adapter = MarksPager(requireContext(), childFragmentManager)
                 tabs.setupWithViewPager(pager)
             }
+        }
+    }
+
+    /**executed when no marks was loaded*/
+    private fun onFail() {
+        //error message - loading error
+        binding.apply {
+            pager.visibility = View.GONE
+            errorMessage.visibility = View.VISIBLE
+            lastUpdated.visibility = View.GONE
+
+            errorMessage.setText(R.string.marks_failed_to_load)
         }
     }
 }

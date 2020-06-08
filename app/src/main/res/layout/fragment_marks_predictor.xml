@@ -32,7 +32,7 @@
         android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:onRefreshListener="@{() -> viewmodel.onRefresh(context)}"
+        app:onRefreshListener="@{() -> viewmodel.onRefresh(context, true)}"
         app:refreshing="@{viewmodel.isRefreshing()}">
 
         <ScrollView

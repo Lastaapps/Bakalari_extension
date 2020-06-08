@@ -72,6 +72,6 @@ class PredictMarksAdapter(
 
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
+    // Return the size of your DataSet (invoked by the layout manager)
     override fun getItemCount() = allMarks.size
 }

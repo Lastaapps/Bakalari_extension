@@ -24,6 +24,8 @@ import android.util.Log
 import cz.lastaapps.bakalariextension.api.ConnMgr
 import cz.lastaapps.bakalariextension.api.marks.data.MarksAllSubjects
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class MarksLoader {
     companion object {
@@ -34,89 +36,98 @@ class MarksLoader {
          * if it can be outdated or isn't downloaded yet,
          * tries to download from server
          * if fails, return null*/
-        fun loadMarks(forceReload: Boolean = false): MarksAllSubjects? {
+        suspend fun loadMarks(forceReload: Boolean = false): MarksAllSubjects? {
 
-            var toReturn: MarksAllSubjects? = null
+            return withContext(Dispatchers.Default) {
+                var toReturn: MarksAllSubjects? = null
 
-            if (forceReload || MarksStorage.lastUpdated() == null) {
-                toReturn = loadFromServer()
-            } else {
-                if (!shouldReload())
-                    toReturn = loadFromStorage()
-
-                if (toReturn == null) {
+                if (forceReload || MarksStorage.lastUpdated() == null) {
                     toReturn = loadFromServer()
-                }
-            }
+                } else {
+                    if (!shouldReload())
+                        toReturn = loadFromStorage()
 
-            return toReturn
+                    if (toReturn == null) {
+                        toReturn = loadFromServer()
+                    }
+                }
+
+                return@withContext toReturn
+            }
         }
 
         /**Tries load marks from server and save him to local storage
          * @return downloaded AllSubjects object or null, if download failed*/
-        fun loadFromServer(): MarksAllSubjects? {
-            try {
-                Log.i(TAG, "Loading marks from server")
+        suspend fun loadFromServer(): MarksAllSubjects? {
+            return withContext(Dispatchers.Default) {
+                try {
+                    Log.i(TAG, "Loading marks from server")
 
-                //downloads marks
-                val json = ConnMgr.serverGet("marks") ?: return null
+                    //downloads marks
+                    val json = withContext(Dispatchers.IO) { ConnMgr.serverGet("marks") }
+                        ?: return@withContext null
 
-                //parses json
-                val week = MarksParser.parseJson(json)
+                    //parses json
+                    val week = MarksParser.parseJson(json)
 
-                //saves json
-                MarksStorage.save(json)
+                    //saves json
+                    MarksStorage.save(json)
 
-                return week
+                    return@withContext week
 
-            } catch (e: Exception) {
-                e.printStackTrace()
-                return null
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    return@withContext null
+                }
             }
         }
 
         /**Loads marks from local storage
          * @return AllSubjects or null, if there is no week of the date save yet*/
-        fun loadFromStorage(): MarksAllSubjects? {
+        suspend fun loadFromStorage(): MarksAllSubjects? {
+            return withContext(Dispatchers.Default) {
 
-            Log.i(TAG, "Loading marks from storage")
+                Log.i(TAG, "Loading marks from storage")
 
-            return try {
+                return@withContext try {
 
-                //load json from storage
-                val json = MarksStorage.load() ?: return null
-                MarksParser.parseJson(json)
+                    //load json from storage
+                    val json = withContext(Dispatchers.IO) { MarksStorage.load() }
+                        ?: return@withContext null
 
-                //for testing empty subject, subject with mixed marks and new marks
-                /*.apply {
+                    MarksParser.parseJson(json)
 
-                    val sm = SubjectMarks(
-                        DataIdList(),
-                        Subject("test1", "Sbj 1", "Test 1"),
-                        "", "", "", "", false, true
-                    )
-                    subjects.add(sm)
-                    val sm2 = SubjectMarks(
-                        DataIdList(
-                            listOf(
-                                Mark.default.apply {
-                                    editDate = TimeTools.format(
-                                        TimeTools.now,
-                                        TimeTools.COMPLETE_FORMAT
-                                    )
-                                },
-                                Mark.default
-                            )
-                        ),
-                        Subject("test2", "Sbj 2", "Test 2"),
-                        "", "", "", "", false, true
-                    )
-                    subjects.add(sm2)
-                }*/
+                    //for testing empty subject, subject with mixed marks and new marks
+                    /*.apply {
 
-            } catch (e: Exception) {
-                e.printStackTrace()
-                null
+                                val sm = SubjectMarks(
+                                    DataIdList(),
+                                    Subject("test1", "Sbj 1", "Test 1"),
+                                    "", "", "", "", false, true
+                                )
+                                subjects.add(sm)
+                                val sm2 = SubjectMarks(
+                                    DataIdList(
+                                        listOf(
+                                            Mark.default.apply {
+                                                editDate = TimeTools.format(
+                                                    TimeTools.now,
+                                                    TimeTools.COMPLETE_FORMAT
+                                                )
+                                            },
+                                            Mark.default
+                                        )
+                                    ),
+                                    Subject("test2", "Sbj 2", "Test 2"),
+                                    "", "", "", "", false, true
+                                )
+                                subjects.add(sm2)
+                            }*/
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    null
+                }
             }
         }
 

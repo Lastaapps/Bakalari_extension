@@ -23,6 +23,7 @@ package cz.lastaapps.bakalariextension.ui.attachment
 import android.app.Activity
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import cz.lastaapps.bakalariextension.R
@@ -31,9 +32,9 @@ import cz.lastaapps.bakalariextension.R
 class AttachmentFileExistsDialog : DialogFragment() {
 
     companion object {
+        val TAG = AttachmentFileExistsDialog::class.java.simpleName
         const val FRAGMENT_TAG =
             "cz.lastaapps.bakalariextension.ui.attachment.AttachmentFileExistsDialog"
-        val TAG = AttachmentFileExistsDialog::class.java.simpleName
 
         /**creates new dialog instance*/
         fun newInstance(
@@ -58,6 +59,8 @@ class AttachmentFileExistsDialog : DialogFragment() {
     private lateinit var fileName: String
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+
+        Log.i(TAG, "Creating dialog")
 
         //loads data
         fileName = requireArguments().getString("filename")!!
@@ -111,7 +114,6 @@ class AttachmentFileExistsDialog : DialogFragment() {
                     }
                 }
             }
-            setTitle(R.string.attachment_label)
 
         }.create()
     }

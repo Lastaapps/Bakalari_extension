@@ -33,7 +33,7 @@ import cz.lastaapps.bakalariextension.receivers.BootReceiver
 import cz.lastaapps.bakalariextension.receivers.TimeChangeReceiver
 import cz.lastaapps.bakalariextension.services.timetablenotification.TTNotifyService
 import cz.lastaapps.bakalariextension.services.timetablenotification.TTReceiver
-import cz.lastaapps.bakalariextension.ui.timetable.small.widget.SmallTimetableWidget
+import cz.lastaapps.bakalariextension.widgets.smalltimetable.SmallTimetableWidget
 
 /**Deletes saved tokens and all oder data, then restarts app*/
 class Logout {
@@ -42,6 +42,11 @@ class Logout {
         private val TAG = Logout::class.java.simpleName
 
         fun logout() {
+            Log.i(TAG, "Login out")
+
+            //stops services
+            App.context.stopService(Intent(App.context, TTNotifyService::class.java))
+
             //deletes login info - school name, url and username remains
             LoginData.accessToken = ""
             LoginData.refreshToken = ""
@@ -74,10 +79,6 @@ class Logout {
                     PackageManager.DONT_KILL_APP
                 )
             }
-
-            //stops services
-            App.context.stopService(Intent(
-                App.context, TTNotifyService::class.java))
 
             Log.i(TAG, "Logged out")
         }

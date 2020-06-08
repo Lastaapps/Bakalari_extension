@@ -26,7 +26,7 @@ import android.content.Intent
 import android.util.Log
 import cz.lastaapps.bakalariextension.login.LoginData
 import cz.lastaapps.bakalariextension.services.timetablenotification.TTNotifyService
-import cz.lastaapps.bakalariextension.ui.timetable.small.widget.SmallTimetableWidget
+import cz.lastaapps.bakalariextension.widgets.smalltimetable.SmallTimetableWidget
 
 /**Receives when user changes time - refreshes services and widgets and makes access token expired*/
 class TimeChangeReceiver : BroadcastReceiver() {
@@ -36,13 +36,15 @@ class TimeChangeReceiver : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        Log.i(TAG, "Time changed, updating timetable notification")
+        if (intent.action == Intent.ACTION_TIME_CHANGED) {
+            Log.i(TAG, "Time changed, updating timetable notification")
 
-        //updates services and widgets
-        TTNotifyService.startService(context)
-        SmallTimetableWidget.update(context)
+            //updates services and widgets
+            TTNotifyService.startService(context)
+            SmallTimetableWidget.update(context)
 
-        //makes access token expired
-        LoginData.tokenExpiration = 0L
+            //makes access token expired
+            LoginData.tokenExpiration = 0L
+        }
     }
 }

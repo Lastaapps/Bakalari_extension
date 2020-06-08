@@ -41,5 +41,9 @@
     <string name="report_overload">You can report only 1 issue per day because of server overload protection</string>
     <string name="report_go_back">Close</string>
     <string name="report_include_timetable">Include timetables</string>
-    <string name="report_include_timetable_warning">May contain personal info like class name or teachers names</string>
+    <string name="report_include_timetable_warning">Contains personal data like classes names or teachers names</string>
+    <string name="report_include_marks">Include marks</string>
+    <string name="report_include_marks_warning">Contains personal data - marks, subjects and test themes</string>
+    <string name="report_include_homework">Include homework list</string>
+    <string name="report_include_homework_warning">Contains personal data - homework\'s texts and teachers names</string>
 </resources>

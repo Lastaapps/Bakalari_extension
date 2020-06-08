@@ -28,6 +28,9 @@
     <color name="side_nav_bar_center">#A3943F</color>
     <color name="side_nav_bar_end">#D7CA6C</color>
 
+    <color name="primary_text_light">#FFFF</color>
+    <color name="primary_text_dark">#F000</color>
+
     <color name="light">#000</color>
     <color name="dark">#FFF</color>
     <color name="gray_background">#888</color>

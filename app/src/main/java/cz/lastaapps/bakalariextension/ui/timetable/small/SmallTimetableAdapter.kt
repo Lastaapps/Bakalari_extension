@@ -28,8 +28,7 @@ import android.widget.AbsListView
 import android.widget.BaseAdapter
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.DataIdList
-import cz.lastaapps.bakalariextension.api.homework.data.Homework
+import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
 import cz.lastaapps.bakalariextension.api.timetable.data.Day
 import cz.lastaapps.bakalariextension.api.timetable.data.Lesson
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
@@ -41,7 +40,7 @@ class SmallTimetableAdapter(
     var context: Context,
     var week: Week,
     var day: Day,
-    var homework: DataIdList<Homework>?
+    var homework: HomeworkList?
 ) : BaseAdapter() {
 
     //witch lesson should be shown

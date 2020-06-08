@@ -20,6 +20,7 @@
 
 package cz.lastaapps.bakalariextension.ui.timetable.normal
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,20 +28,23 @@ import android.widget.*
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.DataIdList
-import cz.lastaapps.bakalariextension.api.homework.data.Homework
+import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
 import cz.lastaapps.bakalariextension.api.timetable.data.Cycle
 import cz.lastaapps.bakalariextension.api.timetable.data.Hour
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import cz.lastaapps.bakalariextension.ui.timetable.CellSetup
 import kotlinx.coroutines.yield
-import org.threeten.bp.ZoneId
+import java.time.ZoneId
 
 /**Creates normal timetable cell structure*/
 class TimetableCreator {
     companion object {
+        private val TAG = TimetableCreator::class.java.simpleName
 
         fun prepareTimetable(root: View, height: Int, lessons: Int) {
+            Log.i(TAG, "Preparing timetable views")
+
             val table = root.findViewById<TableLayout>(R.id.table)
 
             val rowChildParams = TableRow.LayoutParams()
@@ -117,8 +121,10 @@ class TimetableCreator {
             root: View,
             week: Week,
             cycle: Cycle?,
-            homework: DataIdList<Homework>?
+            homework: HomeworkList?
         ) {
+
+            Log.i(TAG, "Creating timetable")
 
             val daysTable = root.findViewById<LinearLayout>(R.id.table_days)
             val table = root.findViewById<TableLayout>(R.id.table)
@@ -179,6 +185,8 @@ class TimetableCreator {
                 validHours,
                 homework
             )
+
+            Log.i(TAG, "Creating finished")
         }
 
         /**Sets up first column Mo-Fr except first edge cell*/
@@ -243,7 +251,7 @@ class TimetableCreator {
             week: Week,
             cycle: Cycle?,
             validHours: DataIdList<Hour>,
-            homework: DataIdList<Homework>?
+            homework: HomeworkList?
         ) {
             //creating actual timetable
             for (i in 0 until week.days.size) {

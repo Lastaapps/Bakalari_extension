@@ -25,6 +25,7 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Build
 import android.os.LocaleList
+import android.util.Log
 import java.util.*
 
 /**Updates context with new language based on Settings*/
@@ -45,6 +46,8 @@ class LocaleManager {
             Locale.setDefault(locale)
             val res: Resources = context.resources
             val config = Configuration(res.configuration)
+
+            Log.i(TAG, "Changing language to ${locale.language}")
 
             return when {
                 Build.VERSION.SDK_INT >= 24 -> {
@@ -68,7 +71,7 @@ class LocaleManager {
 
         /**@return language got from Settings*/
         private fun getLanguagePref(context: Context): String {
-            return Settings(context).getLanguageCode()
+            return MySettings(context).getLanguageCode()
         }
     }
 }

@@ -43,8 +43,8 @@ import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.ConnMgr
 import cz.lastaapps.bakalariextension.services.timetablenotification.TTNotifyService
 import cz.lastaapps.bakalariextension.tools.CheckInternet
+import cz.lastaapps.bakalariextension.tools.MySettings
 import cz.lastaapps.bakalariextension.tools.MyToast
-import cz.lastaapps.bakalariextension.tools.Settings
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -63,22 +63,26 @@ class AttachmentDownload {
         /**@return if file with name given exists*/
         fun exists(context: Context, fileName: String): Boolean {
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val sett = Settings.withAppContext()
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val sett = MySettings.withAppContext()
                 val dirUri = Uri.parse(sett.getDownloadLocation())
                 val pickedDir = DocumentFile.fromTreeUri(context, dirUri)
 
                 if (pickedDir == null || !pickedDir.exists() || !pickedDir.canWrite()) {
                     Log.e(TAG, "Even directory does not exist")
-                    return false
-                }
+                    false
 
-                pickedDir.findFile(fileName) ?: return false
-                return true
+                } else {
+
+                    pickedDir.findFile(fileName) ?: return false
+                    true
+                }
             } else {
 
-                val sett = Settings.withAppContext()
-                return File(sett.getDownloadLocation(), fileName).exists()
+                val sett = MySettings.withAppContext()
+                File(sett.getDownloadLocation(), fileName).exists()
+            }.also {
+                Log.i(TAG, "File exists: $it")
             }
         }
 
@@ -87,23 +91,26 @@ class AttachmentDownload {
             if (!exists(context, fileName))
                 return true
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val sett = Settings.withAppContext()
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val sett = MySettings.withAppContext()
                 val dirUri = Uri.parse(sett.getDownloadLocation())
                 val pickedDir = DocumentFile.fromTreeUri(context, dirUri)
 
                 if (pickedDir == null || !pickedDir.exists() || !pickedDir.canWrite()) {
                     Log.e(TAG, "Cannot access the whole directory")
-                    return false
-                }
+                    false
+                } else {
 
-                val file = pickedDir.findFile(fileName) ?: return true
-                return file.canWrite()
+                    val file = pickedDir.findFile(fileName) ?: return true
+                    file.canWrite()
+                }
 
             } else {
 
-                val sett = Settings.withAppContext()
-                return File(sett.getDownloadLocation(), fileName).canWrite()
+                val sett = MySettings.withAppContext()
+                File(sett.getDownloadLocation(), fileName).canWrite()
+            }.also {
+                Log.i(TAG, "File is accessible: $it")
             }
         }
 
@@ -223,7 +230,7 @@ class AttachmentDownload {
 
             } else {
 
-                val sett = Settings.withAppContext()
+                val sett = MySettings.withAppContext()
                 File(sett.getDownloadLocation(), fileName)
                     .toUri()
             }
@@ -232,7 +239,7 @@ class AttachmentDownload {
         /**@return the uri of the final file*/
         fun getTargetUri(context: Context, fileName: String, mime: String): Uri? {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val sett = Settings.withAppContext()
+                val sett = MySettings.withAppContext()
                 val dirUri = Uri.parse(sett.getDownloadLocation())
                 val pickedDir = DocumentFile.fromTreeUri(context, dirUri)
 
@@ -263,7 +270,7 @@ class AttachmentDownload {
         }
 
         /**executes action after download is finished*/
-        class DownloadReceiver(
+        private class DownloadReceiver(
             val downloadId: Long,
             val fileName: String,
             val mime: String,

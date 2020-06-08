@@ -31,7 +31,7 @@ import cz.lastaapps.bakalariextension.api.homework.data.Homework
 import cz.lastaapps.bakalariextension.databinding.HomeworkEntryBinding
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import cz.lastaapps.bakalariextension.ui.attachment.AttachmentDialog
-import org.threeten.bp.Duration
+import java.time.Duration
 
 /**sets up binding view with homework*/
 class HmwEntryManager(

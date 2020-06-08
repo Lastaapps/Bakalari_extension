@@ -20,12 +20,13 @@
 
 package cz.lastaapps.bakalariextension.api.marks.data
 
+import android.util.Log
 import cz.lastaapps.bakalariextension.api.DataID
 import cz.lastaapps.bakalariextension.api.DataIdList
-import cz.lastaapps.bakalariextension.tools.Settings
+import cz.lastaapps.bakalariextension.tools.MySettings
 import cz.lastaapps.bakalariextension.tools.TimeTools
-import org.threeten.bp.Duration
-import org.threeten.bp.ZonedDateTime
+import java.time.Duration
+import java.time.ZonedDateTime
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -90,11 +91,17 @@ class Mark(
 
     /**@return If mark should be shown as new*/
     fun showAsNew(): Boolean {
-        val duration = Duration.between(toEditDate(), TimeTools.now)
-        return duration.toDays() < Settings.withAppContext().getNewMarkDuration()
+        val duration = Duration.between(
+            TimeTools.toMidnight(toEditDate()),
+            TimeTools.toMidnight(TimeTools.now)
+        )
+        return duration.toDays() < MySettings.withAppContext().getNewMarkDuration()
     }
 
     companion object {
+
+        private val TAG = Mark::class.java.simpleName
+
         /**generates mark with some default data*/
         val default: Mark
             get() = Mark(
@@ -120,6 +127,8 @@ class Mark(
         /**@return marks average*/
         fun calculateAverage(marks: DataIdList<Mark>): String {
 
+            Log.i(TAG, "Calculating marks average")
+
             return String.format(
                 Locale("cs"), "%.2f", when {
                     //no marks
@@ -131,8 +140,12 @@ class Mark(
                         var weights = 0
 
                         for (mark in marks) {
-                            average += parseMarkValue(mark.markText) * mark.weight
-                            weights += mark.weight
+                            //for marks like A, S, etc.
+                            try {
+                                average += parseMarkValue(mark.markText) * mark.weight
+                                weights += mark.weight
+                            } catch (e: Exception) {
+                            }
                         }
 
                         average /= weights
@@ -146,8 +159,11 @@ class Mark(
                         var weights = 0
 
                         for (mark in marks) {
-                            average += mark.markText.toDouble() / mark.maxPoints * mark.weight
-                            weights += mark.weight
+                            try {
+                                average += mark.markText.toDouble() / mark.maxPoints * mark.weight
+                                weights += mark.weight
+                            } catch (e: Exception) {
+                            }
                         }
 
                         average /= weights

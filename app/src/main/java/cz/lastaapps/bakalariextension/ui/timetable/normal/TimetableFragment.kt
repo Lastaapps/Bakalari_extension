@@ -22,6 +22,7 @@ package cz.lastaapps.bakalariextension.ui.timetable.normal
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,7 +39,6 @@ import cz.lastaapps.bakalariextension.api.timetable.TTStorage
 import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
 import cz.lastaapps.bakalariextension.databinding.FragmentTimetableBinding
 import cz.lastaapps.bakalariextension.tools.TimeTools
-import cz.lastaapps.bakalariextension.tools.Timer
 import cz.lastaapps.bakalariextension.tools.lastUpdated
 import kotlinx.coroutines.*
 import kotlin.math.abs
@@ -115,12 +115,11 @@ class TimetableFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val timer = Timer(TAG)
+
+        Log.i(TAG, "Creating view")
 
         //inflates views
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_timetable, container, false)
-
-        timer.print()
 
         //checks for height of timetables to make all rows same height
         binding.apply {
@@ -130,13 +129,17 @@ class TimetableFragment : Fragment() {
                 override fun onGlobalLayout() {
                     height = tableBox.measuredHeight / 6
                     //val width: Int = edge.measuredWidth
-                    if (height != 0)
+                    if (height != 0) {
+                        Log.i(TAG, "Height obtained")
                         tableBox.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    }
                 }
             })
 
             //moves in weeks or cycles backward
             previousWeek.setOnClickListener {
+                Log.i(TAG, "Previous pressed")
+
                 if (!vm.isPermanent) {
 
                     vm.dateTime = TimeTools.previousWeek(vm.dateTime)
@@ -154,6 +157,7 @@ class TimetableFragment : Fragment() {
             }
             //moves in weeks or cycles forward
             nextWeek.setOnClickListener {
+                Log.i(TAG, "Next pressed")
 
                 if (!vm.isPermanent) {
                     vm.dateTime = TimeTools.nextWeek(vm.dateTime)
@@ -173,12 +177,16 @@ class TimetableFragment : Fragment() {
             //changes to permanent or actual timetable
             permanentSwitch.setOnClickListener {
                 if (vm.isPermanent) {
+                    Log.i(TAG, "Switching to normal timetable")
+
                     vm.cycleIndex = 0
                     (it as ImageButton).setImageDrawable(
                         root.context.resources.getDrawable(R.drawable.permanent)
                     )
 
                 } else {
+                    Log.i(TAG, "Switching to permanent timetable")
+
                     (it as ImageButton).setImageDrawable(
                         root.context.resources.getDrawable(R.drawable.actual)
                     )
@@ -190,11 +198,15 @@ class TimetableFragment : Fragment() {
 
             /**Reloads timetable from server*/
             reload.setOnClickListener {
+                Log.i(TAG, "Reload pressed")
+
                 updateTimetable(true)
             }
 
             /**navigates back to today if user is somewhere in a future or a history*/
             home.setOnClickListener {
+                Log.i(TAG, "Home pressed")
+
                 vm.dateTime = TimeTools.monday
                 it.visibility = View.GONE
                 updateTimetable()

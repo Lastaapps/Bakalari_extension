@@ -27,6 +27,6 @@ import android.content.Context
  * Uses context with changed language*/
 abstract class BaseService: Service() {
     override fun attachBaseContext(newBase: Context) {
-        super.attachBaseContext(LocaleManager.updateLocale(newBase));
+        super.attachBaseContext(LocaleManager.updateLocale(newBase))
     }
 }

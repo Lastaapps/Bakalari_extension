@@ -28,10 +28,11 @@ import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.findNavController
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.homework.data.Homework
+import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
 import cz.lastaapps.bakalariextension.databinding.FragmentHomeworkOverviewBinding
 
 /**placed inside HomeFragment, shows how many current homework are there*/
@@ -45,7 +46,9 @@ class HmwOverview : Fragment() {
     lateinit var viewModel: HmwViewModel
 
     /**observes when marks are loaded*/
-    private val homeworkObserver = { _: DataIdList<Homework> ->
+    private val homeworkObserver = { _: HomeworkList ->
+        Log.i(TAG, "Updating based on new homework list")
+
         onHomeworkValid()
     }
 
@@ -68,14 +71,6 @@ class HmwOverview : Fragment() {
         viewModel.failObserve.observe({ lifecycle }, failObserver)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-
-        //stops observing
-        viewModel.homework.removeObserver(homeworkObserver)
-        viewModel.failObserve.removeObserver(failObserver)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -83,21 +78,20 @@ class HmwOverview : Fragment() {
     ): View? {
         Log.i(TAG, "Creating view")
 
-        //onetime init
-        if (!this::binding.isInitialized) {
-            //inflates views
-            binding =
-                DataBindingUtil.inflate(
-                    inflater,
-                    R.layout.fragment_homework_overview,
-                    container,
-                    false
-                )
+        //inflates views
+        binding =
+            DataBindingUtil.inflate(
+                inflater,
+                R.layout.fragment_homework_overview,
+                container,
+                false
+            )
+        binding.lifecycleOwner = LifecycleOwner { lifecycle }
+        binding.viewmodel = viewModel
 
-            //navigates to homework fragments
-            binding.contentLayout.setOnClickListener {
-                it.findNavController().navigate(R.id.nav_homework)
-            }
+        //navigates to homework fragments
+        binding.contentLayout.setOnClickListener {
+            it.findNavController().navigate(R.id.nav_homework)
         }
 
         //starts marks loading if they aren't yet

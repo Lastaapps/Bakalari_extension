@@ -27,8 +27,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.User
@@ -42,7 +40,7 @@ import cz.lastaapps.bakalariextension.services.timetablenotification.TTReceiver
 import cz.lastaapps.bakalariextension.tools.CheckInternet
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import cz.lastaapps.bakalariextension.ui.attachment.AttachmentDownload
-import cz.lastaapps.bakalariextension.ui.timetable.small.widget.SmallTimetableWidget
+import cz.lastaapps.bakalariextension.widgets.smalltimetable.SmallTimetableWidget
 
 /**Run when user logs in*/
 class OnLogin {
@@ -53,16 +51,12 @@ class OnLogin {
         //is called from outside
         /**Does on login init
          * @return if background part succeed*/
-        fun onLogin(context: Context): Boolean {
-            Handler(Looper.getMainLooper()).post {
-                Log.e(TAG, "Running foreground")
-                foreground(context)
-            }
-            Log.e(TAG, "Running background")
+        suspend fun onLogin(context: Context): Boolean {
+            Log.i(TAG, "Running background")
 
             val success = background(context)
 
-            Log.e(TAG, "success $success")
+            Log.i(TAG, "success $success")
             //init failed, logs out
             if (!success)
                 Logout.logout()
@@ -70,13 +64,8 @@ class OnLogin {
             return success
         }
 
-        /**Runs init in foreground*/
-        private fun foreground(context: Context) {
-
-        }
-
-        /**Runs init in background*/
-        private fun background(context: Context): Boolean {
+        /**Runs in background*/
+        private suspend fun background(context: Context): Boolean {
 
             //inits notification channels
             initNotificationChannels(context)
@@ -104,8 +93,9 @@ class OnLogin {
 
             //downloads some basic data for offline use if user is connected to wifi
             if (!CheckInternet.connectedMobileData()) {
+                Log.i(TAG, "Downloading default data")
+
                 //download timetables
-                Log.i(TAG, "Downloading default timetables")
                 val date = TimeTools.monday
                 //what timetables should be loaded
                 val array = arrayOf(
@@ -179,7 +169,7 @@ class OnLogin {
                     val notificationManager =
                         context.getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
                     notificationManager.createNotificationChannel(mChannel)
-                }.invoke();
+                }.invoke()
             }
         }
     }

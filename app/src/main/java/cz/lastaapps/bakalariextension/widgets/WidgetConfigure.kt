@@ -19,7 +19,7 @@
  */
 
 
-package cz.lastaapps.bakalariextension.ui
+package cz.lastaapps.bakalariextension.widgets
 
 import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetHostView
@@ -30,6 +30,7 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
 import android.widget.SeekBar
@@ -39,6 +40,7 @@ import androidx.databinding.DataBindingUtil
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.databinding.WidgetConfigureActivityBinding
+import cz.lastaapps.bakalariextension.tools.MySettings
 
 
 /**
@@ -46,6 +48,11 @@ import cz.lastaapps.bakalariextension.databinding.WidgetConfigureActivityBinding
  */
 open class WidgetConfigure(private val config: WidgetConfigurePreferences) : AppCompatActivity(),
     View.OnClickListener {
+
+    companion object {
+        private val TAG = WidgetConfigure::class.java.simpleName
+    }
+
     //id of the widget from intent
     private var appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID
 
@@ -65,6 +72,8 @@ open class WidgetConfigure(private val config: WidgetConfigurePreferences) : App
 
     public override fun onCreate(bundle: Bundle?) {
         super.onCreate(bundle)
+
+        Log.i(TAG, "Creating activity")
 
         // Set the result to CANCELED.  This will cause the widget host to cancel
         // out of the widget placement if the user presses the back button.
@@ -117,6 +126,14 @@ open class WidgetConfigure(private val config: WidgetConfigurePreferences) : App
         updateWidget()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        //turn on app theme back
+        if (isFinishing)
+            MySettings(this).updateDarkTheme()
+    }
+
     /**creates appWidgetHost - view with widget*/
     private fun createWidget(appWidgetId: Int) {
 
@@ -132,6 +149,7 @@ open class WidgetConfigure(private val config: WidgetConfigurePreferences) : App
 
         //later updated and placed inside
         remoteViews = RemoteViews(packageName, config.getLayoutId())
+        hostView.updateAppWidget(remoteViews)
 
         //listening for updates (like service adapters)
         mAppWidgetHost.startListening()
@@ -139,6 +157,8 @@ open class WidgetConfigure(private val config: WidgetConfigurePreferences) : App
 
     /**updates widget - mostly theme*/
     private fun updateWidget() {
+
+        Log.i(TAG, "The widget configuration done")
 
         //saves seekBars positions
         updater.setPref(
@@ -157,6 +177,7 @@ open class WidgetConfigure(private val config: WidgetConfigurePreferences) : App
         config.updateRemoteViews(remoteViews, appWidgetId, this)
 
         //apply remote views to widgetHost
+        hostView.updateAppWidget(null)
         hostView.updateAppWidget(remoteViews)
     }
 

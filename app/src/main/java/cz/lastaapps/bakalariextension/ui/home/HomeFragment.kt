@@ -25,28 +25,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.User
-import cz.lastaapps.bakalariextension.ui.homework.HmwOverview
-import cz.lastaapps.bakalariextension.ui.marks.NewMarksFragment
-import cz.lastaapps.bakalariextension.ui.timetable.small.SmallTimetableFragment
-import org.threeten.bp.DayOfWeek
-import org.threeten.bp.LocalDate
+import cz.lastaapps.bakalariextension.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
 
     companion object {
         private val TAG = HomeFragment::class.java.simpleName
-
-        //tag (~= id) of small timetable fragment
-        private const val TIMETABLE_SMALL_FRAGMENT_TAG = "TIMETABLE_SMALL_FRAGMENT_TAG"
-        private const val NEW_MARKS_FRAGMENT_TAG = "NEW_MARKS_FRAGMENT_TAG"
-        private const val HOMEWORK_FRAGMENT_TAG = "HOMEWORK_FRAGMENT_TAG"
     }
+
+    private lateinit var binding: FragmentHomeBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,81 +47,15 @@ class HomeFragment : Fragment() {
         Log.i(TAG, "Creating HomeFragment")
 
         //inflates layout
-        val root = inflater.inflate(R.layout.fragment_home, container, false)
-
-        val nameView = root.findViewById<TextView>(R.id.name)
-        val typeView = root.findViewById<TextView>(R.id.type)
-        val schoolView = root.findViewById<TextView>(R.id.school)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
 
         //sets up info about user
-        nameView.text = User.get(User.NAME)
-        typeView.text = User.getClassAndRole()
-        schoolView.text = User.get(User.SCHOOL)
-
-        //layout for oder widgets
-        fragmentContainer = root.findViewById(R.id.fragment_container)
-
-        return root
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        //adds fragments
-        fragments()
-    }
-
-    /**Layout in HomeFragment containing all oder Fragments like small timetable*/
-    private lateinit var fragmentContainer: LinearLayout
-
-    /***/
-    private fun fragments() {
-        //first append of Fragments
-        val fragmentTransaction = childFragmentManager.beginTransaction()
-
-        if (LocalDate.now().dayOfWeek.value in DayOfWeek.MONDAY.value..DayOfWeek.FRIDAY.value) {
-            //checks if fragment wasn't added before
-            if (childFragmentManager.findFragmentByTag(TIMETABLE_SMALL_FRAGMENT_TAG) == null) {
-                //inits viewModel for the fragment
-                val model: SmallTimetableFragment.STViewModel by viewModels()
-                val frag = SmallTimetableFragment()
-                //adds fragment to layout
-                fragmentTransaction.add(R.id.fragment_container, frag, TIMETABLE_SMALL_FRAGMENT_TAG)
-                //animation insert
-                fragmentTransaction.setCustomAnimations(
-                    R.anim.home_fragments,
-                    android.R.anim.fade_out
-                )
-            }
+        binding.apply {
+            name.text = User.get(User.NAME)
+            type.text = User.getClassAndRole()
+            school.text = User.get(User.SCHOOL)
         }
 
-        //checks if fragment wasn't added before
-        if (childFragmentManager.findFragmentByTag(NEW_MARKS_FRAGMENT_TAG) == null) {
-
-            val frag = NewMarksFragment()
-            //adds fragment to layout
-            fragmentTransaction.add(R.id.fragment_container, frag, NEW_MARKS_FRAGMENT_TAG)
-            //animation insert
-            fragmentTransaction.setCustomAnimations(
-                R.anim.home_fragments,
-                android.R.anim.fade_out
-            )
-        }
-
-        //checks if fragment wasn't added before
-        if (childFragmentManager.findFragmentByTag(HOMEWORK_FRAGMENT_TAG) == null) {
-
-            val frag = HmwOverview()
-            //adds fragment to layout
-            fragmentTransaction.add(R.id.fragment_container, frag, HOMEWORK_FRAGMENT_TAG)
-            //animation insert
-            fragmentTransaction.setCustomAnimations(
-                R.anim.home_fragments,
-                android.R.anim.fade_out
-            )
-        }
-
-        //finishes adding fragments, updates screen
-        fragmentTransaction.commit()
+        return binding.root
     }
 }

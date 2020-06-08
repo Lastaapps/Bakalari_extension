@@ -22,6 +22,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory app:title="@string/sett_general">
+        <Preference
+            app:key="@string/sett_key_notification_settings"
+            app:title="@string/sett_notification_settings" />
         <SwitchPreferenceCompat
             app:key="@string/sett_key_mobile_data"
             app:title="@string/sett_mobile_data"
@@ -59,6 +62,13 @@
             app:key="@string/sett_key_timetable_notification"
             app:title="@string/sett_timetable_notification_title"
             app:defaultValue="@string/sett_timetable_notification_default" />
+
+        <ListPreference
+            app:key="@string/sett_key_timetable_preview"
+            app:title="@string/sett_timetable_preview"
+            app:entries="@array/sett_timetable_preview_entries"
+            app:entryValues="@array/sett_timetable_preview"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/sett_marks">
@@ -80,9 +90,17 @@
 
     <PreferenceCategory app:title="@string/sett_others">
         <Preference
+            app:key="@string/sett_key_reset"
+            app:title="@string/sett_reset"
+            app:summary="@string/sett_reset_summary" />
+        <Preference
             app:key="@string/sett_key_show_whats_new"
             app:title="@string/sett_show_whats_new"
-            app:icon="@drawable/whats_new"/>
+            app:icon="@drawable/whats_new" />
+        <Preference
+            app:key="@string/sett_key_license"
+            app:title="@string/sett_license"
+            app:icon="@drawable/nav_license" />
     </PreferenceCategory>
 
 

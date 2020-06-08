@@ -18,13 +18,15 @@
  *
  */
 
-package cz.lastaapps.bakalariextension.ui.license
+package cz.lastaapps.bakalariextension.ui
 
 import android.app.backup.BackupManager
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -34,27 +36,30 @@ import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.databinding.ActivityLicenseBinding
 import cz.lastaapps.bakalariextension.tools.BaseActivity
-import org.threeten.bp.ZoneId
-import org.threeten.bp.ZonedDateTime
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 class LicenseActivity : BaseActivity() {
-
 
     lateinit var binding: ActivityLicenseBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        Log.i(TAG, "Creating activity")
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_license)
         binding.license = this
 
         loadPackages()
         loadLicenseContent()
+        setupInspiration()
     }
 
+    /**Loads packages manes*/
     private fun loadPackages() {
         val licensePackages = arrayOf(
             R.array.license_gnu3,
@@ -80,6 +85,7 @@ class LicenseActivity : BaseActivity() {
         }
     }
 
+    /**Loads licence content*/
     private fun loadLicenseContent() {
         val licenseViews = arrayOf(
             binding.textGnu3,
@@ -95,14 +101,14 @@ class LicenseActivity : BaseActivity() {
         )
 
         for (i in licenseViews.indices) {
-            var reader: BufferedReader? = null;
+            var reader: BufferedReader? = null
             try {
                 reader = BufferedReader(
                     InputStreamReader(
                         assets.open("license/${assetNames[i]}"),
                         "UTF-8"
                     )
-                );
+                )
 
                 licenseViews[i].text = reader.readText()
             } catch (e: IOException) {
@@ -110,7 +116,7 @@ class LicenseActivity : BaseActivity() {
             } finally {
                 if (reader != null) {
                     try {
-                        reader.close();
+                        reader.close()
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }
@@ -119,6 +125,7 @@ class LicenseActivity : BaseActivity() {
         }
     }
 
+    /**Shows full licence or hides the most of it*/
     fun onShowHideText(button: TextView, textView: TextView) {
         if (textView.visibility == View.GONE) {
             button.setText(R.string.license_hide)
@@ -129,6 +136,12 @@ class LicenseActivity : BaseActivity() {
         }
     }
 
+    private fun setupInspiration() {
+        arrayOf(binding.betterSchedule, binding.bakalari, binding.bakalariOnline)
+            .forEach {
+                it.movementMethod = LinkMovementMethod.getInstance()
+            }
+    }
 
     companion object {
         private val TAG = LicenseActivity::class.java.simpleName
@@ -166,7 +179,9 @@ class LicenseActivity : BaseActivity() {
                     run.run()
                 }
                 .setNegativeButton(R.string.license_view) { _: DialogInterface, _: Int ->
-                    viewLicense(context)
+                    viewLicense(
+                        context
+                    )
                 }
                 .setTitle(R.string.license)
                 .create()

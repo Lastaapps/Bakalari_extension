@@ -30,7 +30,7 @@ import cz.lastaapps.bakalariextension.login.LoginActivity
 import cz.lastaapps.bakalariextension.login.LoginData
 import cz.lastaapps.bakalariextension.tools.BaseActivity
 import cz.lastaapps.bakalariextension.tools.CheckInternet
-import cz.lastaapps.bakalariextension.ui.license.LicenseActivity
+import cz.lastaapps.bakalariextension.ui.LicenseActivity
 import kotlinx.coroutines.*
 import java.lang.Runnable
 

@@ -42,10 +42,11 @@ import cz.lastaapps.bakalariextension.tools.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.threeten.bp.LocalDate
-import org.threeten.bp.LocalTime
-import org.threeten.bp.ZonedDateTime
-import org.threeten.bp.temporal.ChronoField
+import kotlinx.coroutines.withContext
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZonedDateTime
+import java.time.temporal.ChronoField
 import kotlin.math.floor
 
 /**Shows notification generated in NotificationContent*/
@@ -55,8 +56,6 @@ class TTNotifyService : BaseService() {
         private val TAG = TTNotifyService::class.java.simpleName
         const val NOTIFICATION_CHANEL_ID = "timetable_notification_service"
         private const val NOTIFICATION_ID = 1
-        /*private const val PENDING_INTENT_TRIGGER_NAME =
-            "cz.lastaapps.action.TIMETABLE_NOTIFICATION_TRIGGER"*/
 
         /**used for starting service statically, can also stop service if it is disabled
          * @return if service was started or canceled*/
@@ -65,7 +64,9 @@ class TTNotifyService : BaseService() {
             val intent = Intent(context, TTNotifyService::class.java)
 
             return if (LoginData.isLoggedIn()
-                && Settings(context).isTimetableNotificationEnabled()) {
+                && MySettings(context).isTimetableNotificationEnabled()
+            ) {
+                Log.i(TAG, "Starting service")
 
                 //starts service in foreground
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
@@ -75,6 +76,8 @@ class TTNotifyService : BaseService() {
                 true
             } else {
                 //cancels service
+                Log.i(TAG, "Canceling service")
+
                 context.stopService(intent)
 
                 false
@@ -111,8 +114,16 @@ class TTNotifyService : BaseService() {
             Log.i(TAG, "Updating notification with data")
             val scope = CoroutineScope(Dispatchers.Default)
             scope.launch {
-                getNotifications()
+                startAble = false
+                try {
+                    todo()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+                startAble = true
             }
+        } else {
+            Log.i(TAG, "Already started and generating data")
         }
 
         setEverydaySetup()
@@ -120,33 +131,24 @@ class TTNotifyService : BaseService() {
         return START_NOT_STICKY
     }
 
-    private suspend fun getNotifications() {
-        //locks method
-        startAble = false
-        try {
-            todo()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        startAble = true
-    }
-
     private suspend fun todo() {
         //today
-        val cal = TimeTools.today
-        var week =
-            TimetableLoader.loadFromStorage(
-                cal
-            )
+        val date = TimeTools.today
+        var week: Week? = null
+
+        withContext(Dispatchers.IO) {
+            Log.i(TAG, "Loading from storage")
+            week = TimetableLoader.loadFromStorage(date)
+        }
 
         //tries to load week from server
         if (week == null) {
             if (CheckInternet.canUseInternet() && CheckInternet.check()) {
 
-                week =
-                    TimetableLoader.loadFromServer(
-                        cal
-                    )
+                withContext(Dispatchers.IO) {
+                    Log.i(TAG, "Local storage failed, loading from server")
+                    week = TimetableLoader.loadFromServer(date)
+                }
 
                 if (week == null) {
                     MyToast.makeText(
@@ -180,11 +182,11 @@ class TTNotifyService : BaseService() {
         }
         Log.i(TAG, "Week loaded")
 
-        val today = week.today()
+        val today = week!!.today()
         if ((today != null) && !today.isEmpty()) {
 
             //gets selected notification texts
-            val messages = generateNotificationContent(week)
+            val messages = generateNotificationContent(week!!)
             if (messages != null) {
                 val title = messages[0]
                 val subtitle = messages[1]
@@ -196,16 +198,15 @@ class TTNotifyService : BaseService() {
                 return
             }
         }
+
         //stops on error
         Log.i(TAG, "Stopping foreground")
         stopForeground(true)
         isServiceRunningInForeground = false
-
-
     }
 
     /**@return new notification object with inputted texts*/
-    private fun generateNotification(title: String, subtitle: String): Notification {
+    private fun generateNotification(title: CharSequence, subtitle: CharSequence): Notification {
         //opens timetable in MainActivity on click
         val pendingIntent = NavDeepLinkBuilder(this)
             .setComponentName(MainActivity::class.java)
@@ -216,7 +217,8 @@ class TTNotifyService : BaseService() {
 
         //generates Notification object
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val builder = Notification.Builder(this,
+            val builder = Notification.Builder(
+                this,
                 NOTIFICATION_CHANEL_ID
             )
                 .setContentTitle(title)
@@ -248,12 +250,10 @@ class TTNotifyService : BaseService() {
     }
 
     /**@return texts to be putted into notification*/
-    private fun generateNotificationContent(week: Week): Array<String>? {
+    private fun generateNotificationContent(week: Week): Array<CharSequence>? {
 
         //now in seconds since midnight
-        val now = TimeTools.timeToSeconds(
-            TimeTools.now.toLocalTime()
-        )
+        val now = TimeTools.timeToSeconds(TimeTools.now.toLocalTime())
 
         //strings generated in NotificationContent
         val actions = NotificationContent(
@@ -284,10 +284,12 @@ class TTNotifyService : BaseService() {
         //selects current texts
         for (it in keys) {
             if (it > now) {
-                val cal = TimeTools.today
+                val time = TimeTools.today
                     .with(ChronoField.HOUR_OF_DAY, floor(it / (60.0 * 60.0)).toLong())
                     .with(ChronoField.MINUTE_OF_HOUR, floor(it / 60.0).toLong() % 60)
-                setDayAlarm(cal)
+
+                setDayAlarm(time)
+
                 return actions[it]
             }
         }
@@ -392,6 +394,7 @@ class TTNotifyService : BaseService() {
             }
         }
     }
+
     override fun onBind(intent: Intent): IBinder? {
         return null
     }

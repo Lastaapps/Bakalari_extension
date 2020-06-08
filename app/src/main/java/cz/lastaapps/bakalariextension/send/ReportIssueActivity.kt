@@ -26,26 +26,29 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
-import android.widget.CheckBox
+import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.databinding.DataBindingUtil
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.IgnoreExtraProperties
 import cz.lastaapps.bakalariextension.BuildConfig
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.User
+import cz.lastaapps.bakalariextension.api.homework.HomeworkStorage
+import cz.lastaapps.bakalariextension.api.marks.MarksStorage
 import cz.lastaapps.bakalariextension.api.timetable.TTStorage
+import cz.lastaapps.bakalariextension.databinding.ActivityReportBinding
 import cz.lastaapps.bakalariextension.login.LoginData
 import cz.lastaapps.bakalariextension.tools.BaseActivity
-import cz.lastaapps.bakalariextension.tools.Settings
+import cz.lastaapps.bakalariextension.tools.MySettings
 import cz.lastaapps.bakalariextension.tools.TimeTools
-import org.threeten.bp.Instant
-import org.threeten.bp.ZoneId
-import org.threeten.bp.ZonedDateTime
 import java.io.IOException
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 /**
  * Sends error report to Firebase database
@@ -60,43 +63,52 @@ class ReportIssueActivity : BaseActivity() {
         private const val SP_DATE_KEY = "LAST_SENT"
     }
 
+    private lateinit var binding: ActivityReportBinding
+
     private lateinit var database: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        Log.i(TAG, "Creating activity")
+
         //checks if there was send message today
         if (timeCheck()) {
-            setContentView(R.layout.activity_report)
+            binding = DataBindingUtil.setContentView(this, R.layout.activity_report)
 
             database = FirebaseDatabase.getInstance().reference
 
             //sends data to Firebase
-            val fab = findViewById<FloatingActionButton>(R.id.report_fab)
-            fab.setOnClickListener {
+            binding.reportFab.setOnClickListener {
                 getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
                     .edit()
-                    .putLong(SP_DATE_KEY,
-                        ZonedDateTime.now(ZoneId.of("UTC")).toInstant().toEpochMilli())
+                    .putLong(
+                        SP_DATE_KEY,
+                        ZonedDateTime.now(ZoneId.of("UTC")).toInstant().toEpochMilli()
+                    )
                     .apply()
                 send()
             }
 
             //Opens new issue on Github
-            val githubFab = findViewById<FloatingActionButton>(R.id.github_fab)
-            githubFab.setOnClickListener {
+            binding.githubFab.setOnClickListener {
                 val url = "https://github.com/Lastaapps/Bakalari_extension/issues/new"
                 val uri = Uri.parse(url)
                 startActivity(Intent(Intent.ACTION_VIEW, uri))
             }
         } else {
+
+            Log.i(TAG, "Time check failed")
+
             //If limit per day was reached
             AlertDialog.Builder(this)
                 .setMessage(R.string.report_overload)
-                .setPositiveButton(R.string.report_go_back) { dialog, _ -> run{
-                    dialog.dismiss()
-                    finish()
-                } }
+                .setPositiveButton(R.string.report_go_back) { dialog, _ ->
+                    run {
+                        dialog.dismiss()
+                        finish()
+                    }
+                }
                 .setCancelable(false)
                 .create()
                 .show()
@@ -125,6 +137,8 @@ class ReportIssueActivity : BaseActivity() {
      * Sends needed data to Firebase
      */
     private fun send() {
+        Log.i(TAG, "Sending data")
+
         val email = findViewById<EditText>(R.id.email).text.trim().toString()
         val message = findViewById<EditText>(R.id.message).text.trim().toString()
 
@@ -134,39 +148,42 @@ class ReportIssueActivity : BaseActivity() {
                         database.push().key.toString()
 
                 //if user allowed to send town and school for analytics
-                val canSendSchool = Settings(
-                    this
-                ).getSP().getBoolean(
-                    Settings(
-                        this
-                    ).SEND_TOWN_SCHOOL, false)
+                val canSendSchool = {
+                    val sett = MySettings.withAppContext()
+                    sett.getSP().getBoolean(sett.SEND_TOWN_SCHOOL, false)
+                }.invoke()
 
                 //data to be sent
-                val obj = Message(
+                val data = Message(
                     date = TimeTools.format(TimeTools.now, TimeTools.COMPLETE_FORMAT),
                     messageId = id,
                     email = email,
                     message = message,
                     phoneId = {
-                        (LoginData.userID + LoginData.town + LoginData.school)
-                            .hashCode().toString()
+                        (LoginData.userID + LoginData.town + LoginData.school).hashCode().toString()
                     }.invoke(),
                     phoneType = getDeviceName(),
-                    androidVersion = packageManager.getPackageInfo(packageName, 0).versionName,
-                    appVersionCode = BuildConfig.VERSION_CODE.toString(),
+                    androidVersion = Build.VERSION.SDK_INT,
+                    appVersionCode = BuildConfig.VERSION_CODE,
                     appVersionName = BuildConfig.VERSION_NAME,
                     school = if (canSendSchool) LoginData.school else "disabled",
                     town = if (canSendSchool) LoginData.town else "disabled",
                     url = LoginData.url,
                     bakalariVersion = LoginData.apiVersion,
                     accountType = User.get(User.ROLE)
-                    )
+                )
 
-                if (findViewById<CheckBox>(R.id.include_timetable).isChecked)
-                    obj.timetables = getTimetables()
+                if (binding.includeTimetable.isChecked)
+                    data.timetables = getTimetables()
+
+                if (binding.includeMarks.isChecked)
+                    data.marks = String.format("%s", MarksStorage.load()) //null safety
+
+                if (binding.includeHomework.isChecked)
+                    data.homeworkList = String.format("%s", HomeworkStorage.load()) //null safety
 
                 //sends data
-                database.child("report").child(id).setValue(obj)
+                database.child("report").child(id).setValue(data)
 
                 Toast.makeText(this, R.string.idea_thanks, Toast.LENGTH_LONG).show()
                 finish()
@@ -200,15 +217,17 @@ class ReportIssueActivity : BaseActivity() {
         var message: String? = "",
         var phoneId: String? = "",
         var phoneType: String? = "",
-        var androidVersion: String? = "",
-        var appVersionCode: String? = "",
+        var androidVersion: Int? = -1,
+        var appVersionCode: Int? = -1,
         var appVersionName: String? = "",
         var school: String? = "",
         var town: String? = "",
         var url: String? = "",
         var bakalariVersion: String? = "",
         var accountType: String? = "",
-        var timetables: ArrayList<String>? = null
+        var timetables: ArrayList<String>? = null,
+        var marks: String? = null,
+        var homeworkList: String? = null
     )
 
     /**@return device name*/

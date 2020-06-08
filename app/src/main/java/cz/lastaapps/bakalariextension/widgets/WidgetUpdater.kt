@@ -18,7 +18,7 @@
  *
  */
 
-package cz.lastaapps.bakalariextension
+package cz.lastaapps.bakalariextension.widgets
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -26,23 +26,57 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.PowerManager
+import android.util.Log
 import cz.lastaapps.bakalariextension.tools.TimeTools
-import cz.lastaapps.bakalariextension.ui.timetable.small.widget.SmallTimetableWidget
-import org.threeten.bp.LocalDate
-import org.threeten.bp.LocalTime
-import org.threeten.bp.ZonedDateTime
+import cz.lastaapps.bakalariextension.widgets.smalltimetable.SmallTimetableWidget
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZonedDateTime
 
 /**Manages update of all widgets*/
 class WidgetUpdater : BroadcastReceiver() {
 
-    //TODO add wakelock - first need to check if working with notifications
     override fun onReceive(context: Context, intent: Intent) {
+
+        Log.i(TAG, "Requesting widget update")
+
         // This method is called when the BroadcastReceiver is receiving an Intent broadcast.
         SmallTimetableWidget.update(context)
+
+        //locks wakelock to give enough time to finish widget update
+        val pm =
+            context.getSystemService(Context.POWER_SERVICE) as PowerManager
+        val wl =
+            pm.newWakeLock(
+                PowerManager.PARTIAL_WAKE_LOCK,
+                WidgetUpdater::class.java.name
+            )
+
+        val timeout = 1000L
+
+        //starts wakelock
+        wl.acquire(timeout)
+
+        //makes sure wakelock is released
+        CoroutineScope(Dispatchers.Default).launch {
+
+            delay(timeout + 1)
+
+            if (wl != null && wl.isHeld) {
+                wl.release()
+            }
+        }
+
     }
 
     companion object {
 
+        private val TAG = WidgetUpdater::class.java.simpleName
         private const val REQUEST_CODE = 3
 
         /**call #update and #setup methods*/
@@ -53,13 +87,17 @@ class WidgetUpdater : BroadcastReceiver() {
 
         /**Updates widgets*/
         fun update(context: Context) {
+
+            Log.i(TAG, "Requesting widget update")
             val intent = Intent(context, WidgetUpdater::class.java)
 
             context.sendBroadcast(intent)
         }
 
         /**Sets up alarm updating widget at midnight*/
-        fun setup(context: Context) {
+        private fun setup(context: Context) {
+            Log.i(TAG, "Setting up intent to update widgets later")
+
             //starts this Broadcast receiver
             val intent = Intent(context, WidgetUpdater::class.java)
 

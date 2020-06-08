@@ -41,7 +41,9 @@ class MarksParser {
 
             //parses whole json
             return MarksAllSubjects(
-                parseAllSubjects(root.getJSONArray("Subjects"))
+                ArrayList(
+                    parseAllSubjects(root.getJSONArray("Subjects")).reversed()
+                )
             )
         }
 
@@ -116,7 +118,10 @@ class MarksParser {
          * and replacing null object with ""*/
         private fun safeJson(json: JSONObject, key: String): String {
             return try {
-                return json.getString(key) ?: ""
+                if (!json.isNull(key))
+                    return json.getString(key)
+                else
+                    ""
             } catch (e: JSONException) {
                 ""
             }

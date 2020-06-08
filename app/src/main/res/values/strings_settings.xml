@@ -23,7 +23,11 @@
 
     <!-- General -->
     <string name="sett_general">General</string>
+
+    <string name="sett_notification_settings">Notifications</string>
+
     <string name="sett_mobile_data">Use mobile data while running in background</string>
+
     <string name="sett_dark_mode">Theme</string>
     <string name="sett_dark_mode_default" translatable="false">true</string>
     <!-- Do not change order -->
@@ -32,20 +36,25 @@
         <item>Dark</item>
         <item>System default</item>
     </string-array>
+    <!-- Do not change order -->
+    <!-- Do not translate -->
     <string-array name="sett_dark_mode">
         <item>Light</item>
         <item>Dark</item>
         <item>System default</item>
     </string-array>
+
     <string name="sett_log_out">Log out</string>
+
     <string name="sett_language">Select language</string>
     <!-- Do not change order -->
     <string-array name="sett_language_entries" >
         <item>System default</item>
-        <item>Čeština</item>
+        <item>Čeština (Czech)</item>
         <item>English</item>
     </string-array>
     <!-- Do not change order -->
+    <!-- Do not translate -->
     <string-array name="sett_language" >
         <item>System default</item>
         <item>Czech</item>
@@ -56,7 +65,9 @@
         <item>cs</item>
         <item>en</item>
     </string-array>
+
     <string name="sett_download_location">Download location</string>
+
 
     <!-- Timetable -->
     <string name="sett_timetable">Timetable</string>
@@ -68,26 +79,54 @@
         <item>Monday</item>
     </string-array>
     <!-- Do not change order -->
-    <string-array name="sett_timetable_day" >
+    <!-- Do not translate -->
+    <string-array name="sett_timetable_day">
         <item>Saturday</item>
         <item>Sunday</item>
         <item>Monday</item>
     </string-array>
     <string name="sett_timetable_notification_title">Show notification with lesson info</string>
     <string name="sett_timetable_notification_default" translatable="false">true</string>
+    <string name="sett_timetable_preview">Show next day preview</string>
+    <!-- Do not change order -->
+    <string-array name="sett_timetable_preview_entries">
+        <item>At midnight</item>
+        <item>After last lesson</item>
+        <item>After 1 hour</item>
+        <item>After 2 hours</item>
+        <item>After 3 hours</item>
+        <item>At 5 p.m.</item>
+        <item>At 6 p.m.</item>
+        <item>At 7 p.m.</item>
+    </string-array>
+    <!-- Do not change order -->
+    <!-- Do not translate -->
+    <string-array name="sett_timetable_preview">
+        <item>at midnight</item>
+        <item>after last lesson</item>
+        <item>after 1 hour</item>
+        <item>after 2 hours</item>
+        <item>after 3 hours</item>
+        <item>at 5 p.m.</item>
+        <item>at 6 p.m.</item>
+        <item>at 7 p.m.</item>
+    </string-array>
+
 
     <!-- Marks -->
     <string name="sett_marks">Marks</string>
+
     <string name="sett_marks_new_mark">Show mark as new for</string>
     <string name="sett_marks_new_mark_default" translatable="false">2</string>
     <!-- Do not change order -->
-    <string-array name="sett_marks_new_mark_entries" >
+    <string-array name="sett_marks_new_mark_entries">
         <item>1 day</item>
         <item>2 days</item>
         <item>3 days</item>
         <item>4 days</item>
     </string-array>
     <!-- Do not change order -->
+    <!-- Do not translate -->
     <string-array name="sett_marks_new_mark" >
         <item>1</item>
         <item>2</item>
@@ -95,18 +134,26 @@
         <item>4</item>
     </string-array>
 
+
     <!-- Analytics -->
     <string name="sett_analytics">Analytics</string>
+
     <string name="sett_send_town_school">Include town and school into analytic data</string>
     <string name="sett_send_town_school_default" translatable="false">true</string>
 
-    <!-- Oders -->
+
+    <!-- Others -->
     <string name="sett_others">Others</string>
+
+    <string name="sett_reset">Reset settings</string>
+    <string name="sett_reset_summary">Changes will apply after you leave settings</string>
+
     <string name="sett_show_whats_new">What\'s new</string>
 
+    <string name="sett_license">License</string>
 
 
-
+    <string name="sett_key_notification_settings" translatable="false">notification_settings</string>
     <string name="sett_key_mobile_data" translatable="false">mobile_data</string>
     <string name="sett_key_dark_mode" translatable="false">dark_mode</string>
     <string name="sett_key_log_out" translatable="false">log_out</string>
@@ -114,8 +161,11 @@
     <string name="sett_key_download_location" translatable="false">download_location</string>
     <string name="sett_key_timetable_day" translatable="false">timetable_day</string>
     <string name="sett_key_timetable_notification" translatable="false">timetable_notification</string>
+    <string name="sett_key_timetable_preview" translatable="false">timetable_preview</string>
     <string name="sett_key_marks_new_mark" translatable="false">marks_new_mark</string>
     <string name="sett_key_send_town_school" translatable="false">send_town_school</string>
+    <string name="sett_key_reset" translatable="false">reset</string>
     <string name="sett_key_show_whats_new" translatable="false">whats_new</string>
+    <string name="sett_key_license" translatable="false">license</string>
 
 </resources>

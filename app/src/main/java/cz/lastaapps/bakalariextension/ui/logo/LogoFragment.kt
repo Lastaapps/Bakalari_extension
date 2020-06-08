@@ -28,6 +28,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import cz.lastaapps.bakalariextension.BuildConfig
 import cz.lastaapps.bakalariextension.R
+import java.util.*
 
 /**In loadingActivity and HomeFragments
  * It's the main logo showing app's name and icon (and BETA stage of the app)*/
@@ -41,7 +42,7 @@ class LogoFragment : Fragment() {
         val view = inflater.inflate(R.layout.logo_label, container, false)
 
         //for beta users puts label BETA next to main Bakalari label
-        if (BuildConfig.VERSION_NAME.toLowerCase().contains("beta")) {
+        if (BuildConfig.VERSION_NAME.toLowerCase(Locale.ROOT).contains("beta")) {
             view.findViewById<TextView>(R.id.beta).visibility = View.VISIBLE
         }
 

@@ -18,13 +18,13 @@
  *
  */
 
-package cz.lastaapps.bakalariextension.ui.timetable.small.widget
+package cz.lastaapps.bakalariextension.widgets.smalltimetable
 
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.widget.RemoteViews
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.ui.WidgetConfigure
+import cz.lastaapps.bakalariextension.widgets.WidgetConfigure
 
 
 /**The configuration activity or small timetable widget*/
@@ -40,7 +40,12 @@ class SmallTimetableWidgetConfig : WidgetConfigure(smallTimetableWidgetConfig) {
                 context: Context
             ) {
                 //updates styles of the remote views
-                SmallTimetableWidget.setupWidget(remoteViews, widgetId, context)
+                SmallTimetableWidget.setupWidget(
+                    remoteViews,
+                    widgetId,
+                    context,
+                    true
+                )
             }
 
             override fun updateAppWidget(
@@ -49,7 +54,11 @@ class SmallTimetableWidgetConfig : WidgetConfigure(smallTimetableWidgetConfig) {
                 widgetId: Int
             ) {
                 //updates widget
-                SmallTimetableWidget.updateAppWidget(context, manager, widgetId)
+                SmallTimetableWidget.updateAppWidget(
+                    context,
+                    manager,
+                    widgetId
+                )
             }
         }
 
