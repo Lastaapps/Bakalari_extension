@@ -59,4 +59,13 @@ class MarksAllSubjects(
         }
         return null
     }
+
+    /**@return SubjectMarks object for subject given in form of id*/
+    fun getMarksForSubject(id: String): SubjectMarks? {
+        for (subjectMark in subjects) {
+            if (subjectMark.subject.id == id)
+                return subjectMark
+        }
+        return null
+    }
 }

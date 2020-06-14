@@ -18,14 +18,13 @@
  *
  */
 
-package cz.lastaapps.bakalariextension.ui
+package cz.lastaapps.bakalariextension.ui.license
 
 import android.app.backup.BackupManager
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.View
 import android.widget.TextView
@@ -56,7 +55,6 @@ class LicenseActivity : BaseActivity() {
 
         loadPackages()
         loadLicenseContent()
-        setupInspiration()
     }
 
     /**Loads packages manes*/
@@ -134,13 +132,6 @@ class LicenseActivity : BaseActivity() {
             button.setText(R.string.license_show)
             textView.visibility = View.GONE
         }
-    }
-
-    private fun setupInspiration() {
-        arrayOf(binding.betterSchedule, binding.bakalari, binding.bakalariOnline)
-            .forEach {
-                it.movementMethod = LinkMovementMethod.getInstance()
-            }
     }
 
     companion object {

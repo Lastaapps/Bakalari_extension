@@ -34,10 +34,22 @@
 
     <style name="AppTheme.Text" parent="Theme.AppCompat">
         <item name="android:textColorPrimary">@color/primary_text_light</item>
+        <item name="android:textSize">@dimen/primary_text</item>
+    </style>
+
+    <style name="AppTheme.Text.Bold" parent="Theme.AppCompat">
+        <item name="android:textColorPrimary">@color/primary_text_light</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/primary_text_bold</item>
     </style>
 
     <style name="AppTheme.Secondary" parent="AppTheme.Text">
         <item name="android:textColorPrimary">@android:color/secondary_text_light</item>
+    </style>
+
+
+    <style name="AppTheme.Clickable" parent="AppTheme.Text">
+        <item name="android:textColor">@color/link</item>
     </style>
 
     <!-- Used in about fragment -->

@@ -32,7 +32,7 @@ class SubjectMarks(
     val tempMarkNote: String,
     val pointsOnly: Boolean,
     val predictorEnabled: Boolean
-) {
+) : Comparable<SubjectMarks> {
     companion object {
         val default: SubjectMarks
             get() = SubjectMarks(
@@ -40,5 +40,9 @@ class SubjectMarks(
                 pointsOnly = false,
                 predictorEnabled = false
             )
+    }
+
+    override fun compareTo(other: SubjectMarks): Int {
+        return subject.name.compareTo(other.subject.name)
     }
 }

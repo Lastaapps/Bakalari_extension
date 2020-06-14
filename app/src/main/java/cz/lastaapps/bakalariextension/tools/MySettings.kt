@@ -83,15 +83,13 @@ class MySettings(val context: Context) {
         get() = getString(R.string.sett_key_reset)
     val SHOW_WHATS_NEW
         get() = getString(R.string.sett_key_show_whats_new)
-    val ABOUT
-        get() = getString(R.string.sett_key_about)
     val LICENSE
         get() = getString(R.string.sett_key_license)
 
     /**Inits settings if they aren't yet*/
-    fun initSettings() {
+    fun initSettings(force: Boolean = false) {
         val sp = getSP()
-        if (sp.all.isEmpty()) {
+        if (sp.all.isEmpty() || force) {
             Log.i(TAG, "Initializing settings to default values")
 
             val editor = sp.edit()

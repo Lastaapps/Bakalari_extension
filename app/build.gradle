@@ -26,7 +26,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 
-apply plugin: 'io.fabric'
+apply plugin: 'com.google.firebase.crashlytics'
 
 ext.versionMajor = 1
 ext.versionMinor = 0
@@ -75,10 +75,10 @@ android {
     signingConfigs {
         buildTypes {
             debug {
-                buildConfigField "java.lang.Long", "BUILD_TIME", "new java.lang.Long(" + System.currentTimeMillis() + "L)"
+                buildConfigField "java.lang.Long", "BUILD_TIME", "" + System.currentTimeMillis()
             }
             release {
-                buildConfigField "java.lang.Long", "BUILD_TIME", "new java.lang.Long(" + System.currentTimeMillis() + "L)"
+                buildConfigField "java.lang.Long", "BUILD_TIME", "" + System.currentTimeMillis()
             }
         }
     }
@@ -107,7 +107,7 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-core:17.4.3'
     implementation 'com.google.firebase:firebase-analytics:17.4.3'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
+    implementation 'com.google.firebase:firebase-crashlytics:17.0.1'
     implementation 'com.google.firebase:firebase-database:19.3.0'
 
     implementation 'com.android.support:multidex:1.0.3'

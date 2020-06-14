@@ -69,7 +69,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/progress" />
 
-            <ProgressBar
+            <androidx.core.widget.ContentLoadingProgressBar
                 style="@style/Homework.Progress"
                 android:id="@+id/progress"
                 android:layout_width="0dp"

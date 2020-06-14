@@ -29,6 +29,7 @@ import android.widget.ImageView
 import android.widget.TableLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
@@ -39,6 +40,8 @@ import cz.lastaapps.bakalariextension.api.timetable.data.*
 import cz.lastaapps.bakalariextension.databinding.TimetableLessonInfoBinding
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import cz.lastaapps.bakalariextension.ui.homework.HmwRootFragment
+import cz.lastaapps.bakalariextension.ui.subjects.SubjectInfoFragment
+import cz.lastaapps.bakalariextension.ui.subjects.TeacherInfoFragment
 import kotlin.math.max
 
 /**Provides methods for settings up lesson cells*/
@@ -192,56 +195,84 @@ class CellSetup {
             val binding: TimetableLessonInfoBinding =
                 DataBindingUtil.inflate(inflater, R.layout.timetable_lesson_info, null, false)
 
-            addInfo(binding)
-
-            addHomework(view, binding)
-
             //shows dialog with this info
             dialog = AlertDialog.Builder(ContextThemeWrapper(view.context, R.style.Timetable_Info))
                 .setCancelable(true)
                 .setPositiveButton(R.string.close) { dialog: DialogInterface?, _: Int ->
                     dialog?.dismiss()
                 }
-                .setView(binding.root)
                 .create()
 
+            addInfo(binding, dialog)
+
+            addHomework(view, binding)
+
+
+            dialog.setView(binding.root)
             dialog.show()
         }
 
-        private fun addInfo(binding: TimetableLessonInfoBinding) {
+        private fun addInfo(binding: TimetableLessonInfoBinding, dialog: AlertDialog) {
 
             val lesson = day.getLesson(hour, cycle) ?: return
 
             //function to add entry into dialog
-            val addInfoRow = { table: TableLayout, field: String?, fieldNameId: Int ->
-                if (field != "" && field != null && field != "null") {
+            val addInfoRow =
+                { table: TableLayout, field: String?, fieldNameId: Int, clickThrough: (() -> Unit)? ->
+                    if (field != "" && field != null && field != "null") {
 
-                    val row = LayoutInflater.from(table.context).inflate(
-                        R.layout.timetable_lesson_info_row, table, false
-                    )
-                    //puts entry inside
-                    row.findViewById<TextView>(R.id.name).text =
-                        "${table.context.getString(fieldNameId)}:"
-                    row.findViewById<TextView>(R.id.value).text = field
+                        val row = LayoutInflater.from(table.context).inflate(
+                            R.layout.timetable_lesson_info_row, table, false
+                        )
+                        val name = row.findViewById<TextView>(R.id.name)
+                        val value = row.findViewById<TextView>(R.id.value)
 
-                    table.addView(row)
+                        //puts entry inside
+                        name.text = "${table.context.getString(fieldNameId)}:"
+                        value.text = field
+
+                        //enables to click on row and show additional info
+                        clickThrough?.let {
+                            row.setOnClickListener { it() }
+                            name.setOnClickListener { it() }
+                            value.setOnClickListener { it() }
+                        }
+
+                        table.addView(row)
+                    }
                 }
-            }
+
             binding.apply {
                 //adds all available info
-                addInfoRow(table, lesson.change?.typeName, R.string.info_name)
+                addInfoRow(table, lesson.change?.typeName, R.string.info_name, null)
+
+                //shows info about the subject on click
                 addInfoRow(
                     table,
                     week.subjects.getById(lesson.subjectId)?.name,
                     R.string.info_subject
-                )
+                ) {
+                    SubjectInfoFragment.navigateTo(
+                        (binding.root.context as AppCompatActivity).findNavController(R.id.nav_host_fragment),
+                        lesson.subjectId
+                    )
+                    dialog.dismiss()
+                }
+
+                //shows info about the teacher on click
                 addInfoRow(
                     table,
                     week.teachers.getById(lesson.teacherId)?.name,
                     R.string.info_teacher
-                )
-                addInfoRow(table, week.rooms.getById(lesson.roomId)?.name, R.string.info_room)
-                addInfoRow(table, lesson.theme, R.string.info_theme)
+                ) {
+                    TeacherInfoFragment.show(
+                        (binding.root.context as AppCompatActivity).supportFragmentManager,
+                        lesson.teacherId
+                    )
+                }
+
+                addInfoRow(table, week.rooms.getById(lesson.roomId)?.name, R.string.info_room, null)
+                addInfoRow(table, lesson.theme, R.string.info_theme, null)
                 addInfoRow(table, {
                     val builder = StringBuffer()
                     for (group in lesson.groupIds) {
@@ -249,7 +280,7 @@ class CellSetup {
                         builder.append(", ")
                     }
                     builder.toString().substring(0, max(0, builder.length - 2))
-                }.invoke(), R.string.info_group)
+                }.invoke(), R.string.info_group, null)
 
                 addInfoRow(
                     table, when (lesson.change?.changeType) {
@@ -257,10 +288,10 @@ class CellSetup {
                         Change.REMOVED -> App.getString(R.string.change_removed)
                         Change.CANCELED -> App.getString(R.string.change_canceled)
                         else -> ""
-                    }, R.string.info_change_type
+                    }, R.string.info_change_type, null
                 )
-                addInfoRow(table, lesson.change?.description, R.string.info_change)
-                addInfoRow(table, lesson.change?.time, R.string.info_time)
+                addInfoRow(table, lesson.change?.description, R.string.info_change, null)
+                addInfoRow(table, lesson.change?.time, R.string.info_time, null)
             }
         }
 

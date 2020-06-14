@@ -32,6 +32,7 @@
 
     <color name="primary_text_light">#F000</color>
     <color name="primary_text_dark">#FFFF</color>
+    <color name="link">#2962FF</color>
 
     <color name="light">#FFF</color>
     <color name="dark">#000</color>

@@ -28,6 +28,7 @@ import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.api.User
 import cz.lastaapps.bakalariextension.api.homework.HomeworkStorage
 import cz.lastaapps.bakalariextension.api.marks.MarksStorage
+import cz.lastaapps.bakalariextension.api.subjects.SubjectStorage
 import cz.lastaapps.bakalariextension.api.timetable.TTStorage
 import cz.lastaapps.bakalariextension.receivers.BootReceiver
 import cz.lastaapps.bakalariextension.receivers.TimeChangeReceiver
@@ -62,6 +63,10 @@ class Logout {
 
             //deletes homework
             HomeworkStorage.delete()
+
+            //deletes subjects
+            SubjectStorage.delete()
+
 
             //disables receivers
             val receivers = arrayOf(

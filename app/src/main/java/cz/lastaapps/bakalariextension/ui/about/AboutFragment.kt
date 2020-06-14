@@ -33,8 +33,8 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import cz.lastaapps.bakalariextension.BuildConfig
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.ui.LicenseActivity
 import cz.lastaapps.bakalariextension.ui.WhatsNew
+import cz.lastaapps.bakalariextension.ui.license.LicenseActivity
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime

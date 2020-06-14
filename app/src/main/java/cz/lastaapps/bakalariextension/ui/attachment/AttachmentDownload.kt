@@ -176,7 +176,7 @@ class AttachmentDownload {
                         //shows download started info
                         Toast.makeText(
                             App.context,
-                            R.string.attachment_downlaod_started,
+                            R.string.attachment_download_started,
                             Toast.LENGTH_LONG
                         ).show()
 

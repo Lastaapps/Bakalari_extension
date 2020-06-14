@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~
+  ~     This file is part of Bakalari extension.
+  ~
+  ~     Bakalari extension is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Bakalari extension is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="teacher"
+            type="cz.lastaapps.bakalariextension.api.subjects.data.Teacher" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.core.widget.ContentLoadingProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="@{teacher == null ? View.VISIBLE : View.GONE}" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="@{teacher != null ? View.VISIBLE : View.INVISIBLE}">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_basic"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_basic">
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@{teacher.name}"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/add_contact"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageButton
+                        android:id="@+id/add_contact"
+                        style="@style/AppTheme.SmallImageButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/teacher_add_contact"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/komens"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/add_contact" />
+
+                    <ImageButton
+                        android:id="@+id/komens"
+                        style="@style/AppTheme.SmallImageButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/teacher_open_komens"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/komens" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_basic"
+                        android:visibility="@{teacher.email.equals(``) ? View.GONE : View.VISIBLE}">
+
+                        <TextView
+                            style="@style/AppTheme.Text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="5dp"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:scrollHorizontally="false"
+                            android:text="@string/teacher_email"
+                            android:textAlignment="textEnd" />
+
+                        <cz.lastaapps.bakalariextension.ui.views.ClickableTextView
+                            style="@style/AppTheme.Text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:maxLines="5"
+                            android:scrollHorizontally="false"
+                            android:text="@{teacher.email}" />
+                    </TableRow>
+
+                    <!-- equals used instead of == because of some bug -> "" != "" -->
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_basic"
+                        android:visibility="@{teacher.web.equals(``) ? View.GONE : View.VISIBLE}">
+
+                        <TextView
+                            style="@style/AppTheme.Text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="5dp"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:scrollHorizontally="false"
+                            android:text="@string/teacher_web"
+                            android:textAlignment="textEnd" />
+
+                        <cz.lastaapps.bakalariextension.ui.views.ClickableTextView
+                            style="@style/AppTheme.Text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:maxLines="5"
+                            android:scrollHorizontally="false"
+                            android:text="@{teacher.web}" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_basic"
+                        android:visibility="@{teacher.phoneSchool.equals(``) ? View.GONE : View.VISIBLE}">
+
+                        <TextView
+                            style="@style/AppTheme.Text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="5dp"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:scrollHorizontally="false"
+                            android:text="@string/teacher_phone_school"
+                            android:textAlignment="textEnd" />
+
+                        <cz.lastaapps.bakalariextension.ui.views.ClickableTextView
+                            style="@style/AppTheme.Text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:maxLines="5"
+                            android:scrollHorizontally="false"
+                            android:text="@{teacher.phoneSchool}" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_basic"
+                        android:visibility="@{teacher.phoneHome.equals(``) ? View.GONE : View.VISIBLE}">
+
+                        <TextView
+                            style="@style/AppTheme.Text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="5dp"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:scrollHorizontally="false"
+                            android:text="@string/teacher_phone_home"
+                            android:textAlignment="textEnd" />
+
+                        <cz.lastaapps.bakalariextension.ui.views.ClickableTextView
+                            style="@style/AppTheme.Text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:maxLines="5"
+                            android:scrollHorizontally="false"
+                            android:text="@{teacher.phoneHome}" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_basic"
+                        android:visibility="@{teacher.phoneMobile.equals(``) ? View.GONE : View.VISIBLE}">
+
+                        <TextView
+                            style="@style/AppTheme.Text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="5dp"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:scrollHorizontally="false"
+                            android:text="@string/teacher_phone_mobile"
+                            android:textAlignment="textEnd" />
+
+                        <cz.lastaapps.bakalariextension.ui.views.ClickableTextView
+                            style="@style/AppTheme.Text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:maxLines="5"
+                            android:scrollHorizontally="false"
+                            android:text="@{teacher.phoneMobile}" />
+                    </TableRow>
+
+                </TableLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/teacher_subjects" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/subject_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_basic"
+                    android:scrollbars="none"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp" />
+            </LinearLayout>
+        </ScrollView>
+    </FrameLayout>
+</layout>

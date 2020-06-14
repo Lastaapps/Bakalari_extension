@@ -42,7 +42,7 @@ class MarksParser {
             //parses whole json
             return MarksAllSubjects(
                 ArrayList(
-                    parseAllSubjects(root.getJSONArray("Subjects")).reversed()
+                    parseAllSubjects(root.getJSONArray("Subjects")).sorted()
                 )
             )
         }
@@ -101,7 +101,7 @@ class MarksParser {
                 list.add(item)
             }
 
-            return list
+            return DataIdList(list.sorted())
         }
 
         /**parse array in /Subjects/Subject */

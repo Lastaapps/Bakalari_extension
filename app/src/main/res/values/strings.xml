@@ -233,6 +233,31 @@
     <string name="widget_small_timetable_dark">Dark</string>
     <string name="widget_small_timetable_submit">Update widget</string>
 
+
+    <!-- Teacher list -->
+    <string name="teacher_failed_to_load">Failed to download teachers</string>
+    <string name="teacher_no_teachers">No teachers</string>
+    <string name="teacher_name">Name:</string>
+    <string name="teacher_email">Email:</string>
+    <string name="teacher_web">Web:</string>
+    <string name="teacher_phone_school">Phone school:</string>
+    <string name="teacher_phone_home">Phone home:</string>
+    <string name="teacher_phone_mobile">Phone mobile:</string>
+    <string name="teacher_subjects">Subjects:</string>
+    <string name="teacher_add_contact">Add as contact</string>
+    <string name="teacher_open_komens">Open komens</string>
+    <string name="teacher_not_found">Teacher not found</string>
+
+
+    <!-- Subject -->
+    <string name="subject_marks_list">Marks:</string>
+    <string name="subject_homework_list">Homework list:</string>
+    <string name="subject_theme_list">Themes:</string>
+    <string name="subject_theme_failed_to_load">Failed to download themes</string>
+    <string name="subject_no_theme">No themes yet</string>
+    <string name="subject_not_found">Teacher not found</string>
+
+
     <!-- Attachment -->
     <string name="attachment">Attachment</string>
     <string name="attachment_label">Attachments</string>
@@ -241,7 +266,7 @@
     <string name="attachment_downloading_subtitle_done">Attachment downloaded</string>
     <string name="attachment_downloading_chanel_name">Attachment downloads</string>
     <string name="attachment_downloading_chanel_description">Shows downloaded attachments to open them fast</string>
-    <string name="attachment_downlaod_started">Download started!</string>
+    <string name="attachment_download_started">Download started!</string>
     <string name="attachment_choose_again">Error, please choose download location again</string>
     <string name="attachment_error_file_system">Error while working with file system</string>
     <string name="attachment_error_no_internet">No internet connection</string>

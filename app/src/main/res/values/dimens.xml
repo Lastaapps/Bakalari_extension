@@ -31,6 +31,8 @@
     <dimen name="margin_basic">5dp</dimen>
 
     <dimen name="heading_text_size">32sp</dimen>
+    <dimen name="primary_text">12sp</dimen>
+    <dimen name="primary_text_bold">14sp</dimen>
 
     <dimen name="image_button">64dp</dimen>
     <dimen name="small_image_button">40dp</dimen>
@@ -70,4 +72,8 @@
     <dimen name="timetable_bottom_text">12sp</dimen>
     <dimen name="timetable_bottom_sides">10dp</dimen>
     <dimen name="timetable_homework_warning">16dp</dimen>
+
+    <!-- Subject -->
+    <dimen name="subject_info_list_height">300dp</dimen>
+
 </resources>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~
+  ~     This file is part of Bakalari extension.
+  ~
+  ~     Bakalari extension is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Bakalari extension is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="theme"
+            type="cz.lastaapps.bakalariextension.api.subjects.data.Theme" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_basic"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/secondary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/theme_index"
+                style="@style/AppTheme.Text"
+                android:layout_width="25sp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_basic"
+                android:text="@{theme.lessonLabel}"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toBottomOf="@+id/label"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/label"
+                tools:text="420" />
+
+            <TextView
+                android:id="@+id/label"
+                style="@style/AppTheme.Text.Bold"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{theme.theme}"
+                app:layout_constraintBottom_toTopOf="@+id/note"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/theme_index"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Lesson's theme" />
+
+            <cz.lastaapps.bakalariextension.ui.views.ClickableTextView
+                android:id="@+id/note"
+                style="@style/AppTheme.Text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{theme.note}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/theme_index"
+                app:layout_constraintTop_toBottomOf="@id/label"
+                app:layout_constraintVertical_chainStyle="spread_inside"
+                tools:text="During this lesson we learned nothing important again. And no something more to test multiline and Spanish inquisiton" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/secondary"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_margin="@dimen/margin_basic">
+
+            <TextView
+                style="@style/AppTheme.Text"
+                android:id="@+id/lesson"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{theme.hourCaption}"
+                app:layout_constraintBottom_toTopOf="@+id/date"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="spread_inside"
+                tools:text="6. hod" />
+
+            <TextView
+                style="@style/AppTheme.Text"
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{theme.niceDate}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lesson"
+                tools:text="30.2" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

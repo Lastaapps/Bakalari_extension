@@ -18,7 +18,7 @@
  *
  */
 
-package cz.lastaapps.bakalariextension.ui
+package cz.lastaapps.bakalariextension.ui.settings
 
 import android.app.backup.BackupManager
 import android.content.Intent
@@ -36,6 +36,8 @@ import cz.lastaapps.bakalariextension.login.Logout
 import cz.lastaapps.bakalariextension.services.timetablenotification.TTNotifyService
 import cz.lastaapps.bakalariextension.tools.BaseActivity
 import cz.lastaapps.bakalariextension.tools.MySettings
+import cz.lastaapps.bakalariextension.ui.WhatsNew
+import cz.lastaapps.bakalariextension.ui.license.LicenseActivity
 
 
 /**

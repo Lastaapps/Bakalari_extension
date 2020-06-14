@@ -41,6 +41,14 @@
             android:icon="@drawable/nav_homework"
             android:title="@string/menu_homework" />
         <item
+            android:id="@+id/nav_teacher_list"
+            android:icon="@drawable/nav_teacher"
+            android:title="@string/menu_teacher_list" />
+        <item
+            android:id="@+id/nav_subject_list"
+            android:icon="@drawable/nav_subjects"
+            android:title="@string/menu_subject_list" />
+        <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/nav_settings"
             android:title="@string/menu_settings"

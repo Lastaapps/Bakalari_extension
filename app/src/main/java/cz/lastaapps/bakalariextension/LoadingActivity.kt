@@ -30,7 +30,9 @@ import cz.lastaapps.bakalariextension.login.LoginActivity
 import cz.lastaapps.bakalariextension.login.LoginData
 import cz.lastaapps.bakalariextension.tools.BaseActivity
 import cz.lastaapps.bakalariextension.tools.CheckInternet
-import cz.lastaapps.bakalariextension.ui.LicenseActivity
+import cz.lastaapps.bakalariextension.tools.MySettings
+import cz.lastaapps.bakalariextension.ui.WhatsNew
+import cz.lastaapps.bakalariextension.ui.license.LicenseActivity
 import kotlinx.coroutines.*
 import java.lang.Runnable
 
@@ -62,6 +64,10 @@ class LoadingActivity : BaseActivity() {
     private fun decision() {
         val scope = CoroutineScope(Dispatchers.Default)
         scope.launch {
+
+            //with new version, there can be new settings which need default value
+            if (WhatsNew(this@LoadingActivity).shouldShow())
+                MySettings(this@LoadingActivity).initSettings(true)
 
             if (LoginData.isLoggedIn() && LicenseActivity.check()) {
 

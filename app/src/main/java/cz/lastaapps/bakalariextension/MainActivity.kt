@@ -46,9 +46,9 @@ import cz.lastaapps.bakalariextension.login.Logout
 import cz.lastaapps.bakalariextension.send.ReportIssueActivity
 import cz.lastaapps.bakalariextension.send.SendIdeaActivity
 import cz.lastaapps.bakalariextension.tools.BaseActivity
-import cz.lastaapps.bakalariextension.ui.LicenseActivity
-import cz.lastaapps.bakalariextension.ui.SettingsActivity
 import cz.lastaapps.bakalariextension.ui.WhatsNew
+import cz.lastaapps.bakalariextension.ui.license.LicenseActivity
+import cz.lastaapps.bakalariextension.ui.settings.SettingsActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -95,12 +95,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
+        //this ones does not show back arrow when navigated to, but the tree lines of selection
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_settings, R.id.nav_logout,
-                R.id.nav_share, R.id.nav_rate, R.id.nav_idea,
-                R.id.nav_report, R.id.nav_about, R.id.nav_facebook,
-                R.id.nav_google_play, R.id.nav_github, R.id.nav_api
+                R.id.nav_home, R.id.nav_timetable, R.id.nav_marks,
+                R.id.nav_homework, R.id.nav_teacher_list, R.id.nav_subject_list
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -172,6 +171,12 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
             R.id.nav_homework -> {
                 findNavController(R.id.nav_host_fragment).navigate(R.id.nav_homework)
+            }
+            R.id.nav_teacher_list -> {
+                findNavController(R.id.nav_host_fragment).navigate(R.id.nav_teacher_list)
+            }
+            R.id.nav_subject_list -> {
+                findNavController(R.id.nav_host_fragment).navigate(R.id.nav_subject_list)
             }
             R.id.nav_settings -> {
                 startActivity(Intent(this, SettingsActivity::class.java))

@@ -32,6 +32,7 @@ import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.User
 import cz.lastaapps.bakalariextension.api.homework.HomeworkLoader
 import cz.lastaapps.bakalariextension.api.marks.MarksLoader
+import cz.lastaapps.bakalariextension.api.subjects.SubjectLoader
 import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
 import cz.lastaapps.bakalariextension.receivers.BootReceiver
 import cz.lastaapps.bakalariextension.receivers.TimeChangeReceiver
@@ -114,6 +115,9 @@ class OnLogin {
 
                 //download homework
                 HomeworkLoader.loadFromServer()
+
+                //downloads subjects
+                SubjectLoader.loadFromServer()
             }
 
             return true

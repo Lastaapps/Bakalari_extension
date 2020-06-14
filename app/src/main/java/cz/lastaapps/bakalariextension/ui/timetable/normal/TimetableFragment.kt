@@ -235,7 +235,7 @@ class TimetableFragment : Fragment() {
 
 
             //loads timetable and row height
-            withContext(Dispatchers.IO) {
+            withContext(Dispatchers.Default) {
                 val toLoad =
                     if (!vm.isPermanent)
                         vm.dateTime
@@ -283,9 +283,9 @@ class TimetableFragment : Fragment() {
 
                         val lessons = week.trimFreeMorning().size
                         if (setOnLessons != lessons) {
-                            TimetableCreator.prepareTimetable(binding.root, height, lessons)
                             setOnLessons = lessons
                         }
+                        TimetableCreator.prepareTimetable(binding.root, height, lessons)
 
                         yield()
 

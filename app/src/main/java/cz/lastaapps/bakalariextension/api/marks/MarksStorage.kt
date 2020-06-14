@@ -96,13 +96,7 @@ class MarksStorage {
             output.close()
         }
 
-        /**@return if there are saved marks*/
-        fun exists(): Boolean {
-            val file = getFile()
-            return file.exists()
-        }
-
-        /**@return when was marks last updated, of null if they aren't saned yet*/
+        /**@return when were marks last updated, of null if they aren't saned yet*/
         fun lastUpdated(): ZonedDateTime? {
 
             val file = getFile()

@@ -25,7 +25,7 @@
 
         <variable
             name="license"
-            type="cz.lastaapps.bakalariextension.ui.LicenseActivity" />
+            type="cz.lastaapps.bakalariextension.ui.license.LicenseActivity" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -209,21 +209,21 @@
                         android:layout_height="wrap_content"
                         android:text="@string/licence_inspiration_title" />
 
-                    <TextView
+                    <cz.lastaapps.bakalariextension.ui.views.ClickableTextView
                         style="@style/License.Package"
                         android:id="@+id/better_schedule"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/licence_inspiration_better_schedule" />
 
-                    <TextView
+                    <cz.lastaapps.bakalariextension.ui.views.ClickableTextView
                         style="@style/License.Package"
                         android:id="@+id/bakalari"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/licence_inspiration_bakalari" />
 
-                    <TextView
+                    <cz.lastaapps.bakalariextension.ui.views.ClickableTextView
                         style="@style/License.Package"
                         android:id="@+id/bakalari_online"
                         android:layout_width="wrap_content"

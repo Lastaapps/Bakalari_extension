@@ -48,6 +48,12 @@
         <action
             android:id="@+id/action_nav_home_to_nav_homework"
             app:destination="@id/nav_homework" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_teacher_list"
+            app:destination="@id/nav_teacher_list" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_subject_list"
+            app:destination="@id/nav_subject_list" />
     </fragment>
 
     <fragment
@@ -73,5 +79,28 @@
         android:name="cz.lastaapps.bakalariextension.ui.homework.HmwRootFragment"
         android:label="@string/menu_homework"
         tools:layout="@layout/fragment_homework_root" />
+    <fragment
+        android:id="@+id/nav_teacher_list"
+        android:name="cz.lastaapps.bakalariextension.ui.subjects.TeacherListFragment"
+        android:label="@string/menu_teacher_list"
+        tools:layout="@layout/loading_list_template">
+        <action
+            android:id="@+id/action_nav_teacher_list_to_nav_subject_info"
+            app:destination="@id/nav_subject_info" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_subject_list"
+        android:name="cz.lastaapps.bakalariextension.ui.subjects.SubjectListFragment"
+        android:label="@string/menu_subject_list"
+        tools:layout="@layout/loading_list_template">
+        <action
+            android:id="@+id/action_nav_subject_list_to_nav_subject_info"
+            app:destination="@id/nav_subject_info" />
+    </fragment>
+    <fragment
+        android:id="@+id/nav_subject_info"
+        android:name="cz.lastaapps.bakalariextension.ui.subjects.SubjectInfoFragment"
+        android:label="@string/menu_subject_info"
+        tools:layout="@layout/fragment_subject_info" />
 
 </navigation>
