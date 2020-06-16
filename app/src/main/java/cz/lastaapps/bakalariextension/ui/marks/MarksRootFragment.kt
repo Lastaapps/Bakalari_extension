@@ -25,9 +25,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.marks.MarksStorage
@@ -46,7 +46,7 @@ class MarksRootFragment : Fragment() {
     lateinit var binding: FragmentMarksRootBinding
 
     //data with marks - puts new marks in
-    lateinit var viewModel: MarksViewModel
+    val viewModel: MarksViewModel by activityViewModels()
 
     /**observers for mark change, updates last updated text*/
     private val marksObserver = { _: MarksAllSubjects? ->
@@ -64,20 +64,17 @@ class MarksRootFragment : Fragment() {
         loadMarks()
     }
 
-    private val failObserver = { _: Any ->
-        onFail()
+    private val failObserver = { failed: Boolean ->
+        if (failed)
+            onFail()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //obtains ViewModel
-        val viewModel: MarksViewModel by requireActivity().viewModels()
-        this.viewModel = viewModel
-
         //observes for marks change
         viewModel.marks.observe({ lifecycle }, marksObserver)
-        viewModel.failObserve.observe({ lifecycle }, failObserver)
+        viewModel.failed.observe({ lifecycle }, failObserver)
     }
 
     override fun onCreateView(
@@ -100,7 +97,7 @@ class MarksRootFragment : Fragment() {
         if (viewModel.marks.value != null) {
             marksObserver(null)
         } else {
-            viewModel.onRefresh(requireContext())
+            viewModel.onRefresh()
         }
 
         return binding.root

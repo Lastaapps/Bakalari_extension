@@ -150,7 +150,7 @@ class ConnMgr {
         const val LOGIN_NO_INTERNET = 0
 
         /**Initial obtain on login, gets access and refresh tokens at same time*/
-        fun obtainTokens(username: String, password: String): Int {
+        fun obtainTokens(username: String, password: String, baseUrl: String = LoginData.url): Int {
             val json: JSONObject
 
             try {
@@ -165,7 +165,7 @@ class ConnMgr {
                 val data = getPostDataString(dataMap)
 
                 //creating URL connection
-                val url = URL("${getAPIUrl()}/login")
+                val url = URL("${getAPIUrl(baseUrl)}/login")
                 val urlConnection = url.openConnection() as HttpURLConnection
                 urlConnection.requestMethod = "POST"
                 urlConnection.setRequestProperty(

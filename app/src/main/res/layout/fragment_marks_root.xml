@@ -43,7 +43,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:visibility="@{viewmodel.marks != null || viewmodel.failObserve != null ? View.GONE : View.VISIBLE}" />
+            android:visibility="@{viewmodel.marks != null || viewmodel.failed ? View.GONE : View.VISIBLE}" />
 
         <TextView
             style="@style/Marks.Text"

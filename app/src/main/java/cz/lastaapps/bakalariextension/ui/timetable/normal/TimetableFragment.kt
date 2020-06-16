@@ -20,6 +20,7 @@
 
 package cz.lastaapps.bakalariextension.ui.timetable.normal
 
+import android.app.DatePickerDialog
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
@@ -28,9 +29,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageButton
-import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.MainActivity
 import cz.lastaapps.bakalariextension.R
@@ -41,6 +43,10 @@ import cz.lastaapps.bakalariextension.databinding.FragmentTimetableBinding
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import cz.lastaapps.bakalariextension.tools.lastUpdated
 import kotlinx.coroutines.*
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import kotlin.math.abs
 
 
@@ -61,7 +67,7 @@ class TimetableFragment : Fragment() {
     private var toolbarVisibility = true
 
     //ViewModel storing all the not orientation related data
-    private lateinit var vm: TimetableViewModel
+    private val vm: TimetableViewModel by activityViewModels()
 
     private lateinit var scope: CoroutineScope
 
@@ -70,10 +76,6 @@ class TimetableFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        //inits view model holding data
-        val v: TimetableViewModel by requireActivity().viewModels()
-        vm = v
 
         scope = CoroutineScope(Dispatchers.Main)
     }
@@ -181,15 +183,17 @@ class TimetableFragment : Fragment() {
 
                     vm.cycleIndex = 0
                     (it as ImageButton).setImageDrawable(
-                        root.context.resources.getDrawable(R.drawable.permanent)
+                        ContextCompat.getDrawable(requireContext(), R.drawable.permanent)
                     )
+                    calendar.visibility = View.VISIBLE
 
                 } else {
                     Log.i(TAG, "Switching to permanent timetable")
 
                     (it as ImageButton).setImageDrawable(
-                        root.context.resources.getDrawable(R.drawable.actual)
+                        ContextCompat.getDrawable(requireContext(), R.drawable.actual)
                     )
+                    calendar.visibility = View.GONE
                 }
 
                 vm.isPermanent = !vm.isPermanent
@@ -210,6 +214,31 @@ class TimetableFragment : Fragment() {
                 vm.dateTime = TimeTools.monday
                 it.visibility = View.GONE
                 updateTimetable()
+            }
+
+            /**shows date choose dialog*/
+            calendar.setOnClickListener {
+                val now = LocalDate.now()
+                val listener = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+                    val selected = TimeTools.toMonday(
+                        ZonedDateTime.of(
+                            LocalDate.of(year, month + 1, dayOfMonth),
+                            LocalTime.MIDNIGHT,
+                            ZoneId.systemDefault()
+                        )
+                    )
+                    vm.dateTime = selected
+                    updateTimetable()
+                }
+                DatePickerDialog(
+                    requireContext(),
+                    listener,
+                    now.year,
+                    now.monthValue - 1,
+                    now.dayOfMonth
+                ).apply {
+
+                }.show()
             }
         }
 
@@ -327,28 +356,27 @@ class TimetableFragment : Fragment() {
             if (!vm.isPermanent) {
 
                 //how much has user moved
-                var diff = (TimeTools.monday.toEpochSecond() -
-                        vm.dateTime.toEpochSecond()).toInt()
-                diff /= 60 * 60 * 24 * 7
+                val diff = TimeTools.betweenMidnights(vm.dateTime, TimeTools.monday)
+                val weeks = ((diff.toDays()) / 7.0).toInt() // + 1 to prevent timezone issues
 
                 //array used for saying how many week forward/backward user has gone
                 val dataArray = App.getStringArray(R.array.week_forms)
 
 
                 //show button whits takes user back to today
-                binding.home.visibility = if (diff in -2..2) {
+                binding.home.visibility = if (weeks in -2..2) {
                     View.GONE
                 } else {
                     View.VISIBLE
                 }
 
                 //2-4 and 5+ because of czech inflection
-                when (diff) {
+                when (weeks) {
                     in 5..Int.MAX_VALUE -> {
-                        String.format(dataArray[4], abs(diff), dataArray[6])
+                        String.format(dataArray[4], abs(weeks), dataArray[6])
                     }
                     in 2..4 -> {
-                        String.format(dataArray[3], abs(diff), dataArray[6])
+                        String.format(dataArray[3], abs(weeks), dataArray[6])
                     }
                     1 -> {
                         dataArray[2]
@@ -360,11 +388,11 @@ class TimetableFragment : Fragment() {
                         dataArray[1]
                     }
                     in -4..-2 -> {
-                        String.format(dataArray[3], abs(diff), dataArray[5])
+                        String.format(dataArray[3], abs(weeks), dataArray[5])
                     }
                     //in Int.MIN_VALUE..-5
                     else -> {
-                        String.format(dataArray[4], abs(diff), dataArray[5])
+                        String.format(dataArray[4], abs(weeks), dataArray[5])
                     }
                 }
             } else

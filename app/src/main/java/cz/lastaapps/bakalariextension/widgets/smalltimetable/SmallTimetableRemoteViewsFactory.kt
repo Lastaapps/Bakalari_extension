@@ -26,13 +26,13 @@ import android.util.Log
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import cz.lastaapps.bakalariextension.App
-import cz.lastaapps.bakalariextension.LoadingActivity
 import cz.lastaapps.bakalariextension.MainActivity
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
 import cz.lastaapps.bakalariextension.api.timetable.data.Day
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.ui.loading.LoadingFragment
 import cz.lastaapps.bakalariextension.ui.timetable.CellSetup
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -176,7 +176,7 @@ class SmallTimetableRemoteViewsFactory(
         }
 
         //opens full timetable
-        val intent = Intent(context, LoadingActivity::class.java)
+        val intent = Intent(context, LoadingFragment::class.java)
         intent.putExtra(MainActivity.NAVIGATE, R.id.nav_timetable)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)

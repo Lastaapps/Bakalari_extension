@@ -19,7 +19,8 @@
   -->
 
 <layout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -47,7 +48,8 @@
             android:text="@{hw.subject.name}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Eaten by a dog" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/progressBox"
@@ -67,7 +69,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/progress" />
+                app:layout_constraintStart_toEndOf="@+id/progress"
+                tools:text="69 days" />
 
             <androidx.core.widget.ContentLoadingProgressBar
                 style="@style/Homework.Progress"
@@ -109,7 +112,8 @@
             android:autoLink="all"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/progressBox" />
+            app:layout_constraintTop_toBottomOf="@+id/progressBox"
+            tools:text="So, it can sometimes happen..." />
 
         <TextView
             style="@style/Homework.Text"
@@ -120,7 +124,8 @@
             android:text="@string/homework_show_more"
             android:onClick="@{(view) -> mgr.onShowMoreClick()}"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/content" />
+            app:layout_constraintTop_toBottomOf="@+id/content"
+            tools:text="Show more" />
 
         <TextView
             style="@style/Homework.Secondary"
@@ -131,7 +136,8 @@
             android:text="@{hw.notice}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/showMore" />
+            app:layout_constraintTop_toBottomOf="@+id/showMore"
+            tools:text="Really,believe me" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/attachmentBox"
@@ -162,7 +168,8 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toEndOf="@id/attachment_image"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="Attachments (2)" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -184,7 +191,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="30.2" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -205,7 +213,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="1.4." />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

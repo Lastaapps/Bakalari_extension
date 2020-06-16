@@ -24,15 +24,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.marks.data.MarksAllSubjects
 import cz.lastaapps.bakalariextension.databinding.MarksSubjectBinding
 
-class SubjectAdapter(val marks: MarksAllSubjects) :
+class SubjectAdapter(private var marks: MarksAllSubjects = MarksAllSubjects(ArrayList())) :
     RecyclerView.Adapter<SubjectAdapter.DataBindingHolder>() {
+
+    init {
+        setHasStableIds(true)
+    }
 
     /**Holds binding with view*/
     class DataBindingHolder(val binding: MarksSubjectBinding) :
@@ -47,6 +49,8 @@ class SubjectAdapter(val marks: MarksAllSubjects) :
         //makes binding with views
         val binding: MarksSubjectBinding =
             DataBindingUtil.inflate(inflater, R.layout.marks_subject, parent, false)
+
+        binding.list.adapter = MarksAdapter()
 
         //creates holder holding binding
         return DataBindingHolder(binding)
@@ -63,23 +67,28 @@ class SubjectAdapter(val marks: MarksAllSubjects) :
         binding.subjectData = subject
 
         //inits list with subjects
-        val marksList = binding.marksList
-        marksList.setHasFixedSize(true)
-        marksList.layoutManager = LinearLayoutManager(marksList.context)
-        marksList.adapter = MarksAdapter(DataIdList( subject.marks.reversed()))
+        val list = binding.list
+        (list.adapter as MarksAdapter).updateMarks(subject.marks)
 
         //shows/hides subject's marks
         binding.root.setOnClickListener {
-            if (it != marksList) {
-                marksList.visibility =
-                    if (marksList.visibility == View.VISIBLE)
-                        View.GONE
-                    else
-                        View.VISIBLE
-            }
+            list.visibility =
+                if (list.visibility == View.VISIBLE)
+                    View.GONE
+                else
+                    View.VISIBLE
         }
+    }
+
+    fun update(marks: MarksAllSubjects) {
+        this.marks = marks
+        notifyDataSetChanged()
     }
 
     /**@return The number of subjects*/
     override fun getItemCount() = marks.subjects.size
+
+    override fun getItemId(position: Int): Long {
+        return marks.subjects[position].subject.id.hashCode().toLong()
+    }
 }

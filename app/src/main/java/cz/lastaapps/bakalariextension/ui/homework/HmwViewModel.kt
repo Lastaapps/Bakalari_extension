@@ -24,35 +24,38 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.homework.HomeworkLoader
 import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
-import kotlinx.coroutines.CoroutineScope
+import cz.lastaapps.bakalariextension.ui.RefreshableViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 
-class HmwViewModel : ViewModel() {
+class HmwViewModel : RefreshableViewModel<HomeworkList>() {
 
     companion object {
         private val TAG = HmwViewModel::class.java.simpleName
     }
 
     /**Hold loaded homework*/
-    val homework = MutableLiveData<HomeworkList>()
-
-    /**If SwipeRefreshLayouts are refreshing now*/
-    val isRefreshing = MutableLiveData(false)
-
-    /**Notifies root fragment, that no data will be shows*/
-    val failObserve = MutableLiveData<Any>()
+    val homework = data
 
     /**The id of the homework to scroll to*/
     val selectedHomeworkId = MutableLiveData<String>()
 
+    // Search fragment
+    /**Text of the search field*/
+    val searchText = MutableLiveData("")
+
+    /**Index of selected subject*/
+    val subjectIndex = MutableLiveData(0)
+
     /**When user refreshes marks with swipe from the top of the screen*/
-    fun onRefresh(context: Context, forceReload: Boolean = false) {
+    override fun onRefresh(force: Boolean) {
 
         if (isRefreshing.value == true)
             return
@@ -60,13 +63,12 @@ class HmwViewModel : ViewModel() {
         //set state refreshing
         isRefreshing.value = true
 
-        val scope = CoroutineScope(Dispatchers.Default)
-        scope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
 
             Log.i(TAG, "Loading homework list")
 
             var loaded: HomeworkList?
-            if (forceReload) {
+            if (force) {
                 loaded = HomeworkLoader.loadFromServer()
 
             } else {
@@ -80,20 +82,29 @@ class HmwViewModel : ViewModel() {
                         }
                     }
 
+                    //let oder work finish before running slow loading from server
+                    for (i in 0 until 10) yield()
+
                     loaded = HomeworkLoader.loadFromServer()
                 }
             }
 
             withContext(Dispatchers.Main) {
 
+                failed.value = false
+                isEmpty.value = false
+
                 //when download failed
                 if (loaded == null) {
-                    Toast.makeText(
-                        context, R.string.homework_failed_to_load, Toast.LENGTH_LONG
-                    ).show()
                     Log.e(TAG, "Download failed")
-                    failObserve.value = Any()
+
+                    Toast.makeText(
+                        App.context, R.string.homework_failed_to_load, Toast.LENGTH_LONG
+                    ).show()
+
+                    failed.value = true
                 } else {
+                    isEmpty.value = loaded.isEmpty()
 
                     //updates marks with new value
                     homework.value = loaded
@@ -105,11 +116,11 @@ class HmwViewModel : ViewModel() {
         }
     }
 
-    // Search fragment
-    /**Text of the search field*/
-    val searchText = MutableLiveData("")
+    override fun emptyText(context: Context): String {
+        return context.getString(R.string.homework_no_homework)
+    }
 
-    /**Index of selected subject*/
-    val subjectIndex = MutableLiveData(0)
-
+    override fun failedText(context: Context): String {
+        return context.getString(R.string.homework_failed_to_load)
+    }
 }

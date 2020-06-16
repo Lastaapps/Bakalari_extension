@@ -30,6 +30,7 @@ import androidx.fragment.app.Fragment
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.User
 import cz.lastaapps.bakalariextension.databinding.FragmentHomeBinding
+import cz.lastaapps.bakalariextension.ui.WhatsNew
 
 class HomeFragment : Fragment() {
 
@@ -38,6 +39,15 @@ class HomeFragment : Fragment() {
     }
 
     private lateinit var binding: FragmentHomeBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        //What's new - shown only once per version
+        if (WhatsNew(requireContext()).shouldShow()) {
+            WhatsNew(requireContext()).showDialog()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

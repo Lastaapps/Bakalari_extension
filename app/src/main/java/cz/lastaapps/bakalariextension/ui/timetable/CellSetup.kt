@@ -24,7 +24,6 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TableLayout
 import android.widget.TextView
@@ -35,10 +34,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
+import cz.lastaapps.bakalariextension.api.homework.data.Homework
 import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
 import cz.lastaapps.bakalariextension.api.timetable.data.*
 import cz.lastaapps.bakalariextension.databinding.TimetableLessonInfoBinding
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.ui.BasicRecyclerAdapter
 import cz.lastaapps.bakalariextension.ui.homework.HmwRootFragment
 import cz.lastaapps.bakalariextension.ui.subjects.SubjectInfoFragment
 import cz.lastaapps.bakalariextension.ui.subjects.TeacherInfoFragment
@@ -309,23 +310,30 @@ class CellSetup {
                     }
 
                     binding.homeworkList.apply {
-                        adapter = ArrayAdapter(
+                        adapter =
+                            BasicRecyclerAdapter<Homework>({ it.content }, homeworkList).apply {
+                                onItemClicked = {
+
+                                    val data = Bundle().apply {
+                                        putString(HmwRootFragment.navigateToHomeworkId, it.id)
+                                    }
+
+                                    val controller = view.findNavController()
+                                    controller.navigate(R.id.nav_homework, data)
+
+                                    dialog.dismiss()
+                                }
+                            }
+
+
+                        /*ArrayAdapter(
                             binding.root.context,
                             R.layout.timetable_lesson_info_homework_row,
                             homeworkContents
                         )
                         setOnItemClickListener { _, _, position, _ ->
-                            val homework = homeworkList[position]
 
-                            val data = Bundle().apply {
-                                putString(HmwRootFragment.navigateToHomeworkId, homework.id)
-                            }
-
-                            val controller = view.findNavController()
-                            controller.navigate(R.id.nav_homework, data)
-
-                            dialog.dismiss()
-                        }
+                        }*/
                     }
 
                     return

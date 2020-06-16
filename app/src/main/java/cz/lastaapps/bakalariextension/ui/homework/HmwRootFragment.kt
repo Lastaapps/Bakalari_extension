@@ -25,9 +25,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.homework.HomeworkStorage
@@ -44,7 +44,7 @@ class HmwRootFragment : Fragment() {
     }
 
     lateinit var binding: FragmentHomeworkRootBinding
-    lateinit var viewModel: HmwViewModel
+    val viewModel: HmwViewModel by activityViewModels()
 
     /**updates data when homework list is loaded*/
     private val homeworkObserver = { _: HomeworkList ->
@@ -56,8 +56,8 @@ class HmwRootFragment : Fragment() {
     }
 
     /**observes when no data can be obtained (not empty list)*/
-    private val failObserver = { _: Any ->
-        if (viewModel.homework.value == null) {
+    private val failObserver = { failed: Boolean ->
+        if (failed) {
             onHomeworkFail()
         }
     }
@@ -65,13 +65,9 @@ class HmwRootFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //gets ViewModel
-        val v: HmwViewModel by requireActivity().viewModels()
-        viewModel = v
-
         //observes for homework list update
         viewModel.homework.observe({ lifecycle }, homeworkObserver)
-        viewModel.failObserve.observe({ lifecycle }, failObserver)
+        viewModel.failed.observe({ lifecycle }, failObserver)
     }
 
     override fun onCreateView(
@@ -92,7 +88,7 @@ class HmwRootFragment : Fragment() {
 
         //updates if the homework list is loaded or starts loading
         if (viewModel.homework.value == null) {
-            viewModel.onRefresh(requireContext(), false)
+            viewModel.onRefresh(false)
         } else {
             homeworkObserver(viewModel.homework.value!!)
         }

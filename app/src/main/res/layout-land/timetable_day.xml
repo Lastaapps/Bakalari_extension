@@ -21,7 +21,8 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/timetable_column_size_first"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <RelativeLayout
         style="@style/Timetable.Cell"
@@ -37,7 +38,7 @@
             android:layout_centerVertical="true"
 
             android:layout_marginStart="5dp"
-            android:text="Po" />
+            tools:text="Mo" />
 
         <TextView
             android:id="@+id/date"
@@ -50,7 +51,7 @@
 
             android:layout_margin="@dimen/timetable_margin"
             android:rotation="270"
-            android:text="31.2."
-            android:translationX="10dp" />
+            android:translationX="10dp"
+            tools:text="30.2." />
     </RelativeLayout>
 </RelativeLayout>

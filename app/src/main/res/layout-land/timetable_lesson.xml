@@ -19,9 +19,9 @@
   ~
   -->
 
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cell_main"
     android:layout_width="@dimen/timetable_column_size"
     android:layout_height="@dimen/timetable_row_height"
@@ -47,7 +47,7 @@
             android:layout_marginBottom="@dimen/timetable_margin"
 
             android:layout_centerInParent="true"
-            android:text="ScvM" />
+            tools:text="ScvM" />
 
 
         <TextView
@@ -63,7 +63,7 @@
 
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:text="WK" />
+            tools:text="WK" />
 
         <TextView
             android:id="@+id/room"
@@ -79,7 +79,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
 
-            android:text="IVT-h" />
+            tools:text="IVT-h" />
 
 
         <ImageView

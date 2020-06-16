@@ -135,7 +135,7 @@ class MarksLoader {
         fun shouldReload(): Boolean {
             val lastUpdated = MarksStorage.lastUpdated()
             if (lastUpdated != null) {
-                if (lastUpdated.isAfter(TimeTools.now.minusDays(1))) {
+                if (lastUpdated.isAfter(TimeTools.now.minusHours(6))) {
                     return false
                 }
             }

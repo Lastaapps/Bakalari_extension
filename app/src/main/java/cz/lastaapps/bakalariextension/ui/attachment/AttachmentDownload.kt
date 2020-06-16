@@ -21,6 +21,7 @@
 package cz.lastaapps.bakalariextension.ui.attachment
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -30,9 +31,11 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.FileUtils
+import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.net.toFile
@@ -50,6 +53,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+
 
 /**Downloads attachment and checks if file can be downloaded in this location
  * different version for android 10+ and older versions*/
@@ -197,6 +201,7 @@ class AttachmentDownload {
         }
 
         /**if app can use storage*/
+        @SuppressLint("NewApi")
         private fun checkPermission(activity: Activity): Boolean {
             if (Build.VERSION.SDK_INT in Build.VERSION_CODES.M until Build.VERSION_CODES.Q) {
 
@@ -208,11 +213,43 @@ class AttachmentDownload {
                     true
                 } else {
                     Log.i(TAG, "Write storage permission not granted")
+
                     Toast.makeText(activity, R.string.permission_required, Toast.LENGTH_LONG)
                         .show()
-                    ActivityCompat.requestPermissions(
-                        activity, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1
-                    )
+
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(
+                            activity,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        )
+                    ) {
+                        //asks for permission
+                        ActivityCompat.requestPermissions(
+                            activity, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1
+                        )
+                    } else {
+                        //asks user to grant permission in settings
+                        AlertDialog.Builder(activity)
+                            .setNegativeButton(R.string.permission_ignore) { dialog, _ ->
+                                dialog.dismiss()
+                            }
+                            .setPositiveButton(R.string.permission_open_setting) { dialog, _ ->
+                                val intent =
+                                    Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                val uri = Uri.fromParts(
+                                    "package",
+                                    activity.packageName,
+                                    null
+                                )
+                                intent.data = uri
+                                activity.startActivity(intent)
+                                dialog.dismiss()
+                            }
+                            .setMessage(R.string.permission_disabled)
+                            .setCancelable(true)
+                            .create()
+                            .show()
+                    }
+
                     false
                 }
             } else {

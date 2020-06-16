@@ -25,17 +25,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.fragment.app.activityViewModels
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.homework.data.Homework
 import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
-import cz.lastaapps.bakalariextension.databinding.FragmentHomeworkOldBindingImpl
+import cz.lastaapps.bakalariextension.databinding.LoadingListTemplateBinding
 
 /**shows old homework list - done and outdated homework*/
 class HmwOldFragment : Fragment() {
@@ -43,8 +40,8 @@ class HmwOldFragment : Fragment() {
         private val TAG = HmwOldFragment::class.java.simpleName
     }
 
-    lateinit var binding: FragmentHomeworkOldBindingImpl
-    lateinit var viewModel: HmwViewModel
+    lateinit var binding: LoadingListTemplateBinding
+    val viewModel: HmwViewModel by activityViewModels()
 
     /**observes for marks update*/
     private var homeworkObserver = { _: HomeworkList ->
@@ -54,10 +51,6 @@ class HmwOldFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        //gets ViewModel with homework list
-        val v: HmwViewModel by requireActivity().viewModels()
-        viewModel = v
 
         //observers for homework list update
         viewModel.homework.observe({ lifecycle }, homeworkObserver)
@@ -75,17 +68,15 @@ class HmwOldFragment : Fragment() {
 
             binding = DataBindingUtil.inflate(
                 inflater,
-                R.layout.fragment_homework_old,
+                R.layout.loading_list_template,
                 container,
                 false
             )
-
-            //init
             binding.apply {
-                lifecycleOwner = LifecycleOwner { lifecycle }
+                setLifecycleOwner { lifecycle }
                 viewmodel = viewModel
 
-                list.layoutManager = LinearLayoutManager(list.context)
+                list.adapter = HmwAdapter(requireActivity() as AppCompatActivity)
             }
 
             //shows homework list
@@ -103,19 +94,9 @@ class HmwOldFragment : Fragment() {
         val oldHomework = Homework.getOld(viewModel.homework.value!!)
 
         binding.apply {
+            (list.adapter as HmwAdapter).update(oldHomework)
 
-            loading.visibility = View.GONE
-
-            if (oldHomework.size > 0) {
-                list.adapter = HmwAdapter(oldHomework, requireActivity() as AppCompatActivity)
-                errorMessage.visibility = View.GONE
-
-                scrollToHomework(oldHomework)
-            } else {
-                list.adapter = HmwAdapter(DataIdList(), requireActivity() as AppCompatActivity)
-                errorMessage.visibility = View.VISIBLE
-                errorMessage.text = getString(R.string.homework_no_old)
-            }
+            scrollToHomework(oldHomework)
         }
     }
 

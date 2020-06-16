@@ -67,11 +67,11 @@ class LoginToServer(
             }
 
             //saves basic data
-            if (LoginData.town == "")
+            if (town != "")
                 LoginData.town = town
-            if (LoginData.school == "")
+            if (school != "")
                 LoginData.school = school
-            if (LoginData.url == "")
+            if (url != "")
                 LoginData.url = url
 
 
@@ -82,7 +82,7 @@ class LoginToServer(
             }
 
             //obtains tokens
-            return when (ConnMgr.obtainTokens(username, password)) {
+            return when (ConnMgr.obtainTokens(username, password, url)) {
                 ConnMgr.LOGIN_OK -> {
 
                     //downloads default user info

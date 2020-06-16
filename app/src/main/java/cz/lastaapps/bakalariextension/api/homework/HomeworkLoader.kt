@@ -140,7 +140,7 @@ class HomeworkLoader {
         fun shouldReload(): Boolean {
             val lastUpdated = HomeworkStorage.lastUpdated()
             if (lastUpdated != null) {
-                if (lastUpdated.isAfter(TimeTools.now.minusDays(1))) {
+                if (lastUpdated.isAfter(TimeTools.now.minusHours(6))) {
                     return false
                 }
             }

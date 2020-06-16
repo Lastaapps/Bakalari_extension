@@ -35,6 +35,8 @@ import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
 import cz.lastaapps.bakalariextension.api.timetable.data.Day
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
+import cz.lastaapps.bakalariextension.tools.TimeTools
+import java.time.ZonedDateTime
 
 class SmallTimetableView : RelativeLayout {
 
@@ -42,19 +44,21 @@ class SmallTimetableView : RelativeLayout {
         private val TAG = SmallTimetableView::class.java.simpleName
     }
 
-    var root: View
-    var progressBar: ProgressBar
-    var errorMessage: TextView
-    var table: GridView
-    var holiday: RelativeLayout
+    val root: View
+    val progressBar: ProgressBar
+    val errorMessage: TextView
+    val date: TextView
+    val table: GridView
+    val holiday: RelativeLayout
 
     init {
         Log.i(TAG, "Init")
 
-        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        root = inflater.inflate(R.layout.timetable_small, this, false)
+        root = LayoutInflater.from(context).inflate(R.layout.fragment_timetable_small, this, false)
+
         progressBar = root.findViewById(R.id.progress_bar)
         errorMessage = root.findViewById(R.id.error_message)
+        date = root.findViewById(R.id.date_label)
         table = root.findViewById(R.id.table)
         holiday = root.findViewById(R.id.cell_main)
 
@@ -90,6 +94,10 @@ class SmallTimetableView : RelativeLayout {
         table.visibility = View.INVISIBLE
 
         errorMessage.text = message
+    }
+
+    fun setDate(dateTime: ZonedDateTime) {
+        date.text = TimeTools.format(dateTime, "E, d. MMMM")
     }
 
     fun updateTimetable(week: Week, day: Day, homework: HomeworkList?) {

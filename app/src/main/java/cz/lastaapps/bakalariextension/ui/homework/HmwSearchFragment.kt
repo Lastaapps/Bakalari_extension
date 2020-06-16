@@ -29,15 +29,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.fragment.app.activityViewModels
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.SimpleData
 import cz.lastaapps.bakalariextension.api.homework.data.Homework
-import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
 import cz.lastaapps.bakalariextension.databinding.FragmentHomeworkSearchBinding
 
 /**searches in all homework*/
@@ -48,30 +46,10 @@ class HmwSearchFragment : Fragment() {
     }
 
     lateinit var binding: FragmentHomeworkSearchBinding
-    lateinit var viewModel: HmwViewModel
+    val viewModel: HmwViewModel by activityViewModels()
 
     //subject objects list
     private lateinit var subjectList: ArrayList<SimpleData>
-
-    /**On homework list updated*/
-    private val homeworkObserver = { _: HomeworkList ->
-        Log.i(TAG, "Updating with new homework list")
-
-        initSubjects()
-        spinnerAdapterSetup()
-        updateList()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        //loads homework
-        val v: HmwViewModel by requireActivity().viewModels()
-        viewModel = v
-
-        //observes for data change
-        viewModel.homework.observe({ lifecycle }, homeworkObserver)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -83,6 +61,7 @@ class HmwSearchFragment : Fragment() {
 
         //init views, called only once
         if (!this::binding.isInitialized) {
+
             //inflates views
             binding = DataBindingUtil.inflate(
                 inflater,
@@ -93,8 +72,6 @@ class HmwSearchFragment : Fragment() {
             //init
             binding.viewmodel = viewModel
             binding.setLifecycleOwner { lifecycle }
-
-            binding.list.layoutManager = LinearLayoutManager(requireContext())
 
             binding.subjectSpinner.onItemSelectedListener =
                 object : AdapterView.OnItemSelectedListener {
@@ -129,9 +106,17 @@ class HmwSearchFragment : Fragment() {
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             })
 
+            binding.list.adapter = HmwAdapter(requireActivity() as AppCompatActivity)
+
             //shows list if there is any data
-            viewModel.homework.value?.let {
-                homeworkObserver(it)
+            viewModel.apply {
+                homework.observe({ lifecycle }) { dataUpdated() }
+
+                if (homework.value != null) {
+                    dataUpdated()
+                } else {
+                    onRefresh()
+                }
             }
         }
 
@@ -164,11 +149,21 @@ class HmwSearchFragment : Fragment() {
         binding.subjectSpinner.adapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, names)
 
+        //protection against if list gets shorter and index is now greater then new list size
         if (viewModel.subjectIndex.value!! >= names.size) {
             viewModel.subjectIndex.value = names.size - 1
         }
 
         binding.subjectSpinner.setSelection(viewModel.subjectIndex.value!!)
+    }
+
+    /**On homework list updated*/
+    private fun dataUpdated() {
+        Log.i(TAG, "Updating with new homework list")
+
+        initSubjects()
+        spinnerAdapterSetup()
+        updateList()
     }
 
     /**updates view with filtered homework list*/
@@ -187,14 +182,7 @@ class HmwSearchFragment : Fragment() {
         }
 
         //sets up view with adapter or updates current adapter
-        var adapter = binding.list.adapter as HmwAdapter?
-        if (adapter != null) {
-            adapter.list = filtered
-            adapter.notifyDataSetChanged()
-        } else {
-            adapter = HmwAdapter(filtered, requireActivity() as AppCompatActivity)
-            binding.list.adapter = adapter
-        }
+        (binding.list.adapter as HmwAdapter).update(filtered)
     }
 
     /**@return id of currently selected subject or null for all subjects*/

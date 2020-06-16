@@ -160,5 +160,13 @@ class TimeTools {
         fun previousWeek(dateTime: ZonedDateTime): ZonedDateTime {
             return dateTime.minusDays(7)
         }
+
+        /**returns duration in days between these two dates*/
+        fun betweenMidnights(date1: ZonedDateTime, date2: ZonedDateTime): Duration {
+            return Duration.between(
+                LocalDateTime.of(date1.toLocalDate(), LocalTime.MIDNIGHT),
+                LocalDateTime.of(date2.toLocalDate(), LocalTime.MIDNIGHT)
+            )
+        }
     }
 }

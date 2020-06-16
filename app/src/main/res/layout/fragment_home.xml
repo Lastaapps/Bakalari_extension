@@ -19,7 +19,8 @@
   -->
 
 <layout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -27,8 +28,7 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -59,11 +59,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:text="Jára Cimrman"
                     android:textSize="20sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Jára Cimrman" />
 
                 <TextView
                     android:id="@+id/type"
@@ -71,10 +71,10 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/name"
                     android:layout_centerHorizontal="true"
-                    android:text="1.A - rodič"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/name" />
+                    app:layout_constraintTop_toBottomOf="@+id/name"
+                    tools:text="1.A - parent" />
 
                 <TextView
                     android:id="@+id/school"
@@ -82,11 +82,11 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/type"
                     android:layout_centerHorizontal="true"
-                    android:text="ZŠ Liptákov"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/type" />
+                    app:layout_constraintTop_toBottomOf="@+id/type"
+                    tools:text="ZŠ Liptákov" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

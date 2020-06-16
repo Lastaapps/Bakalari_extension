@@ -29,7 +29,7 @@ import android.view.View
 import android.widget.*
 import androidx.activity.viewModels
 import cz.lastaapps.bakalariextension.App
-import cz.lastaapps.bakalariextension.LoadingActivity
+import cz.lastaapps.bakalariextension.MainActivity
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.tools.BaseActivity
 import cz.lastaapps.bakalariextension.ui.settings.SettingsActivity
@@ -398,7 +398,7 @@ class LoginActivity : BaseActivity() {
                             this@LoginActivity, R.string.login_succeeded, Toast.LENGTH_LONG
                         ).show()
                         startActivity(
-                            Intent(this@LoginActivity, LoadingActivity::class.java)
+                            Intent(this@LoginActivity, MainActivity::class.java)
                         )
                         finish()
                     }

@@ -22,12 +22,12 @@ package cz.lastaapps.bakalariextension.ui.subjects
 
 import android.content.Context
 import android.widget.Toast
+import androidx.lifecycle.viewModelScope
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.subjects.SubjectLoader
 import cz.lastaapps.bakalariextension.api.subjects.ThemeList
 import cz.lastaapps.bakalariextension.ui.RefreshableViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -42,7 +42,7 @@ class ThemeViewModel(private val subjectId: String) : RefreshableViewModel<Theme
 
         isRefreshing.value = true
 
-        CoroutineScope(Dispatchers.Default).launch {
+        viewModelScope.launch(Dispatchers.Default) {
 
             val theme = SubjectLoader.loadThemesFromServer(subjectId)
 

@@ -20,9 +20,11 @@
   -->
 
 <layout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="markData"
             type="cz.lastaapps.bakalariextension.api.marks.data.Mark" />
@@ -50,7 +52,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_margin="5dp" />
+                android:layout_margin="5dp"
+                tools:text="100" />
 
             <TextView
                 android:id="@+id/weight"
@@ -62,7 +65,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_margin="5dp"/>
+                android:layout_margin="5dp"
+                tools:text="4" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

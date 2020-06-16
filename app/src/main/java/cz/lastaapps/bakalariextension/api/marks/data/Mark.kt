@@ -61,7 +61,7 @@ class Mark(
         if (isNew != other.isNew) {
             return if (isNew) 1 else -1
         }
-        return toDate().compareTo(other.toDate())
+        return -1 * toDate().compareTo(other.toDate())
     }
 
     /**Cashes parsed date*/

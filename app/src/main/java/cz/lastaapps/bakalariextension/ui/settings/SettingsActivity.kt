@@ -30,7 +30,6 @@ import android.view.MenuItem
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import cz.lastaapps.bakalariextension.App
-import cz.lastaapps.bakalariextension.LoadingActivity
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.login.Logout
 import cz.lastaapps.bakalariextension.services.timetablenotification.TTNotifyService
@@ -38,6 +37,7 @@ import cz.lastaapps.bakalariextension.tools.BaseActivity
 import cz.lastaapps.bakalariextension.tools.MySettings
 import cz.lastaapps.bakalariextension.ui.WhatsNew
 import cz.lastaapps.bakalariextension.ui.license.LicenseActivity
+import cz.lastaapps.bakalariextension.ui.loading.LoadingFragment
 
 
 /**
@@ -205,7 +205,7 @@ class SettingsActivity : BaseActivity() {
                     Log.i(TAG, "Login out")
                     Logout.logout()
                     activity?.finish()
-                    startActivity(Intent(this.activity, LoadingActivity::class.java))
+                    startActivity(Intent(this.activity, LoadingFragment::class.java))
                     true
                 }
 

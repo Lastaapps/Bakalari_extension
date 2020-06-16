@@ -31,13 +31,13 @@ import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
 import cz.lastaapps.bakalariextension.App
-import cz.lastaapps.bakalariextension.LoadingActivity
 import cz.lastaapps.bakalariextension.MainActivity
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
 import cz.lastaapps.bakalariextension.api.timetable.data.Day
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.ui.loading.LoadingFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -122,33 +122,38 @@ class SmallTimetableWidget : AppWidgetProvider() {
                 else
                     R.color.widget_background_dark
             )
+            val foreground = App.getColor(
+                if (config.isLight(widgetId))
+                    R.color.widget_foreground
+                else
+                    R.color.widget_foreground_dark
+            )
             views.setInt(R.id.widget_root, "setBackgroundColor", background)
 
-            //changes error text color
-            views.setTextColor(
-                R.id.error_message, App.getColor(
-                    if (config.isLight(widgetId))
-                        R.color.widget_foreground
-                    else
-                        R.color.widget_foreground_dark
-                )
-            )
+            //changes text color
+            views.setTextColor(R.id.error_message, foreground)
+            views.setTextColor(R.id.date_label, foreground)
+
             //loads week
             val date = TimeTools.today
             val week: Week?
             val day: Day?
+
+            views.setTextViewText(R.id.date_label, TimeTools.format(date, "E, d. MMMM"))
 
             if (!useDefault) {
                 //week is not downloaded yet
                 week = loadTimetable(date)
                 if (week == null) {
                     views.setViewVisibility(R.id.error_message, View.VISIBLE)
+                    views.setViewVisibility(R.id.grid_view, View.GONE)
                     return
                 }
-                day = week.today()
+                day = week.getDay(date)
                 //on weekend is null
                 if (day == null) {
                     views.setViewVisibility(R.id.error_message, View.VISIBLE)
+                    views.setViewVisibility(R.id.grid_view, View.GONE)
                     return
                 }
             } else {
@@ -157,7 +162,7 @@ class SmallTimetableWidget : AppWidgetProvider() {
             }
 
             //opens full timetable
-            val intent = Intent(context, LoadingActivity::class.java)
+            val intent = Intent(context, LoadingFragment::class.java)
             intent.putExtra(MainActivity.NAVIGATE, R.id.nav_timetable)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)

@@ -20,6 +20,7 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:gravity="center"
     android:layout_width="@dimen/timetable_column_size"
     android:layout_height="@dimen/timetable_row_height"
@@ -40,7 +41,7 @@
             android:layout_centerInParent="true"
 
             android:layout_margin="@dimen/timetable_margin"
-            android:text="1" />
+            tools:text="1" />
 
         <TextView
             android:id="@+id/begin"
@@ -52,8 +53,8 @@
             android:layout_centerVertical="true"
             android:layout_margin="@dimen/timetable_margin"
             android:rotation="270"
-            android:text="10:00"
-            android:translationX="-5dp" />
+            android:translationX="-5dp"
+            tools:text="10:00" />
 
         <TextView
             android:id="@+id/end"
@@ -65,7 +66,7 @@
             android:layout_centerVertical="true"
             android:layout_margin="@dimen/timetable_margin"
             android:rotation="270"
-            android:text="10:45"
-            android:translationX="5dp" />
+            android:translationX="5dp"
+            tools:text="10:45" />
     </RelativeLayout>
 </RelativeLayout>

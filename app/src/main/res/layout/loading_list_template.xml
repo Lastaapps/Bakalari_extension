@@ -19,7 +19,8 @@
   -->
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -40,14 +41,16 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@{viewmodel.failedText(context)}"
-            android:visibility="@{viewmodel.failed ? View.VISIBLE : View.GONE}" />
+            android:visibility="@{viewmodel.failed ? View.VISIBLE : View.GONE}"
+            tools:text="Data doesn\'t want to talk to us" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@{viewmodel.emptyText(context)}"
-            android:visibility="@{viewmodel.isEmpty() ? View.VISIBLE : View.GONE}" />
+            android:visibility="@{viewmodel.isEmpty() ? View.VISIBLE : View.GONE}"
+            tools:text="Data went for a walk" />
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"

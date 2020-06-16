@@ -68,7 +68,7 @@ class HmwOverview : Fragment() {
 
         //observes for data change
         viewModel.homework.observe({ lifecycle }, homeworkObserver)
-        viewModel.failObserve.observe({ lifecycle }, failObserver)
+        viewModel.failed.observe({ lifecycle }, failObserver)
     }
 
     override fun onCreateView(
@@ -96,7 +96,7 @@ class HmwOverview : Fragment() {
 
         //starts marks loading if they aren't yet
         if (viewModel.homework.value == null) {
-            viewModel.onRefresh(requireContext(), false)
+            viewModel.onRefresh(false)
         } else {
             //marks loaded
             homeworkObserver(viewModel.homework.value!!)

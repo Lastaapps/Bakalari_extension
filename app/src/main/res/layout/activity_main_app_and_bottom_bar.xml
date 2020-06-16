@@ -37,7 +37,9 @@
         android:layout_alignParentTop="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -78,6 +80,9 @@
         app:labelVisibilityMode="selected"
         app:itemHorizontalTranslationEnabled="true"
         android:background="#FFF"
-        android:backgroundTint="#FFF" />
+        android:backgroundTint="#FFF"
+
+        android:visibility="gone"
+        tools:visibility="visible" />
 
 </RelativeLayout>

@@ -19,7 +19,8 @@
   -->
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -50,7 +51,8 @@
             android:textColor="@{markData.showAsNew() ? @color/marks_new_mark : @color/primary_text_light}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="100" />
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -72,14 +74,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{subjectData.name}"
-                android:visibility="@{subjectData == null ? View.GONE : View.VISIBLE}" />
+                android:visibility="@{subjectData == null ? View.GONE : View.VISIBLE}"
+                tools:text="Python" />
 
             <TextView
                 android:id="@+id/caption"
                 style="@style/Marks.Caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{markData.type + ((markData.type.equals(``) || markData.caption.equals(``)) ? `` : ` - `) + markData.caption}" />
+                android:text="@{markData.type + ((markData.type.equals(``) || markData.caption.equals(``)) ? `` : ` - `) + markData.caption}"
+                tools:text="Nobody expected Spanish inquisition" />
 
         </LinearLayout>
 
@@ -87,13 +91,10 @@
             android:id="@+id/constraintLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
             android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="@+id/linearLayout">
 
             <TextView
                 android:id="@+id/date"
@@ -104,12 +105,11 @@
                 android:layout_marginEnd="10dp"
                 android:text="@{markData.simpleDate()}"
                 android:textAlignment="textEnd"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/weight"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="spread_inside"
-                />
+                tools:text="30.2." />
 
 
             <TextView
@@ -117,12 +117,14 @@
                 style="@style/Marks.Weight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginEnd="10dp"
                 android:text="@{@string/marks_weight + ` ` + String.valueOf(markData.weight)}"
                 android:textAlignment="textEnd"
-                app:layout_constraintTop_toBottomOf="@id/date"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/date"
+                tools:text="4" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

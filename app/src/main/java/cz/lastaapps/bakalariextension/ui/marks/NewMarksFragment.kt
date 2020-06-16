@@ -25,11 +25,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
-import androidx.recyclerview.widget.LinearLayoutManager
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.marks.data.Mark
@@ -47,7 +46,7 @@ class NewMarksFragment : Fragment() {
     lateinit var binding: FragmentMarksNewBinding
 
     //data - marks
-    lateinit var viewModel: MarksViewModel
+    val viewModel: MarksViewModel by activityViewModels()
 
     //updates hen new marks are downloaded
     private val marksObserver = { _: MarksAllSubjects? ->
@@ -62,13 +61,9 @@ class NewMarksFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //init view model
-        val viewModel: MarksViewModel by requireActivity().viewModels()
-        this.viewModel = viewModel
-
         //observes for marks update
         viewModel.marks.observe({ lifecycle }, marksObserver)
-        viewModel.failObserve.observe({ lifecycle }, failObserver)
+        viewModel.failed.observe({ lifecycle }, failObserver)
     }
 
     override fun onCreateView(
@@ -86,7 +81,7 @@ class NewMarksFragment : Fragment() {
         if (viewModel.marks.value != null) {
             marksObserver(null)
         } else {
-            viewModel.onRefresh(requireContext())
+            viewModel.onRefresh()
         }
 
         return binding.root
@@ -109,14 +104,13 @@ class NewMarksFragment : Fragment() {
         }
 
         //puts views in
-        val marksListView = binding.marksList
+        val marksListView = binding.list
         marksListView.setHasFixedSize(true)
-        marksListView.layoutManager = LinearLayoutManager(marksListView.context)
         marksListView.adapter = MarksAdapter(marks, newMarks)
     }
 
     /**When marks failed to load*/
     private fun onFail() {
-        binding.marksList.adapter = null
+        binding.list.adapter = null
     }
 }

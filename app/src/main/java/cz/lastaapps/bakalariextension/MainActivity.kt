@@ -31,6 +31,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -46,7 +47,6 @@ import cz.lastaapps.bakalariextension.login.Logout
 import cz.lastaapps.bakalariextension.send.ReportIssueActivity
 import cz.lastaapps.bakalariextension.send.SendIdeaActivity
 import cz.lastaapps.bakalariextension.tools.BaseActivity
-import cz.lastaapps.bakalariextension.ui.WhatsNew
 import cz.lastaapps.bakalariextension.ui.license.LicenseActivity
 import cz.lastaapps.bakalariextension.ui.settings.SettingsActivity
 import kotlinx.coroutines.CoroutineScope
@@ -64,6 +64,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private val mainViewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,6 +107,13 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         navView.setupWithNavController(navController)
         navView.setNavigationItemSelectedListener(this)
 
+        //manages loading and navigation view visibility changes
+        if (mainViewModel.result.value == MainViewModel.UNKNOWN) {
+            navController.navigate(R.id.nav_loading)
+        } else if (mainViewModel.loggedIn.value == true) {
+            navigateHome()
+        }
+
         //updates side nav with info
         navView.getHeaderView(0).findViewById<TextView>(R.id.nav_name).text = User.get(User.NAME)
         navView.getHeaderView(0).findViewById<TextView>(R.id.nav_type).text = User.getClassAndRole()
@@ -115,22 +123,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         if (navigateTo != -1)
             findNavController(R.id.nav_host_fragment).navigate(navigateTo)
 
-        //What's new - shown only once per version
-        if (WhatsNew(this).shouldShow()) {
-            WhatsNew(this).showDialog()
-        }
-
-        //only on the first onCreate() call
-        if (savedInstanceState == null)
-            launchInit()
-    }
-
-    /**Inits services, alarms and widgets*/
-    private fun launchInit() {
-        val scope = CoroutineScope(Dispatchers.Default)
-        scope.launch {
-            AppStartInit(applicationContext).appStartInit()
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -151,6 +143,34 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         } else {
             super.onOptionsItemSelected(item)
         }
+    }
+
+    /**shows home fragment*/
+    fun navigateHome() {
+        findNavController(R.id.nav_host_fragment).apply {
+            currentDestination?.let {
+                if (it.id == R.id.nav_loading)
+                    navigate(R.id.nav_home)
+            }
+        }
+        mainViewModel.loggedIn.value = true
+
+        mainViewModel.launchInitRun.apply {
+            if (value == false) {
+                value = true
+
+                //Inits services, alarms and widgets
+                val scope = CoroutineScope(Dispatchers.Default)
+                scope.launch {
+                    AppStartInit(this@MainActivity).appStartInit()
+                }
+            }
+        }
+
+        findViewById<View>(R.id.bottom_nav).visibility = View.VISIBLE
+        findViewById<View>(R.id.nav_view).visibility = View.VISIBLE
+        findViewById<View>(R.id.appBarLayout).visibility = View.VISIBLE
+
     }
 
     /**When side navigation or the bottom bar was selected*/
@@ -183,7 +203,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
             R.id.nav_logout -> {
                 Logout.logout()
-                startActivity(Intent(this, LoadingActivity::class.java))
+                startActivity(Intent(this, MainActivity::class.java))
                 finish()
             }
             R.id.nav_share -> {

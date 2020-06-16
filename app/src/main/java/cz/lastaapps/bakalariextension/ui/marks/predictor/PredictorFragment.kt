@@ -28,11 +28,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.fragment.app.activityViewModels
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.marks.data.Mark
@@ -51,7 +49,7 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
     lateinit var binding: FragmentMarksPredictorBinding
 
     //ViewModel with marks data
-    lateinit var viewModel: MarksViewModel
+    val viewModel: MarksViewModel by activityViewModels()
 
     /**Updates on marks changed*/
     private val marksObserver = { _: MarksAllSubjects ->
@@ -62,10 +60,6 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        //obtains ViewModel
-        val viewModel: MarksViewModel by requireActivity().viewModels()
-        this.viewModel = viewModel
 
         //observes for marks change
         viewModel.marks.observe({ lifecycle }, marksObserver)
@@ -84,16 +78,10 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
                 inflater, R.layout.fragment_marks_predictor, container, false
             )
             binding.viewmodel = viewModel
-            binding.lifecycleOwner = LifecycleOwner { lifecycle }
+            binding.setLifecycleOwner { lifecycle }
 
             //sets add mark button functionality
             binding.addMark.setOnClickListener(this)
-
-            //prepares lists with marks
-            arrayOf(binding.marksList, binding.addedMarksList).forEach {
-                it.layoutManager = LinearLayoutManager(requireContext())
-                it.setHasFixedSize(true)
-            }
 
             loadSubjects()
             checkValidity()
@@ -190,7 +178,7 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
         val marks = viewModel.subjectMarks
 
         viewModel.average.value = viewModel.selectedSubject.averageText
-        binding.marksList.adapter = MarksAdapter(marks)
+        binding.list.adapter = MarksAdapter(marks)
     }
 
     /**Loads predicted marks for subject given*/

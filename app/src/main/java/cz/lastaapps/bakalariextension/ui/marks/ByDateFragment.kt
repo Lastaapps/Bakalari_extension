@@ -25,19 +25,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
-import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.fragment.app.activityViewModels
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.marks.data.MarksAllSubjects
-import cz.lastaapps.bakalariextension.databinding.FragmentMarksDateBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.yield
+import cz.lastaapps.bakalariextension.databinding.LoadingListTemplateBinding
 
 /**Shows marks from all subjects sorted by date
  * placed in MarksRootFragment*/
@@ -47,42 +39,34 @@ class ByDateFragment : Fragment() {
     }
 
     //root view
-    lateinit var binding: FragmentMarksDateBinding
+    lateinit var binding: LoadingListTemplateBinding
 
     //ViewModel with marks
-    lateinit var viewModel: MarksViewModel
-
-    //executed on marks update
-    private val marksObserver = { _: MarksAllSubjects ->
-        Log.i(TAG, "Updating based on new marks")
-        loadMarks()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        //obtains ViewModel with marks
-        val viewModel: MarksViewModel by requireActivity().viewModels()
-        this.viewModel = viewModel
-
-        //observes for marks update
-        viewModel.marks.observe({lifecycle}, marksObserver)
-    }
+    val viewModel: MarksViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         //inflates view
         if (!this::binding.isInitialized) {
             Log.i(TAG, "Creating view")
             binding =
-                DataBindingUtil.inflate(inflater, R.layout.fragment_marks_date, container, false)
-            binding.viewmodel = viewModel
-            binding.lifecycleOwner = LifecycleOwner { lifecycle }
+                DataBindingUtil.inflate(inflater, R.layout.loading_list_template, container, false)
+            binding.apply {
+                viewmodel = viewModel
+                setLifecycleOwner { lifecycle }
+                list.adapter = MarksAdapter()
+            }
 
-            loadMarks()
+            viewModel.marks.observe({ lifecycle }) { showMarks() }
+            if (viewModel.marks.value != null) {
+                showMarks()
+            } else {
+                viewModel.onRefresh()
+            }
         } else {
             Log.i(TAG, "Already created")
         }
@@ -91,45 +75,11 @@ class ByDateFragment : Fragment() {
     }
 
     /**puts marks into view*/
-    private fun loadMarks() {
-        val loading: ProgressBar = binding.loading
-        val errorMessage = binding.errorMessage
-        val marksListView = binding.marksList
+    private fun showMarks() {
+        Log.i(TAG, "Updating based on new marks")
 
-        //hides views
-        loading.visibility = View.VISIBLE
-        marksListView.visibility = View.GONE
-        errorMessage.visibility = View.GONE
-
-        val scope = CoroutineScope(Dispatchers.Main)
-        scope.launch {
-
-            //marks inited in MarksRootFragment
-            val marks = viewModel.marks.value!!
-
-            //gets all marks
-            val allMarks = marks.getAllMarks()
-
-            //if there are no marks
-            if (allMarks.isEmpty()) {
-                errorMessage.setText(R.string.marks_no_marks)
-                errorMessage.visibility = View.VISIBLE
-                loading.visibility = View.GONE
-                return@launch
-            }
-
-            //inits marks list
-            marksListView.setHasFixedSize(true)
-            marksListView.layoutManager = LinearLayoutManager(marksListView.context)
-            marksListView.adapter = MarksAdapter(marks)
-
-            //lag protection
-            yield()
-
-            //shows views
-            marksListView.visibility = View.VISIBLE
-            loading.visibility = View.GONE
-        }
+        (binding.list.adapter as MarksAdapter)
+            .updateMarks(viewModel.marks.value!!.getAllMarks())
     }
 }
 

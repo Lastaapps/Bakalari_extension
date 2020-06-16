@@ -19,35 +19,29 @@
   ~
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:gravity="center"
-    tools:context=".LoadingActivity">
+    tools:context=".ui.loading.LoadingFragment">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:layout_weight="1">
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintGuide_percent=".25"
+        android:orientation="horizontal" />
 
-        <!--<include
-            layout="@layout/logo_label"/>-->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/label_logo_fragment"
+        android:name="cz.lastaapps.bakalariextension.ui.logo.LogoFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@+id/guideline"
+        app:layout_constraintBottom_toBottomOf="@+id/guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/label_logo_fragment"
-            android:name="cz.lastaapps.bakalariextension.ui.logo.LogoFragment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_weight="1"/>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

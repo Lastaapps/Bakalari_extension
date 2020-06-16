@@ -114,7 +114,7 @@ class SubjectInfoFragment : Fragment() {
             homeworkViewModel.homework.observe({ lifecycle }) {
                 showHomeworkList()
             }
-            homeworkViewModel.onRefresh(requireContext())
+            homeworkViewModel.onRefresh()
         }
 
         //loads marks
@@ -124,7 +124,7 @@ class SubjectInfoFragment : Fragment() {
             marksViewModel.marks.observe({ lifecycle }) {
                 showMarks()
             }
-            marksViewModel.onRefresh(requireContext())
+            marksViewModel.onRefresh()
         }
 
         //loads thmemes
@@ -172,7 +172,7 @@ class SubjectInfoFragment : Fragment() {
         if (homeworkList.isNotEmpty()) {
             binding.homeworkBox.visibility = View.VISIBLE
             binding.homeworkList.adapter =
-                HmwAdapter(homeworkList, requireActivity() as AppCompatActivity)
+                HmwAdapter(requireActivity() as AppCompatActivity, homeworkList)
         }
     }
 
@@ -186,7 +186,7 @@ class SubjectInfoFragment : Fragment() {
 
             binding.marksBox.visibility = View.VISIBLE
             binding.marksAverage.text = text
-            binding.marksList.adapter = MarksAdapter(subjectMarks.marks)
+            binding.list.adapter = MarksAdapter(subjectMarks.marks)
         }
     }
 

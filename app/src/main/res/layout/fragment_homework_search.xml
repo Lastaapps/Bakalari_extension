@@ -78,7 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_margin="@dimen/margin_basic"
-            app:onRefreshListener="@{() -> viewmodel.onRefresh(context, true)}"
+            app:onRefreshListener="@{() -> viewmodel.onRefresh(true)}"
             app:refreshing="@{viewmodel.isRefreshing()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -89,7 +89,8 @@
                 android:id="@+id/list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scrollbars="vertical" />
+                android:scrollbars="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 

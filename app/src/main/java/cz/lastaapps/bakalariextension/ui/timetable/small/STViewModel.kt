@@ -24,21 +24,23 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import cz.lastaapps.bakalariextension.tools.MySettings
 import cz.lastaapps.bakalariextension.tools.TimeTools
-import kotlinx.coroutines.CoroutineScope
+import cz.lastaapps.bakalariextension.ui.RefreshableViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 import java.time.DayOfWeek
 import java.time.ZonedDateTime
 
 /**Holds data for SmallTimetableFragment*/
-class STViewModel : ViewModel() {
+class STViewModel : RefreshableViewModel<Week>() {
     companion object {
         private val TAG = STViewModel::class.java.simpleName
     }
@@ -59,16 +61,10 @@ class STViewModel : ViewModel() {
     }
 
     /**Timetable data in for of Week object*/
-    val week = MutableLiveData<Week>()
-
-    /**triggered when attempts to load marks fail*/
-    val failObserve = MutableLiveData<Any>()
-
-    /**If SwipeRefreshLayouts are refreshing now*/
-    val isRefreshing = MutableLiveData(false)
+    val week = data
 
     /**Loads timetable for the date in the variable #date*/
-    fun onRefresh(context: Context, forceReload: Boolean = false) {
+    override fun onRefresh(force: Boolean) {
 
         if (isRefreshing.value == true)
             return
@@ -76,13 +72,12 @@ class STViewModel : ViewModel() {
         //set state refreshing
         isRefreshing.value = true
 
-        val scope = CoroutineScope(Dispatchers.Default)
-        scope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             Log.i(TAG, "Loading timetable")
 
             var loaded: Week?
 
-            if (forceReload) {
+            if (force) {
                 loaded = TimetableLoader.loadFromServer(date.value!!)
             } else {
 
@@ -95,6 +90,9 @@ class STViewModel : ViewModel() {
                         }
                     }
 
+                    //let oder work finish before running slow loading from server
+                    for (i in 0 until 10) yield()
+
                     loaded = TimetableLoader.loadFromServer(date.value!!)
                 }
             }
@@ -102,20 +100,31 @@ class STViewModel : ViewModel() {
             withContext(Dispatchers.Main) {
 
                 //hides refreshing icon
-                isRefreshing.value = false
+                failed.value = false
 
                 //when download failed
                 if (loaded == null) {
                     Log.e(TAG, "Loading failed")
                     Toast.makeText(
-                        context, R.string.error_cannot_download_timetable, Toast.LENGTH_LONG
+                        App.context, R.string.error_cannot_download_timetable, Toast.LENGTH_LONG
                     ).show()
-                    failObserve.value = Any()
+
+                    failed.value = true
                 } else {
                     //updates marks with new value
                     week.value = loaded
                 }
+
+                isRefreshing.value = false
             }
         }
+    }
+
+    override fun emptyText(context: Context): String {
+        return context.getString(R.string.error_no_timetable_for_today)
+    }
+
+    override fun failedText(context: Context): String {
+        return context.getString(R.string.error_cannot_download_timetable)
     }
 }

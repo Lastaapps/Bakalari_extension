@@ -18,44 +18,60 @@
   ~
   -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center|top">
-
-    <GridView
-        android:id="@+id/grid_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:columnWidth="@dimen/timetable_column_size"
-        android:numColumns="auto_fit"
-        android:fadeScrollbars ="false"
-        android:stretchMode="spacingWidth"
-        android:verticalSpacing="@dimen/widget_grid_spacing"
-        android:horizontalSpacing="@dimen/widget_grid_spacing"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:paddingStart="5dp"
-        android:paddingEnd="5dp"
-        android:drawSelectorOnTop="true"
-        android:layout_gravity="top|center_horizontal"
-        android:gravity="top|center_horizontal"
-        android:visibility="gone"/>
+    android:orientation="vertical">
 
     <TextView
-        android:id="@+id/error_message"
+        style="@style/AppTheme.Text"
+        android:id="@+id/date_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/empty_timetable"
-        android:textAlignment="center"
-        android:visibility="gone"/>
+        android:layout_gravity="center_horizontal"
+        tools:text="Mon, 30. February" />
 
-
-    <include
-        layout="@layout/timetable_holiday"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone" />
-</FrameLayout>
+        android:layout_gravity="center|top">
+
+        <GridView
+            android:id="@+id/grid_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_horizontal"
+            android:columnWidth="@dimen/timetable_column_size"
+            android:drawSelectorOnTop="true"
+            android:fadeScrollbars="false"
+            android:gravity="top|center_horizontal"
+            android:horizontalSpacing="@dimen/widget_grid_spacing"
+            android:numColumns="auto_fit"
+            android:paddingStart="5dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="5dp"
+            android:paddingBottom="10dp"
+            android:stretchMode="spacingWidth"
+            android:verticalSpacing="@dimen/widget_grid_spacing"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/error_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/empty_timetable"
+            android:textAlignment="center"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <include
+            layout="@layout/timetable_holiday"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+    </FrameLayout>
+</LinearLayout>

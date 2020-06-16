@@ -41,7 +41,7 @@ class AppStartInit(val context: Context) {
     /**Inits services, widgets and alarms*/
     suspend fun appStartInit() {
 
-        delay(2000)
+        delay(3000)
 
         Log.i(TAG, "Running init of app's background")
 

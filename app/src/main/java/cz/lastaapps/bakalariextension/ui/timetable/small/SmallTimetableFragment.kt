@@ -40,8 +40,8 @@ class SmallTimetableFragment : Fragment() {
     }
 
     private lateinit var view: SmallTimetableView
-    private lateinit var vm: STViewModel
-    private lateinit var vmHomework: HmwViewModel
+    private val vm: STViewModel by activityViewModels()
+    private val vmHomework: HmwViewModel by activityViewModels()
 
     /**Called when timetable or homework list was successfully loaded*/
     private val onSuccess = { _: Any? ->
@@ -49,24 +49,18 @@ class SmallTimetableFragment : Fragment() {
     }
 
     /**Called when timetable cannot be loaded*/
-    private val onFail = { _: Any? ->
-        onFail()
+    private val onFail = { failed: Boolean ->
+        if (failed)
+            onFail()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //loads ViewModels
-        val model: STViewModel by activityViewModels()
-        this.vm = model
-
-        val model2: HmwViewModel by activityViewModels()
-        this.vmHomework = model2
-
         //observes for data changes
         vm.week.observe({ lifecycle }, onSuccess)
         vmHomework.homework.observe({ lifecycle }, onSuccess)
-        vm.failObserve.observe({ lifecycle }, onFail)
+        vm.failed.observe({ lifecycle }, onFail)
     }
 
     override fun onCreateView(
@@ -86,14 +80,17 @@ class SmallTimetableFragment : Fragment() {
         if (vm.week.value != null) {
             onSuccess(null)
         } else {
-            vm.onRefresh(requireContext())
+            vm.onRefresh()
         }
+
+        vm.date.value?.let { view.setDate(it) }
+        vm.date.observe({ lifecycle }) { view.setDate(it) }
 
         //loads the homework list if it wasn't already done
         if (vmHomework.homework.value != null) {
             onSuccess(null)
         } else {
-            vmHomework.onRefresh(requireContext())
+            vmHomework.onRefresh()
         }
 
         return view
@@ -145,7 +142,7 @@ class SmallTimetableFragment : Fragment() {
             if (TimeTools.toMonday(oldDate).toLocalDate()
                 != TimeTools.toMonday(vm.date.value!!).toLocalDate()
             ) {
-                vm.onRefresh(requireContext())
+                vm.onRefresh()
                 return true
             }
         }

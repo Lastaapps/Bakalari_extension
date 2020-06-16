@@ -33,19 +33,18 @@ import cz.lastaapps.bakalariextension.databinding.MarksRowBinding
 /**Adapter for RecycleView containing marks*/
 class MarksAdapter : RecyclerView.Adapter<MarksAdapter.DataBindingHolder> {
 
-    /**all subjects*/
-    private var marksAllSubjects: MarksAllSubjects? = null
-    /**marks to show*/
-    private val marks: DataIdList<Mark>
-
-    /**Shows also subject name*/
-    constructor(marksAllSubjects: MarksAllSubjects): super() {
-        this.marksAllSubjects = marksAllSubjects
-        this.marks = DataIdList(marksAllSubjects.getAllMarks().reversed())
+    init {
+        setHasStableIds(true)
     }
 
+    /**all subjects*/
+    private var marksAllSubjects: MarksAllSubjects? = null
+
+    /**marks to show*/
+    private var marks: DataIdList<Mark>
+
     /**Shows selected marks only*/
-    constructor(marks: DataIdList<Mark>): super() {
+    constructor(marks: DataIdList<Mark> = DataIdList()) : super() {
         this.marks = marks
     }
 
@@ -89,6 +88,15 @@ class MarksAdapter : RecyclerView.Adapter<MarksAdapter.DataBindingHolder> {
 
     }
 
+    fun updateMarks(marks: DataIdList<Mark>) {
+        this.marks = marks
+        notifyDataSetChanged()
+    }
+
     /**@return The number of marks*/
     override fun getItemCount() = marks.size
+
+    override fun getItemId(position: Int): Long {
+        return marks[position].id.hashCode().toLong()
+    }
 }

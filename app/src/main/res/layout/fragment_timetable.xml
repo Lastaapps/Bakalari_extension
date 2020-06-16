@@ -19,7 +19,8 @@
   -->
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -120,99 +121,33 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent">
 
-                        <TableRow android:layout_gravity="center_horizontal">
+                        <TableRow android:layout_gravity="center_horizontal" />
 
-                            <include layout="@layout/timetable_hour" />
-
-                            <include layout="@layout/timetable_hour" />
-
-                            <include layout="@layout/timetable_hour" />
-
-                            <include layout="@layout/timetable_hour" />
-
-                            <include layout="@layout/timetable_hour" />
-                        </TableRow>
-
-                        <TableRow android:layout_gravity="center_horizontal">
-
-                            <include layout="@layout/timetable_lesson" />
-
-                            <include layout="@layout/timetable_lesson" />
-
-                            <include layout="@layout/timetable_lesson" />
-
-                            <include layout="@layout/timetable_lesson" />
-
-                            <include layout="@layout/timetable_lesson" />
-                        </TableRow>
+                        <TableRow android:layout_gravity="center_horizontal" />
 
                         <include
                             layout="@layout/timetable_holiday"
                             android:visibility="gone" />
 
-                        <TableRow android:layout_gravity="center_horizontal">
-
-                            <include layout="@layout/timetable_lesson" />
-
-                            <include layout="@layout/timetable_lesson" />
-
-                            <include layout="@layout/timetable_lesson" />
-
-                            <include layout="@layout/timetable_lesson" />
-
-                            <include layout="@layout/timetable_lesson" />
-                        </TableRow>
+                        <TableRow android:layout_gravity="center_horizontal" />
 
                         <include
                             layout="@layout/timetable_holiday"
                             android:visibility="gone" />
 
-                        <TableRow android:layout_gravity="center_horizontal">
-
-                            <include layout="@layout/timetable_lesson" />
-
-                            <include layout="@layout/timetable_lesson" />
-
-                            <include layout="@layout/timetable_lesson" />
-
-                            <include layout="@layout/timetable_lesson" />
-
-                            <include layout="@layout/timetable_lesson" />
-                        </TableRow>
+                        <TableRow android:layout_gravity="center_horizontal" />
 
                         <include
                             layout="@layout/timetable_holiday"
                             android:visibility="gone" />
 
-                        <TableRow android:layout_gravity="center_horizontal">
-
-                            <include layout="@layout/timetable_lesson" />
-
-                            <include layout="@layout/timetable_lesson" />
-
-                            <include layout="@layout/timetable_lesson" />
-
-                            <include layout="@layout/timetable_lesson" />
-
-                            <include layout="@layout/timetable_lesson" />
-                        </TableRow>
+                        <TableRow android:layout_gravity="center_horizontal" />
 
                         <include
                             layout="@layout/timetable_holiday"
                             android:visibility="gone" />
 
-                        <TableRow android:layout_gravity="center_horizontal">
-
-                            <include layout="@layout/timetable_lesson" />
-
-                            <include layout="@layout/timetable_lesson" />
-
-                            <include layout="@layout/timetable_lesson" />
-
-                            <include layout="@layout/timetable_lesson" />
-
-                            <include layout="@layout/timetable_lesson" />
-                        </TableRow>
+                        <TableRow android:layout_gravity="center_horizontal" />
 
                         <include
                             layout="@layout/timetable_holiday"
@@ -249,8 +184,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 
-                android:text="Last updated on 31.2."
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                tools:text="Last updated on 31.2." />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -273,6 +208,13 @@
                         android:layout_height="@dimen/timetable_bottom_button"
 
                         app:srcCompat="@drawable/permanent" />
+
+                    <ImageButton
+                        android:id="@+id/calendar"
+                        style="@style/Timetable.ImageButton"
+                        android:layout_width="@dimen/timetable_bottom_button"
+                        android:layout_height="@dimen/timetable_bottom_button"
+                        app:srcCompat="@drawable/calendar" />
 
                     <ImageButton
                         android:id="@+id/home"

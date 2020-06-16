@@ -23,6 +23,7 @@ package cz.lastaapps.bakalariextension.ui.subjects
 import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.subjects.SubjectList
@@ -30,10 +31,10 @@ import cz.lastaapps.bakalariextension.api.subjects.SubjectLoader
 import cz.lastaapps.bakalariextension.api.subjects.TeacherList
 import cz.lastaapps.bakalariextension.api.subjects.data.Teacher
 import cz.lastaapps.bakalariextension.ui.RefreshableViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 
 /**Holds data for teacher and subject modules and ViewModels for themes*/
 class SubjectViewModel : RefreshableViewModel<SubjectList>() {
@@ -52,7 +53,7 @@ class SubjectViewModel : RefreshableViewModel<SubjectList>() {
 
         isRefreshing.value = true
 
-        CoroutineScope(Dispatchers.Default).launch {
+        viewModelScope.launch(Dispatchers.Default) {
 
             var subjectList = SubjectLoader.loadFromStorage()
 
@@ -63,6 +64,9 @@ class SubjectViewModel : RefreshableViewModel<SubjectList>() {
                         teachers.value = Teacher.subjectsToTeachers(it)
                     }
                 }
+
+                //let oder work finish before running slow loading from server
+                for (i in 0 until 10) yield()
 
                 subjectList = SubjectLoader.loadFromServer()
             }

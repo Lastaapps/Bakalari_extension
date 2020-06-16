@@ -30,8 +30,12 @@ import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
 import cz.lastaapps.bakalariextension.databinding.HomeworkEntryBinding
 
 /** Adapter to show homework list - uses homework_entry layout*/
-class HmwAdapter(var list: HomeworkList, private val activity: AppCompatActivity) :
+class HmwAdapter(private val activity: AppCompatActivity, var list: HomeworkList = HomeworkList()) :
     RecyclerView.Adapter<HmwAdapter.BindingHolder>() {
+
+    init {
+        setHasStableIds(true)
+    }
 
     /**holds binding instead of view*/
     class BindingHolder(var binding: HomeworkEntryBinding) : RecyclerView.ViewHolder(binding.root)
@@ -57,7 +61,16 @@ class HmwAdapter(var list: HomeworkList, private val activity: AppCompatActivity
         binding.mgr = HmwEntryManager(activity, binding, homework)
     }
 
+    fun update(newList: HomeworkList) {
+        list = newList
+        notifyDataSetChanged()
+    }
+
     override fun getItemCount(): Int {
         return list.size
+    }
+
+    override fun getItemId(position: Int): Long {
+        return list[position].id.hashCode().toLong()
     }
 }
