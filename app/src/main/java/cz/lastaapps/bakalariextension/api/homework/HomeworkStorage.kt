@@ -20,8 +20,10 @@
 
 package cz.lastaapps.bakalariextension.api.homework
 
+import android.content.Intent
 import android.util.Log
 import cz.lastaapps.bakalariextension.App
+import cz.lastaapps.bakalariextension.MainActivity
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -79,21 +81,26 @@ class HomeworkStorage {
 
         /**saves json*/
         fun save(json: JSONObject) {
+            try {
 
-            homeworkCache = json
+                homeworkCache = json
 
-            //gets new name
-            val file = getFile()
-            Log.i(TAG, "Saving ${file.name}")
+                //gets new name
+                val file = getFile()
+                Log.i(TAG, "Saving ${file.name}")
 
-            if (!file.exists()) {
-                file.createNewFile()
+                if (!file.exists()) {
+                    file.createNewFile()
+                }
+
+                //writes data to file
+                val output = OutputStreamWriter(file.outputStream())
+                output.write("${json}\n")
+                output.close()
+
+            } catch (e: Exception) {
+                App.context.sendBroadcast(Intent(MainActivity.FULL_STORAGE))
             }
-
-            //writes data to file
-            val output = OutputStreamWriter(file.outputStream())
-            output.write("${json}\n")
-            output.close()
         }
 
         /**@return if there are saved homework*/

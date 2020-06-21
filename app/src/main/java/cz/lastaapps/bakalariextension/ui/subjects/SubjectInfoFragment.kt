@@ -127,8 +127,8 @@ class SubjectInfoFragment : Fragment() {
             marksViewModel.onRefresh()
         }
 
-        //loads thmemes
-        themeViewModel = subjectViewModel.getThemeViewModelForSubject(subject.id)
+        //loads themes
+        themeViewModel = subjectViewModel.getThemeViewModelForSubject(subjectId)
         themeViewModel.also {
 
             binding.themeLayout.viewmodel = it

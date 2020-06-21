@@ -18,12 +18,10 @@
  *
  */
 
-package cz.lastaapps.bakalariextension.api.subjects
+package cz.lastaapps.bakalariextension.api.user
 
-import android.content.Intent
 import android.util.Log
 import cz.lastaapps.bakalariextension.App
-import cz.lastaapps.bakalariextension.MainActivity
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -33,12 +31,12 @@ import java.io.OutputStreamWriter
 import java.time.Instant
 import java.time.ZonedDateTime
 
-/**saves subject info to local storage*/
-class SubjectStorage {
+/**Stores user data*/
+class UserStorage {
     companion object {
-        private val TAG = SubjectStorage::class.java.simpleName
+        private val TAG = UserStorage::class.java.simpleName
 
-        private const val FILE_PREFIX = "Subjects"
+        private const val FILE_PREFIX = "User"
         private const val FILE_SUFFIX = ".json"
 
         private var cache: JSONObject? = null
@@ -46,8 +44,8 @@ class SubjectStorage {
             cache = null
         }
 
-        /**Tries to load subjects
-         * @return json or null, if there isn't such a week saved*/
+        /**Tries to load user
+         * @return json or null, if there isn't data saved*/
         fun load(): JSONObject? {
 
             if (cache != null)
@@ -80,29 +78,24 @@ class SubjectStorage {
 
         /**saves json*/
         fun save(json: JSONObject) {
-            try {
 
-                cache = json
+            cache = json
 
-                //gets new name
-                val file = getFile()
-                Log.i(TAG, "Saving ${file.name}")
+            //gets new name
+            val file = getFile()
+            Log.i(TAG, "Saving ${file.name}")
 
-                if (!file.exists()) {
-                    file.createNewFile()
-                }
-
-                //writes data to file
-                val output = OutputStreamWriter(file.outputStream())
-                output.write("${json}\n")
-                output.close()
-
-            } catch (e: Exception) {
-                App.context.sendBroadcast(Intent(MainActivity.FULL_STORAGE))
+            if (!file.exists()) {
+                file.createNewFile()
             }
+
+            //writes data to file
+            val output = OutputStreamWriter(file.outputStream())
+            output.write("${json}\n")
+            output.close()
         }
 
-        /**@return when were subjects last updated, of null if they aren't saned yet*/
+        /**@return when were data last updated, of null if they aren't saved yet*/
         fun lastUpdated(): ZonedDateTime? {
 
             val file = getFile()
@@ -117,7 +110,7 @@ class SubjectStorage {
 
         /**deletes saved data*/
         fun delete() {
-            Log.e(TAG, "Deleting subjects")
+            Log.e(TAG, "Deleting")
 
             getFile().delete()
             releaseCache()

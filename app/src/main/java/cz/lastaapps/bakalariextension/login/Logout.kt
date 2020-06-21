@@ -25,11 +25,11 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.util.Log
 import cz.lastaapps.bakalariextension.App
-import cz.lastaapps.bakalariextension.api.User
 import cz.lastaapps.bakalariextension.api.homework.HomeworkStorage
 import cz.lastaapps.bakalariextension.api.marks.MarksStorage
 import cz.lastaapps.bakalariextension.api.subjects.SubjectStorage
 import cz.lastaapps.bakalariextension.api.timetable.TTStorage
+import cz.lastaapps.bakalariextension.api.user.UserStorage
 import cz.lastaapps.bakalariextension.receivers.BootReceiver
 import cz.lastaapps.bakalariextension.receivers.TimeChangeReceiver
 import cz.lastaapps.bakalariextension.services.timetablenotification.TTNotifyService
@@ -53,7 +53,7 @@ class Logout {
             LoginData.refreshToken = ""
             LoginData.tokenExpiration = 0
 
-            User.clear()
+            UserStorage.delete()
 
             //deletes timetables
             TTStorage.deleteAll()

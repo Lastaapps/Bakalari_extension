@@ -20,14 +20,14 @@
 
 package cz.lastaapps.bakalariextension.api.subjects.data
 
-import cz.lastaapps.bakalariextension.api.DataID
+import cz.lastaapps.bakalariextension.api.DataId
 
 class Subject(
     id: String,
     val name: String,
     val shortcut: String,
     val teacher: Teacher
-) : DataID<String>(id), Comparable<Subject> {
+) : DataId<String>(id), Comparable<Subject> {
     override fun compareTo(other: Subject): Int {
         return name.compareTo(other.name)
     }

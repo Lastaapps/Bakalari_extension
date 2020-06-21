@@ -21,8 +21,10 @@
 package cz.lastaapps.bakalariextension.api
 
 import android.app.backup.BackupManager
+import android.content.Intent
 import android.util.Log
 import cz.lastaapps.bakalariextension.App
+import cz.lastaapps.bakalariextension.MainActivity
 import cz.lastaapps.bakalariextension.login.LoginData
 import org.json.JSONException
 import org.json.JSONObject
@@ -250,11 +252,6 @@ class ConnMgr {
 
                 Log.i(TAG, "Server: ${urlConnection.responseCode} ${urlConnection.responseMessage}")
 
-                //failed, app is broken...
-                if (urlConnection.responseCode != 200) {
-                    throw java.lang.Exception("Wrong response code")
-                }
-
                 //reads response
                 var response = ""
                 var line: String?
@@ -263,10 +260,25 @@ class ConnMgr {
                     response += line
                 }
 
+                Log.i(TAG, "Read succeed")
+
                 output.close()
                 br.close()
 
-                Log.i(TAG, "Read succeed")
+                //failed, app is broken...
+                if (urlConnection.responseCode != 200) {
+
+                    //refresh token is not valid anymore
+                    if (urlConnection.responseCode == 400) {
+
+                        val json = JSONObject(response)
+
+                        if (json.getString("error") == "invalid_grant") {
+                            App.context.sendBroadcast(Intent(MainActivity.INVALID_REFRESH_TOKEN))
+                        }
+                    }
+                    throw java.lang.Exception("Wrong response code")
+                }
 
                 val json = JSONObject(response)
 

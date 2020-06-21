@@ -29,11 +29,11 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.User
 import cz.lastaapps.bakalariextension.api.homework.HomeworkLoader
 import cz.lastaapps.bakalariextension.api.marks.MarksLoader
 import cz.lastaapps.bakalariextension.api.subjects.SubjectLoader
 import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
+import cz.lastaapps.bakalariextension.api.user.UserLoader
 import cz.lastaapps.bakalariextension.receivers.BootReceiver
 import cz.lastaapps.bakalariextension.receivers.TimeChangeReceiver
 import cz.lastaapps.bakalariextension.services.timetablenotification.TTNotifyService
@@ -89,7 +89,7 @@ class OnLogin {
             }
 
             //download default user data
-            if (!User.download())
+            if (UserLoader.loadFromServer() == null)
                 return false
 
             //downloads some basic data for offline use if user is connected to wifi

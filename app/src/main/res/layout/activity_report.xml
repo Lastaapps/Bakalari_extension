@@ -155,13 +155,27 @@
                 android:id="@+id/include_homework"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/report_include_timetable"
+                android:text="@string/report_include_homework"
                 android:layout_margin="@dimen/margin_basic" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/report_include_timetable_warning"
+                android:text="@string/report_include_homework_warning"
+                android:paddingStart="@dimen/report_warning_margin"
+                android:paddingEnd="@dimen/report_warning_margin" />
+
+            <CheckBox
+                android:id="@+id/include_subject"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/report_include_subject"
+                android:layout_margin="@dimen/margin_basic" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/report_include_subject_warning"
                 android:paddingStart="@dimen/report_warning_margin"
                 android:paddingEnd="@dimen/report_warning_margin" />
 

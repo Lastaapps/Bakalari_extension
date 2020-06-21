@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
   ~
   ~     This file is part of Bakalari extension.
@@ -23,91 +22,91 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/nav_items_group"
+        android:checkableBehavior="single"
+        android:orderInCategory="0">
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/nav_home"
+            android:orderInCategory="0"
             android:title="@string/menu_home" />
-        <item
-            android:id="@+id/nav_timetable"
-            android:icon="@drawable/nav_timetable"
-            android:title="@string/menu_timetable" />
-        <item
-            android:id="@+id/nav_marks"
-            android:icon="@drawable/nav_marks"
-            android:title="@string/menu_marks" />
-        <item
-            android:id="@+id/nav_homework"
-            android:icon="@drawable/nav_homework"
-            android:title="@string/menu_homework" />
-        <item
-            android:id="@+id/nav_teacher_list"
-            android:icon="@drawable/nav_teacher"
-            android:title="@string/menu_teacher_list" />
-        <item
-            android:id="@+id/nav_subject_list"
-            android:icon="@drawable/nav_subjects"
-            android:title="@string/menu_subject_list" />
-        <item
-            android:id="@+id/nav_settings"
-            android:icon="@drawable/nav_settings"
-            android:title="@string/menu_settings"
-            android:checkable="false" />
-        <item
-            android:id="@+id/nav_logout"
-            android:icon="@drawable/nav_logout"
-            android:title="@string/menu_logout"
-            android:checkable="false" />
-        <item
-            android:id="@+id/nav_about"
-            android:icon="@drawable/nav_about"
-            android:title="@string/menu_about" />
     </group>
 
-    <item android:title="@string/menu_communicate">
+    <item
+        android:id="@+id/nav_settings"
+        android:checkable="false"
+        android:icon="@drawable/nav_settings"
+        android:orderInCategory="20"
+        android:title="@string/menu_settings" />
+    <item
+        android:id="@+id/nav_logout"
+        android:checkable="false"
+        android:icon="@drawable/nav_logout"
+        android:orderInCategory="21"
+        android:title="@string/menu_logout" />
+    <item
+        android:id="@+id/nav_about"
+        android:icon="@drawable/nav_about"
+        android:orderInCategory="22"
+        android:title="@string/menu_about" />
+
+    <item
+        android:orderInCategory="30"
+        android:title="@string/menu_communicate">
         <menu>
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/nav_share"
+                android:orderInCategory="30"
                 android:title="@string/menu_share" />
             <item
                 android:id="@+id/nav_rate"
                 android:icon="@drawable/nav_rate"
+                android:orderInCategory="31"
                 android:title="@string/menu_rate" />
             <item
                 android:id="@+id/nav_idea"
                 android:icon="@drawable/nav_idea"
+                android:orderInCategory="32"
                 android:title="@string/menu_idea" />
             <item
                 android:id="@+id/nav_report"
                 android:icon="@drawable/nav_report"
+                android:orderInCategory="33"
                 android:title="@string/menu_report" />
         </menu>
     </item>
 
-    <item android:title="@string/menu_oder">
+    <item
+        android:orderInCategory="40"
+        android:title="@string/menu_oder">
         <menu>
             <item
                 android:id="@+id/nav_facebook"
                 android:icon="@drawable/nav_facebook"
+                android:orderInCategory="40"
                 android:title="@string/menu_facebook" />
             <item
                 android:id="@+id/nav_google_play"
                 android:icon="@drawable/nav_google_play"
+                android:orderInCategory="41"
                 android:title="@string/menu_google_play" />
             <item
                 android:id="@+id/nav_github"
                 android:icon="@drawable/nav_github"
+                android:orderInCategory="42"
                 android:title="@string/menu_github" />
             <item
                 android:id="@+id/nav_api"
                 android:icon="@drawable/nav_api"
+                android:orderInCategory="43"
                 android:title="@string/menu_api" />
             <item
                 android:id="@+id/nav_license"
                 android:icon="@drawable/nav_license"
+                android:orderInCategory="44"
                 android:title="@string/menu_license" />
         </menu>
     </item>
-
 </menu>

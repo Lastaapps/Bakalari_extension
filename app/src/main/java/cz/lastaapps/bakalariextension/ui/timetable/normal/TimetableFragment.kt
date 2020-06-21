@@ -218,7 +218,7 @@ class TimetableFragment : Fragment() {
 
             /**shows date choose dialog*/
             calendar.setOnClickListener {
-                val now = LocalDate.now()
+                val selectedDate = vm.dateTime!!
                 val listener = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
                     val selected = TimeTools.toMonday(
                         ZonedDateTime.of(
@@ -233,9 +233,9 @@ class TimetableFragment : Fragment() {
                 DatePickerDialog(
                     requireContext(),
                     listener,
-                    now.year,
-                    now.monthValue - 1,
-                    now.dayOfMonth
+                    selectedDate.year,
+                    selectedDate.monthValue - 1,
+                    selectedDate.dayOfMonth
                 ).apply {
 
                 }.show()

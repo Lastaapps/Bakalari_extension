@@ -21,7 +21,7 @@
 package cz.lastaapps.bakalariextension.api.marks.data
 
 import android.util.Log
-import cz.lastaapps.bakalariextension.api.DataID
+import cz.lastaapps.bakalariextension.api.DataId
 import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.tools.MySettings
 import cz.lastaapps.bakalariextension.tools.TimeTools
@@ -54,7 +54,7 @@ class Mark(
     /**Does not contain number of points*/
     var pointsText: String,
     var maxPoints: Int
-) : DataID<String>(id), Comparable<Mark> {
+) : DataId<String>(id), Comparable<Mark> {
 
     /**Compares marks by date and if mark is new*/
     override fun compareTo(other: Mark): Int {

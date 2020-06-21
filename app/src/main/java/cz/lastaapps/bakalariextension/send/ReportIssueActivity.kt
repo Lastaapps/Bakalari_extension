@@ -31,20 +31,25 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.IgnoreExtraProperties
 import cz.lastaapps.bakalariextension.BuildConfig
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.User
 import cz.lastaapps.bakalariextension.api.homework.HomeworkStorage
 import cz.lastaapps.bakalariextension.api.marks.MarksStorage
+import cz.lastaapps.bakalariextension.api.subjects.SubjectStorage
 import cz.lastaapps.bakalariextension.api.timetable.TTStorage
+import cz.lastaapps.bakalariextension.api.user.UserLoader
 import cz.lastaapps.bakalariextension.databinding.ActivityReportBinding
 import cz.lastaapps.bakalariextension.login.LoginData
 import cz.lastaapps.bakalariextension.tools.BaseActivity
 import cz.lastaapps.bakalariextension.tools.MySettings
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.time.Instant
 import java.time.ZoneId
@@ -87,7 +92,9 @@ class ReportIssueActivity : BaseActivity() {
                         ZonedDateTime.now(ZoneId.of("UTC")).toInstant().toEpochMilli()
                     )
                     .apply()
-                send()
+                lifecycleScope.launch(Dispatchers.Default) {
+                    send()
+                }
             }
 
             //Opens new issue on Github
@@ -104,10 +111,8 @@ class ReportIssueActivity : BaseActivity() {
             AlertDialog.Builder(this)
                 .setMessage(R.string.report_overload)
                 .setPositiveButton(R.string.report_go_back) { dialog, _ ->
-                    run {
-                        dialog.dismiss()
-                        finish()
-                    }
+                    dialog.dismiss()
+                    finish()
                 }
                 .setCancelable(false)
                 .create()
@@ -136,7 +141,7 @@ class ReportIssueActivity : BaseActivity() {
     /**
      * Sends needed data to Firebase
      */
-    private fun send() {
+    private suspend fun send() {
         Log.i(TAG, "Sending data")
 
         val email = findViewById<EditText>(R.id.email).text.trim().toString()
@@ -170,7 +175,7 @@ class ReportIssueActivity : BaseActivity() {
                     town = if (canSendSchool) LoginData.town else "disabled",
                     url = LoginData.url,
                     bakalariVersion = LoginData.apiVersion,
-                    accountType = User.get(User.ROLE)
+                    accountType = UserLoader.loadFromStorage()?.userType
                 )
 
                 if (binding.includeTimetable.isChecked)
@@ -182,16 +187,39 @@ class ReportIssueActivity : BaseActivity() {
                 if (binding.includeHomework.isChecked)
                     data.homeworkList = String.format("%s", HomeworkStorage.load()) //null safety
 
+                if (binding.includeSubject.isChecked)
+                    data.subjects = String.format("%s", SubjectStorage.load()) //null safety
+
                 //sends data
                 database.child("report").child(id).setValue(data)
 
-                Toast.makeText(this, R.string.idea_thanks, Toast.LENGTH_LONG).show()
-                finish()
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        this@ReportIssueActivity,
+                        R.string.idea_thanks,
+                        Toast.LENGTH_LONG
+                    ).show()
+                    finish()
+                }
+
             } catch (e: IOException) {
-                Toast.makeText(this, R.string.error_no_internet, Toast.LENGTH_LONG).show()
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        this@ReportIssueActivity,
+                        R.string.error_no_internet,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
+
         } else {
-            Toast.makeText(this, R.string.idea_empty, Toast.LENGTH_LONG).show()
+            withContext(Dispatchers.Main) {
+                Toast.makeText(
+                    this@ReportIssueActivity,
+                    R.string.idea_empty,
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         }
     }
 
@@ -227,7 +255,8 @@ class ReportIssueActivity : BaseActivity() {
         var accountType: String? = "",
         var timetables: ArrayList<String>? = null,
         var marks: String? = null,
-        var homeworkList: String? = null
+        var homeworkList: String? = null,
+        var subjects: String? = null
     )
 
     /**@return device name*/

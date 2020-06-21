@@ -79,7 +79,7 @@
 
         <cz.lastaapps.bakalariextension.ui.views.MyGridView
             android:id="@+id/table"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clipChildren="true"
             android:columnWidth="@dimen/timetable_column_size"

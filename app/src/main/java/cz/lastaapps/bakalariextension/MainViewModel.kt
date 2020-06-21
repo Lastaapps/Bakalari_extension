@@ -38,6 +38,7 @@ class MainViewModel : ViewModel() {
     companion object {
         private val TAG = MainViewModel::class.java.simpleName
 
+        //values for result
         const val UNKNOWN = 0
         const val LOGGED_IN = 1
         const val SHOW_LICENSE = 2
@@ -45,19 +46,25 @@ class MainViewModel : ViewModel() {
         const val SHOW_LOGIN_ACTIVITY = 4
     }
 
+    //Startup login check section
+    /**if doDecision is running*/
     private val loadingInProgress = MutableLiveData(false)
 
+    /**The result of loading check, values UNKNOWN (default),
+     * LOGGED_IN, SHOW_LICENSE, SHOW_NO_INTERNET, SHOW_LOGIN_ACTIVITY
+     */
     val result = MutableLiveData(UNKNOWN)
 
+    /**if user is logged in*/
     val loggedIn = MutableLiveData(false)
 
-    val launchInitRun = MutableLiveData(false)
-
+    /**reset values to state before loading check*/
     fun reset() {
         loadingInProgress.value = false
         result.value = UNKNOWN
     }
 
+    /**runs check id user is logged in*/
     fun doDecision() {
 
         if (loadingInProgress.value == true)
@@ -117,4 +124,16 @@ class MainViewModel : ViewModel() {
             }
         }
     }
+
+
+    //MainActivity section
+    /**if mainActivity has run on start init*/
+    val launchInitRun = MutableLiveData(false)
+
+    /**if message telling about wrong refresh token has been already shown*/
+    val invalidTokenMessageShown = MutableLiveData(false)
+
+    /**if message saying full storage was shown*/
+    val fullStorageShown = MutableLiveData(false)
+
 }

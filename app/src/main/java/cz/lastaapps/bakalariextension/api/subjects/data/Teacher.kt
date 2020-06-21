@@ -20,7 +20,7 @@
 
 package cz.lastaapps.bakalariextension.api.subjects.data
 
-import cz.lastaapps.bakalariextension.api.DataID
+import cz.lastaapps.bakalariextension.api.DataId
 import cz.lastaapps.bakalariextension.api.subjects.SubjectList
 import cz.lastaapps.bakalariextension.api.subjects.TeacherList
 
@@ -33,7 +33,7 @@ class Teacher(
     val phoneSchool: String,
     val phoneHome: String,
     val phoneMobile: String
-) : DataID<String>(id), Comparable<Teacher> {
+) : DataId<String>(id), Comparable<Teacher> {
 
     override fun compareTo(other: Teacher): Int {
         return name.compareTo(other.name)

@@ -27,10 +27,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.User
+import cz.lastaapps.bakalariextension.api.user.data.User
 import cz.lastaapps.bakalariextension.databinding.FragmentHomeBinding
+import cz.lastaapps.bakalariextension.ui.UserViewModel
 import cz.lastaapps.bakalariextension.ui.WhatsNew
+import cz.lastaapps.bakalariextension.ui.homework.HmwOverview
+import cz.lastaapps.bakalariextension.ui.marks.NewMarksFragment
+import cz.lastaapps.bakalariextension.ui.timetable.small.SmallTimetableFragment
 
 class HomeFragment : Fragment() {
 
@@ -39,6 +44,7 @@ class HomeFragment : Fragment() {
     }
 
     private lateinit var binding: FragmentHomeBinding
+    private val userViewModel: UserViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,11 +67,34 @@ class HomeFragment : Fragment() {
 
         //sets up info about user
         binding.apply {
-            name.text = User.get(User.NAME)
-            type.text = User.getClassAndRole()
-            school.text = User.get(User.SCHOOL)
+            val user = userViewModel.requireData()
+            name.text = user.normalFunName
+            type.text = user.getClassAndRole()
+            school.text = user.schoolName
         }
 
+        addFragments()
+
         return binding.root
+    }
+
+    private fun addFragments() {
+
+        val user = userViewModel.requireData()
+        val transaction = childFragmentManager.beginTransaction()
+
+        if (user.isModuleEnabled(User.TIMETABLE)) {
+            transaction.add(R.id.timetable_fragment, SmallTimetableFragment())
+        }
+
+        if (user.isModuleEnabled(User.MARKS)) {
+            transaction.add(R.id.marks_fragment, NewMarksFragment())
+        }
+
+        if (user.isModuleEnabled(User.HOMEWORK)) {
+            transaction.add(R.id.homework_fragment, HmwOverview())
+        }
+
+        transaction.commit()
     }
 }

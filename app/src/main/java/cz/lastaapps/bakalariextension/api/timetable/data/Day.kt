@@ -127,9 +127,21 @@ data class Day(
         return true
     }
 
+    /**@return if day is workday*/
+    fun isWorkDay(): Boolean {
+        return dayType == "WorkDay"
+    }
+
     /**@return if day is holiday (and also empty)*/
     fun isHoliday(): Boolean {
         return dayType == "Celebration" || dayType == "Holiday"
+    }
+
+    /**@return if day is weekend (and also empty)
+     * weekend is not normally presented in data set, but can occur in some abnormal situations,
+     * like the beginning of the school year*/
+    fun isWeekend(): Boolean {
+        return dayType == "Weekend"
     }
 
     /**@return Special day description or default string*/

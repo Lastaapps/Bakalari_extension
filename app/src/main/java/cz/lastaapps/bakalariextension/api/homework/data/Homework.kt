@@ -20,7 +20,7 @@
 
 package cz.lastaapps.bakalariextension.api.homework.data
 
-import cz.lastaapps.bakalariextension.api.DataID
+import cz.lastaapps.bakalariextension.api.DataId
 import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.SimpleData
 import cz.lastaapps.bakalariextension.api.attachment.data.Attachment
@@ -51,7 +51,7 @@ class Homework(
     var subject: SimpleData,
     var teacher: SimpleData,
     var attachments: DataIdList<Attachment>
-) : DataID<String>(id), Comparable<Homework> {
+) : DataId<String>(id), Comparable<Homework> {
     init {
         if (dateControl == "") dateControl = dateAward
     }

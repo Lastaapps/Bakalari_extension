@@ -42,6 +42,11 @@ abstract class RefreshableViewModel<E> : ViewModel() {
     /**reloads data*/
     abstract fun onRefresh(force: Boolean = false)
 
-    abstract fun emptyText(context: Context): String
-    abstract fun failedText(context: Context): String
+    /**removes need to use !! in code all the time*/
+    open fun requireData(): E {
+        return data.value!!
+    }
+
+    open fun emptyText(context: Context): String = ""
+    open fun failedText(context: Context): String = ""
 }

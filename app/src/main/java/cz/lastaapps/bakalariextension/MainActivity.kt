@@ -20,7 +20,10 @@
 
 package cz.lastaapps.bakalariextension
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
@@ -32,6 +35,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -42,11 +46,12 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
-import cz.lastaapps.bakalariextension.api.User
+import cz.lastaapps.bakalariextension.api.user.data.User
 import cz.lastaapps.bakalariextension.login.Logout
 import cz.lastaapps.bakalariextension.send.ReportIssueActivity
 import cz.lastaapps.bakalariextension.send.SendIdeaActivity
 import cz.lastaapps.bakalariextension.tools.BaseActivity
+import cz.lastaapps.bakalariextension.ui.UserViewModel
 import cz.lastaapps.bakalariextension.ui.license.LicenseActivity
 import cz.lastaapps.bakalariextension.ui.settings.SettingsActivity
 import kotlinx.coroutines.CoroutineScope
@@ -61,10 +66,15 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         //intent extra to select default fragment
         const val NAVIGATE = "navigate"
+
+        const val INVALID_REFRESH_TOKEN = "cz.lastaapps.bakalariextension.INVALID_REFRESH_TOKEN"
+        const val FULL_STORAGE = "cz.lastaapps.bakalariextension.FULL_STORAGE"
+
     }
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private val mainViewModel: MainViewModel by viewModels()
+    private val userViewModel: UserViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,18 +121,25 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         if (mainViewModel.result.value == MainViewModel.UNKNOWN) {
             navController.navigate(R.id.nav_loading)
         } else if (mainViewModel.loggedIn.value == true) {
-            navigateHome()
+            startupCheckSucceed()
         }
-
-        //updates side nav with info
-        navView.getHeaderView(0).findViewById<TextView>(R.id.nav_name).text = User.get(User.NAME)
-        navView.getHeaderView(0).findViewById<TextView>(R.id.nav_type).text = User.getClassAndRole()
 
         //selects default fragment
         val navigateTo = intent.getIntExtra(NAVIGATE, -1)
         if (navigateTo != -1)
             findNavController(R.id.nav_host_fragment).navigate(navigateTo)
 
+        //shows popup when refresh token is invalid
+        registerReceiver(invalidRefreshTokenReceiver, IntentFilter(INVALID_REFRESH_TOKEN))
+
+        //shows popup when storage is full
+        registerReceiver(fullStorageReceiver, IntentFilter(FULL_STORAGE))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        unregisterReceiver(invalidRefreshTokenReceiver)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -146,7 +163,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     /**shows home fragment*/
-    fun navigateHome() {
+    fun startupCheckSucceed() {
+
         findNavController(R.id.nav_host_fragment).apply {
             currentDestination?.let {
                 if (it.id == R.id.nav_loading)
@@ -171,6 +189,86 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         findViewById<View>(R.id.nav_view).visibility = View.VISIBLE
         findViewById<View>(R.id.appBarLayout).visibility = View.VISIBLE
 
+        setupNavMenus()
+    }
+
+    /**adds navigation items of the enabled modules*/
+    private fun setupNavMenus() {
+
+        //updates side nav with info
+        val user = userViewModel.requireData()
+        val navView: NavigationView = findViewById(R.id.nav_view)
+        navView.getHeaderView(0).findViewById<TextView>(R.id.nav_name).text = user.normalFunName
+        navView.getHeaderView(0).findViewById<TextView>(R.id.nav_type).text = user.getClassAndRole()
+
+        var homeOrder = navView.menu.findItem(R.id.nav_home).order
+
+        if (user.isModuleEnabled(User.TIMETABLE))
+            navView.menu.add(
+                R.id.nav_items_group,
+                R.id.nav_timetable,
+                ++homeOrder,
+                R.string.menu_timetable
+            ).setIcon(R.drawable.nav_timetable)
+
+        if (user.isModuleEnabled(User.MARKS))
+            navView.menu.add(
+                R.id.nav_items_group,
+                R.id.nav_marks,
+                ++homeOrder,
+                R.string.menu_marks
+            ).setIcon(R.drawable.nav_marks)
+
+        if (user.isModuleEnabled(User.HOMEWORK))
+            navView.menu.add(
+                R.id.nav_items_group,
+                R.id.nav_homework,
+                ++homeOrder,
+                R.string.menu_homework
+            ).setIcon(R.drawable.nav_homework)
+
+        if (user.isModuleEnabled(User.SUBJECTS))
+            navView.menu.add(
+                R.id.nav_items_group,
+                R.id.nav_teacher_list,
+                ++homeOrder,
+                R.string.menu_teacher_list
+            ).setIcon(R.drawable.nav_teacher)
+
+        if (user.isModuleEnabled(User.SUBJECTS))
+            navView.menu.add(
+                R.id.nav_items_group,
+                R.id.nav_subject_list,
+                ++homeOrder,
+                R.string.menu_subject_list
+            ).setIcon(R.drawable.nav_subjects)
+
+
+        val bottom = findViewById<BottomNavigationView>(R.id.bottom_nav)
+
+        if (user.isModuleEnabled(User.TIMETABLE))
+            bottom.menu.add(
+                R.id.nav_items_group,
+                R.id.nav_timetable,
+                Menu.NONE,
+                R.string.menu_timetable
+            ).setIcon(R.drawable.nav_timetable)
+
+        if (user.isModuleEnabled(User.MARKS))
+            bottom.menu.add(
+                R.id.nav_items_group,
+                R.id.nav_marks,
+                Menu.NONE,
+                R.string.menu_marks
+            ).setIcon(R.drawable.nav_marks)
+
+        if (user.isModuleEnabled(User.HOMEWORK))
+            bottom.menu.add(
+                R.id.nav_items_group,
+                R.id.nav_homework,
+                Menu.NONE,
+                R.string.menu_homework
+            ).setIcon(R.drawable.nav_homework)
     }
 
     /**When side navigation or the bottom bar was selected*/
@@ -278,5 +376,47 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         drawer.closeDrawer(GravityCompat.START)
 
         return toReturn
+    }
+
+    private val invalidRefreshTokenReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == INVALID_REFRESH_TOKEN) {
+                Log.i(TAG, "Showing invalid token message")
+
+                //shows message only once
+                if (mainViewModel.invalidTokenMessageShown.value == false) {
+
+                    mainViewModel.invalidTokenMessageShown.value = true
+
+                    AlertDialog.Builder(this@MainActivity)
+                        .setTitle(R.string.invalid_token_understand_title)
+                        .setMessage(R.string.invalid_token_understand_message)
+                        .setPositiveButton(R.string.invalid_token_understand_button) { _, _ -> }
+                        .setCancelable(true)
+                        .show()
+                }
+            }
+        }
+    }
+
+    private val fullStorageReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == FULL_STORAGE) {
+                Log.i(TAG, "Showing full storage message")
+
+                //shows message only once
+                if (mainViewModel.fullStorageShown.value == false) {
+
+                    mainViewModel.fullStorageShown.value = true
+
+                    AlertDialog.Builder(this@MainActivity)
+                        .setTitle(R.string.full_storage_title)
+                        .setMessage(R.string.full_storage_message)
+                        .setPositiveButton(R.string.full_storage_button) { _, _ -> }
+                        .setCancelable(true)
+                        .show()
+                }
+            }
+        }
     }
 }

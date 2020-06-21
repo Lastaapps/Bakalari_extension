@@ -80,6 +80,20 @@
     <string name="error_no_timetable_for_today">No timetable for today</string>
     <string name="error_no_timetable_open_app">Failed to download timetable, open app</string>
 
+    <!-- Invalid refresh token dialog data -->
+    <string name="invalid_token_understand_title">A problem…</string>
+    <string name="invalid_token_understand_message">
+        I seems that your login is not valid anymore,
+        you will be still able to use offline data, but
+        to use current ones you need to log out
+        and in again. There\'s nothing we can do about it :(
+    </string>
+    <string name="invalid_token_understand_button">I understand</string>
+
+    <!-- Full storage dialog data -->
+    <string name="full_storage_title">Full storage</string>
+    <string name="full_storage_message">There is no more space to save data, so the offline data may not be updated or saved</string>
+    <string name="full_storage_button">I will see</string>
 
     <!--Notification channels-->
     <string name="timetable_chanel_name">Current lesson</string>
@@ -187,6 +201,9 @@
         <item quantity="one">week</item>
         <item quantity="other">weeks</item>
     </plurals>
+
+    <!-- User -->
+    <string name="user_failed_to_load">Failed to load user data, app cannot work without them!</string>
 
     <!-- Marks -->
     <string name="marks_by_date">By date</string>

@@ -20,7 +20,7 @@
 
 package cz.lastaapps.bakalariextension.api.attachment.data
 
-import cz.lastaapps.bakalariextension.api.DataID
+import cz.lastaapps.bakalariextension.api.DataId
 
 /**Represent attachment - contains all necessary info*/
 class Attachment(
@@ -28,4 +28,4 @@ class Attachment(
     var fileName: String,
     var type: String,
     var size: Int
-) : DataID<String>(id)
+) : DataId<String>(id)

@@ -18,37 +18,12 @@
  *
  */
 
-package cz.lastaapps.bakalariextension.api
+package cz.lastaapps.bakalariextension.api.user.data
 
-import java.io.Serializable
+import cz.lastaapps.bakalariextension.api.DataId
 
-/**Parent of the most of the items, the can be then used in DataIDList*/
-open class DataId<T>(var id: T) : Serializable {
-
-    override fun equals(other: Any?): Boolean {
-        return if (other is DataId<*>)
-            id == other.id
-        else
-            false
-    }
-
-    override fun hashCode(): Int {
-        return id.hashCode()
-    }
-}
-
-/**Parent for classes containing just id, name and shortcut*/
-open class SimpleData(
-    id: String,
-    var shortcut: String,
-    var name: String
-) : DataId<String>(id), Comparable<SimpleData> {
-
-    override fun toString(): String {
-        return "{id=$id name=$name shortcut=$shortcut}"
-    }
-
-    override fun compareTo(other: SimpleData): Int {
-        return id.compareTo(other.id)
-    }
-}
+class Semester(
+    id: Int,
+    from: String,
+    to: String
+) : DataId<Int>(id)

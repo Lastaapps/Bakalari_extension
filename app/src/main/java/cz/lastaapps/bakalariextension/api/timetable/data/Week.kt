@@ -55,6 +55,16 @@ data class Week(
             null
     }
 
+    /**@return if week has 5 Work, Holiday or Work days*/
+    fun hasValidDays(): Boolean {
+        if (days.size < 5) return false
+        for (day in days) {
+            if (!(day.isHoliday() || day.isWorkDay()))
+                return false
+        }
+        return true
+    }
+
     /**@return today's day object if today is contained in day list*/
     fun today(): Day? {
         return getDay(TimeTools.now)

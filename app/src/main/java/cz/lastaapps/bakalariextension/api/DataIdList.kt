@@ -21,11 +21,11 @@
 package cz.lastaapps.bakalariextension.api
 
 /**Adds method to access data lists via their IDs*/
-class DataIdList<T: DataID<*>>: ArrayList<T> {
+class DataIdList<T : DataId<*>> : ArrayList<T> {
 
-    constructor(): super()
+    constructor() : super()
 
-    constructor(list: List<T>): super(list)
+    constructor(list: List<T>) : super(list)
 
     fun getById(id: Any?): T? {
         for (it in this) {

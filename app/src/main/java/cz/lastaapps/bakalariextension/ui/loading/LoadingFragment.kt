@@ -35,6 +35,7 @@ import cz.lastaapps.bakalariextension.MainActivity
 import cz.lastaapps.bakalariextension.MainViewModel
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.login.LoginActivity
+import cz.lastaapps.bakalariextension.ui.UserViewModel
 import cz.lastaapps.bakalariextension.ui.license.LicenseActivity
 
 /**Checks if app has been ever started -> license, if user is logged in -> LoginActivity or -> MainActivity*/
@@ -45,15 +46,20 @@ class LoadingFragment : Fragment() {
     }
 
     private val mainViewModel: MainViewModel by activityViewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        userViewModel.data.observe({ lifecycle }) {
+            (requireActivity() as MainActivity).startupCheckSucceed()
+        }
 
         mainViewModel.apply {
             val doWork = { state: Int ->
                 when (state) {
                     MainViewModel.LOGGED_IN -> {
-                        (requireActivity() as MainActivity).navigateHome()
+                        userViewModel.onRefresh()
                     }
                     MainViewModel.SHOW_LICENSE -> {
                         //shows license dialog

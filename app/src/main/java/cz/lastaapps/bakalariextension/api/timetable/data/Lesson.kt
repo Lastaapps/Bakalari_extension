@@ -20,7 +20,7 @@
 
 package cz.lastaapps.bakalariextension.api.timetable.data
 
-import cz.lastaapps.bakalariextension.api.DataID
+import cz.lastaapps.bakalariextension.api.DataId
 
 /**Stores info about lesson and the change of the lesson*/
 class Lesson(
@@ -33,7 +33,7 @@ class Lesson(
     var change: Change?,
     var homeworkIds: ArrayList<String>,
     var theme: String
-): DataID<Int>(hourId) {
+) : DataId<Int>(hourId) {
 
     fun isNormal(): Boolean {
         if (change == null) return true

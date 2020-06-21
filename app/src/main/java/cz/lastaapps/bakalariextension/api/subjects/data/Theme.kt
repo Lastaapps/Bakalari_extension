@@ -20,7 +20,7 @@
 
 package cz.lastaapps.bakalariextension.api.subjects.data
 
-import cz.lastaapps.bakalariextension.api.DataID
+import cz.lastaapps.bakalariextension.api.DataId
 import cz.lastaapps.bakalariextension.tools.TimeTools
 
 class Theme(
@@ -29,7 +29,7 @@ class Theme(
     val note: String,
     val hourCaption: String,
     val lessonLabel: String
-) : DataID<String>(lessonLabel), Comparable<Theme> {
+) : DataId<String>(lessonLabel), Comparable<Theme> {
     override fun compareTo(other: Theme): Int {
         return lessonLabel.toInt().compareTo(other.lessonLabel.toInt())
     }

@@ -25,16 +25,6 @@
         android:id="@+id/nav_home"
         android:icon="@drawable/nav_home"
         android:title="@string/menu_home" />
-    <item
-        android:id="@+id/nav_timetable"
-        android:icon="@drawable/nav_timetable"
-        android:title="@string/menu_timetable" />
-    <item
-        android:id="@+id/nav_marks"
-        android:icon="@drawable/nav_marks"
-        android:title="@string/menu_marks" />
-    <item
-        android:id="@+id/nav_homework"
-        android:icon="@drawable/nav_homework"
-        android:title="@string/menu_homework" />
+
+    <group android:id="@+id/nav_items_group" />
 </menu>

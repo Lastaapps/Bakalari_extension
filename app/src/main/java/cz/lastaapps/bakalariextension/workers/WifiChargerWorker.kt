@@ -24,8 +24,8 @@ import android.content.Context
 import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import cz.lastaapps.bakalariextension.api.User
 import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
+import cz.lastaapps.bakalariextension.api.user.UserLoader
 import cz.lastaapps.bakalariextension.tools.TimeTools
 
 /**Runs some tasks on charger when not metered connection to internet is available*/
@@ -43,7 +43,7 @@ class WifiChargerWorker(context: Context, workerParameters: WorkerParameters) :
         //if all actions succeed
         var success = true
 
-        User.download()
+        UserLoader.loadFromServer()
 
         //updates current timetable
         if (TimetableLoader.loadFromServer(TimeTools.monday) == null)

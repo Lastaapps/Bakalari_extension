@@ -148,22 +148,26 @@ class TimetableCreator {
 
             //non valid hour would result in empty columns (like zero lessons)
             val validHours = week.trimFreeMorning()
-            if (validHours.isEmpty() || cycle == null) {
+            if (validHours.isEmpty() && !week.hasValidDays()) {
 
                 edge.findViewById<TextView>(R.id.cycle).text = ""
 
                 root.findViewById<TextView>(R.id.empty_timetable)
                     .visibility = View.VISIBLE
+                root.findViewById<TableLayout>(R.id.table)
+                    .visibility = View.GONE
 
                 return
             } else {
 
                 //init cycle name
                 edge.findViewById<TextView>(R.id.cycle).text =
-                    cycle.name
+                    cycle?.name ?: ""
 
                 root.findViewById<TextView>(R.id.empty_timetable)
                     .visibility = View.GONE
+                root.findViewById<TableLayout>(R.id.table)
+                    .visibility = View.VISIBLE
             }
 
             yield()
@@ -203,9 +207,10 @@ class TimetableCreator {
                 R.string.friday_shortut
             )
 
+            val mondayDate = week.loadedForDate
+
             //goes through
             for (i in 0 until 5) {
-                val day = week.days[i]
                 val view = daysTable.findViewById<ViewGroup>(dayArray[i])
 
                 //sets tows height to mach the oder ones
@@ -218,7 +223,11 @@ class TimetableCreator {
                 dayTV.text = App.getString(dayShortcutsArray[i])
                 //permanent timetable doesn't show date
                 if (!week.isPermanent())
-                    dateTV.text = TimeTools.format(day.toDate(), "d.M.", ZoneId.systemDefault())
+                    dateTV.text = TimeTools.format(
+                        mondayDate.plusDays(i.toLong()),
+                        "d.M.",
+                        ZoneId.systemDefault()
+                    )
                 else
                 //For permanent timetable
                     dateTV.text = ""
@@ -300,7 +309,8 @@ class TimetableCreator {
                     //during holiday
 
                     //updates texts
-                    holiday.findViewById<TextView>(R.id.holiday).text = day.getHolidayDescription()
+                    holiday.findViewById<TextView>(R.id.holiday).text =
+                        day.getHolidayDescription()
                     holiday.findViewById<TextView>(R.id.holiday).textAlignment =
                         TextView.TEXT_ALIGNMENT_VIEW_START
 
