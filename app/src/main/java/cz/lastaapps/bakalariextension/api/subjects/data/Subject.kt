@@ -21,6 +21,8 @@
 package cz.lastaapps.bakalariextension.api.subjects.data
 
 import cz.lastaapps.bakalariextension.api.DataId
+import java.text.Collator
+import java.util.*
 
 class Subject(
     id: String,
@@ -29,6 +31,8 @@ class Subject(
     val teacher: Teacher
 ) : DataId<String>(id), Comparable<Subject> {
     override fun compareTo(other: Subject): Int {
-        return name.compareTo(other.name)
+        val collator = Collator.getInstance(Locale.getDefault())
+
+        return collator.compare(name, other.name)
     }
 }

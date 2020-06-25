@@ -25,15 +25,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.findNavController
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.homework.data.Homework
-import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
-import cz.lastaapps.bakalariextension.databinding.FragmentHomeworkOverviewBinding
+import cz.lastaapps.bakalariextension.databinding.FragmentOverviewBinding
 
 /**placed inside HomeFragment, shows how many current homework are there*/
 class HmwOverview : Fragment() {
@@ -42,34 +41,8 @@ class HmwOverview : Fragment() {
         private val TAG = HmwOverview::class.simpleName
     }
 
-    lateinit var binding: FragmentHomeworkOverviewBinding
-    lateinit var viewModel: HmwViewModel
-
-    /**observes when marks are loaded*/
-    private val homeworkObserver = { _: HomeworkList ->
-        Log.i(TAG, "Updating based on new homework list")
-
-        onHomeworkValid()
-    }
-
-    /**observes when no homework list could be loaded (not empty one)*/
-    private val failObserver = { _: Any ->
-        if (viewModel.homework.value == null) {
-            onHomeworkFail()
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        //loads ViewModel
-        val v: HmwViewModel by requireActivity().viewModels()
-        viewModel = v
-
-        //observes for data change
-        viewModel.homework.observe({ lifecycle }, homeworkObserver)
-        viewModel.failed.observe({ lifecycle }, failObserver)
-    }
+    private lateinit var binding: FragmentOverviewBinding
+    private val viewModel: HmwViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -82,12 +55,15 @@ class HmwOverview : Fragment() {
         binding =
             DataBindingUtil.inflate(
                 inflater,
-                R.layout.fragment_homework_overview,
+                R.layout.fragment_overview,
                 container,
                 false
             )
         binding.lifecycleOwner = LifecycleOwner { lifecycle }
         binding.viewmodel = viewModel
+        binding.drawable = R.drawable.homework
+        //TODO contentDescription
+        binding.contentDescription = ""
 
         //navigates to homework fragments
         binding.contentLayout.setOnClickListener {
@@ -95,40 +71,14 @@ class HmwOverview : Fragment() {
         }
 
         //starts marks loading if they aren't yet
-        if (viewModel.homework.value == null) {
-            viewModel.onRefresh(false)
-        } else {
-            //marks loaded
-            homeworkObserver(viewModel.homework.value!!)
-        }
+        viewModel.executeOrRefresh(lifecycle) { dataChanged() }
 
         return binding.root
     }
 
-    /**homework list loaded*/
-    private fun onHomeworkValid() {
-        binding.apply {
-            loading.visibility = View.GONE
-            errorMessage.visibility = View.GONE
-            contentLayout.visibility = View.VISIBLE
-        }
-
-        setupContent()
-    }
-
-    /**failed to download homework list*/
-    private fun onHomeworkFail() {
-        binding.apply {
-            loading.visibility = View.GONE
-            errorMessage.visibility = View.VISIBLE
-            contentLayout.visibility = View.GONE
-
-            errorMessage.text = getString(R.string.homework_failed_to_load)
-        }
-    }
-
     /**sets actual content of the fragment*/
-    private fun setupContent() {
+    private fun dataChanged() {
+        Log.i(TAG, "Updating data")
 
         val currentHomework = Homework.getCurrent(viewModel.homework.value!!)
         val size = currentHomework.size

@@ -45,12 +45,6 @@
     <style name="Marks.MarksCount" parent="Marks.Text">
 
     </style>
-    <style name="Marks.LastUpdate" parent="">
-        <item name="android:textAlignment">center</item>
-        <item name="android:textSize">@dimen/timetable_bottom_text</item>
-        <item name="android:textColor">@color/timetable_bottom_text</item>
-        <item name="android:background">@color/timetable_bottom_text_background</item>
-    </style>
 
     <style name="Marks.Predictor.Label" parent="Marks.Text">
         <item name="android:textSize">20sp</item>

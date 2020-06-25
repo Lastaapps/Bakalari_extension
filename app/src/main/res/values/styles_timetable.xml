@@ -76,11 +76,6 @@
     </style>
 
     <!-- Bottom box with buttons-->
-    <style name="Timetable.LastUpdate" parent="">
-        <item name="android:textSize">@dimen/timetable_bottom_text</item>
-        <item name="android:textColor">@color/timetable_bottom_text</item>
-        <item name="android:background">@color/timetable_bottom_text_background</item>
-    </style>
     <style name="Timetable.ImageButton" parent="">
         <item name="android:scaleType">fitCenter</item>
         <item name="android:adjustViewBounds">true</item>

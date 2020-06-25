@@ -43,8 +43,8 @@
 
     <color name="border">#777</color>
 
-    <color name="timetable_bottom_text">#333</color>
-    <color name="timetable_bottom_text_background">#CCC</color>
+    <color name="last_updated_text_color">#333</color>
+    <color name="last_updated_background_color">#CCC</color>
     <color name="timetable_absence">#388E3C</color>
     <color name="timetable_current">#FBC02D</color>
     <color name="timetable_change">#D32F2F</color>

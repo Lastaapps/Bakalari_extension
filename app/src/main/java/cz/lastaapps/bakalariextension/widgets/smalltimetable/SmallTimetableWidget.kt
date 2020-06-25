@@ -37,7 +37,6 @@ import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
 import cz.lastaapps.bakalariextension.api.timetable.data.Day
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import cz.lastaapps.bakalariextension.tools.TimeTools
-import cz.lastaapps.bakalariextension.ui.loading.LoadingFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -162,7 +161,7 @@ class SmallTimetableWidget : AppWidgetProvider() {
             }
 
             //opens full timetable
-            val intent = Intent(context, LoadingFragment::class.java)
+            val intent = Intent(context, MainActivity::class.java)
             intent.putExtra(MainActivity.NAVIGATE, R.id.nav_timetable)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)

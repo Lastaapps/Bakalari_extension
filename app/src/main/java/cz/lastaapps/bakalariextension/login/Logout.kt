@@ -25,6 +25,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.util.Log
 import cz.lastaapps.bakalariextension.App
+import cz.lastaapps.bakalariextension.api.absence.AbsenceStorage
 import cz.lastaapps.bakalariextension.api.homework.HomeworkStorage
 import cz.lastaapps.bakalariextension.api.marks.MarksStorage
 import cz.lastaapps.bakalariextension.api.subjects.SubjectStorage
@@ -53,6 +54,7 @@ class Logout {
             LoginData.refreshToken = ""
             LoginData.tokenExpiration = 0
 
+            //deletes user data
             UserStorage.delete()
 
             //deletes timetables
@@ -67,6 +69,8 @@ class Logout {
             //deletes subjects
             SubjectStorage.delete()
 
+            //deletes absence
+            AbsenceStorage.delete()
 
             //disables receivers
             val receivers = arrayOf(

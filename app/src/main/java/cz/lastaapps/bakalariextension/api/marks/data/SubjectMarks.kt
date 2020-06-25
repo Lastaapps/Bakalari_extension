@@ -21,6 +21,8 @@
 package cz.lastaapps.bakalariextension.api.marks.data
 
 import cz.lastaapps.bakalariextension.api.DataIdList
+import java.text.Collator
+import java.util.*
 
 /**Subject marking info with marks and subject info*/
 class SubjectMarks(
@@ -43,6 +45,8 @@ class SubjectMarks(
     }
 
     override fun compareTo(other: SubjectMarks): Int {
-        return subject.name.compareTo(other.subject.name)
+        val collator = Collator.getInstance(Locale.getDefault())
+
+        return collator.compare(subject.name, other.subject.name)
     }
 }

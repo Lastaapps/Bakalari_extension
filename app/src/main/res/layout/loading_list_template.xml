@@ -52,45 +52,26 @@
             android:visibility="@{viewmodel.isEmpty() ? View.VISIBLE : View.GONE}"
             tools:text="Data went for a walk" />
 
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:visibility="@{viewmodel.isEmpty() ? View.GONE : View.VISIBLE}">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:onRefreshListener="@{() -> viewmodel.onRefresh(true)}"
+            app:refreshing="@{viewmodel.isRefreshing()}">
 
-            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:onRefreshListener="@{() -> viewmodel.onRefresh(true)}"
-                app:refreshing="@{viewmodel.isRefreshing()}">
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:visibility="@{viewmodel.isEmpty() ? View.GONE : View.VISIBLE}" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/list"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-            <!--
-            <LinearLayout
-                android:id="@+id/bottom_sheet"
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:background="#ffffff"
-                android:orientation="vertical"
-                app:behavior_hideable="true"
-                app:behavior_peekHeight="0dp"
-                app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
-            </LinearLayout>
-            -->
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </FrameLayout>
 </layout>

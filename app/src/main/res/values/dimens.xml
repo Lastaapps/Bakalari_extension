@@ -37,6 +37,10 @@
     <dimen name="image_button">64dp</dimen>
     <dimen name="small_image_button">40dp</dimen>
 
+    <dimen name="last_updated_text_size">12sp</dimen>
+
+    <dimen name="bottom_fragment_bottom_margin">50dp</dimen>
+
     <!-- Login -->
     <dimen name="login_margin_sides">24dp</dimen>
     <dimen name="login_margin_sides_button">48dp</dimen>
@@ -69,11 +73,18 @@
     <dimen name="timetable_bottom_margin">10dp</dimen>
     <dimen name="timetable_bottom_button">35dp</dimen>
     <dimen name="timetable_bottom_row">45dp</dimen><!-- 2x padding + button -->
-    <dimen name="timetable_bottom_text">12sp</dimen>
     <dimen name="timetable_bottom_sides">10dp</dimen>
     <dimen name="timetable_homework_warning">16dp</dimen>
 
     <!-- Subject -->
     <dimen name="subject_info_list_height">300dp</dimen>
+
+    <!-- Absence -->
+    <dimen name="absence_number_cell">30sp</dimen>
+    <dimen name="absence_number_label">60sp <!-- above * 2 --> </dimen>
+    <dimen name="absence_percentage_cell">50sp</dimen>
+    <dimen name="absence_day_name_width">100sp</dimen>
+    <dimen name="absence_day_value_width">20sp</dimen>
+    <dimen name="absence_day_icon_size">16dp</dimen>
 
 </resources>

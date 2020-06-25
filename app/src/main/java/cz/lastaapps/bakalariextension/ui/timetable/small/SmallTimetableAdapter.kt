@@ -32,6 +32,7 @@ import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
 import cz.lastaapps.bakalariextension.api.timetable.data.Day
 import cz.lastaapps.bakalariextension.api.timetable.data.Lesson
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
+import cz.lastaapps.bakalariextension.api.user.data.User
 import cz.lastaapps.bakalariextension.ui.timetable.CellSetup
 import kotlin.math.max
 
@@ -40,6 +41,7 @@ class SmallTimetableAdapter(
     var context: Context,
     var week: Week,
     var day: Day,
+    var user: User,
     var homework: HomeworkList?
 ) : BaseAdapter() {
 
@@ -94,6 +96,7 @@ class SmallTimetableAdapter(
                 day,
                 hour,
                 null,
+                user,
                 homework
             )
         )

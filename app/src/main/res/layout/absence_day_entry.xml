@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~
+  ~     This file is part of Bakalari extension.
+  ~
+  ~     Bakalari extension is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Bakalari extension is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="day"
+            type="cz.lastaapps.bakalariextension.api.absence.data.AbsenceDataHolder" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_basic">
+
+        <TextView
+            style="@style/AppTheme.Text"
+            android:id="@+id/label"
+            android:layout_width="@dimen/absence_day_name_width"
+            android:layout_height="wrap_content"
+            android:text="@{day.getLabel()}"
+            android:layout_margin="@dimen/margin_basic"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="September" />
+
+        <TextView
+            android:id="@+id/unsolved"
+            style="@style/Absence.Day.Values"
+            android:text="@{String.valueOf(day.unsolved)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ok"
+            app:layout_constraintStart_toEndOf="@+id/label"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="69" />
+
+        <TextView
+            android:id="@+id/ok"
+            style="@style/Absence.Day.Values"
+            android:text="@{String.valueOf(day.ok)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/missed"
+            app:layout_constraintStart_toEndOf="@+id/unsolved"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="69" />
+
+        <TextView
+            android:id="@+id/missed"
+            style="@style/Absence.Day.Values"
+            android:text="@{String.valueOf(day.missed)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/late"
+            app:layout_constraintStart_toEndOf="@+id/ok"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="69" />
+
+        <TextView
+            android:id="@+id/late"
+            style="@style/Absence.Day.Values"
+            android:text="@{String.valueOf(day.late)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/soon"
+            app:layout_constraintStart_toEndOf="@+id/missed"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="69" />
+
+        <TextView
+            android:id="@+id/soon"
+            style="@style/Absence.Day.Values"
+            android:text="@{String.valueOf(day.soon)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/school"
+            app:layout_constraintStart_toEndOf="@+id/late"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="69" />
+
+        <TextView
+            android:id="@+id/school"
+            style="@style/Absence.Day.Values"
+            android:text="@{String.valueOf(day.school)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/soon"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="69" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

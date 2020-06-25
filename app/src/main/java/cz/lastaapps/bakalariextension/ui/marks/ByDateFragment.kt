@@ -79,7 +79,7 @@ class ByDateFragment : Fragment() {
         Log.i(TAG, "Updating based on new marks")
 
         (binding.list.adapter as MarksAdapter)
-            .updateMarks(viewModel.marks.value!!.getAllMarks())
+            .updateMarksRoot(viewModel.marks.value!!)
     }
 }
 

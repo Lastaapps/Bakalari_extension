@@ -21,26 +21,19 @@
 package cz.lastaapps.bakalariextension.ui.timetable.small
 
 import android.content.Context
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import cz.lastaapps.bakalariextension.tools.MySettings
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import cz.lastaapps.bakalariextension.ui.RefreshableViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
 import java.time.DayOfWeek
 import java.time.ZonedDateTime
 
 /**Holds data for SmallTimetableFragment*/
-class STViewModel : RefreshableViewModel<Week>() {
+class STViewModel : RefreshableViewModel<Week>(TAG) {
+
     companion object {
         private val TAG = STViewModel::class.java.simpleName
     }
@@ -63,61 +56,20 @@ class STViewModel : RefreshableViewModel<Week>() {
     /**Timetable data in for of Week object*/
     val week = data
 
-    /**Loads timetable for the date in the variable #date*/
-    override fun onRefresh(force: Boolean) {
+    override suspend fun loadServer(): Week? {
+        return TimetableLoader.loadFromServer(date.value!!)
+    }
 
-        if (isRefreshing.value == true)
-            return
+    override suspend fun loadStorage(): Week? {
+        return TimetableLoader.loadFromStorage(date.value!!)
+    }
 
-        //set state refreshing
-        isRefreshing.value = true
+    override fun shouldReload(): Boolean {
+        return TimetableLoader.shouldReload(date.value!!)
+    }
 
-        viewModelScope.launch(Dispatchers.Default) {
-            Log.i(TAG, "Loading timetable")
-
-            var loaded: Week?
-
-            if (force) {
-                loaded = TimetableLoader.loadFromServer(date.value!!)
-            } else {
-
-                loaded = TimetableLoader.loadFromStorage(date.value!!)
-
-                if (TimetableLoader.shouldReload(date.value!!) || loaded == null) {
-                    loaded?.let {
-                        withContext(Dispatchers.Main) {
-                            week.value = it
-                        }
-                    }
-
-                    //let oder work finish before running slow loading from server
-                    for (i in 0 until 10) yield()
-
-                    loaded = TimetableLoader.loadFromServer(date.value!!)
-                }
-            }
-
-            withContext(Dispatchers.Main) {
-
-                //hides refreshing icon
-                failed.value = false
-
-                //when download failed
-                if (loaded == null) {
-                    Log.e(TAG, "Loading failed")
-                    Toast.makeText(
-                        App.context, R.string.error_cannot_download_timetable, Toast.LENGTH_LONG
-                    ).show()
-
-                    failed.value = true
-                } else {
-                    //updates marks with new value
-                    week.value = loaded
-                }
-
-                isRefreshing.value = false
-            }
-        }
+    override fun isEmpty(data: Week): Boolean {
+        return data.hasValidDays()
     }
 
     override fun emptyText(context: Context): String {

@@ -1,0 +1,75 @@
+<!--
+  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~
+  ~     This file is part of Bakalari extension.
+  ~
+  ~     Bakalari extension is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Bakalari extension is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<vector android:height="16dp"
+    android:viewportHeight="128"
+    android:viewportWidth="128"
+    android:width="16dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <path
+        android:fillColor="#2a7fff"
+        android:pathData="M25.863,7.111L102.137,7.111A18.752,18.752 0,0 1,120.889 25.863L120.889,102.137A18.752,18.752 0,0 1,102.137 120.889L25.863,120.889A18.752,18.752 0,0 1,7.111 102.137L7.111,25.863A18.752,18.752 0,0 1,25.863 7.111z"
+        android:strokeColor="#0000ff"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeWidth="16" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="m43.426,93.657c0,-9.144 41.147,-9.144 41.147,-0 0,9.144 -41.147,9.144 -41.147,-0z"
+        android:strokeColor="#0000ff"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="miter"
+        android:strokeWidth="6" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="m43.426,93.657c2.519,-27.077 12.234,-17.582 18.288,-29.717"
+        android:strokeColor="#0000ff"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="miter"
+        android:strokeWidth="6" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="m84.55,93.657c-2.519,-27.077 -12.211,-17.582 -18.265,-29.717"
+        android:strokeColor="#0000ff"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="miter"
+        android:strokeWidth="6" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="m43.427,34.343c0,9.144 41.147,9.144 41.147,0 0,-9.144 -41.147,-9.144 -41.147,0z"
+        android:strokeColor="#0000ff"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="miter"
+        android:strokeWidth="6" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="m43.427,34.343c2.519,27.077 12.234,17.582 18.288,29.717"
+        android:strokeColor="#0000ff"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="miter"
+        android:strokeWidth="6" />
+    <path
+        android:fillColor="#00000000"
+        android:pathData="m84.551,34.343c-2.519,27.077 -12.211,17.582 -18.265,29.717"
+        android:strokeColor="#0000ff"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="miter"
+        android:strokeWidth="6" />
+</vector>

@@ -255,7 +255,7 @@
 
                 <View
                     android:layout_width="wrap_content"
-                    android:layout_height="50dp" />
+                    android:layout_height="@dimen/bottom_fragment_bottom_margin" />
             </LinearLayout>
         </ScrollView>
     </FrameLayout>

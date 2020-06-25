@@ -32,7 +32,7 @@ import androidx.lifecycle.LifecycleOwner
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.marks.data.Mark
-import cz.lastaapps.bakalariextension.api.marks.data.MarksAllSubjects
+import cz.lastaapps.bakalariextension.api.marks.data.MarksRoot
 import cz.lastaapps.bakalariextension.databinding.FragmentMarksNewBinding
 
 /**Fragment shown in HomeFragment
@@ -49,7 +49,7 @@ class NewMarksFragment : Fragment() {
     val viewModel: MarksViewModel by activityViewModels()
 
     //updates hen new marks are downloaded
-    private val marksObserver = { _: MarksAllSubjects? ->
+    private val marksObserver = { _: MarksRoot? ->
         Log.i(TAG, "Updating with new marks")
         loadMarks()
     }

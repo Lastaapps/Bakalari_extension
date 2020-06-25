@@ -21,54 +21,32 @@
 package cz.lastaapps.bakalariextension.ui.subjects
 
 import android.content.Context
-import android.widget.Toast
-import androidx.lifecycle.viewModelScope
-import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.subjects.SubjectLoader
 import cz.lastaapps.bakalariextension.api.subjects.ThemeList
 import cz.lastaapps.bakalariextension.ui.RefreshableViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**Holds and loads Theme data for subject given*/
-class ThemeViewModel(private val subjectId: String) : RefreshableViewModel<ThemeList>() {
+class ThemeViewModel(private val subjectId: String) : RefreshableViewModel<ThemeList>(TAG) {
 
-    override fun onRefresh(force: Boolean) {
+    companion object {
+        private val TAG = ThemeViewModel::class.java.simpleName
+    }
 
-        if (isRefreshing.value!!)
-            return
+    override suspend fun loadServer(): ThemeList? {
+        return SubjectLoader.loadThemesFromServer(subjectId)
+    }
 
-        isRefreshing.value = true
+    override suspend fun loadStorage(): ThemeList? {
+        return null
+    }
 
-        viewModelScope.launch(Dispatchers.Default) {
+    override fun shouldReload(): Boolean {
+        return SubjectLoader.shouldReload()
+    }
 
-            val theme = SubjectLoader.loadThemesFromServer(subjectId)
-
-            withContext(Dispatchers.Main) {
-
-                failed.value = false
-                isEmpty.value = false
-
-                if (theme == null) {
-                    if (data.value == null) {
-                        failed.value = true
-                    }
-                    Toast.makeText(
-                        App.context,
-                        R.string.subject_theme_failed_to_load,
-                        Toast.LENGTH_LONG
-                    )
-                        .show()
-                } else {
-                    isEmpty.value = theme.isEmpty()
-                    data.value = theme
-                }
-
-                isRefreshing.value = false
-            }
-        }
+    override fun isEmpty(data: ThemeList): Boolean {
+        return data.isEmpty()
     }
 
     override fun emptyText(context: Context): String {
@@ -78,6 +56,4 @@ class ThemeViewModel(private val subjectId: String) : RefreshableViewModel<Theme
     override fun failedText(context: Context): String {
         return context.getString(R.string.subject_theme_failed_to_load)
     }
-
-
 }

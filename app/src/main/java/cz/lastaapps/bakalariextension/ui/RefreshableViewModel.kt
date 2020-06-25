@@ -21,11 +21,19 @@
 package cz.lastaapps.bakalariextension.ui
 
 import android.content.Context
+import android.util.Log
+import android.widget.Toast
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import cz.lastaapps.bakalariextension.App
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**Parent for ViewModels with loading and update of data from API*/
-abstract class RefreshableViewModel<E> : ViewModel() {
+abstract class RefreshableViewModel<E>(val TAG: String) : ViewModel() {
 
     /**holds main data set*/
     val data = MutableLiveData<E>()
@@ -40,13 +48,116 @@ abstract class RefreshableViewModel<E> : ViewModel() {
     val isEmpty = MutableLiveData(false)
 
     /**reloads data*/
-    abstract fun onRefresh(force: Boolean = false)
+    fun onRefresh(force: Boolean = false) {
+
+        if (isRefreshing.value == true)
+            return
+
+        isRefreshing.value = true
+
+        viewModelScope.launch(Dispatchers.Default) {
+
+            Log.i(TAG, "Refreshing")
+
+            var loaded: E?
+            if (force) {
+                loaded = loadServer().also {
+                    if (it == null) Log.e(TAG, "Forced server loading failed!")
+                }
+
+            } else {
+
+                loaded = loadStorage().also {
+                    if (it == null) Log.i(TAG, "Storage loading failed!")
+                }
+
+                if (shouldReload() || loaded == null) {
+                    loaded?.let {
+                        withContext(Dispatchers.Main) {
+                            updateData(it)
+                        }
+                    }
+
+                    loaded = loadServer().also {
+                        if (it == null) Log.i(TAG, "Server loading failed!")
+                    }
+                }
+            }
+
+            withContext(Dispatchers.Main) {
+
+                updateData(loaded)
+
+                //hides refreshing icon
+                isRefreshing.value = false
+            }
+        }
+    }
+
+    /** updates views with data given*/
+    private fun updateData(newData: E?) {
+
+        Log.i(TAG, "Updating data to show in UI")
+
+        failed.value = false
+
+        //when download failed
+        if (newData == null) {
+
+            showToast()
+
+            if (data.value == null) {
+                failed.value = true
+                isEmpty.value = false
+            }
+        } else {
+            isEmpty.value = isEmpty(newData)
+
+            //updates marks with new value
+            data.value = newData
+        }
+    }
+
+    /**@return data loaded from server*/
+    protected abstract suspend fun loadServer(): E?
+
+    /**@return data loaded from local storage*/
+    protected abstract suspend fun loadStorage(): E?
+
+    /**@return if data should be reloaded from server*/
+    protected abstract fun shouldReload(): Boolean
+
+    /**@return if data set is empty*/
+    protected open fun isEmpty(data: E): Boolean = false
+
+    /**Shows Toast with text from #failedText()*/
+    protected open fun showToast() {
+        val context = App.context
+        Toast.makeText(context, failedText(context), Toast.LENGTH_LONG).show()
+    }
 
     /**removes need to use !! in code all the time*/
-    open fun requireData(): E {
+    fun requireData(): E {
         return data.value!!
     }
 
+    /**
+     * Observes for data change and executes action on data update
+     * if data != null executes right now
+     * if data == null calls onRefresh(false)
+     */
+    fun executeOrRefresh(lifecycle: Lifecycle, todo: ((E) -> Unit)) {
+        data.observe({ lifecycle }) { todo(it) }
+        if (data.value != null) {
+            todo(data.value!!)
+        } else {
+            onRefresh()
+        }
+    }
+
+    /**@return text to be shown in UI when data set is empty*/
     open fun emptyText(context: Context): String = ""
+
+    /**@return text to be shown in UI when no data can be obtained*/
     open fun failedText(context: Context): String = ""
 }

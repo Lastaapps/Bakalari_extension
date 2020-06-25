@@ -23,6 +23,9 @@ package cz.lastaapps.bakalariextension.api.subjects.data
 import cz.lastaapps.bakalariextension.api.DataId
 import cz.lastaapps.bakalariextension.api.subjects.SubjectList
 import cz.lastaapps.bakalariextension.api.subjects.TeacherList
+import java.text.Collator
+import java.util.*
+import kotlin.collections.HashSet
 
 class Teacher(
     id: String,
@@ -36,7 +39,9 @@ class Teacher(
 ) : DataId<String>(id), Comparable<Teacher> {
 
     override fun compareTo(other: Teacher): Int {
-        return name.compareTo(other.name)
+        val collator = Collator.getInstance(Locale.getDefault())
+
+        return collator.compare(name, other.name)
     }
 
     companion object {

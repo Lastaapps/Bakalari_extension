@@ -21,21 +21,13 @@
 package cz.lastaapps.bakalariextension.ui.homework
 
 import android.content.Context
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.homework.HomeworkLoader
 import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
 import cz.lastaapps.bakalariextension.ui.RefreshableViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
 
-class HmwViewModel : RefreshableViewModel<HomeworkList>() {
+class HmwViewModel : RefreshableViewModel<HomeworkList>(TAG) {
 
     companion object {
         private val TAG = HmwViewModel::class.java.simpleName
@@ -54,66 +46,20 @@ class HmwViewModel : RefreshableViewModel<HomeworkList>() {
     /**Index of selected subject*/
     val subjectIndex = MutableLiveData(0)
 
-    /**When user refreshes marks with swipe from the top of the screen*/
-    override fun onRefresh(force: Boolean) {
+    override suspend fun loadServer(): HomeworkList? {
+        return HomeworkLoader.loadFromServer()
+    }
 
-        if (isRefreshing.value == true)
-            return
+    override suspend fun loadStorage(): HomeworkList? {
+        return HomeworkLoader.loadFromStorage()
+    }
 
-        //set state refreshing
-        isRefreshing.value = true
+    override fun shouldReload(): Boolean {
+        return HomeworkLoader.shouldReload()
+    }
 
-        viewModelScope.launch(Dispatchers.Default) {
-
-            Log.i(TAG, "Loading homework list")
-
-            var loaded: HomeworkList?
-            if (force) {
-                loaded = HomeworkLoader.loadFromServer()
-
-            } else {
-
-                loaded = HomeworkLoader.loadFromStorage()
-
-                if (HomeworkLoader.shouldReload() || loaded == null) {
-                    loaded?.let {
-                        withContext(Dispatchers.Main) {
-                            homework.value = it
-                        }
-                    }
-
-                    //let oder work finish before running slow loading from server
-                    for (i in 0 until 10) yield()
-
-                    loaded = HomeworkLoader.loadFromServer()
-                }
-            }
-
-            withContext(Dispatchers.Main) {
-
-                failed.value = false
-                isEmpty.value = false
-
-                //when download failed
-                if (loaded == null) {
-                    Log.e(TAG, "Download failed")
-
-                    Toast.makeText(
-                        App.context, R.string.homework_failed_to_load, Toast.LENGTH_LONG
-                    ).show()
-
-                    failed.value = true
-                } else {
-                    isEmpty.value = loaded.isEmpty()
-
-                    //updates marks with new value
-                    homework.value = loaded
-                }
-
-                //hides refreshing icon
-                isRefreshing.value = false
-            }
-        }
+    override fun isEmpty(data: HomeworkList): Boolean {
+        return data.isEmpty()
     }
 
     override fun emptyText(context: Context): String {

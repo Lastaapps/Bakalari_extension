@@ -22,7 +22,7 @@ package cz.lastaapps.bakalariextension.api.marks
 
 import android.util.Log
 import cz.lastaapps.bakalariextension.api.ConnMgr
-import cz.lastaapps.bakalariextension.api.marks.data.MarksAllSubjects
+import cz.lastaapps.bakalariextension.api.marks.data.MarksRoot
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -36,10 +36,10 @@ class MarksLoader {
          * if it can be outdated or isn't downloaded yet,
          * tries to download from server
          * if fails, return null*/
-        suspend fun loadMarks(forceReload: Boolean = false): MarksAllSubjects? {
+        suspend fun loadMarks(forceReload: Boolean = false): MarksRoot? {
 
             return withContext(Dispatchers.Default) {
-                var toReturn: MarksAllSubjects? = null
+                var toReturn: MarksRoot? = null
 
                 if (forceReload || MarksStorage.lastUpdated() == null) {
                     toReturn = loadFromServer()
@@ -58,7 +58,7 @@ class MarksLoader {
 
         /**Tries load marks from server and save him to local storage
          * @return downloaded AllSubjects object or null, if download failed*/
-        suspend fun loadFromServer(): MarksAllSubjects? {
+        suspend fun loadFromServer(): MarksRoot? {
             return withContext(Dispatchers.Default) {
                 try {
                     Log.i(TAG, "Loading marks from server")
@@ -84,7 +84,7 @@ class MarksLoader {
 
         /**Loads marks from local storage
          * @return AllSubjects or null, if there is no week of the date save yet*/
-        suspend fun loadFromStorage(): MarksAllSubjects? {
+        suspend fun loadFromStorage(): MarksRoot? {
             return withContext(Dispatchers.Default) {
 
                 Log.i(TAG, "Loading marks from storage")

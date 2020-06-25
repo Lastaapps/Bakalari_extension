@@ -332,7 +332,7 @@ class ConnMgr {
 
         /**@return url in format www.example.com/api */
         fun getAPIUrl(url: String = LoginData.url): String {
-            return url.replace("/login.aspx", "/api")
+            return url.replace("/login.aspx", "/") + "api"
         }
 
         /**converts map to data, which can be used in GET*/

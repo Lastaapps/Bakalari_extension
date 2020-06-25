@@ -120,4 +120,32 @@
         <item name="android:padding">10dp</item>
     </style>
 
+    <style name="AppTheme.LastUpdate" parent="">
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">@dimen/last_updated_text_size</item>
+        <item name="android:textColor">@color/last_updated_text_color</item>
+        <item name="android:background">@color/last_updated_background_color</item>
+    </style>
+
+    <!-- Absence -->
+    <style name="Absence.Day.Values" parent="AppTheme.Text">
+        <item name="android:layout_margin">@dimen/margin_basic</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:layout_width">@dimen/absence_day_value_width</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="Absence.Day.Icon" parent="AppTheme">
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:background">@android:color/transparent</item>
+
+        <item name="android:maxWidth">@dimen/absence_day_icon_size</item>
+        <item name="android:maxHeight">@dimen/absence_day_icon_size</item>
+        <item name="android:layout_width">@dimen/absence_day_icon_size</item>
+        <item name="android:layout_height">@dimen/absence_day_icon_size</item>
+
+        <item name="android:layout_margin">@dimen/margin_basic</item>
+    </style>
+
 </resources>

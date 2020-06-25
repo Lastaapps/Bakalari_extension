@@ -133,9 +133,9 @@ class SubjectLoader {
         }
 
         /**@return if subjects are loaded*/
-        private fun shouldReload(): Boolean {
-            SubjectStorage.lastUpdated() ?: return false
-            return true
+        fun shouldReload(): Boolean {
+            SubjectStorage.lastUpdated() ?: return true
+            return false
         }
     }
 }

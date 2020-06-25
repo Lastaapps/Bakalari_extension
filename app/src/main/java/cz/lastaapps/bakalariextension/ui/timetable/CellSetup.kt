@@ -37,6 +37,7 @@ import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.homework.data.Homework
 import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
 import cz.lastaapps.bakalariextension.api.timetable.data.*
+import cz.lastaapps.bakalariextension.api.user.data.User
 import cz.lastaapps.bakalariextension.databinding.TimetableLessonInfoBinding
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import cz.lastaapps.bakalariextension.ui.BasicRecyclerAdapter
@@ -185,6 +186,7 @@ class CellSetup {
         val day: Day,
         val hour: Hour,
         val cycle: Cycle?,
+        val user: User,
         val homework: HomeworkList?
     ) : View.OnClickListener {
 
@@ -235,8 +237,8 @@ class CellSetup {
                         //enables to click on row and show additional info
                         clickThrough?.let {
                             row.setOnClickListener { it() }
-                            name.setOnClickListener { it() }
-                            value.setOnClickListener { it() }
+                            name.movementMethod = null
+                            value.movementMethod = null
                         }
 
                         table.addView(row)
@@ -253,11 +255,14 @@ class CellSetup {
                     week.subjects.getById(lesson.subjectId)?.name,
                     R.string.info_subject
                 ) {
-                    SubjectInfoFragment.navigateTo(
-                        (binding.root.context as AppCompatActivity).findNavController(R.id.nav_host_fragment),
-                        lesson.subjectId
-                    )
-                    dialog.dismiss()
+                    //navigates to subject info
+                    user.runIfFeatureEnabled(User.SUBJECTS_SHOW) {
+                        SubjectInfoFragment.navigateTo(
+                            (binding.root.context as AppCompatActivity).findNavController(R.id.nav_host_fragment),
+                            lesson.subjectId
+                        )
+                        dialog.dismiss()
+                    }
                 }
 
                 //shows info about the teacher on click
@@ -266,10 +271,13 @@ class CellSetup {
                     week.teachers.getById(lesson.teacherId)?.name,
                     R.string.info_teacher
                 ) {
-                    TeacherInfoFragment.show(
-                        (binding.root.context as AppCompatActivity).supportFragmentManager,
-                        lesson.teacherId
-                    )
+                    //shows teacher info fragment
+                    user.runIfFeatureEnabled(User.SUBJECTS_SHOW) {
+                        TeacherInfoFragment.show(
+                            (binding.root.context as AppCompatActivity).supportFragmentManager,
+                            lesson.teacherId
+                        )
+                    }
                 }
 
                 addInfoRow(table, week.rooms.getById(lesson.roomId)?.name, R.string.info_room, null)

@@ -24,6 +24,7 @@
     <string name="menu_timetable">Timetable</string>
     <string name="menu_marks">Marks</string>
     <string name="menu_homework">Homework</string>
+    <string name="menu_absence">Absence</string>
     <string name="menu_teacher_list">Teachers</string>
     <string name="menu_subject_list">Subjects</string>
     <string name="menu_subject_info">Subject info</string>

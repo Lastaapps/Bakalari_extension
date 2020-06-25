@@ -21,6 +21,8 @@
 package cz.lastaapps.bakalariextension.api
 
 import java.io.Serializable
+import java.text.Collator
+import java.util.*
 
 /**Parent of the most of the items, the can be then used in DataIDList*/
 open class DataId<T>(var id: T) : Serializable {
@@ -49,6 +51,8 @@ open class SimpleData(
     }
 
     override fun compareTo(other: SimpleData): Int {
-        return id.compareTo(other.id)
+        val collator = Collator.getInstance(Locale.getDefault())
+
+        return collator.compare(name, other.name)
     }
 }

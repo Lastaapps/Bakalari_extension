@@ -20,41 +20,33 @@
 
 package cz.lastaapps.bakalariextension.ui.homework
 
-import android.content.Context
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import cz.lastaapps.bakalariextension.R
 
 /**Holds homework fragments*/
-class HmwPager(val context: Context, fragmentManager: FragmentManager) :
-    FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-
-    /**cashes fragments*/
-    private val fragments = Array<Fragment?>(3) { null }
+class HmwPager(val fragment: Fragment) :
+    FragmentStateAdapter(fragment) {
 
     /**@return mark Fragment by position*/
-    override fun getItem(position: Int): Fragment {
+    override fun createFragment(position: Int): Fragment {
         //holds fragments in memory for faster swiping
-        if (fragments[position] == null)
-            fragments[position] = when (position) {
-                0 -> {
-                    HmwCurrentFragment()
-                }
-                1 -> {
-                    HmwOldFragment()
-                }
-                else -> {
-                    HmwSearchFragment()
-                }
+        return when (position) {
+            0 -> {
+                HmwCurrentFragment()
             }
-
-        return fragments[position]!!
+            1 -> {
+                HmwOldFragment()
+            }
+            else -> {
+                HmwSearchFragment()
+            }
+        }
     }
 
     /**@return label for tab by position*/
-    override fun getPageTitle(position: Int): CharSequence? {
-        return context.getString(
+    fun getPageTitle(position: Int): CharSequence? {
+        return fragment.requireContext().getString(
             when (position) {
                 0 -> R.string.homework_current
                 1 -> R.string.homework_old
@@ -64,8 +56,8 @@ class HmwPager(val context: Context, fragmentManager: FragmentManager) :
     }
 
     /**@return 3*/
-    override fun getCount(): Int {
-        return fragments.size
+    override fun getItemCount(): Int {
+        return 3
     }
 
     /**@return position as id*/

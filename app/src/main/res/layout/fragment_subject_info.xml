@@ -18,7 +18,8 @@
   ~
   -->
 
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
@@ -79,17 +80,29 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/subject_name" />
 
+                <include
+                    android:id="@+id/absence"
+                    layout="@layout/absence_subject_entry"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/teacher"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/marks_box"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxHeight="@dimen/subject_info_list_height"
                     android:visibility="gone"
+                    tools:visibility="visible"
                     app:layout_constrainedHeight="true"
                     app:layout_constraintBottom_toTopOf="@+id/homework_box"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/teacher">
+                    app:layout_constraintTop_toBottomOf="@id/absence">
 
                     <TextView
                         android:id="@+id/marks_label"
@@ -131,6 +144,7 @@
                     android:layout_height="wrap_content"
                     android:maxHeight="@dimen/subject_info_list_height"
                     android:visibility="gone"
+                    tools:visibility="visible"
                     app:layout_constrainedHeight="true"
                     app:layout_constraintBottom_toTopOf="@+id/theme_box"
                     app:layout_constraintEnd_toEndOf="parent"

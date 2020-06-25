@@ -82,6 +82,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/type"
                     android:layout_centerHorizontal="true"
+                    android:textAlignment="center"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -110,6 +111,11 @@
 
                 <androidx.fragment.app.FragmentContainerView
                     android:id="@+id/homework_fragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/absence_fragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 

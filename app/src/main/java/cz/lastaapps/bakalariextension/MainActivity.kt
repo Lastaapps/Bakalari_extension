@@ -110,7 +110,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_home, R.id.nav_timetable, R.id.nav_marks,
-                R.id.nav_homework, R.id.nav_teacher_list, R.id.nav_subject_list
+                R.id.nav_homework, R.id.nav_teacher_list, R.id.nav_subject_list,
+                R.id.nav_absence
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -124,11 +125,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             startupCheckSucceed()
         }
 
-        //selects default fragment
-        val navigateTo = intent.getIntExtra(NAVIGATE, -1)
-        if (navigateTo != -1)
-            findNavController(R.id.nav_host_fragment).navigate(navigateTo)
-
         //shows popup when refresh token is invalid
         registerReceiver(invalidRefreshTokenReceiver, IntentFilter(INVALID_REFRESH_TOKEN))
 
@@ -140,6 +136,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         super.onDestroy()
 
         unregisterReceiver(invalidRefreshTokenReceiver)
+        unregisterReceiver(fullStorageReceiver)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -164,13 +161,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     /**shows home fragment*/
     fun startupCheckSucceed() {
-
-        findNavController(R.id.nav_host_fragment).apply {
-            currentDestination?.let {
-                if (it.id == R.id.nav_loading)
-                    navigate(R.id.nav_home)
-            }
-        }
         mainViewModel.loggedIn.value = true
 
         mainViewModel.launchInitRun.apply {
@@ -190,6 +180,17 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         findViewById<View>(R.id.appBarLayout).visibility = View.VISIBLE
 
         setupNavMenus()
+
+        findNavController(R.id.nav_host_fragment).apply {
+
+            navigate(R.id.nav_home)
+
+            //show some externally required fragment
+            val navigateTo = intent.getIntExtra(NAVIGATE, -1)
+            if (navigateTo != -1) {
+                navigate(navigateTo)
+            }
+        }
     }
 
     /**adds navigation items of the enabled modules*/
@@ -226,6 +227,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 ++homeOrder,
                 R.string.menu_homework
             ).setIcon(R.drawable.nav_homework)
+
+        if (user.isModuleEnabled(User.ABSENCE))
+            navView.menu.add(
+                R.id.nav_items_group,
+                R.id.nav_absence,
+                ++homeOrder,
+                R.string.menu_absence
+            ).setIcon(R.drawable.nav_absence)
 
         if (user.isModuleEnabled(User.SUBJECTS))
             navView.menu.add(
@@ -289,6 +298,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
             R.id.nav_homework -> {
                 findNavController(R.id.nav_host_fragment).navigate(R.id.nav_homework)
+            }
+            R.id.nav_absence -> {
+                findNavController(R.id.nav_host_fragment).navigate(R.id.nav_absence)
             }
             R.id.nav_teacher_list -> {
                 findNavController(R.id.nav_host_fragment).navigate(R.id.nav_teacher_list)

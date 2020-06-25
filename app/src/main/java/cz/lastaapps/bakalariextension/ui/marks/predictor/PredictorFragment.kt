@@ -34,7 +34,7 @@ import androidx.fragment.app.activityViewModels
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.marks.data.Mark
-import cz.lastaapps.bakalariextension.api.marks.data.MarksAllSubjects
+import cz.lastaapps.bakalariextension.api.marks.data.MarksRoot
 import cz.lastaapps.bakalariextension.databinding.FragmentMarksPredictorBinding
 import cz.lastaapps.bakalariextension.ui.marks.MarksAdapter
 import cz.lastaapps.bakalariextension.ui.marks.MarksViewModel
@@ -52,7 +52,7 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
     val viewModel: MarksViewModel by activityViewModels()
 
     /**Updates on marks changed*/
-    private val marksObserver = { _: MarksAllSubjects ->
+    private val marksObserver = { _: MarksRoot ->
         Log.i(TAG, "updating based on new marks")
         loadSubjects()
         loadMarks()

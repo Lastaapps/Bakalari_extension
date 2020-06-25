@@ -180,7 +180,7 @@
 
             <TextView
                 android:id="@+id/last_updated"
-                style="@style/Timetable.LastUpdate"
+                style="@style/AppTheme.LastUpdate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
 

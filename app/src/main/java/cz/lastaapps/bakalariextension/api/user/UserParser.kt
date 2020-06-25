@@ -83,9 +83,9 @@ class UserParser {
             try {
                 json.getJSONObject("ActualSemester").apply {
                     return Semester(
-                        json.getInt("SemesterId"),
-                        json.getString("From"),
-                        json.getString("To")
+                        getInt("SemesterId"),
+                        getString("From"),
+                        getString("To")
                     )
                 }
 

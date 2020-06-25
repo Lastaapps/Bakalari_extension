@@ -128,11 +128,11 @@
     <string name="licence_inspiration_bakalari_online"><a href="https://play.google.com/store/apps/details?id=cz.bakalari.mobile">Bakalari OnLine</a></string>
 
     <!-- Timetable -->
-    <string name="monday_shortut">Mo</string>
-    <string name="tuesday_shortut">Tu</string>
-    <string name="wednesday_shortut">We</string>
-    <string name="thursday_shortut">Th</string>
-    <string name="friday_shortut">Fr</string>
+    <string name="monday_shortcut">Mo</string>
+    <string name="tuesday_shortcut">Tu</string>
+    <string name="wednesday_shortcut">We</string>
+    <string name="thursday_shortcut">Th</string>
+    <string name="friday_shortcut">Fr</string>
 
     <string-array name="week_forms">
         <item>This week</item>
@@ -242,6 +242,30 @@
     </plurals>
 
 
+    <!-- Absence -->
+    <string name="absence_failed_to_load">Failed to download absence</string>
+    <string name="absence_no_absence">No absence yet, you are doing great!</string>
+    <string name="absence_title_subjects">Subjects</string>
+    <string name="absence_title_days">Days</string>
+    <string name="absence_title_months">Months</string>
+    <string name="absence_subject_title">Subject</string>
+    <string name="absence_subject_number">Number</string>
+    <string name="absence_date">Date</string>
+    <string name="absence_month">Month</string>
+    <string name="absence_legend">Legend</string>
+    <string name="absence_unsolved">Unsolved absence</string>
+    <string name="absence_ok">Excused absence</string>
+    <string name="absence_missed">Missed lesson</string>
+    <string name="absence_late">Late arrival</string>
+    <string name="absence_soon">Soon arrival</string>
+    <string name="absence_school">School event</string>
+    <string name="absence_overview_ok">Everything fine in terms of absence!</string>
+    <plurals name="absence_overview_template">
+        <item quantity="other">%d unsolved absence!</item>
+    </plurals>
+    <string name="absence_subject_info_label">Absence:</string>
+
+
     <!-- Widget small timetable strings -->
     <string name="widget_small_timetable_title">Widget setup</string>
     <string name="widget_small_timetable_alpha">Set how much is widget transparent</string>
@@ -275,7 +299,7 @@
     <string name="subject_theme_list">Themes:</string>
     <string name="subject_theme_failed_to_load">Failed to download themes</string>
     <string name="subject_no_theme">No themes yet</string>
-    <string name="subject_not_found">Teacher not found</string>
+    <string name="subject_not_found">Subject not found</string>
 
 
     <!-- Attachment -->

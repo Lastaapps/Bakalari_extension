@@ -35,6 +35,7 @@ import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
 import cz.lastaapps.bakalariextension.api.timetable.data.Day
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
+import cz.lastaapps.bakalariextension.api.user.data.User
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import java.time.ZonedDateTime
 
@@ -100,7 +101,7 @@ class SmallTimetableView : RelativeLayout {
         date.text = TimeTools.format(dateTime, "E, d. MMMM")
     }
 
-    fun updateTimetable(week: Week, day: Day, homework: HomeworkList?) {
+    fun updateTimetable(week: Week, day: Day, user: User, homework: HomeworkList?) {
         progressBar.visibility = View.GONE
         errorMessage.visibility = View.GONE
 
@@ -109,7 +110,7 @@ class SmallTimetableView : RelativeLayout {
             holiday.visibility = View.GONE
 
             Log.i(TAG, "Creating timetable")
-            createTimetable(week, day, homework)
+            createTimetable(week, day, user, homework)
         } else {
             Log.i(TAG, "Showing holidays")
 
@@ -120,12 +121,13 @@ class SmallTimetableView : RelativeLayout {
         }
     }
 
-    private fun createTimetable(week: Week, day: Day, homework: HomeworkList?) {
+    private fun createTimetable(week: Week, day: Day, user: User, homework: HomeworkList?) {
 
         val adapter = SmallTimetableAdapter(
             context,
             week,
             day,
+            user,
             homework
         )
 

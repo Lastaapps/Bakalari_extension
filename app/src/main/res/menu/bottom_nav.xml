@@ -21,10 +21,10 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:id="@+id/nav_home"
-        android:icon="@drawable/nav_home"
-        android:title="@string/menu_home" />
-
-    <group android:id="@+id/nav_items_group" />
+    <group android:id="@+id/nav_items_group">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/nav_home"
+            android:title="@string/menu_home" />
+    </group>
 </menu>

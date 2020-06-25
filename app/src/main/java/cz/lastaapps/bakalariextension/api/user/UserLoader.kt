@@ -104,9 +104,9 @@ class UserLoader {
         }
 
         /**@return if subjects are loaded*/
-        private fun shouldReload(): Boolean {
-            UserStorage.lastUpdated() ?: return false
-            return true
+        fun shouldReload(): Boolean {
+            UserStorage.lastUpdated() ?: return true
+            return false
         }
     }
 }

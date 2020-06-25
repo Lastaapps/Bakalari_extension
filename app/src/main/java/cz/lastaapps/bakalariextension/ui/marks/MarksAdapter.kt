@@ -27,7 +27,7 @@ import androidx.recyclerview.widget.RecyclerView
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.marks.data.Mark
-import cz.lastaapps.bakalariextension.api.marks.data.MarksAllSubjects
+import cz.lastaapps.bakalariextension.api.marks.data.MarksRoot
 import cz.lastaapps.bakalariextension.databinding.MarksRowBinding
 
 /**Adapter for RecycleView containing marks*/
@@ -38,7 +38,7 @@ class MarksAdapter : RecyclerView.Adapter<MarksAdapter.DataBindingHolder> {
     }
 
     /**all subjects*/
-    private var marksAllSubjects: MarksAllSubjects? = null
+    private var marksRoot: MarksRoot? = null
 
     /**marks to show*/
     private var marks: DataIdList<Mark>
@@ -49,8 +49,11 @@ class MarksAdapter : RecyclerView.Adapter<MarksAdapter.DataBindingHolder> {
     }
 
     /**Shows selected marks and subject*/
-    constructor(marksAllSubjects: MarksAllSubjects, marks: DataIdList<Mark>) {
-        this.marksAllSubjects = marksAllSubjects
+    constructor(
+        marksRoot: MarksRoot,
+        marks: DataIdList<Mark> = marksRoot.getAllMarks()
+    ) {
+        this.marksRoot = marksRoot
         this.marks = marks
     }
 
@@ -83,12 +86,18 @@ class MarksAdapter : RecyclerView.Adapter<MarksAdapter.DataBindingHolder> {
         binding.markData = mark
 
         //shows subject if available
-        if (marksAllSubjects != null)
-            binding.subjectData = marksAllSubjects!!.getSubjectForMark(mark)
+        if (marksRoot != null)
+            binding.subjectData = marksRoot!!.getSubjectForMark(mark)
 
     }
 
     fun updateMarks(marks: DataIdList<Mark>) {
+        this.marks = marks
+        notifyDataSetChanged()
+    }
+
+    fun updateMarksRoot(marksRoot: MarksRoot, marks: DataIdList<Mark> = marksRoot.getAllMarks()) {
+        this.marksRoot = marksRoot
         this.marks = marks
         notifyDataSetChanged()
     }

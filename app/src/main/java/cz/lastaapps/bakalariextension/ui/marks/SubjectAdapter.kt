@@ -26,10 +26,10 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.marks.data.MarksAllSubjects
+import cz.lastaapps.bakalariextension.api.marks.data.MarksRoot
 import cz.lastaapps.bakalariextension.databinding.MarksSubjectBinding
 
-class SubjectAdapter(private var marks: MarksAllSubjects = MarksAllSubjects(ArrayList())) :
+class SubjectAdapter(private var marks: MarksRoot = MarksRoot(ArrayList())) :
     RecyclerView.Adapter<SubjectAdapter.DataBindingHolder>() {
 
     init {
@@ -80,7 +80,7 @@ class SubjectAdapter(private var marks: MarksAllSubjects = MarksAllSubjects(Arra
         }
     }
 
-    fun update(marks: MarksAllSubjects) {
+    fun update(marks: MarksRoot) {
         this.marks = marks
         notifyDataSetChanged()
     }

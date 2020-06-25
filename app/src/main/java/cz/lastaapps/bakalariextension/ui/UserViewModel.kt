@@ -20,57 +20,25 @@
 
 package cz.lastaapps.bakalariextension.ui
 
-import android.widget.Toast
-import androidx.lifecycle.viewModelScope
-import cz.lastaapps.bakalariextension.App
-import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.user.UserLoader
 import cz.lastaapps.bakalariextension.api.user.data.User
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**Holds adn loads data about the user*/
-class UserViewModel : RefreshableViewModel<User>() {
+class UserViewModel : RefreshableViewModel<User>(TAG) {
 
-    override fun onRefresh(force: Boolean) {
+    companion object {
+        private val TAG = UserViewModel::class.java.simpleName
+    }
 
-        if (isRefreshing.value!!)
-            return
+    override suspend fun loadServer(): User? {
+        return UserLoader.loadFromServer()
+    }
 
-        isRefreshing.value = true
+    override suspend fun loadStorage(): User? {
+        return UserLoader.loadFromStorage()
+    }
 
-        viewModelScope.launch(Dispatchers.Default) {
-
-            var user = UserLoader.loadFromStorage()
-
-            if (user == null || force) {
-                user?.let {
-                    withContext(Dispatchers.Main) {
-                        data.value = it
-                    }
-                }
-
-                user = UserLoader.loadFromServer()
-            }
-
-            withContext(Dispatchers.Main) {
-
-                failed.value = false
-                isEmpty.value = false
-
-                if (user == null) {
-                    if (data.value == null) {
-                        failed.value = true
-                    }
-                    Toast.makeText(App.context, R.string.user_failed_to_load, Toast.LENGTH_LONG)
-                        .show()
-                } else {
-                    data.value = user
-                }
-
-                isRefreshing.value = false
-            }
-        }
+    override fun shouldReload(): Boolean {
+        return UserLoader.shouldReload()
     }
 }

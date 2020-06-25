@@ -42,17 +42,17 @@ class HomeworkStorage {
         private const val FILE_PREFIX = "Homework"
         private const val FILE_SUFFIX = ".json"
 
-        private var homeworkCache: JSONObject? = null
+        private var cache: JSONObject? = null
         private fun releaseCache() {
-            homeworkCache = null
+            cache = null
         }
 
         /**Tries to load homework
          * @return json or null, if there isn't such a week saved*/
         fun load(): JSONObject? {
 
-            if (homeworkCache != null)
-                return homeworkCache
+            if (cache != null)
+                return cache
 
             //gets file name
             val file = getFile()
@@ -74,7 +74,7 @@ class HomeworkStorage {
             //caches loaded data to speed up app
             val json = JSONObject(data)
 
-            homeworkCache = json
+            cache = json
 
             return json
         }
@@ -83,7 +83,7 @@ class HomeworkStorage {
         fun save(json: JSONObject) {
             try {
 
-                homeworkCache = json
+                cache = json
 
                 //gets new name
                 val file = getFile()

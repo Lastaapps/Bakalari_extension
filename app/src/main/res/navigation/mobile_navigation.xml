@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
   ~
   ~     This file is part of Bakalari extension.
@@ -54,6 +53,9 @@
         <action
             android:id="@+id/action_nav_home_to_nav_subject_list"
             app:destination="@id/nav_subject_list" />
+        <action
+            android:id="@+id/action_nav_home_to_navigation"
+            app:destination="@id/nav_absence" />
     </fragment>
 
     <fragment
@@ -78,7 +80,7 @@
         android:id="@+id/nav_homework"
         android:name="cz.lastaapps.bakalariextension.ui.homework.HmwRootFragment"
         android:label="@string/menu_homework"
-        tools:layout="@layout/fragment_homework_root" />
+        tools:layout="@layout/loading_root_template" />
     <fragment
         android:id="@+id/nav_teacher_list"
         android:name="cz.lastaapps.bakalariextension.ui.subjects.TeacherListFragment"
@@ -111,5 +113,10 @@
             android:id="@+id/action_loadingFragment_to_nav_home"
             app:destination="@id/nav_home" />
     </fragment>
+    <fragment
+        android:id="@+id/nav_absence"
+        android:name="cz.lastaapps.bakalariextension.ui.absence.AbsenceRootFragment"
+        android:label="@string/menu_absence"
+        tools:layout="@layout/loading_root_template" />
 
 </navigation>

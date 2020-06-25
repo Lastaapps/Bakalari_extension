@@ -30,6 +30,7 @@ import androidx.fragment.app.activityViewModels
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.tools.MySettings
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.ui.UserViewModel
 import cz.lastaapps.bakalariextension.ui.homework.HmwViewModel
 import java.time.ZonedDateTime
 
@@ -41,27 +42,8 @@ class SmallTimetableFragment : Fragment() {
 
     private lateinit var view: SmallTimetableView
     private val vm: STViewModel by activityViewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
     private val vmHomework: HmwViewModel by activityViewModels()
-
-    /**Called when timetable or homework list was successfully loaded*/
-    private val onSuccess = { _: Any? ->
-        onSuccess()
-    }
-
-    /**Called when timetable cannot be loaded*/
-    private val onFail = { failed: Boolean ->
-        if (failed)
-            onFail()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        //observes for data changes
-        vm.week.observe({ lifecycle }, onSuccess)
-        vmHomework.homework.observe({ lifecycle }, onSuccess)
-        vm.failed.observe({ lifecycle }, onFail)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -76,21 +58,31 @@ class SmallTimetableFragment : Fragment() {
             }
         }
 
-        //loads the timetable if it wasn't already done
-        if (vm.week.value != null) {
-            onSuccess(null)
-        } else {
-            vm.onRefresh()
+        //sets date and observes for updates
+        vm.date.value?.let { view.setDate(it) }
+        vm.date.observe({ lifecycle }) {
+            Log.i(TAG, "Date updated to ${TimeTools.format(it, TimeTools.COMPLETE_FORMAT)}")
+            view.setDate(it)
         }
 
-        vm.date.value?.let { view.setDate(it) }
-        vm.date.observe({ lifecycle }) { view.setDate(it) }
+        //observes for data changes
+        vm.failed.observe({ lifecycle }) {
+            if (it) {
+                Log.i(TAG, "Failed to load")
+                onFail()
+            }
+        }
+
+        //loads the timetable if it wasn't already done
+        vm.executeOrRefresh(lifecycle) {
+            Log.i(TAG, "Data loaded")
+            onSuccess()
+        }
 
         //loads the homework list if it wasn't already done
-        if (vmHomework.homework.value != null) {
-            onSuccess(null)
-        } else {
-            vmHomework.onRefresh()
+        vmHomework.executeOrRefresh(lifecycle) {
+            Log.i(TAG, "Homework list loaded")
+            onSuccess()
         }
 
         return view
@@ -150,7 +142,7 @@ class SmallTimetableFragment : Fragment() {
     }
 
     private fun onSuccess() {
-        if (!initDate() && !vm.isRefreshing.value!!) {
+        if (!initDate()) {
 
             Log.i(TAG, "Showing data")
 
@@ -163,7 +155,7 @@ class SmallTimetableFragment : Fragment() {
             if (day == null) {
                 view.setError(resources.getString(R.string.error_no_timetable_for_today))
             } else {
-                view.updateTimetable(week, day, homework)
+                view.updateTimetable(week, day, userViewModel.requireData(), homework)
             }
         }
     }

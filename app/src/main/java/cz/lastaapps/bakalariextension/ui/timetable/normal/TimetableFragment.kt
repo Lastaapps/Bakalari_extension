@@ -42,6 +42,7 @@ import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
 import cz.lastaapps.bakalariextension.databinding.FragmentTimetableBinding
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import cz.lastaapps.bakalariextension.tools.lastUpdated
+import cz.lastaapps.bakalariextension.ui.UserViewModel
 import kotlinx.coroutines.*
 import java.time.LocalDate
 import java.time.LocalTime
@@ -68,6 +69,7 @@ class TimetableFragment : Fragment() {
 
     //ViewModel storing all the not orientation related data
     private val vm: TimetableViewModel by activityViewModels()
+    private val userViewModel: UserViewModel by activityViewModels()
 
     private lateinit var scope: CoroutineScope
 
@@ -323,6 +325,7 @@ class TimetableFragment : Fragment() {
                             binding.root,
                             week,
                             cycle,
+                            userViewModel.requireData(),
                             vm.homework
                         )
 

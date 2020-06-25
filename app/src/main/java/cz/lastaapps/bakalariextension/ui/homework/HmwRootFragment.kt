@@ -29,11 +29,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
+import com.google.android.material.tabs.TabLayoutMediator
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.homework.HomeworkStorage
 import cz.lastaapps.bakalariextension.api.homework.data.Homework
-import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
-import cz.lastaapps.bakalariextension.databinding.FragmentHomeworkRootBinding
+import cz.lastaapps.bakalariextension.databinding.LoadingRootTemplateBinding
 
 /**Contains all oder homework related homework*/
 class HmwRootFragment : Fragment() {
@@ -43,32 +43,8 @@ class HmwRootFragment : Fragment() {
         const val navigateToHomeworkId = "homeworkId"
     }
 
-    lateinit var binding: FragmentHomeworkRootBinding
+    lateinit var binding: LoadingRootTemplateBinding
     val viewModel: HmwViewModel by activityViewModels()
-
-    /**updates data when homework list is loaded*/
-    private val homeworkObserver = { _: HomeworkList ->
-        Log.i(TAG, "Updating based on new data")
-
-        onHomeworkValid()
-        setupViewPager()
-        lastUpdated()
-    }
-
-    /**observes when no data can be obtained (not empty list)*/
-    private val failObserver = { failed: Boolean ->
-        if (failed) {
-            onHomeworkFail()
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        //observes for homework list update
-        viewModel.homework.observe({ lifecycle }, homeworkObserver)
-        viewModel.failed.observe({ lifecycle }, failObserver)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -80,29 +56,33 @@ class HmwRootFragment : Fragment() {
         if (!this::binding.isInitialized) {
             Log.i(TAG, "Creating view")
             binding =
-                DataBindingUtil.inflate(inflater, R.layout.fragment_homework_root, container, false)
+                DataBindingUtil.inflate(inflater, R.layout.loading_root_template, container, false)
             binding.lifecycleOwner = LifecycleOwner { lifecycle }
+            binding.viewmodel = viewModel
+
+            binding.pager.isSaveEnabled = false
+
         } else {
             Log.i(TAG, "Already created")
         }
 
         //updates if the homework list is loaded or starts loading
-        if (viewModel.homework.value == null) {
-            viewModel.onRefresh(false)
-        } else {
-            homeworkObserver(viewModel.homework.value!!)
-        }
+        viewModel.executeOrRefresh(lifecycle) { dataChanged() }
 
         return binding.root
     }
 
+    /**updates data when homework list is loaded*/
+    private fun dataChanged() {
+        Log.i(TAG, "Updating based on new data")
+
+        onHomeworkValid()
+        setupViewPager()
+        lastUpdated()
+    }
+
     /**executed when homework list is loaded*/
     private fun onHomeworkValid() {
-        binding.apply {
-            loading.visibility = View.GONE
-            errorMessage.visibility = View.GONE
-            pager.visibility = View.VISIBLE
-        }
 
         //if there is request to show specific homework, shows it
         arguments?.let {
@@ -112,24 +92,19 @@ class HmwRootFragment : Fragment() {
         }
     }
 
-    /**shows error info when no homework can be show*/
-    private fun onHomeworkFail() {
-        binding.apply {
-            loading.visibility = View.GONE
-            errorMessage.visibility = View.VISIBLE
-            pager.visibility = View.GONE
-
-            errorMessage.text = getString(R.string.homework_failed_to_load)
-        }
-    }
-
     /**sets up pager with fragments*/
     private fun setupViewPager() {
         binding.apply {
             //sets up ViewPager for oder fragments
             if (pager.adapter == null) {
-                pager.adapter = HmwPager(requireContext(), childFragmentManager)
-                tabs.setupWithViewPager(pager)
+                HmwPager(this@HmwRootFragment).also {
+                    pager.adapter = it
+
+                    TabLayoutMediator(binding.tabs, pager) { tab, position ->
+
+                        tab.text = it.getPageTitle(position)
+                    }.attach()
+                }
             }
         }
     }

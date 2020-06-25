@@ -22,94 +22,25 @@ package cz.lastaapps.bakalariextension.ui.marks
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.marks.MarksLoader
 import cz.lastaapps.bakalariextension.api.marks.data.Mark
-import cz.lastaapps.bakalariextension.api.marks.data.MarksAllSubjects
+import cz.lastaapps.bakalariextension.api.marks.data.MarksRoot
 import cz.lastaapps.bakalariextension.api.marks.data.SubjectMarks
 import cz.lastaapps.bakalariextension.ui.RefreshableViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
 
 /**ViewModel common for all mark fragments
  * holds loaded marks and some data for each fragment*/
-class MarksViewModel : RefreshableViewModel<MarksAllSubjects>() {
+class MarksViewModel : RefreshableViewModel<MarksRoot>(TAG) {
     companion object {
         private val TAG = MarksViewModel::class.java.simpleName
     }
 
     /**Loaded subjects and their marks*/
     val marks = data
-
-    /**When user refreshes marks with swipe from the top of the screen*/
-    override fun onRefresh(force: Boolean) {
-
-        if (isRefreshing.value == true)
-            return
-
-        //set state refreshing
-        isRefreshing.value = true
-
-        viewModelScope.launch(Dispatchers.Default) {
-            Log.i(TAG, "Loading marks")
-
-            var loaded: MarksAllSubjects?
-
-            if (force) {
-                loaded = MarksLoader.loadFromServer()
-            } else {
-
-                loaded = MarksLoader.loadFromStorage()
-
-                if (MarksLoader.shouldReload() || loaded == null) {
-                    loaded?.let {
-                        withContext(Dispatchers.Main) {
-                            marks.value = it
-                        }
-                    }
-
-                    //let oder work finish before running slow loading from server
-                    for (i in 0 until 10) yield()
-
-                    loaded = MarksLoader.loadFromServer()
-                }
-            }
-
-            withContext(Dispatchers.Main) {
-
-                failed.value = false
-                isEmpty.value = false
-
-                //when download failed
-                if (loaded == null) {
-                    Log.e(TAG, "Loading failed")
-
-                    Toast.makeText(
-                        App.context, R.string.homework_failed_to_load, Toast.LENGTH_LONG
-                    ).show()
-
-                    failed.value = true
-
-                } else {
-                    isEmpty.value = loaded.subjects.isEmpty()
-
-                    //updates marks with new value
-                    marks.value = loaded
-                }
-
-                //hides refreshing icon
-                isRefreshing.value = false
-            }
-        }
-    }
 
     // ---- Predictor section -----
 
@@ -172,6 +103,22 @@ class MarksViewModel : RefreshableViewModel<MarksAllSubjects>() {
             //returns list for subject index given
             return _predictorMarks[index]!!
         }
+
+    override suspend fun loadServer(): MarksRoot? {
+        return MarksLoader.loadFromServer()
+    }
+
+    override suspend fun loadStorage(): MarksRoot? {
+        return MarksLoader.loadFromStorage()
+    }
+
+    override fun shouldReload(): Boolean {
+        return MarksLoader.shouldReload()
+    }
+
+    override fun isEmpty(data: MarksRoot): Boolean {
+        return data.getAllMarks().isEmpty()
+    }
 
     override fun emptyText(context: Context): String {
         return context.getString(R.string.marks_no_marks)

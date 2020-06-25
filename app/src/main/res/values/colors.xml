@@ -46,14 +46,17 @@
 
     <color name="border">#777</color>
 
-    <color name="timetable_bottom_text">#CCC</color>
-    <color name="timetable_bottom_text_background">#333</color>
+    <color name="last_updated_text_color">#CCC</color>
+    <color name="last_updated_background_color">#333</color>
+
     <color name="timetable_absence">#00C853</color>
     <color name="timetable_current">#FDD835</color>
     <color name="timetable_change">#E53935</color>
     <color name="timetable_holiday">#00BCD4</color>
 
     <color name="marks_new_mark">#D50000</color>
+
+    <color name="absence_over_threshold">#D50000</color>
 
     <color name="widget_background">#FFF</color>
     <color name="widget_foreground">#000</color>

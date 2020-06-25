@@ -33,6 +33,7 @@ import cz.lastaapps.bakalariextension.api.user.data.User
 import cz.lastaapps.bakalariextension.databinding.FragmentHomeBinding
 import cz.lastaapps.bakalariextension.ui.UserViewModel
 import cz.lastaapps.bakalariextension.ui.WhatsNew
+import cz.lastaapps.bakalariextension.ui.absence.AbsenceOverviewFragment
 import cz.lastaapps.bakalariextension.ui.homework.HmwOverview
 import cz.lastaapps.bakalariextension.ui.marks.NewMarksFragment
 import cz.lastaapps.bakalariextension.ui.timetable.small.SmallTimetableFragment
@@ -65,12 +66,15 @@ class HomeFragment : Fragment() {
         //inflates layout
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
 
-        //sets up info about user
-        binding.apply {
-            val user = userViewModel.requireData()
-            name.text = user.normalFunName
-            type.text = user.getClassAndRole()
-            school.text = user.schoolName
+
+        userViewModel.executeOrRefresh(lifecycle) {
+            binding.apply {
+
+                //shows up info about user in the top
+                name.text = it.normalFunName
+                type.text = it.getClassAndRole()
+                school.text = it.schoolName
+            }
         }
 
         addFragments()
@@ -78,6 +82,7 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
+    /** Adds fragments to home fragment if theirs module is available*/
     private fun addFragments() {
 
         val user = userViewModel.requireData()
@@ -93,6 +98,10 @@ class HomeFragment : Fragment() {
 
         if (user.isModuleEnabled(User.HOMEWORK)) {
             transaction.add(R.id.homework_fragment, HmwOverview())
+        }
+
+        if (user.isModuleEnabled(User.ABSENCE)) {
+            transaction.add(R.id.absence_fragment, AbsenceOverviewFragment())
         }
 
         transaction.commit()

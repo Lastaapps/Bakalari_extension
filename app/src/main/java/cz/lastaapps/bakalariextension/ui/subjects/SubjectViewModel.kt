@@ -21,77 +21,32 @@
 package cz.lastaapps.bakalariextension.ui.subjects
 
 import android.content.Context
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.subjects.SubjectList
 import cz.lastaapps.bakalariextension.api.subjects.SubjectLoader
 import cz.lastaapps.bakalariextension.api.subjects.TeacherList
 import cz.lastaapps.bakalariextension.api.subjects.data.Teacher
 import cz.lastaapps.bakalariextension.ui.RefreshableViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlinx.coroutines.yield
 
 /**Holds data for teacher and subject modules and ViewModels for themes*/
-class SubjectViewModel : RefreshableViewModel<SubjectList>() {
+class SubjectViewModel : RefreshableViewModel<SubjectList>(TAG) {
+
+    companion object {
+        private val TAG = SubjectViewModel::class.java.simpleName
+    }
+
+    init {
+        data.observeForever {
+            teachers.value = Teacher.subjectsToTeachers(it)
+        }
+    }
 
     /**List of subjects*/
     val subjects = data
 
     /**List of teachers*/
     val teachers = MutableLiveData<TeacherList>()
-
-    /**Loads data*/
-    override fun onRefresh(force: Boolean) {
-
-        if (isRefreshing.value!!)
-            return
-
-        isRefreshing.value = true
-
-        viewModelScope.launch(Dispatchers.Default) {
-
-            var subjectList = SubjectLoader.loadFromStorage()
-
-            if (subjectList == null || force) {
-                subjectList?.let {
-                    withContext(Dispatchers.Main) {
-                        subjects.value = it
-                        teachers.value = Teacher.subjectsToTeachers(it)
-                    }
-                }
-
-                //let oder work finish before running slow loading from server
-                for (i in 0 until 10) yield()
-
-                subjectList = SubjectLoader.loadFromServer()
-            }
-
-            withContext(Dispatchers.Main) {
-
-                failed.value = false
-                isEmpty.value = false
-
-                if (subjectList == null) {
-                    if (subjects.value == null) {
-                        failed.value = true
-                    }
-                    Toast.makeText(App.context, R.string.teacher_failed_to_load, Toast.LENGTH_LONG)
-                        .show()
-                } else {
-                    isEmpty.value = subjectList.isEmpty()
-                    subjects.value = subjectList
-                    teachers.value = Teacher.subjectsToTeachers(subjectList)
-                }
-
-                isRefreshing.value = false
-            }
-        }
-    }
 
     /**holds ViewModels for themes*/
     private val themeMap = HashMap<String, ThemeViewModel>()
@@ -105,6 +60,22 @@ class SubjectViewModel : RefreshableViewModel<SubjectList>() {
                 themeMap[subjectId] = it
             }
         }
+    }
+
+    override suspend fun loadServer(): SubjectList? {
+        return SubjectLoader.loadFromServer()
+    }
+
+    override suspend fun loadStorage(): SubjectList? {
+        return SubjectLoader.loadFromStorage()
+    }
+
+    override fun shouldReload(): Boolean {
+        return SubjectLoader.shouldReload()
+    }
+
+    override fun isEmpty(data: SubjectList): Boolean {
+        return data.isEmpty()
     }
 
     override fun emptyText(context: Context): String {

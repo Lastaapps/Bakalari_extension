@@ -32,6 +32,7 @@ import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
 import cz.lastaapps.bakalariextension.api.timetable.data.Cycle
 import cz.lastaapps.bakalariextension.api.timetable.data.Hour
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
+import cz.lastaapps.bakalariextension.api.user.data.User
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import cz.lastaapps.bakalariextension.ui.timetable.CellSetup
 import kotlinx.coroutines.yield
@@ -121,6 +122,7 @@ class TimetableCreator {
             root: View,
             week: Week,
             cycle: Cycle?,
+            user: User,
             homework: HomeworkList?
         ) {
 
@@ -187,6 +189,7 @@ class TimetableCreator {
                 week,
                 cycle,
                 validHours,
+                user,
                 homework
             )
 
@@ -200,11 +203,11 @@ class TimetableCreator {
             val dayArray =
                 arrayOf(R.id.monday, R.id.tuesday, R.id.wednesday, R.id.thursday, R.id.friday)
             val dayShortcutsArray = arrayOf(
-                R.string.monday_shortut,
-                R.string.tuesday_shortut,
-                R.string.wednesday_shortut,
-                R.string.thursday_shortut,
-                R.string.friday_shortut
+                R.string.monday_shortcut,
+                R.string.tuesday_shortcut,
+                R.string.wednesday_shortcut,
+                R.string.thursday_shortcut,
+                R.string.friday_shortcut
             )
 
             val mondayDate = week.loadedForDate
@@ -260,6 +263,7 @@ class TimetableCreator {
             week: Week,
             cycle: Cycle?,
             validHours: DataIdList<Hour>,
+            user: User,
             homework: HomeworkList?
         ) {
             //creating actual timetable
@@ -296,6 +300,7 @@ class TimetableCreator {
                                     day,
                                     hour,
                                     cycle,
+                                    user,
                                     homework
                                 )
                             )

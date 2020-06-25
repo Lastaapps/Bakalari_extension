@@ -23,7 +23,7 @@ package cz.lastaapps.bakalariextension.api.marks
 import android.util.Log
 import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.marks.data.Mark
-import cz.lastaapps.bakalariextension.api.marks.data.MarksAllSubjects
+import cz.lastaapps.bakalariextension.api.marks.data.MarksRoot
 import cz.lastaapps.bakalariextension.api.marks.data.Subject
 import cz.lastaapps.bakalariextension.api.marks.data.SubjectMarks
 import org.json.JSONArray
@@ -35,12 +35,12 @@ class MarksParser {
         private val TAG = MarksParser::class.java.simpleName
 
         /**Parses marks from json, scheme on https://github.com/bakalari-api/bakalari-api-v3*/
-        fun parseJson(root: JSONObject): MarksAllSubjects {
+        fun parseJson(root: JSONObject): MarksRoot {
 
             Log.i(TAG, "Parsing marks json")
 
             //parses whole json
-            return MarksAllSubjects(
+            return MarksRoot(
                 ArrayList(
                     parseAllSubjects(root.getJSONArray("Subjects")).sorted()
                 )
@@ -79,23 +79,23 @@ class MarksParser {
                 val json = jsonArray.getJSONObject(i)
 
                 val item = Mark(
-                    json.getString("MarkDate"),
-                    json.getString("EditDate"),
-                    json.getString("Caption"),
-                    json.getString("Theme"),
-                    json.getString("MarkText"),
-                    json.getString("TeacherId"),
-                    json.getString("Type"),
-                    json.getString("TypeNote"),
-                    json.getInt("Weight"),
-                    json.getString("SubjectId"),
+                    safeJson(json, "MarkDate"),
+                    safeJson(json, "EditDate"),
+                    safeJson(json, "Caption"),
+                    safeJson(json, "Theme"),
+                    safeJson(json, "MarkText"),
+                    safeJson(json, "TeacherId"),
+                    safeJson(json, "Type"),
+                    safeJson(json, "TypeNote"),
+                    safeInt(json, "Weight", 4),
+                    safeJson(json, "SubjectId"),
                     json.getBoolean("IsNew"),
                     json.getBoolean("IsPoints"),
-                    json.getString("CalculatedMarkText"),
+                    safeJson(json, "CalculatedMarkText"),
                     safeJson(json, "ClassRankText"), //seen only as null
-                    json.getString("Id"),
-                    json.getString("PointsText"),
-                    json.getInt("MaxPoints")
+                    safeJson(json, "Id"),
+                    safeJson(json, "PointsText"),
+                    safeInt(json, "MaxPoints", 100)
                 )
 
                 list.add(item)
@@ -124,6 +124,19 @@ class MarksParser {
                     ""
             } catch (e: JSONException) {
                 ""
+            }
+        }
+
+        /**try to get Int for the key given, protection again JSONException
+         * and replacing null object with default value parameter*/
+        private fun safeInt(json: JSONObject, key: String, default: Int = 0): Int {
+            return try {
+                if (!json.isNull(key))
+                    return json.getInt(key)
+                else
+                    default
+            } catch (e: JSONException) {
+                default
             }
         }
     }

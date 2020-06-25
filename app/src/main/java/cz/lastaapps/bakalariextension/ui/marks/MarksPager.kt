@@ -20,41 +20,33 @@
 
 package cz.lastaapps.bakalariextension.ui.marks
 
-import android.content.Context
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.ui.marks.predictor.PredictorFragment
 
 /**Changes fragments for tab selection*/
-class MarksPager(val context: Context, fragmentManager: FragmentManager) :
-    FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-
-    private val fragments = Array<Fragment?>(3) { null }
+class MarksPager(val fragment: Fragment) : FragmentStateAdapter(fragment) {
 
     /**@return mark Fragment by position*/
-    override fun getItem(position: Int): Fragment {
+    override fun createFragment(position: Int): Fragment {
         //holds fragments in memory for faster swiping
-        if (fragments[position] == null)
-            fragments[position] = when (position) {
-                0 -> {
-                    ByDateFragment()
-                }
-                1 -> {
-                    BySubjectFragment()
-                }
-                else -> {
-                    PredictorFragment()
-                }
+        return when (position) {
+            0 -> {
+                ByDateFragment()
             }
-
-        return fragments[position]!!
+            1 -> {
+                BySubjectFragment()
+            }
+            else -> {
+                PredictorFragment()
+            }
+        }
     }
 
     /**@return label for tab by position*/
-    override fun getPageTitle(position: Int): CharSequence? {
-        return context.getString(
+    fun getPageTitle(position: Int): CharSequence? {
+        return fragment.requireContext().getString(
             when (position) {
                 0 -> R.string.marks_by_date
                 1 -> R.string.marks_by_subject
@@ -64,7 +56,7 @@ class MarksPager(val context: Context, fragmentManager: FragmentManager) :
     }
 
     /**@return 3*/
-    override fun getCount(): Int {
+    override fun getItemCount(): Int {
         return 3
     }
 

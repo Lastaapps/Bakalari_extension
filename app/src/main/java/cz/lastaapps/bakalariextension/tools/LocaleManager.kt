@@ -35,6 +35,11 @@ class LocaleManager {
 
         private val TAG = LocaleManager::class.java.simpleName
 
+        /**returns locale set by user*/
+        fun getLocale(context: Context): Locale {
+            return Locale(getLanguagePref(context))
+        }
+
         /**
          * update language
          */
@@ -42,7 +47,7 @@ class LocaleManager {
             context: Context
         ): Context {
 
-            val locale = Locale(getLanguagePref(context))
+            val locale = getLocale(context)
             Locale.setDefault(locale)
             val res: Resources = context.resources
             val config = Configuration(res.configuration)

@@ -44,11 +44,12 @@ class User(
         private val TAG = User::class.java
 
         const val ROLE_PARENT = "parents"
+        const val ROLE_STUDENT = "student"
 
         //TODO not sure about names
         const val ROLE_SYSTEM = "system"
-        const val ROLE_TEACHER = "teachers"
-        const val ROLE_STUDENT = "students"
+        const val ROLE_KOMENS = "komens"
+        const val ROLE_TEACHER = "teacher"
         const val ROLE_HEADMASTERSHIP = "headmastership"
 
         //modules permissions
@@ -118,12 +119,20 @@ class User(
 
     /**@return string in format 1.A first name last name*/
     fun getClassAndRole(): String {
-        return "${classInfo.name} - ${translateUserType()}"
+        return "${classInfo.shortcut} - ${translateUserType()}"
     }
 
     /**if whole module is enabled, for example komens, timetable, ...*/
     fun isModuleEnabled(moduleName: String): Boolean {
         return modules.keys.contains(moduleName)
+    }
+
+    /** runs given code if module is enabled
+     * @return data returned from code given or null if nothing was executed*/
+    fun <E> runIfModuleEnabled(moduleName: String, todo: (() -> E)): E? {
+        if (isModuleEnabled(moduleName))
+            return todo()
+        return null
     }
 
     /**@return in exact feature is available, for example showMarks, showFinalMarks, ...*/
@@ -136,5 +145,13 @@ class User(
             }
         }
         return _allFeatures.contains(featureType)
+    }
+
+    /** runs given code if feature is enabled
+     * @return data returned from code given or null if nothing was executed*/
+    fun <E> runIfFeatureEnabled(moduleName: String, todo: (() -> E)): E? {
+        if (isFeatureEnabled(moduleName))
+            return todo()
+        return null
     }
 }

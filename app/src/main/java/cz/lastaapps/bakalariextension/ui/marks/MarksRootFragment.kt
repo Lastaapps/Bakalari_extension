@@ -29,9 +29,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
+import com.google.android.material.tabs.TabLayoutMediator
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.marks.MarksStorage
-import cz.lastaapps.bakalariextension.api.marks.data.MarksAllSubjects
 import cz.lastaapps.bakalariextension.databinding.FragmentMarksRootBinding
 import cz.lastaapps.bakalariextension.tools.lastUpdated
 
@@ -48,22 +48,6 @@ class MarksRootFragment : Fragment() {
     //data with marks - puts new marks in
     val viewModel: MarksViewModel by activityViewModels()
 
-    /**observers for mark change, updates last updated text*/
-    private val marksObserver = { _: MarksAllSubjects? ->
-
-        Log.i(TAG, "Updating based on mew marks")
-
-        var text = getString(R.string.marks_failed_to_load)
-        val lastUpdated = MarksStorage.lastUpdated()
-        lastUpdated?.let {
-            text = lastUpdated(requireContext(), it)
-        }
-
-        binding.lastUpdated.text = text
-
-        loadMarks()
-    }
-
     private val failObserver = { failed: Boolean ->
         if (failed)
             onFail()
@@ -73,7 +57,6 @@ class MarksRootFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         //observes for marks change
-        viewModel.marks.observe({ lifecycle }, marksObserver)
         viewModel.failed.observe({ lifecycle }, failObserver)
     }
 
@@ -90,17 +73,23 @@ class MarksRootFragment : Fragment() {
                 DataBindingUtil.inflate(inflater, R.layout.fragment_marks_root, container, false)
             binding.viewmodel = viewModel
             binding.lifecycleOwner = LifecycleOwner { lifecycle }
+
+            binding.pager.isSaveEnabled = false
         } else {
             Log.i(TAG, "Already created")
         }
 
-        if (viewModel.marks.value != null) {
-            marksObserver(null)
-        } else {
-            viewModel.onRefresh()
-        }
+        viewModel.executeOrRefresh(lifecycle) { marksUpdated() }
 
         return binding.root
+    }
+
+    private fun marksUpdated() {
+
+        Log.i(TAG, "Updating based on mew marks")
+
+        updateLastUpdated()
+        loadMarks()
     }
 
     /**loads marks to ViewModel*/
@@ -124,8 +113,14 @@ class MarksRootFragment : Fragment() {
 
             //sets up ViewPager for oder fragments
             if (pager.adapter == null) {
-                pager.adapter = MarksPager(requireContext(), childFragmentManager)
-                tabs.setupWithViewPager(pager)
+                MarksPager(this@MarksRootFragment).also {
+                    pager.adapter = it
+
+                    TabLayoutMediator(binding.tabs, pager) { tab, position ->
+
+                        tab.text = it.getPageTitle(position)
+                    }.attach()
+                }
             }
         }
     }
@@ -140,5 +135,16 @@ class MarksRootFragment : Fragment() {
 
             errorMessage.setText(R.string.marks_failed_to_load)
         }
+    }
+
+    private fun updateLastUpdated() {
+
+        var text = getString(R.string.marks_failed_to_load)
+        val lastUpdated = MarksStorage.lastUpdated()
+        lastUpdated?.let {
+            text = lastUpdated(requireContext(), it)
+        }
+
+        binding.lastUpdated.text = text
     }
 }
