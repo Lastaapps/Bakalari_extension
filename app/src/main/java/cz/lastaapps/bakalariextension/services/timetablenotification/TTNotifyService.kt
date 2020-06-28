@@ -37,8 +37,8 @@ import cz.lastaapps.bakalariextension.MainActivity
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
-import cz.lastaapps.bakalariextension.login.LoginData
 import cz.lastaapps.bakalariextension.tools.*
+import cz.lastaapps.bakalariextension.ui.login.LoginData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -153,7 +153,7 @@ class TTNotifyService : BaseService() {
                 if (week == null) {
                     MyToast.makeText(
                         this@TTNotifyService,
-                        R.string.error_cannot_download_timetable,
+                        R.string.timetable_download_failed,
                         Toast.LENGTH_LONG
                     ).show()
 
@@ -174,7 +174,7 @@ class TTNotifyService : BaseService() {
             } else {
                 MyToast.makeText(
                     this@TTNotifyService,
-                    R.string.error_no_timetable,
+                    R.string.timetable_no_timetable,
                     Toast.LENGTH_LONG
                 ).show()
                 return
@@ -300,8 +300,8 @@ class TTNotifyService : BaseService() {
     /**@return notification containing texts while the oder ones are loading*/
     private fun waitingNotificationContent(): Notification {
         return generateNotification(
-            getString(R.string.preparing_timetable),
-            getString(R.string.should_not_take_long)
+            getString(R.string.timetable_preparing),
+            getString(R.string.timetable_should_not_take_long)
         )
     }
 

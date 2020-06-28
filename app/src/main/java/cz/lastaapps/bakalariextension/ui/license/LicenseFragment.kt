@@ -23,38 +23,66 @@ package cz.lastaapps.bakalariextension.ui.license
 import android.app.backup.BackupManager
 import android.content.Context
 import android.content.DialogInterface
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.navigation.findNavController
 import cz.lastaapps.bakalariextension.App
+import cz.lastaapps.bakalariextension.MainActivity
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.databinding.ActivityLicenseBinding
-import cz.lastaapps.bakalariextension.tools.BaseActivity
+import cz.lastaapps.bakalariextension.databinding.FragmentLicenseBinding
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-class LicenseActivity : BaseActivity() {
+class LicenseFragment : Fragment() {
 
-    lateinit var binding: ActivityLicenseBinding
+    private lateinit var binding: FragmentLicenseBinding
+    private var wasAppBarShown = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Log.i(TAG, "Creating activity")
+        (requireActivity() as MainActivity).supportActionBar?.let {
+            wasAppBarShown = it.isShowing
+            it.hide()
+        }
+    }
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_license)
+    override fun onDestroy() {
+        super.onDestroy()
+
+        (requireActivity() as MainActivity).supportActionBar?.let {
+            if (wasAppBarShown)
+                it.show()
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+
+        Log.i(TAG, "Creating view")
+
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_license, container, false)
         binding.license = this
 
         loadPackages()
         loadLicenseContent()
+
+        return binding.root
     }
 
     /**Loads packages manes*/
@@ -103,7 +131,7 @@ class LicenseActivity : BaseActivity() {
             try {
                 reader = BufferedReader(
                     InputStreamReader(
-                        assets.open("license/${assetNames[i]}"),
+                        requireActivity().assets.open("license/${assetNames[i]}"),
                         "UTF-8"
                     )
                 )
@@ -135,7 +163,7 @@ class LicenseActivity : BaseActivity() {
     }
 
     companion object {
-        private val TAG = LicenseActivity::class.java.simpleName
+        private val TAG = LicenseFragment::class.java.simpleName
 
         private const val SP_KEY = "LICENSE"
         private const val SP_AGREED = "1.0"
@@ -160,8 +188,8 @@ class LicenseActivity : BaseActivity() {
         }
 
         /**Shows dialog, which asks user to agree the license*/
-        fun showDialog(context: Context, run: Runnable) {
-            AlertDialog.Builder(context)
+        fun showDialog(activity: FragmentActivity, run: Runnable) {
+            AlertDialog.Builder(activity)
                 .setCancelable(false)
                 .setMessage(R.string.license_agreement)
                 .setPositiveButton(R.string.license_agree)
@@ -171,7 +199,7 @@ class LicenseActivity : BaseActivity() {
                 }
                 .setNegativeButton(R.string.license_view) { _: DialogInterface, _: Int ->
                     viewLicense(
-                        context
+                        activity
                     )
                 }
                 .setTitle(R.string.license)
@@ -180,8 +208,8 @@ class LicenseActivity : BaseActivity() {
         }
 
         /**Shows GNU license to user*/
-        fun viewLicense(context: Context) {
-            context.startActivity(Intent(context, LicenseActivity::class.java))
+        fun viewLicense(activity: FragmentActivity) {
+            activity.findNavController(R.id.nav_host_fragment).navigate(R.id.nav_license)
         }
     }
 }

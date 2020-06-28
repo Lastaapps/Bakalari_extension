@@ -44,7 +44,7 @@ class Mark(
     var type: String,
     /**Type of mark - test, examination, homework,...*/
     var typeNote: String,
-    var weight: Int,
+    var weight: Int?,
     var subjectId: String,
     var isNew: Boolean,
     var isPoints: Boolean,
@@ -142,8 +142,8 @@ class Mark(
                         for (mark in marks) {
                             //for marks like A, S, etc.
                             try {
-                                average += parseMarkValue(mark.markText) * mark.weight
-                                weights += mark.weight
+                                average += parseMarkValue(mark.markText) * (mark.weight ?: 1)
+                                weights += mark.weight ?: 1
                             } catch (e: Exception) {
                             }
                         }
@@ -160,8 +160,9 @@ class Mark(
 
                         for (mark in marks) {
                             try {
-                                average += mark.markText.toDouble() / mark.maxPoints * mark.weight
-                                weights += mark.weight
+                                average += mark.markText.toDouble() / mark.maxPoints * (mark.weight
+                                    ?: 1)
+                                weights += mark.weight ?: 1
                             } catch (e: Exception) {
                             }
                         }

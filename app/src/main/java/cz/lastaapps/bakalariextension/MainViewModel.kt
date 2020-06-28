@@ -24,11 +24,11 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import cz.lastaapps.bakalariextension.login.LoginData
 import cz.lastaapps.bakalariextension.tools.CheckInternet
 import cz.lastaapps.bakalariextension.tools.MySettings
 import cz.lastaapps.bakalariextension.ui.WhatsNew
-import cz.lastaapps.bakalariextension.ui.license.LicenseActivity
+import cz.lastaapps.bakalariextension.ui.license.LicenseFragment
+import cz.lastaapps.bakalariextension.ui.login.LoginData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -81,7 +81,7 @@ class MainViewModel : ViewModel() {
                 MySettings(App.context).initSettings(true)
 
             //executes when user is logged in
-            if (LoginData.isLoggedIn() && LicenseActivity.check()) {
+            if (LoginData.isLoggedIn() && LicenseFragment.check()) {
 
                 Log.i(TAG, "Launching from saved data")
 
@@ -93,7 +93,7 @@ class MainViewModel : ViewModel() {
             }
 
             //checks if user has accepted the license
-            if (!LicenseActivity.check()) {
+            if (!LicenseFragment.check()) {
 
                 Log.i(TAG, "License not agreed")
 

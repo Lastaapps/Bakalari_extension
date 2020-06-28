@@ -150,9 +150,9 @@ data class Day(
             description
         } else {
             if (dayType == "Celebration")
-                App.getString(R.string.celebration)
+                App.getString(R.string.timetable_celebration)
             else
-                App.getString(R.string.holiday)
+                App.getString(R.string.timetable_holiday)
         }
     }
 

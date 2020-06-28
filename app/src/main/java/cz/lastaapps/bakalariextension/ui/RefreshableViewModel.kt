@@ -90,6 +90,10 @@ abstract class RefreshableViewModel<E>(val TAG: String) : ViewModel() {
 
                 //hides refreshing icon
                 isRefreshing.value = false
+
+                //shows Toast if there is no data to show on if user requested server update and it failed
+                if (data.value == null || force)
+                    showToast()
             }
         }
     }
@@ -103,8 +107,6 @@ abstract class RefreshableViewModel<E>(val TAG: String) : ViewModel() {
 
         //when download failed
         if (newData == null) {
-
-            showToast()
 
             if (data.value == null) {
                 failed.value = true

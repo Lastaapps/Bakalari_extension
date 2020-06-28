@@ -22,6 +22,8 @@ package cz.lastaapps.bakalariextension.api.marks.data
 
 import cz.lastaapps.bakalariextension.api.DataIdList
 
+typealias MarksList = DataIdList<Mark>
+
 /**List of all info about marks and their subjects*/
 class MarksRoot(
     val subjects: ArrayList<SubjectMarks>
@@ -67,5 +69,18 @@ class MarksRoot(
                 return subjectMark
         }
         return null
+    }
+
+    /**@return new marks base on settings*/
+    fun getNewMarks(): MarksList {
+        val allMarks = getAllMarks()
+        val newMarks = MarksList()
+
+        //filters new marks
+        for (mark in allMarks)
+            if (mark.showAsNew())
+                newMarks.add(mark)
+
+        return newMarks
     }
 }

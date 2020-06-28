@@ -73,10 +73,10 @@ class STViewModel : RefreshableViewModel<Week>(TAG) {
     }
 
     override fun emptyText(context: Context): String {
-        return context.getString(R.string.error_no_timetable_for_today)
+        return context.getString(R.string.timetable_no_timetable_today)
     }
 
     override fun failedText(context: Context): String {
-        return context.getString(R.string.error_cannot_download_timetable)
+        return context.getString(R.string.timetable_download_failed)
     }
 }

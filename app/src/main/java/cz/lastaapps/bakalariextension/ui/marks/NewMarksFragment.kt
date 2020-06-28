@@ -29,10 +29,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
+import androidx.navigation.findNavController
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.DataIdList
-import cz.lastaapps.bakalariextension.api.marks.data.Mark
-import cz.lastaapps.bakalariextension.api.marks.data.MarksRoot
 import cz.lastaapps.bakalariextension.databinding.FragmentMarksNewBinding
 
 /**Fragment shown in HomeFragment
@@ -48,24 +46,6 @@ class NewMarksFragment : Fragment() {
     //data - marks
     val viewModel: MarksViewModel by activityViewModels()
 
-    //updates hen new marks are downloaded
-    private val marksObserver = { _: MarksRoot? ->
-        Log.i(TAG, "Updating with new marks")
-        loadMarks()
-    }
-
-    private val failObserver = { _: Any ->
-        onFail()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        //observes for marks update
-        viewModel.marks.observe({ lifecycle }, marksObserver)
-        viewModel.failed.observe({ lifecycle }, failObserver)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -78,39 +58,43 @@ class NewMarksFragment : Fragment() {
         binding.viewmodel = viewModel
         binding.lifecycleOwner = LifecycleOwner { lifecycle }
 
-        if (viewModel.marks.value != null) {
-            marksObserver(null)
-        } else {
-            viewModel.onRefresh()
+        binding.drawable = R.drawable.module_marks
+        //TODO contentDescription
+        binding.contentDescription = ""
+
+        binding.list.adapter = MarksAdapter()
+
+        //navigates to homework fragments
+        binding.contentLayout.setOnClickListener {
+            it.findNavController().navigate(R.id.nav_marks)
         }
+
+        //starts marks loading if they aren't yet
+        viewModel.executeOrRefresh(lifecycle) { dataChanged() }
 
         return binding.root
     }
 
-    /**Loads marks*/
-    private fun loadMarks() {
-        val marks = viewModel.marks.value!!
-        val allMarks = marks.getAllMarks()
-        val newMarks = DataIdList<Mark>()
+    /**sets actual content of the fragment*/
+    private fun dataChanged() {
+        Log.i(TAG, "Data changed, updating")
 
-        //filters new marks
-        for (mark in allMarks)
-            if (mark.showAsNew())
-                newMarks.add(mark)
+        val marks = viewModel.requireData()
+        val newMarks = marks.getNewMarks()
 
-        //is hidden when on no marks
-        if (newMarks.isEmpty()) {
-            return
+        val text = if (newMarks.isNotEmpty()) {
+            resources.getQuantityString(
+                R.plurals.marks_new_template,
+                newMarks.size,
+                newMarks.size
+            )
+        } else {
+            getString(R.string.marks_new_no_marks)
         }
 
-        //puts views in
-        val marksListView = binding.list
-        marksListView.setHasFixedSize(true)
-        marksListView.adapter = MarksAdapter(marks, newMarks)
-    }
+        binding.text.text = text
 
-    /**When marks failed to load*/
-    private fun onFail() {
-        binding.list.adapter = null
+        //puts views in
+        (binding.list.adapter as MarksAdapter).updateMarksRoot(marks, newMarks)
     }
 }

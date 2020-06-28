@@ -24,7 +24,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.util.Log
 import cz.lastaapps.bakalariextension.App
-import cz.lastaapps.bakalariextension.login.LoginData
+import cz.lastaapps.bakalariextension.ui.login.LoginData
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -63,6 +63,7 @@ class CheckInternet {
                     urlc.setRequestProperty("User-Agent", "test")
                     urlc.setRequestProperty("Connection", "Keep-Alive")
                     urlc.connectTimeout = 2000
+                    urlc.readTimeout = 2000
                     urlc.connect()
 
                     //connection succeed

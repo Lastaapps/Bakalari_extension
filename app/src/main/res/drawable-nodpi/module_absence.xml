@@ -25,63 +25,62 @@
     android:viewportHeight="128">
     <path
         android:pathData="m119.163,31.94 l0.183,63.803 -55.163,32.06 -55.346,-31.743 -0.183,-63.803 55.163,-32.06z"
-        android:strokeWidth="1"
-        android:fillColor="#ffc400"
+        android:fillColor="#FFA000"
         android:strokeColor="#00000000" />
     <path
         android:pathData="m38.544,100.737h50.913c0,0 0,-25.456 -25.456,-25.456 -25.456,0 -25.456,25.456 -25.456,25.456z"
         android:strokeLineJoin="round"
-        android:strokeWidth="@integer/icons_stoke_light"
+        android:strokeWidth="@integer/icons_stoke_medium"
         android:fillColor="#00000000"
-        android:strokeColor="#000000"
+        android:strokeColor="@color/icons_module_stroke"
         android:strokeLineCap="butt" />
     <path
         android:pathData="m53.713,55.359a11.915,11.915 0,0 0,-1.532 5.843,11.915 11.915,0 0,0 11.916,11.916 11.915,11.915 0,0 0,11.916 -11.916,11.915 11.915,0 0,0 -1.58,-5.927c-1.505,0.023 -5.769,0.172 -10.73,0.241 -2.717,0.037 -5.437,0.044 -7.598,-0.021 -0.939,-0.028 -1.71,-0.077 -2.391,-0.136z"
         android:strokeLineJoin="round"
-        android:strokeWidth="@integer/icons_stoke_light"
+        android:strokeWidth="@integer/icons_stoke_medium"
         android:fillColor="#00000000"
-        android:strokeColor="#000000"
+        android:strokeColor="@color/icons_module_stroke"
         android:strokeLineCap="round" />
     <path
         android:pathData="m52.533,46.439c-2.254,1.499 -2.615,7.562 -0.701,8.56 1.914,0.997 21.791,0.192 23.587,0.208 1.796,0.016 5.509,-6.965 0.701,-8.56 -4.808,-1.595 -21.333,-1.708 -23.587,-0.208z"
         android:strokeLineJoin="miter"
-        android:strokeWidth="@integer/icons_stoke_light"
+        android:strokeWidth="@integer/icons_stoke_medium"
         android:fillColor="#00000000"
-        android:strokeColor="#000000"
+        android:strokeColor="@color/icons_module_stroke"
         android:strokeLineCap="butt" />
     <path
         android:pathData="M44.142,25.586a5.045,4.513 94.682,1 0,8.997 0.737a5.045,4.513 94.682,1 0,-8.997 -0.737z"
         android:strokeLineJoin="round"
-        android:strokeWidth="@integer/icons_stoke_light"
+        android:strokeWidth="@integer/icons_stoke_medium"
         android:fillColor="#00000000"
-        android:strokeColor="#000000"
+        android:strokeColor="@color/icons_module_stroke"
         android:strokeLineCap="round" />
     <path
         android:pathData="m51.746,29.567c4.975,6.628 5.806,6.374 2.932,16.01"
         android:strokeLineJoin="round"
-        android:strokeWidth="@integer/icons_stoke_light"
+        android:strokeWidth="@integer/icons_stoke_medium"
         android:fillColor="#00000000"
-        android:strokeColor="#000000"
+        android:strokeColor="@color/icons_module_stroke"
         android:strokeLineCap="butt" />
     <path
         android:pathData="m53.168,25.954c4.619,1.211 14.06,5.755 20.135,20.112"
         android:strokeLineJoin="round"
-        android:strokeWidth="@integer/icons_stoke_light"
+        android:strokeWidth="@integer/icons_stoke_medium"
         android:fillColor="#00000000"
-        android:strokeColor="#000000"
+        android:strokeColor="@color/icons_module_stroke"
         android:strokeLineCap="butt" />
     <path
         android:pathData="m57.385,97.168 l6.615,-17.859 6.615,17.859v0"
         android:strokeLineJoin="round"
-        android:strokeWidth="@integer/icons_stoke_light"
+        android:strokeWidth="@integer/icons_stoke_medium"
         android:fillColor="#00000000"
-        android:strokeColor="#000000"
+        android:strokeColor="@color/icons_module_stroke"
         android:strokeLineCap="round" />
     <path
         android:pathData="m60.693,88.239h6.615"
         android:strokeLineJoin="miter"
-        android:strokeWidth="@integer/icons_stoke_light"
+        android:strokeWidth="@integer/icons_stoke_medium"
         android:fillColor="#00000000"
-        android:strokeColor="#000000"
+        android:strokeColor="@color/icons_module_stroke"
         android:strokeLineCap="butt" />
 </vector>

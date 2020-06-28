@@ -87,7 +87,7 @@ class MarksParser {
                     safeJson(json, "TeacherId"),
                     safeJson(json, "Type"),
                     safeJson(json, "TypeNote"),
-                    safeInt(json, "Weight", 4),
+                    json.getInt("Weight"),
                     safeJson(json, "SubjectId"),
                     json.getBoolean("IsNew"),
                     json.getBoolean("IsPoints"),

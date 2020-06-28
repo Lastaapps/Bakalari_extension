@@ -47,13 +47,11 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import cz.lastaapps.bakalariextension.api.user.data.User
-import cz.lastaapps.bakalariextension.login.Logout
 import cz.lastaapps.bakalariextension.send.ReportIssueActivity
 import cz.lastaapps.bakalariextension.send.SendIdeaActivity
 import cz.lastaapps.bakalariextension.tools.BaseActivity
 import cz.lastaapps.bakalariextension.ui.UserViewModel
-import cz.lastaapps.bakalariextension.ui.license.LicenseActivity
-import cz.lastaapps.bakalariextension.ui.settings.SettingsActivity
+import cz.lastaapps.bakalariextension.ui.login.ActionsLogout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -309,10 +307,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 findNavController(R.id.nav_host_fragment).navigate(R.id.nav_subject_list)
             }
             R.id.nav_settings -> {
-                startActivity(Intent(this, SettingsActivity::class.java))
+                findNavController(R.id.nav_host_fragment).navigate(R.id.nav_settings)
             }
             R.id.nav_logout -> {
-                Logout.logout()
+                ActionsLogout.logout()
                 startActivity(Intent(this, MainActivity::class.java))
                 finish()
             }
@@ -376,7 +374,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 startActivity(Intent(Intent.ACTION_VIEW, uri))
             }
             R.id.nav_license -> {
-                startActivity(Intent(this, LicenseActivity::class.java))
+                findNavController(R.id.nav_host_fragment).navigate(R.id.nav_license)
             }
             else -> {
                 toReturn = false

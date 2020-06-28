@@ -293,9 +293,9 @@ class CellSetup {
 
                 addInfoRow(
                     table, when (lesson.change?.changeType) {
-                        Change.ADDED -> App.getString(R.string.change_added)
-                        Change.REMOVED -> App.getString(R.string.change_removed)
-                        Change.CANCELED -> App.getString(R.string.change_canceled)
+                        Change.ADDED -> App.getString(R.string.timetable_change_added)
+                        Change.REMOVED -> App.getString(R.string.timetable_change_removed)
+                        Change.CANCELED -> App.getString(R.string.timetable_change_canceled)
                         else -> ""
                     }, R.string.info_change_type, null
                 )

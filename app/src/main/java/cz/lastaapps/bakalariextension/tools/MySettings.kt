@@ -83,6 +83,8 @@ class MySettings(val context: Context) {
         get() = getString(R.string.sett_key_reset)
     val SHOW_WHATS_NEW
         get() = getString(R.string.sett_key_show_whats_new)
+    val ABOUT
+        get() = getString(R.string.sett_key_about)
     val LICENSE
         get() = getString(R.string.sett_key_license)
 
@@ -172,7 +174,6 @@ class MySettings(val context: Context) {
         Log.i(TAG, "Dark mode set to $toChange")
 
         AppCompatDelegate.setDefaultNightMode(toChange)
-
     }
 
     /**@return when should be timetable for the next week shown*/

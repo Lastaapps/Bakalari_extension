@@ -40,7 +40,7 @@
                 android:layout_width="@dimen/timetable_icon"
                 android:layout_height="@dimen/timetable_icon"
                 android:layout_margin="@dimen/timetable_margin"
-                app:srcCompat="@drawable/timetable" />
+                app:srcCompat="@drawable/module_timetable" />
 
             <TextView
                 android:id="@+id/cycle"

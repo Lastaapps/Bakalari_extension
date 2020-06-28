@@ -34,7 +34,7 @@ import androidx.fragment.app.Fragment
 import cz.lastaapps.bakalariextension.BuildConfig
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.ui.WhatsNew
-import cz.lastaapps.bakalariextension.ui.license.LicenseActivity
+import cz.lastaapps.bakalariextension.ui.license.LicenseFragment
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -121,7 +121,7 @@ class AboutFragment : Fragment() {
         }
         //view license
         root.findViewById<ImageButton>(R.id.license).setOnClickListener {
-            requireActivity().startActivity(Intent(requireContext(), LicenseActivity::class.java))
+            requireActivity().startActivity(Intent(requireContext(), LicenseFragment::class.java))
         }
 
         return root

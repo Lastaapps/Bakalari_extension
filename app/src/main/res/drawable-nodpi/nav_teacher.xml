@@ -26,103 +26,103 @@
     <path
         android:pathData="m119.163,31.94 l0.183,63.803 -55.163,32.06 -55.346,-31.743 -0.183,-63.803 55.163,-32.06z"
         android:strokeWidth="@integer/icons_stroke_border"
-        android:strokeColor="#000000" />
+        android:strokeColor="@color/icons_nav_stroke" />
     <path
         android:pathData="m74.239,88.797h0.063"
         android:strokeLineJoin="round"
         android:strokeWidth="@integer/icons_stoke_light_nav"
         android:fillColor="#00000000"
-        android:strokeColor="#000000"
+        android:strokeColor="@color/icons_nav_stroke"
         android:strokeLineCap="butt" />
     <path
         android:pathData="m56.17,95.065c5.679,-3.931 11.627,-4.897 18.106,0v-26.551c-7.003,-5.299 -12.704,-3.468 -18.106,0z"
         android:strokeLineJoin="round"
         android:strokeWidth="@integer/icons_stoke_medium_nav"
         android:fillColor="#00000000"
-        android:strokeColor="#000000"
+        android:strokeColor="@color/icons_nav_stroke"
         android:strokeLineCap="butt" />
     <path
         android:pathData="m59.187,86.768c3.874,-2.062 7.876,-2.359 12.071,0"
         android:strokeLineJoin="round"
         android:strokeWidth="@integer/icons_stoke_light_nav"
         android:fillColor="#00000000"
-        android:strokeColor="#000000"
+        android:strokeColor="@color/icons_nav_stroke"
         android:strokeLineCap="round" />
     <path
         android:pathData="m59.187,81.789c4.067,-2.253 8.089,-2.171 12.071,0"
         android:strokeLineJoin="round"
         android:strokeWidth="@integer/icons_stoke_light_nav"
         android:fillColor="#00000000"
-        android:strokeColor="#000000"
+        android:strokeColor="@color/icons_nav_stroke"
         android:strokeLineCap="round" />
     <path
         android:pathData="m59.187,76.811c3.874,-2.062 7.876,-2.359 12.071,0"
         android:strokeLineJoin="round"
         android:strokeWidth="@integer/icons_stoke_light_nav"
         android:fillColor="#00000000"
-        android:strokeColor="#000000"
+        android:strokeColor="@color/icons_nav_stroke"
         android:strokeLineCap="round" />
     <path
         android:pathData="m59.187,71.833c4.294,-2.431 8.268,-1.984 12.071,0"
         android:strokeLineJoin="round"
         android:strokeWidth="@integer/icons_stoke_light_nav"
         android:fillColor="#00000000"
-        android:strokeColor="#000000"
+        android:strokeColor="@color/icons_nav_stroke"
         android:strokeLineCap="round" />
     <path
         android:pathData="m74.276,95.065c5.679,-3.93 11.627,-4.897 18.106,0v-26.551c-7.003,-5.299 -12.704,-3.468 -18.106,0z"
         android:strokeLineJoin="round"
         android:strokeWidth="@integer/icons_stoke_medium_nav"
         android:fillColor="#00000000"
-        android:strokeColor="#000000"
+        android:strokeColor="@color/icons_nav_stroke"
         android:strokeLineCap="butt" />
     <path
         android:pathData="m77.293,86.768c3.874,-2.062 7.876,-2.359 12.071,0"
         android:strokeLineJoin="round"
         android:strokeWidth="@integer/icons_stoke_light_nav"
         android:fillColor="#00000000"
-        android:strokeColor="#000000"
+        android:strokeColor="@color/icons_nav_stroke"
         android:strokeLineCap="round" />
     <path
         android:pathData="m77.293,81.789c4.067,-2.253 8.089,-2.171 12.071,0"
         android:strokeLineJoin="round"
         android:strokeWidth="@integer/icons_stoke_light_nav"
         android:fillColor="#00000000"
-        android:strokeColor="#000000"
+        android:strokeColor="@color/icons_nav_stroke"
         android:strokeLineCap="round" />
     <path
         android:pathData="m77.293,76.811c3.874,-2.062 7.876,-2.359 12.071,0"
         android:strokeLineJoin="round"
         android:strokeWidth="@integer/icons_stoke_light_nav"
         android:fillColor="#00000000"
-        android:strokeColor="#000000"
+        android:strokeColor="@color/icons_nav_stroke"
         android:strokeLineCap="round" />
     <path
         android:pathData="m77.293,71.833c4.294,-2.431 8.268,-1.984 12.071,0"
         android:strokeLineJoin="round"
         android:strokeWidth="@integer/icons_stoke_light_nav"
         android:fillColor="#00000000"
-        android:strokeColor="#000000"
+        android:strokeColor="@color/icons_nav_stroke"
         android:strokeLineCap="round" />
     <path
         android:pathData="M53.783,44.886a10.758,10.758 0,1 0,21.516 0a10.758,10.758 0,1 0,-21.516 0z"
         android:strokeLineJoin="round"
         android:strokeWidth="@integer/icons_stoke_medium_nav"
         android:fillColor="#00000000"
-        android:strokeColor="#000000"
+        android:strokeColor="@color/icons_nav_stroke"
         android:strokeLineCap="round" />
     <path
         android:pathData="m63.652,60.259c-24.311,0 -24.311,23.513 -24.311,23.513h16.83v-15.258c2.026,-1.301 4.093,-2.37 6.255,-2.921 0.721,-0.184 1.452,-0.309 2.196,-0.367 0.371,-0.028 0.748,-0.041 1.126,-0.034 0.001,0 0.001,0 0.002,0 2.271,0.042 4.662,0.749 7.229,2.41 0,0 0.001,-0 0.002,0 0.427,0.276 0.86,0.581 1.297,0.911 1.351,-0.867 2.719,-1.632 4.123,-2.209 0.585,-0.24 1.207,-0.281 1.805,-0.449 -3.595,-3.228 -8.846,-5.597 -16.552,-5.597z"
         android:strokeLineJoin="round"
         android:strokeWidth="@integer/icons_stoke_medium_nav"
         android:fillColor="#00000000"
-        android:strokeColor="#000000"
+        android:strokeColor="@color/icons_nav_stroke"
         android:strokeLineCap="butt" />
     <path
         android:pathData="m74.239,88.797h0.063"
         android:strokeLineJoin="miter"
         android:strokeWidth="@integer/icons_stoke_light_nav"
         android:fillColor="#00000000"
-        android:strokeColor="#000000"
+        android:strokeColor="@color/icons_nav_stroke"
         android:strokeLineCap="butt" />
 </vector>

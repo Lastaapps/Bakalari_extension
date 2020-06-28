@@ -18,7 +18,7 @@
  *
  */
 
-package cz.lastaapps.bakalariextension.login
+package cz.lastaapps.bakalariextension.ui.login
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -45,10 +45,10 @@ import cz.lastaapps.bakalariextension.ui.attachment.AttachmentDownload
 import cz.lastaapps.bakalariextension.widgets.smalltimetable.SmallTimetableWidget
 
 /**Run when user logs in*/
-class OnLogin {
+class ActionsLogin {
 
     companion object {
-        private val TAG = OnLogin::class.java.simpleName
+        private val TAG = ActionsLogin::class.java.simpleName
 
         //is called from outside
         /**Does on login init
@@ -61,7 +61,7 @@ class OnLogin {
             Log.i(TAG, "success $success")
             //init failed, logs out
             if (!success)
-                Logout.logout()
+                ActionsLogout.logout()
 
             return success
         }
@@ -71,6 +71,10 @@ class OnLogin {
 
             //inits notification channels
             initNotificationChannels(context)
+
+            //download default user data
+            if (UserLoader.loadFromServer() == null)
+                return false
 
             //enables receivers and services
             val receivers = arrayOf(
@@ -88,10 +92,6 @@ class OnLogin {
                     PackageManager.DONT_KILL_APP
                 )
             }
-
-            //download default user data
-            if (UserLoader.loadFromServer() == null)
-                return false
 
             //downloads some basic data for offline use if user is connected to wifi
             if (!CheckInternet.connectedMobileData()) {
@@ -134,9 +134,9 @@ class OnLogin {
                 //Timetable notification
                 {
                     val name =
-                        context.getString(R.string.timetable_chanel_name)
+                        context.getString(R.string.chanel_timetable_name)
                     val descriptionText =
-                        context.getString(R.string.timetable_chanel_description)
+                        context.getString(R.string.chanel_timetable_description)
                     val importance = NotificationManager.IMPORTANCE_DEFAULT
                     val mChannel = NotificationChannel(
                         TTNotifyService.NOTIFICATION_CHANEL_ID,
@@ -159,9 +159,9 @@ class OnLogin {
                 //Download attachment notification
                 {
                     val name =
-                        context.getString(R.string.attachment_downloading_chanel_name)
+                        context.getString(R.string.chanel_attachment_downloading_name)
                     val descriptionText =
-                        context.getString(R.string.attachment_downloading_chanel_description)
+                        context.getString(R.string.chanel_attachment_downloading_description)
 
                     val mChannel = NotificationChannel(
                         AttachmentDownload.ATTACHMENT_DOWNLOAD_CHANEL,

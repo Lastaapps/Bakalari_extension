@@ -18,7 +18,7 @@
  *
  */
 
-package cz.lastaapps.bakalariextension.login
+package cz.lastaapps.bakalariextension.ui.login
 
 import android.os.Handler
 import android.os.Looper
@@ -86,7 +86,7 @@ class LoginToServer(
                 ConnMgr.LOGIN_OK -> {
 
                     //downloads default user info
-                    if (OnLogin.onLogin(App.context)) {
+                    if (ActionsLogin.onLogin(App.context)) {
                         Log.i(TAG, "Login succeed")
                         LoginData.saveData(username, url, town, school)
                         VALID_TOKEN
@@ -102,7 +102,7 @@ class LoginToServer(
             Handler(Looper.getMainLooper()).post {
                 Toast.makeText(
                     App.context,
-                    R.string.error_no_internet_or_url,
+                    R.string.login_error_no_internet,
                     Toast.LENGTH_LONG
                 )
                     .show()

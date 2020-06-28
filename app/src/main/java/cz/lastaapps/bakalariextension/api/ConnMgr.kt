@@ -25,7 +25,10 @@ import android.content.Intent
 import android.util.Log
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.MainActivity
-import cz.lastaapps.bakalariextension.login.LoginData
+import cz.lastaapps.bakalariextension.ui.login.LoginData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.BufferedReader
@@ -33,7 +36,9 @@ import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
+import java.net.URLConnection
 import java.net.URLEncoder
+import kotlin.math.min
 
 
 /**
@@ -45,15 +50,21 @@ class ConnMgr {
         private val TAG = ConnMgr::class.java.simpleName
 
         /**@return json containing downloaded data of null if connection failed*/
-        fun serverGet(module: String, dataPairs: Map<String, String> = HashMap()): JSONObject? {
-            return try {
-                Log.i(TAG, "Loading api module GET $module")
+        suspend fun serverGet(
+            module: String,
+            dataPairs: Map<String, String> = HashMap()
+        ): JSONObject? = withContext(Dispatchers.IO) {
+            return@withContext try {
+
+                val data = getGetDataString(dataPairs)
+
+                Log.i(TAG, "Loading api module GET $module$data")
 
                 //tries to obtain new ACCESS token, if the old one is expired
                 getValidAccessToken()
 
                 //creates URL connection
-                val url = URL("${getAPIUrl()}/3/$module${getGetDataString(dataPairs)}")
+                val url = URL("${getAPIUrl()}/3/$module$data")
                 val urlConnection = url.openConnection() as HttpURLConnection
                 urlConnection.setRequestProperty(
                     "Content-Type",
@@ -61,25 +72,15 @@ class ConnMgr {
                 )
                 urlConnection.setRequestProperty("Authorization", "Bearer ${LoginData.accessToken}")
                 urlConnection.setRequestProperty("Connection", "Keep-Alive")
+                urlConnection.connectTimeout = 15 * 1000
+                urlConnection.readTimeout = 15 * 1000
 
                 //reads data from stream
                 Log.i(TAG, "Server: ${urlConnection.responseCode} ${urlConnection.responseMessage}")
 
                 if (urlConnection.responseCode == 200) {
 
-                    var response = ""
-                    var line: String?
-                    val br = BufferedReader(InputStreamReader(urlConnection.inputStream))
-
-                    while (br.readLine().also { line = it } != null) {
-                        response += line
-                    }
-                    br.close()
-
-                    //read was successful
-                    Log.i(TAG, "Read succeed")
-
-                    JSONObject(response)
+                    readDataToJson(urlConnection)
                 } else {
 
                     Log.e(TAG, "Wrong server response code, connection failed")
@@ -94,21 +95,28 @@ class ConnMgr {
         /**Sends post request to server
          * @param dataPairs contains data pairs
          * @return json containing downloaded data of null if connection failed*/
-        fun serverPost(module: String, dataPairs: Map<String, String>): JSONObject? {
-            return try {
-                Log.i(TAG, "Loading api module POST $module")
-
-                //tries to obtain new ACCESS token, if the old one is expired
-                getValidAccessToken()
+        suspend fun serverPost(
+            module: String,
+            dataPairs: Map<String, String>
+        ): JSONObject? = withContext(Dispatchers.IO) {
+            return@withContext try {
 
                 //creates data to be send via POST
                 val data = getPostDataString(dataPairs)
+
+                Log.i(TAG, "Loading api module POST $module#$data")
+
+                //tries to obtain new ACCESS token, if the old one is expired
+                getValidAccessToken()
 
                 //creates URL connection
                 val url = URL("${getAPIUrl()}/3/$module")
                 val urlConnection = url.openConnection() as HttpURLConnection
                 urlConnection.requestMethod = "POST"
-                urlConnection.setRequestProperty("Authorization", "Bearer ${LoginData.accessToken}")
+                urlConnection.setRequestProperty(
+                    "Authorization",
+                    "Bearer ${LoginData.accessToken}"
+                )
                 urlConnection.setRequestProperty(
                     "Content-Type",
                     "application/x-www-form-urlencoded"
@@ -117,6 +125,8 @@ class ConnMgr {
                 urlConnection.setRequestProperty("Accept", "application/json")
                 urlConnection.setRequestProperty("Connection", "Keep-Alive")
                 urlConnection.setRequestProperty("Content-length", "${data.length}")
+                urlConnection.connectTimeout = 15 * 1000
+                urlConnection.readTimeout = 15 * 1000
 
                 //sends data
                 val output = OutputStreamWriter(urlConnection.outputStream, "UTF-8")
@@ -124,19 +134,14 @@ class ConnMgr {
                 output.flush()
 
                 //reads data
-                Log.i(TAG, "Server: ${urlConnection.responseCode} ${urlConnection.responseMessage}")
+                Log.i(
+                    TAG,
+                    "Server: ${urlConnection.responseCode} ${urlConnection.responseMessage}"
+                )
 
                 if (urlConnection.responseCode == 200) {
-                    var response = ""
-                    var line: String?
-                    val br = BufferedReader(InputStreamReader(urlConnection.inputStream))
-                    while (br.readLine().also { line = it } != null) {
-                        response += line
-                    }
 
-                    Log.i(TAG, "Read succeed")
-
-                    JSONObject(response)
+                    readDataToJson(urlConnection)
                 } else {
                     Log.e(TAG, "Wrong server response code, connection failed")
                     null
@@ -145,6 +150,41 @@ class ConnMgr {
                 e.printStackTrace()
                 null
             }
+        }
+
+        /**reads data from stream and creates json from them*/
+        private suspend fun readDataToJson(
+            urlConnection: URLConnection
+        ): JSONObject = withContext(Dispatchers.IO) {
+
+            //downloads data in chunks, so yield() can be called to make Dispatchers.IO
+            // usable for other task, like reading from storage or parallel downloads
+
+            //how much data is read before yield() is called
+            val readChunk = min(4096, urlConnection.contentLength)
+
+            val br = BufferedReader(InputStreamReader(urlConnection.inputStream), readChunk)
+            val builder = java.lang.StringBuilder(urlConnection.contentLength)
+
+            while (true) {
+                val array = CharArray(readChunk)
+
+                val read = br.read(array)
+
+                if (read < 0)
+                    break
+
+                builder.append(array, 0, read)
+
+                yield()
+            }
+
+            br.close()
+
+            //read was successful
+            Log.i(TAG, "Read succeed")
+
+            JSONObject(String(builder))
         }
 
         const val LOGIN_WRONG = -1
@@ -327,12 +367,14 @@ class ConnMgr {
 
         /**@return url in format example www.example.com */
         private fun getRawUrl(url: String = LoginData.url): String {
-            return url.replace("/login.aspx", "")
+            return url
+                .replace("/next/login.aspx", "")
+                .replace("/login.aspx", "")
         }
 
         /**@return url in format www.example.com/api */
         fun getAPIUrl(url: String = LoginData.url): String {
-            return url.replace("/login.aspx", "/") + "api"
+            return getRawUrl(url) + "/api"
         }
 
         /**converts map to data, which can be used in GET*/

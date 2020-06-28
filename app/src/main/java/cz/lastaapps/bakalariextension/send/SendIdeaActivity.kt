@@ -31,9 +31,9 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.IgnoreExtraProperties
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.login.LoginData
 import cz.lastaapps.bakalariextension.tools.BaseActivity
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.ui.login.LoginData
 import java.io.IOException
 import java.time.Instant
 import java.time.ZoneId
@@ -142,7 +142,7 @@ class SendIdeaActivity : BaseActivity() {
                 Toast.makeText(this, R.string.idea_thanks, Toast.LENGTH_LONG).show()
                 finish()
             } catch (e: IOException) {
-                Toast.makeText(this, R.string.error_no_internet, Toast.LENGTH_LONG).show()
+                Toast.makeText(this, R.string.idea_no_internet, Toast.LENGTH_LONG).show()
             }
         } else {
             Toast.makeText(this, R.string.idea_empty, Toast.LENGTH_LONG).show()

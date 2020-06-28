@@ -56,6 +56,12 @@
         <action
             android:id="@+id/action_nav_home_to_navigation"
             app:destination="@id/nav_absence" />
+        <action
+            android:id="@+id/action_nav_home_to_settingsFragment"
+            app:destination="@id/nav_settings" />
+        <action
+            android:id="@+id/action_nav_home_to_licenseFragment"
+            app:destination="@id/nav_license" />
     </fragment>
 
     <fragment
@@ -68,7 +74,14 @@
         android:id="@+id/nav_timetable"
         android:name="cz.lastaapps.bakalariextension.ui.timetable.normal.TimetableFragment"
         android:label="@string/menu_timetable"
-        tools:layout="@layout/fragment_timetable" />
+        tools:layout="@layout/fragment_timetable">
+        <action
+            android:id="@+id/action_nav_timetable_to_nav_teacher_list"
+            app:destination="@id/nav_teacher_list" />
+        <action
+            android:id="@+id/action_nav_timetable_to_nav_subject_list"
+            app:destination="@id/nav_subject_list" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_marks"
@@ -112,11 +125,34 @@
         <action
             android:id="@+id/action_loadingFragment_to_nav_home"
             app:destination="@id/nav_home" />
+        <action
+            android:id="@+id/action_nav_loading_to_licenseFragment"
+            app:destination="@id/nav_license" />
+        <action
+            android:id="@+id/action_nav_loading_to_nav_login"
+            app:destination="@id/nav_login" />
     </fragment>
     <fragment
         android:id="@+id/nav_absence"
         android:name="cz.lastaapps.bakalariextension.ui.absence.AbsenceRootFragment"
         android:label="@string/menu_absence"
         tools:layout="@layout/loading_root_template" />
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="cz.lastaapps.bakalariextension.ui.settings.SettingsFragment"
+        android:label="@string/menu_settings" />
+    <fragment
+        android:id="@+id/nav_license"
+        android:name="cz.lastaapps.bakalariextension.ui.license.LicenseFragment"
+        android:label="@string/menu_license"
+        tools:layout="@layout/fragment_license" />
+    <fragment
+        android:id="@+id/nav_login"
+        android:name="cz.lastaapps.bakalariextension.ui.login.LoginFragment"
+        android:label="@string/menu_login">
+        <action
+            android:id="@+id/action_nav_login_to_nav_home"
+            app:destination="@id/nav_home" />
+    </fragment>
 
 </navigation>

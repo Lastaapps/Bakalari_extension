@@ -27,6 +27,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 
 apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: "androidx.navigation.safeargs.kotlin"
 
 ext.versionMajor = 1
 ext.versionMinor = 0
@@ -47,7 +48,6 @@ android {
 
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables.useSupportLibrary = true
 
         multiDexEnabled true
     }
@@ -87,6 +87,11 @@ android {
         buildConfig = true
         dataBinding = true
     }
+
+    lintOptions {
+        abortOnError false
+        disable 'MissingTranslation'
+    }
 }
 
 dependencies {
@@ -120,6 +125,7 @@ dependencies {
     implementation 'com.github.codekidX:storage-chooser:2.0.4.4'
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.6'
+    implementation 'com.github.smart-fun:XmlToJson:1.5.0'
 
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

@@ -25,7 +25,7 @@ import android.app.backup.BackupDataInput
 import android.app.backup.BackupDataOutput
 import android.os.ParcelFileDescriptor
 import android.util.Log
-import cz.lastaapps.bakalariextension.login.LoginData
+import cz.lastaapps.bakalariextension.ui.login.LoginData
 
 /**Backs up login (sort off), license and preferences to Google drive*/
 class MyBackupAgent : BackupAgent() {

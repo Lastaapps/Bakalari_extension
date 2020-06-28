@@ -43,10 +43,10 @@ import cz.lastaapps.bakalariextension.api.subjects.SubjectStorage
 import cz.lastaapps.bakalariextension.api.timetable.TTStorage
 import cz.lastaapps.bakalariextension.api.user.UserLoader
 import cz.lastaapps.bakalariextension.databinding.ActivityReportBinding
-import cz.lastaapps.bakalariextension.login.LoginData
 import cz.lastaapps.bakalariextension.tools.BaseActivity
 import cz.lastaapps.bakalariextension.tools.MySettings
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.ui.login.LoginData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -178,6 +178,10 @@ class ReportIssueActivity : BaseActivity() {
                     accountType = UserLoader.loadFromStorage()?.userType
                 )
 
+                UserLoader.loadFromStorage()?.let {
+                    data.modules = it.getAllFeatures()
+                }
+
                 if (binding.includeTimetable.isChecked)
                     data.timetables = getTimetables()
 
@@ -206,7 +210,7 @@ class ReportIssueActivity : BaseActivity() {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(
                         this@ReportIssueActivity,
-                        R.string.error_no_internet,
+                        R.string.report_no_internet,
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -238,7 +242,7 @@ class ReportIssueActivity : BaseActivity() {
 
     /**Data structure of the data to be send*/
     @IgnoreExtraProperties
-    data class Message(
+    data class Message constructor(
         var date: String? = "",
         var messageId: String? = "",
         var email: String? = "",
@@ -251,6 +255,7 @@ class ReportIssueActivity : BaseActivity() {
         var school: String? = "",
         var town: String? = "",
         var url: String? = "",
+        var modules: ArrayList<String>? = null,
         var bakalariVersion: String? = "",
         var accountType: String? = "",
         var timetables: ArrayList<String>? = null,

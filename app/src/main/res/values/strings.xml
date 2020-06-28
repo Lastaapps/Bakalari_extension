@@ -25,19 +25,6 @@
 
     <string name="beta">beta</string>
 
-    <string name="role_parent">parent</string>
-    <string name="role_student">student</string>
-    <string name="role_teacher">teacher</string>
-    <string name="role_leading">leading</string>
-    <string name="role_system">system</string>
-    <string name="role_oder">oder</string>
-
-    <string name="nav_drawer_open">Open navigation drawer</string>
-    <string name="nav_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_desc">Navigation header</string>
-
-    <string name="share_message">Try this better Bakalari app as i did!</string>
-
 
     <!-- Global -->
     <plurals name="attachment">
@@ -48,62 +35,112 @@
     <string name="retry">Retry</string>
     <string name="downloading">Downloading</string>
     <string name="select_download_location">Choose download location</string>
+    <string name="share_message">Try this better Bakalari app as I did!</string>
 
 
-    <!-- Permissions -->
-    <string name="permission_granted">Permission granted!</string>
-    <string name="permission_denied">Function wouldn\'t work.</string>
-    <string name="permission_required">App needs permission to do this.</string>
-    <string name="permission_disabled">Permission needed, turn it on in settings.</string>
-    <string name="permission_open_setting">Open settings</string>
-    <string name="permission_ignore">Ignore and cancel</string>
+    <!-- User types -->
+    <string name="role_parent">parent</string>
+    <string name="role_student">student</string>
+    <string name="role_teacher">teacher</string>
+    <string name="role_leading">leading</string>
+    <string name="role_system">system</string>
+    <string name="role_oder">oder</string>
 
 
-    <!-- General errors -->
-    <string name="error_no_internet">Cannot connect to internet</string>
-    <string name="error_server_unavailable">Cannot connect to school server</string>
+    <!-- Menu and navigation items -->
+    <string name="menu_home">Home</string>
+    <string name="menu_login">Login to Bakaláři</string>
+    <string name="menu_timetable">Timetable</string>
+    <string name="menu_marks">Marks</string>
+    <string name="menu_homework">Homework</string>
+    <string name="menu_absence">Absence</string>
+    <string name="menu_teacher_list">Teachers</string>
+    <string name="menu_subject_list">Subjects</string>
+    <string name="menu_subject_info">Subject info</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_logout">Log out</string>
+    <string name="menu_communicate">Communicate</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_rate">Rate us</string>
+    <string name="menu_idea">Send us an idea</string>
+    <string name="menu_report">Report an issue</string>
+    <string name="menu_about">About</string>
+    <string name="menu_oder">Oder</string>
+    <string name="menu_facebook">Like us on Facebook</string>
+    <string name="menu_google_play">Try more apps</string>
+    <string name="menu_github">See code on Github</string>
+    <string name="menu_api">Bakalari API doc</string>
+    <string name="menu_license">License notices</string>
 
-    <string name="error_no_saved_data">No data saved yet, internet connection needed for first login</string>
-    <string name="error_no_internet_or_url">No internet available of bad url was entered</string>
-    <string name="error_wrong_login">Wrong login</string>
-    <string name="error_wrong_login_data">Wrong username or password</string>
-    <string name="error_not_enough_data">You haven\'t entered enough data</string>
-    <string name="error_login_failed">Failed to login, try later</string>
-    <string name="error_invalid_password">Invalid password</string>
 
-    <string name="error_no_timetable">Failed to load timetable</string>
-    <string name="error_cannot_download">Cannot download data from server</string>
-    <string name="error_cannot_download_timetable">Cannot download timetable from server</string>
-    <string name="error_failed_to_find_lesson">Failed to find lesson</string>
-    <string name="error_please_report">Please report this to app developer</string>
-    <string name="error_no_timetable_no_internet">Failed to load timetable, try connection to internet</string>
-    <string name="error_no_timetable_for_today">No timetable for today</string>
-    <string name="error_no_timetable_open_app">Failed to download timetable, open app</string>
+    <!-- Loading -->
+    <string name="loading_no_saved_data">No data saved yet, internet connection needed for first login</string>
+    <string name="loading_no_internet">Cannot connect to internet</string>
 
-    <!-- Invalid refresh token dialog data -->
-    <string name="invalid_token_understand_title">A problem…</string>
-    <string name="invalid_token_understand_message">
-        I seems that your login is not valid anymore,
-        you will be still able to use offline data, but
-        to use current ones you need to log out
-        and in again. There\'s nothing we can do about it :(
-    </string>
-    <string name="invalid_token_understand_button">I understand</string>
 
-    <!-- Full storage dialog data -->
-    <string name="full_storage_title">Full storage</string>
-    <string name="full_storage_message">There is no more space to save data, so the offline data may not be updated or saved</string>
-    <string name="full_storage_button">I will see</string>
+    <!-- Login -->
+    <string name="login_login">Login</string>
+    <string name="login_activity_title">Login to Bakalari</string>
+    <string name="login_prompt_url">School\'s Bakalari URL</string>
+    <string name="login_prompt_username">Username</string>
+    <string name="login_prompt_password">Password</string>
+    <string name="login_choose_town">Choose town:</string>
+    <string name="login_choose_school">Choose school:</string>
+    <string name="login_loading">Loading towns…</string>
+    <string name="login_loading_failed">Cannot load now, try again later</string>
+    <string name="login_connecting">Connection to school server…</string>
+    <string name="login_succeeded">Succeeded to login!</string>
+    <string name="login_failed">"Login failed, wrong username or password"</string>
+    <string name="login_no_town_selected">No town selected</string>
+    <string name="login_no_school_selected">No school selected</string>
+    <string name="login_search_nothing_found">Nothing found</string>
+    <string name="login_search_select_town">Select town</string>
+    <string name="login_search_select_school">Select school</string>
+    <!-- Login errors -->
+    <string name="login_error_server_unavailable">Cannot connect to school server</string>
+    <string name="login_error_no_internet">No internet available of bad url was entered</string>
+    <string name="login_error_wrong_input">Wrong username or password</string>
+    <string name="login_error_not_enough_data">You haven\'t entered enough data</string>
 
-    <!--Notification channels-->
-    <string name="timetable_chanel_name">Current lesson</string>
-    <string name="timetable_chanel_description">The notification showing current and next lesson
-        - it\'s class, teacher, …</string>
+
+    <!-- Send idea and report issue -->
+    <string name="idea_label">Send an idea</string>
+    <string name="idea_email_label">Email, so i can reply you</string>
+    <string name="idea_email_prompt">Email (Optional)</string>
+    <string name="idea_message_label">What\'s on your mind</string>
+    <string name="idea_message_prompt">Message</string>
+    <string name="idea_empty">Message cannot be empty</string>
+    <string name="idea_thanks">Thank you for your feedback :)</string>
+    <string name="idea_overload">You can send only 1 idea per day because of server overload protection</string>
+    <string name="idea_go_back">Close</string>
+    <string name="idea_no_internet">Cannot connect to internet</string>
+
+    <string name="report_label">Report an issue</string>
+    <string name="report_email_label">Email, so i can reply you</string>
+    <string name="report_email_prompt">Email (Optional)</string>
+    <string name="report_message_label">Describe the error (English or Czech please)</string>
+    <string name="report_message_prompt">Error description</string>
+    <string name="report_empty">Report cannot be empty</string>
+    <string name="report_thanks">Thank you for your feedback :)</string>
+    <string name="report_overload">You can report only 1 issue per day because of server overload protection</string>
+    <string name="report_no_internet">Cannot connect to internet</string>
+    <string name="report_data_collected">App will send some data to diagnose the issue, namely school\'s url, name, town and Bakalari version, account type(parent, pupil, teacher), android version, phone type, app version and phone\'s id</string>
+    <string name="report_go_back">Close</string>
+    <string name="report_include_timetable">Include timetables</string>
+    <string name="report_include_timetable_warning">Contains your timetable, classes names, teachers names…</string>
+    <string name="report_include_marks">Include marks</string>
+    <string name="report_include_marks_warning">Contains marks, subjects and test themes</string>
+    <string name="report_include_homework">Include homework list</string>
+    <string name="report_include_homework_warning">Contains homework\'s info and teachers names</string>
+    <string name="report_include_subject">Include subject list</string>
+    <string name="report_include_subject_warning">Contains subjects and teachers info</string>
+
 
     <!-- About -->
     <string name="about_thanks">I want to thank all the people who created documentation of Bakalari API on Github.
         Without them, you wouldn\'t be reading this message now. The source api is below. Thank you very much!</string>
     <string name="about_follow">Feel free to follow me, share or check source code</string>
+
 
     <!-- License -->
     <string name="license">License</string>
@@ -127,6 +164,7 @@
     <string name="licence_inspiration_bakalari"><a href="https://play.google.com/store/apps/details?id=cz.impire.bakalari.student">Bakalari</a></string>
     <string name="licence_inspiration_bakalari_online"><a href="https://play.google.com/store/apps/details?id=cz.bakalari.mobile">Bakalari OnLine</a></string>
 
+
     <!-- Timetable -->
     <string name="monday_shortcut">Mo</string>
     <string name="tuesday_shortcut">Tu</string>
@@ -134,7 +172,7 @@
     <string name="thursday_shortcut">Th</string>
     <string name="friday_shortcut">Fr</string>
 
-    <string-array name="week_forms">
+    <string-array name="week_variants">
         <item>This week</item>
         <item>Next week</item>
         <item>Previous week</item>
@@ -143,12 +181,37 @@
         <item>forward</item>
         <item>backward</item>
     </string-array>
-    <string name="last_updated">last updated: </string>
-    <string name="permanent">Permanent</string>
-    <string name="empty_timetable">Empty timetable</string>
-    <string name="holiday">Holiday</string>
-    <string name="celebration">Celebration</string>
+    <string name="timetable_permanent">Permanent</string>
+    <string name="timetable_empty">Empty timetable</string>
+    <string name="timetable_holiday">Holiday</string>
+    <string name="timetable_celebration">Celebration</string>
 
+    <string name="timetable_change_added">Added</string>
+    <string name="timetable_change_removed">Removed</string>
+    <string name="timetable_change_canceled">Canceled</string>
+
+    <!-- Errors-->
+    <string name="timetable_no_timetable">Failed to load timetable</string>
+    <string name="timetable_download_failed">Cannot download timetable from server</string>
+    <string name="timetable_no_internet">Failed to load timetable, try connection to internet</string>
+    <string name="timetable_no_timetable_today">No timetable for today</string>
+    <string name="timetable_download_failed_open_app">Failed to download timetable, open app</string>
+
+    <!-- Timetable notification -->
+    <string name="timetable_group">group</string>
+    <string name="timetable_next">Next</string>
+    <string name="timetable_end">End</string>
+    <string name="timetable_interruption">Break</string>//break is keyword
+    <string name="timetable_have_nice_day">Have a nice day</string>
+    <string name="timetable_free_lesson">Free lesson</string>
+    <string name="timetable_last_lesson">Last lesson</string>
+    <string name="timetable_until">until</string>
+    <string name="timetable_finally_home">And finally home</string>
+    <string name="timetable_enjoy_holiday">Enjoy freedom!</string>
+    <string name="timetable_preparing">Preparing timetable</string>
+    <string name="timetable_should_not_take_long">This shouldn\'t be there more than few seconds</string>
+
+    <!-- Timetable lesson info -->
     <string name="info_name">Name</string>
     <string name="info_subject">Subject</string>
     <string name="info_teacher">Teacher</string>
@@ -159,27 +222,6 @@
     <string name="info_change_type">Change type</string>
     <string name="info_time">Time</string>
 
-    <string name="change_added">Added</string>
-    <string name="change_removed">Removed</string>
-    <string name="change_canceled">Canceled</string>
-
-    <!-- Timetable notification -->
-    <string name="group">group</string>
-    <string name="next">Next</string>
-    <string name="end">End</string>
-    <string name="interruption">Break</string>//break is keyword
-    <string name="have_nice_day">Have a nice day</string>
-    <string name="free_lesson">Free lesson</string>
-    <string name="last_lesson">Last lesson</string>
-    <string name="until">until</string>
-    <string name="finally_home">And finally home</string>
-    <string name="enjoy_holiday">Enjoy freedom!</string>
-
-    <string name="preparing_timetable">Preparing timetable</string>
-    <string name="should_not_take_long">This shouldn\'t be there more than few seconds</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
 
     <!-- Last updated section -->
     <string name="last_updated_template">Last updated %d %s ago</string>
@@ -202,8 +244,10 @@
         <item quantity="other">weeks</item>
     </plurals>
 
+
     <!-- User -->
     <string name="user_failed_to_load">Failed to load user data, app cannot work without them!</string>
+
 
     <!-- Marks -->
     <string name="marks_by_date">By date</string>
@@ -222,6 +266,11 @@
     <string name="marks_predictor_add_mark_weight">Weight:</string>
     <string name="marks_predictor_add_mark_button">Update</string>
     <string name="marks_predictor_enter_valid_data">Enter valid data</string>
+    <plurals name="marks_new_template">
+        <item quantity="one">%d new mark</item>
+        <item quantity="other">%d new marks</item>
+    </plurals>
+    <string name="marks_new_no_marks">No new marks</string>
 
 
     <!-- Homework -->
@@ -308,8 +357,6 @@
     <string name="attachment_change_location">Change download location</string>
     <string name="attachment_downloading_subtitle">Downloading attachment…</string>
     <string name="attachment_downloading_subtitle_done">Attachment downloaded</string>
-    <string name="attachment_downloading_chanel_name">Attachment downloads</string>
-    <string name="attachment_downloading_chanel_description">Shows downloaded attachments to open them fast</string>
     <string name="attachment_download_started">Download started!</string>
     <string name="attachment_choose_again">Error, please choose download location again</string>
     <string name="attachment_error_file_system">Error while working with file system</string>
@@ -319,6 +366,39 @@
     <string name="attachment_file_exists_replace">Replace</string>
     <string name="attachment_file_exists_cancel">Cancel</string>
     <string name="attachment_file_exists_rename">Rename to %s</string>
+
+
+    <!-- Permissions -->
+    <string name="permission_granted">Permission granted!</string>
+    <string name="permission_denied">Function wouldn\'t work.</string>
+    <string name="permission_required">App needs permission to do this.</string>
+    <string name="permission_disabled">Permission needed, turn it on in settings.</string>
+    <string name="permission_open_setting">Open settings</string>
+    <string name="permission_ignore">Ignore and cancel</string>
+
+
+    <!-- Invalid refresh token dialog data -->
+    <string name="invalid_token_understand_title">A problem…</string>
+    <string name="invalid_token_understand_message">
+        I seems that your login is not valid anymore,
+        you will be still able to use offline data, but
+        to use current ones you need to log out
+        and in again. There\'s nothing we can do about it :(
+    </string>
+    <string name="invalid_token_understand_button">I understand</string>
+
+    <!-- Full storage dialog data -->
+    <string name="full_storage_title">Full storage</string>
+    <string name="full_storage_message">There is no more space to save data, so the offline data may not be updated or saved</string>
+    <string name="full_storage_button">I will see</string>
+
+
+    <!--Notification channels-->
+    <string name="chanel_timetable_name">Current lesson</string>
+    <string name="chanel_timetable_description">The notification showing current and next lesson
+        - it\'s class, teacher, etc.</string>
+    <string name="chanel_attachment_downloading_name">Attachment downloads</string>
+    <string name="chanel_attachment_downloading_description">Shows downloaded attachments to open them fast</string>
 
 
     <!-- File chooser -->

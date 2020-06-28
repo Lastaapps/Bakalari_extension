@@ -50,6 +50,10 @@ class HomeFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        requireActivity().actionBar?.let {
+            it.show()
+        }
+
         //What's new - shown only once per version
         if (WhatsNew(requireContext()).shouldShow()) {
             WhatsNew(requireContext()).showDialog()

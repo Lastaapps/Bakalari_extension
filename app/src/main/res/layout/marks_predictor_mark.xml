@@ -24,6 +24,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View" />
 
         <variable
             name="markData"
@@ -65,8 +66,10 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_margin="5dp"
-                tools:text="4" />
+                android:layout_margin="@dimen/margin_basic"
+                android:visibility="@{markData.weight != null ? View.VISIBLE : View.GONE}"
+                tools:text="4"
+                tools:visibility="visible" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

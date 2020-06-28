@@ -153,7 +153,7 @@ class SmallTimetableFragment : Fragment() {
 
             val day = week.getDay(date)
             if (day == null) {
-                view.setError(resources.getString(R.string.error_no_timetable_for_today))
+                view.setError(resources.getString(R.string.timetable_no_timetable_today))
             } else {
                 view.updateTimetable(week, day, userViewModel.requireData(), homework)
             }
@@ -161,6 +161,6 @@ class SmallTimetableFragment : Fragment() {
     }
 
     private fun onFail() {
-        view.setError(resources.getString(R.string.error_no_timetable_no_internet))
+        view.setError(resources.getString(R.string.timetable_no_internet))
     }
 }

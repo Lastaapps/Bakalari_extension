@@ -61,7 +61,7 @@ class HmwOverview : Fragment() {
             )
         binding.lifecycleOwner = LifecycleOwner { lifecycle }
         binding.viewmodel = viewModel
-        binding.drawable = R.drawable.homework
+        binding.drawable = R.drawable.module_homework
         //TODO contentDescription
         binding.contentDescription = ""
 

@@ -70,8 +70,10 @@ class AddMarkDialog {
                         }
 
                     val marksTotal = Integer.parseInt(bind.pointsTotal.text.toString())
-                    val weight = Integer.parseInt(bind.weight.text.toString())
-
+                    val weight =
+                        if (mark.weight != null)
+                            Integer.parseInt(bind.weight.text.toString())
+                        else null
 
 
                     val newMark = Mark(

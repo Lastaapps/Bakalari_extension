@@ -132,7 +132,7 @@ class SmallTimetableView : RelativeLayout {
         )
 
         if (!adapter.valid()) {
-            setError(resources.getString(R.string.empty_timetable))
+            setError(resources.getString(R.string.timetable_empty))
             return
         }
 

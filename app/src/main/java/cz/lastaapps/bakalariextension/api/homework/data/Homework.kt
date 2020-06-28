@@ -25,9 +25,8 @@ import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.SimpleData
 import cz.lastaapps.bakalariextension.api.attachment.data.Attachment
 import cz.lastaapps.bakalariextension.tools.TimeTools
-import java.text.Normalizer
+import cz.lastaapps.bakalariextension.tools.searchNeutralText
 import java.time.ZonedDateTime
-import java.util.*
 
 /**defines Homework list to make code simpler to read*/
 typealias HomeworkList = DataIdList<Homework>
@@ -146,19 +145,12 @@ class Homework(
         /** Filters homework only with given text in content or notice, ignores diacritics*/
         fun getByText(list: HomeworkList, text: String): HomeworkList {
             return HomeworkList(list.filter { homework ->
-                val content = searchableText(homework.content)
-                val notice = searchableText(homework.notice)
-                val toSearch = searchableText(text)
+                val content = searchNeutralText(homework.content)
+                val notice = searchNeutralText(homework.notice)
+                val toSearch = searchNeutralText(text)
 
                 (content.contains(toSearch) || notice.contains(toSearch))
             })
-        }
-
-        /** Replaces diacritics from text with their basic alternative*/
-        private fun searchableText(text: String): String {
-            val lower = text.toLowerCase(Locale.ROOT)
-            return Normalizer.normalize(lower, Normalizer.Form.NFD)
-                .replace("\\p{InCombiningDiacriticalMarks}+", "")
         }
     }
 }

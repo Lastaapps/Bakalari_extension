@@ -25,32 +25,29 @@
     android:viewportHeight="128">
     <path
         android:pathData="m119.163,31.94 l0.183,63.803 -55.163,32.06 -55.346,-31.743 -0.183,-63.803 55.163,-32.06z"
-        android:strokeWidth="@integer/icons_stroke_border"
-        android:fillColor="#0000"
-        android:strokeColor="@color/icons_nav_stroke" />
+        android:fillColor="#00aad4"
+        android:strokeColor="#00000000" />
     <path
         android:pathData="m24.425,56.64l13.386,0l0,3.104l-18,0l0,-3.104c1.456,-1.448 3.437,-3.39 5.943,-5.824 2.519,-2.447 4.101,-4.023 4.747,-4.729 1.228,-1.327 2.082,-2.447 2.563,-3.359 0.494,-0.925 0.741,-1.832 0.741,-2.72 0,-1.448 -0.532,-2.629 -1.595,-3.542 -1.051,-0.913 -2.424,-1.369 -4.12,-1.369 -1.203,0 -2.475,0.201 -3.816,0.602 -1.329,0.402 -2.753,1.01 -4.272,1.826L20.001,33.8c1.544,-0.596 2.987,-1.047 4.329,-1.351 1.342,-0.304 2.57,-0.456 3.684,-0.456 2.937,0 5.278,0.706 7.025,2.118 1.747,1.412 2.62,3.299 2.62,5.66 0,1.12 -0.222,2.185 -0.665,3.195 -0.43,0.998 -1.222,2.179 -2.373,3.542 -0.316,0.353 -1.323,1.375 -3.019,3.067 -1.696,1.68 -4.089,4.035 -7.177,7.066z"
         android:strokeLineJoin="miter"
-        android:fillColor="@color/icons_nav_stroke"
-        android:strokeColor="@color/icons_nav_stroke" />
+        android:fillColor="@color/icons_module_stroke"
+        android:strokeColor="#00000000"
+        android:fillType="nonZero"
+        android:strokeLineCap="butt" />
     <path
         android:pathData="m94.079,36.447q2.065,0.428 3.219,1.783 1.168,1.354 1.168,3.344 0,3.054 -2.165,4.726 -2.165,1.672 -6.153,1.672 -1.339,0 -2.763,-0.263 -1.41,-0.249 -2.92,-0.76l0,-2.695q1.196,0.677 2.621,1.023 1.424,0.345 2.977,0.345 2.706,0 4.116,-1.036 1.424,-1.036 1.424,-3.013 0,-1.824 -1.325,-2.847 -1.31,-1.036 -3.66,-1.036l-2.478,0l0,-2.294l2.592,0q2.122,0 3.247,-0.815 1.125,-0.829 1.125,-2.377 0,-1.589 -1.168,-2.432 -1.154,-0.857 -3.318,-0.857 -1.182,0 -2.535,0.249 -1.353,0.249 -2.977,0.774l0,-2.487q1.638,-0.442 3.062,-0.663 1.438,-0.221 2.706,-0.221 3.276,0 5.184,1.451 1.908,1.437 1.908,3.897 0,1.714 -1.011,2.902 -1.011,1.175 -2.877,1.631z"
-        android:strokeWidth="0.368354"
-        android:fillColor="@color/icons_nav_stroke"
-        android:strokeColor="@color/icons_nav_stroke" />
+        android:fillColor="@color/icons_module_stroke"
+        android:strokeColor="@color/icons_module_stroke" />
     <path
         android:pathData="m35.871,84.59 l-6.562,10.065l6.562,0zM35.189,82.367l3.268,0l0,12.288l2.741,0l0,2.122l-2.741,0l0,4.445l-2.586,0l0,-4.445l-8.673,0l0,-2.463z"
-        android:strokeWidth="0.405381"
-        android:fillColor="@color/icons_nav_stroke"
-        android:strokeColor="@color/icons_nav_stroke" />
+        android:fillColor="@color/icons_module_stroke"
+        android:strokeColor="@color/icons_module_stroke" />
     <path
         android:pathData="m89.326,84.829l9.03,0l0,1.888l-6.923,0l0,4.065q0.501,-0.167 1.002,-0.244 0.501,-0.089 1.002,-0.089 2.847,0 4.509,1.521 1.662,1.521 1.662,4.12 0,2.676 -1.708,4.165 -1.708,1.477 -4.817,1.477 -1.07,0 -2.186,-0.178 -1.105,-0.178 -2.289,-0.533l0,-2.254q1.025,0.544 2.118,0.811 1.093,0.267 2.312,0.267 1.97,0 3.12,-1.011 1.15,-1.011 1.15,-2.743 0,-1.732 -1.15,-2.743 -1.15,-1.011 -3.12,-1.011 -0.922,0 -1.845,0.2 -0.911,0.2 -1.867,0.622z"
-        android:strokeWidth="0.459534"
-        android:fillColor="@color/icons_nav_stroke"
-        android:strokeColor="@color/icons_nav_stroke" />
+        android:fillColor="@color/icons_module_stroke"
+        android:strokeColor="@color/icons_module_stroke" />
     <path
         android:pathData="m48.109,84.669l12.621,0l0,-40.837l-13.73,2.581l0,-6.597l13.654,-2.581l7.726,0l0,47.434l12.621,0l0,6.095l-32.891,0z"
-        android:strokeWidth="0.0194751"
-        android:fillColor="@color/icons_nav_stroke"
-        android:strokeColor="@color/icons_nav_stroke" />
+        android:fillColor="@color/icons_module_stroke"
+        android:strokeColor="@color/icons_module_stroke" />
 </vector>

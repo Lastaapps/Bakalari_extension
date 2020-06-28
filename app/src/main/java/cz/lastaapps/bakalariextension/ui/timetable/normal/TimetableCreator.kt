@@ -150,7 +150,7 @@ class TimetableCreator {
 
             //non valid hour would result in empty columns (like zero lessons)
             val validHours = week.trimFreeMorning()
-            if (validHours.isEmpty() && !week.hasValidDays()) {
+            if (validHours.isEmpty() || !week.hasValidDays()) {
 
                 edge.findViewById<TextView>(R.id.cycle).text = ""
 

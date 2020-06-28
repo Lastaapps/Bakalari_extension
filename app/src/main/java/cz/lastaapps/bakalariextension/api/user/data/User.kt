@@ -135,16 +135,22 @@ class User(
         return null
     }
 
-    /**@return in exact feature is available, for example showMarks, showFinalMarks, ...*/
+    /** holds list of all features*/
     private lateinit var _allFeatures: ArrayList<String>
-    fun isFeatureEnabled(featureType: String): Boolean {
+    fun getAllFeatures(): ArrayList<String> {
         if (!this::_allFeatures.isInitialized) {
             _allFeatures = ArrayList()
             for (key in modules.keys) {
                 _allFeatures.addAll(modules[key]!!)
             }
         }
-        return _allFeatures.contains(featureType)
+        return _allFeatures
+    }
+
+
+    /**@return in exact feature is available, for example showMarks, showFinalMarks, ...*/
+    fun isFeatureEnabled(featureType: String): Boolean {
+        return getAllFeatures().contains(featureType)
     }
 
     /** runs given code if feature is enabled

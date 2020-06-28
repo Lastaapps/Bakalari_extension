@@ -22,8 +22,10 @@ package cz.lastaapps.bakalariextension.tools
 
 import android.content.Context
 import cz.lastaapps.bakalariextension.R
+import java.text.Normalizer
 import java.time.Duration
 import java.time.ZonedDateTime
+import java.util.*
 
 //contains methods used through whole UI section
 
@@ -108,3 +110,11 @@ fun formatTimeDifference(context: Context, start: ZonedDateTime, end: ZonedDateT
         }
     }
 }
+
+/** Replaces diacritics from text with their basic alternative and makes the text lowercase*/
+fun searchNeutralText(input: String): String {
+    val lower = input.toLowerCase(Locale.ROOT)
+    return Normalizer.normalize(lower, Normalizer.Form.NFD)
+        .replace("[\\p{InCombiningDiacriticalMarks}]".toRegex(), "")
+}
+

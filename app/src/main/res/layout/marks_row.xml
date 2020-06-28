@@ -124,7 +124,9 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/date"
-                tools:text="4" />
+                android:visibility="@{markData.weight != null ? View.VISIBLE : View.INVISIBLE}"
+                tools:text="Weight 4"
+                tools:visibility="visible" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

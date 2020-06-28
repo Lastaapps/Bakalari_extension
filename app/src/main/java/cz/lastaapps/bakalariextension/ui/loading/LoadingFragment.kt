@@ -21,7 +21,6 @@
 package cz.lastaapps.bakalariextension.ui.loading
 
 import android.content.DialogInterface
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -31,12 +30,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.findNavController
 import cz.lastaapps.bakalariextension.MainActivity
 import cz.lastaapps.bakalariextension.MainViewModel
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.login.LoginActivity
 import cz.lastaapps.bakalariextension.ui.UserViewModel
-import cz.lastaapps.bakalariextension.ui.license.LicenseActivity
+import cz.lastaapps.bakalariextension.ui.license.LicenseFragment
 
 /**Checks if app has been ever started -> license, if user is logged in -> LoginActivity or -> MainActivity*/
 class LoadingFragment : Fragment() {
@@ -63,7 +62,7 @@ class LoadingFragment : Fragment() {
                     }
                     MainViewModel.SHOW_LICENSE -> {
                         //shows license dialog
-                        LicenseActivity.showDialog(requireContext(), Runnable {
+                        LicenseFragment.showDialog(requireActivity(), Runnable {
                             mainViewModel.reset()
                             mainViewModel.doDecision()
                         })
@@ -73,12 +72,12 @@ class LoadingFragment : Fragment() {
                         //no internet, no log in
                         Toast.makeText(
                             requireContext(),
-                            R.string.error_no_internet,
+                            R.string.loading_no_internet,
                             Toast.LENGTH_LONG
                         ).show()
 
                         AlertDialog.Builder(requireContext())
-                            .setMessage(R.string.error_no_saved_data)
+                            .setMessage(R.string.loading_no_saved_data)
                             .setCancelable(false)
                             .setPositiveButton(R.string.close) { _: DialogInterface, _: Int ->
                                 requireActivity().finish()
@@ -91,7 +90,8 @@ class LoadingFragment : Fragment() {
                             .show()
                     }
                     MainViewModel.SHOW_LOGIN_ACTIVITY -> {
-                        startActivity(Intent(requireContext(), LoginActivity::class.java))
+                        requireActivity().findNavController(R.id.nav_host_fragment)
+                            .navigate(R.id.nav_login)
                     }
                 }
             }

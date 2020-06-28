@@ -98,6 +98,10 @@
             app:title="@string/sett_show_whats_new"
             app:icon="@drawable/whats_new" />
         <Preference
+            app:key="@string/sett_key_about"
+            app:title="@string/sett_about"
+            app:icon="@drawable/nav_about" />
+        <Preference
             app:key="@string/sett_key_license"
             app:title="@string/sett_license"
             app:icon="@drawable/nav_license" />

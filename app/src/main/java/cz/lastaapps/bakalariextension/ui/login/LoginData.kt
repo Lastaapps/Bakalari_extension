@@ -18,7 +18,7 @@
  *
  */
 
-package cz.lastaapps.bakalariextension.login
+package cz.lastaapps.bakalariextension.ui.login
 
 import android.content.Context
 import android.content.SharedPreferences

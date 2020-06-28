@@ -18,7 +18,7 @@
  *
  */
 
-package cz.lastaapps.bakalariextension.login
+package cz.lastaapps.bakalariextension.ui.login
 
 import android.content.ComponentName
 import android.content.Intent
@@ -38,10 +38,10 @@ import cz.lastaapps.bakalariextension.services.timetablenotification.TTReceiver
 import cz.lastaapps.bakalariextension.widgets.smalltimetable.SmallTimetableWidget
 
 /**Deletes saved tokens and all oder data, then restarts app*/
-class Logout {
+class ActionsLogout {
 
     companion object {
-        private val TAG = Logout::class.java.simpleName
+        private val TAG = ActionsLogout::class.java.simpleName
 
         fun logout() {
             Log.i(TAG, "Login out")

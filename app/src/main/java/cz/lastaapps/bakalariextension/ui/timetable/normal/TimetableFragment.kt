@@ -292,7 +292,7 @@ class TimetableFragment : Fragment() {
                         //failed to load week
                         binding.apply {
                             errorMessage.visibility = View.VISIBLE
-                            errorMessage.text = getString(R.string.error_no_timetable_no_internet)
+                            errorMessage.text = getString(R.string.timetable_no_internet)
                             lastUpdated.text = ""
                         }
 
@@ -363,7 +363,7 @@ class TimetableFragment : Fragment() {
                 val weeks = ((diff.toDays()) / 7.0).toInt() // + 1 to prevent timezone issues
 
                 //array used for saying how many week forward/backward user has gone
-                val dataArray = App.getStringArray(R.array.week_forms)
+                val dataArray = App.getStringArray(R.array.week_variants)
 
 
                 //show button whits takes user back to today
@@ -399,7 +399,7 @@ class TimetableFragment : Fragment() {
                     }
                 }
             } else
-                getString(R.string.permanent)
+                getString(R.string.timetable_permanent)
 
         //add when was timetable last updated
         val lastUpdated = TTStorage.lastUpdated(

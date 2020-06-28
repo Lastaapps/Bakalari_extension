@@ -30,27 +30,27 @@
       android:pathData="M44.243,31.057L82.719,31.057A5.919,5.919 0,0 1,88.639 36.976L88.639,81.372A5.919,5.919 0,0 1,82.719 87.291L44.243,87.291A5.919,5.919 0,0 1,38.324 81.372L38.324,36.976A5.919,5.919 0,0 1,44.243 31.057z"
       android:strokeWidth="@integer/icons_stoke_medium"
       android:fillColor="#00000000"
-      android:strokeColor="#ffffff"/>
-  <path
-      android:pathData="M38.324,42.304l50.315,0l0,11.247l-50.315,0z"
-      android:strokeWidth="@integer/icons_stoke_light"
-      android:fillColor="#00000000"
-      android:strokeColor="#ffffff"/>
-  <path
-      android:pathData="M38.324,64.797l50.315,0l0,11.247l-50.315,0z"
-      android:strokeWidth="@integer/icons_stoke_light"
-      android:fillColor="#00000000"
-      android:strokeColor="#ffffff"/>
-  <path
-      android:pathData="M55.096,31.057l16.772,0l0,56.234l-16.772,0z"
-      android:strokeWidth="@integer/icons_stoke_light"
-      android:fillColor="#00000000"
-      android:strokeColor="#ffffff"/>
+      android:strokeColor="@color/icons_module_stroke" />
+    <path
+        android:pathData="M38.324,42.304l50.315,0l0,11.247l-50.315,0z"
+        android:strokeWidth="@integer/icons_stoke_light"
+        android:fillColor="#00000000"
+        android:strokeColor="@color/icons_module_stroke" />
+    <path
+        android:pathData="M38.324,64.797l50.315,0l0,11.247l-50.315,0z"
+        android:strokeWidth="@integer/icons_stoke_light"
+        android:fillColor="#00000000"
+        android:strokeColor="@color/icons_module_stroke" />
+    <path
+        android:pathData="M55.096,31.057l16.772,0l0,56.234l-16.772,0z"
+        android:strokeWidth="@integer/icons_stoke_light"
+        android:fillColor="#00000000"
+        android:strokeColor="@color/icons_module_stroke" />
   <path
       android:pathData="M63.484,78.324a17.081,17.513 90,1 0,35.025 0a17.081,17.513 90,1 0,-35.025 0z"
       android:strokeWidth="@integer/icons_stoke_medium"
       android:fillColor="#ff6600"
-      android:strokeColor="#ffffff"
+      android:strokeColor="@color/icons_module_stroke"
       android:fillAlpha="1"/>
   <path
       android:pathData="m81.086,66.573l0,11.839l7.553,0l0,0"
@@ -58,7 +58,7 @@
       android:strokeLineJoin="miter"
       android:strokeWidth="@integer/icons_stoke_medium"
       android:fillColor="#ff6600"
-      android:strokeColor="#ffffff"
+      android:strokeColor="@color/icons_module_stroke"
       android:fillAlpha="1"
       android:strokeLineCap="round"/>
 </vector>

@@ -43,6 +43,8 @@
 
     <color name="icons_dark">#000</color>
     <color name="icons_light">#FFF</color>
+    <color name="icons_module_stroke">#FFF</color>
+    <color name="icons_nav_stroke">#000</color>
 
     <color name="border">#777</color>
 

@@ -254,7 +254,12 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
 
         //creates new mark
         val points = Mark.isAllPoints(marks)
-        val mark = Mark.default.apply { isPoints = points }
+        val isWeightZero = marks[0].weight == null
+
+        val mark = Mark.default.apply {
+            isPoints = points
+            if (isWeightZero) weight = null
+        }
 
         //opens dialog to edit mark
         val dialog = AddMarkDialog.build(requireActivity(), {

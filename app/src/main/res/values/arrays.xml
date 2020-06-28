@@ -48,9 +48,11 @@
         <item>org.jetbrains.kotlinx:kotlinx-coroutines-android</item>
         <item>org.jetbrains.kotlinx:kotlinx-coroutines-core</item>
         <item>org.jetbrains.kotlin:kotlin-stdlib-jdk7</item>
+        <item>XmlToJson github.com/smart-fun/XmlToJson</item>
     </array>
 
     <array name="license_mit">
+        <item>Bakaláři API github.com/bakalari-api/bakalari-api-v3</item>
         <item>https://github.com/edent/SuperTinyIcons</item>
     </array>
 

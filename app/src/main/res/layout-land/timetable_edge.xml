@@ -36,7 +36,7 @@
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_margin="@dimen/timetable_margin"
-            app:srcCompat="@drawable/timetable" />
+            app:srcCompat="@drawable/module_timetable" />
 
         <TextView
             android:id="@+id/cycle"

@@ -37,13 +37,13 @@ class NotificationContent(val context: Context) {
     }
 
     //strings in message
-    private val nextStr = getString(R.string.next)
-    private val endStr = getString(R.string.end)
-    private val breakStr = getString(R.string.interruption)
-    private val untilStr = getString(R.string.until)
-    private val groupStr = getString(R.string.group)
-    private val freeLessonStr = getString(R.string.free_lesson)
-    private val lastLessonStr = getString(R.string.last_lesson)
+    private val nextStr = getString(R.string.timetable_next)
+    private val endStr = getString(R.string.timetable_end)
+    private val breakStr = getString(R.string.timetable_interruption)
+    private val untilStr = getString(R.string.timetable_until)
+    private val groupStr = getString(R.string.timetable_group)
+    private val freeLessonStr = getString(R.string.timetable_free_lesson)
+    private val lastLessonStr = getString(R.string.timetable_last_lesson)
 
     /** @return map of all available texts
      * Int is representing seconds since midnight
@@ -193,7 +193,7 @@ class NotificationContent(val context: Context) {
         //last 10 minutes of a lesson
         actions[end] = arrayOf(
             "$lastLessonStr $untilStr ${pattern.end}",
-            getString(R.string.have_nice_day)
+            getString(R.string.timetable_have_nice_day)
         )
     }
 
@@ -292,7 +292,7 @@ class NotificationContent(val context: Context) {
         //last 10 minutes of a lesson
         actions[end] = arrayOf(
             lastLessonStr,
-            getString(R.string.finally_home)
+            getString(R.string.timetable_finally_home)
         )
     }
 
@@ -380,7 +380,7 @@ class NotificationContent(val context: Context) {
         //last 10 minutes of a lesson
         actions[end] = arrayOf(
             "${lesson.change?.typeShortcut} ${lesson.change?.typeName}",
-            "$lastLessonStr ${getString(R.string.finally_home)}"
+            "$lastLessonStr ${getString(R.string.timetable_finally_home)}"
         )
     }
 

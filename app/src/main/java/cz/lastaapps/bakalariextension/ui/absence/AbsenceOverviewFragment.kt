@@ -60,7 +60,7 @@ class AbsenceOverviewFragment : Fragment() {
             )
         binding.lifecycleOwner = LifecycleOwner { lifecycle }
         binding.viewmodel = viewModel
-        binding.drawable = R.drawable.absence
+        binding.drawable = R.drawable.module_absence
         //TODO contentDescription
         binding.contentDescription = ""
 
