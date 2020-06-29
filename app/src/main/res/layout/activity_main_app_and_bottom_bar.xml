@@ -64,7 +64,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
 
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/bottom_nav"
+        android:tag="BOTTOM_TAG"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:name="cz.lastaapps.bakalariextension.ui.bottom.BottomFragment"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true" />
+
     <!-- https://medium.com/over-engineering/hands-on-with-material-components-for-android-bottom-navigation-aae2aa9066be -->
+    <!--
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"
         android:layout_width="match_parent"
@@ -84,5 +96,5 @@
 
         android:visibility="gone"
         tools:visibility="visible" />
-
+    -->
 </RelativeLayout>

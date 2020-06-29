@@ -44,13 +44,14 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import cz.lastaapps.bakalariextension.api.user.data.User
 import cz.lastaapps.bakalariextension.send.ReportIssueActivity
 import cz.lastaapps.bakalariextension.send.SendIdeaActivity
 import cz.lastaapps.bakalariextension.tools.BaseActivity
 import cz.lastaapps.bakalariextension.ui.UserViewModel
+import cz.lastaapps.bakalariextension.ui.bottom.BottomFragment
+import cz.lastaapps.bakalariextension.ui.bottom.BottomItem
 import cz.lastaapps.bakalariextension.ui.login.ActionsLogout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -99,8 +100,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         val navController = findNavController(R.id.nav_host_fragment)
 
         //sets up bottom navigation with same navController
-        findViewById<BottomNavigationView>(R.id.bottom_nav)
-            .setupWithNavController(navController)
+        //findViewById<BottomNavigationView>(R.id.bottom_nav)
+        //    .setupWithNavController(navController)
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -251,31 +252,73 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             ).setIcon(R.drawable.nav_subjects)
 
 
-        val bottom = findViewById<BottomNavigationView>(R.id.bottom_nav)
+        val bottom =
+            //findViewById<BottomNavigationView>(R.id.bottom_nav)
+            (supportFragmentManager.findFragmentByTag("BOTTOM_TAG") as BottomFragment)
+
+        bottom.items.add(
+            BottomItem(
+                R.id.nav_home,
+                R.string.menu_home,
+                R.drawable.module_home
+            )
+        )
 
         if (user.isModuleEnabled(User.TIMETABLE))
-            bottom.menu.add(
-                R.id.nav_items_group,
-                R.id.nav_timetable,
-                Menu.NONE,
-                R.string.menu_timetable
-            ).setIcon(R.drawable.nav_timetable)
+            bottom.items.add(
+                BottomItem(
+                    R.id.nav_timetable,
+                    R.string.menu_timetable,
+                    R.drawable.module_timetable
+                )
+            )
 
         if (user.isModuleEnabled(User.MARKS))
-            bottom.menu.add(
-                R.id.nav_items_group,
-                R.id.nav_marks,
-                Menu.NONE,
-                R.string.menu_marks
-            ).setIcon(R.drawable.nav_marks)
+            bottom.items.add(
+                BottomItem(
+                    R.id.nav_marks,
+                    R.string.menu_marks,
+                    R.drawable.module_marks
+                )
+            )
 
         if (user.isModuleEnabled(User.HOMEWORK))
-            bottom.menu.add(
-                R.id.nav_items_group,
-                R.id.nav_homework,
-                Menu.NONE,
-                R.string.menu_homework
-            ).setIcon(R.drawable.nav_homework)
+            bottom.items.add(
+                BottomItem(
+                    R.id.nav_homework,
+                    R.string.menu_homework,
+                    R.drawable.module_homework
+                )
+            )
+
+        if (user.isModuleEnabled(User.ABSENCE))
+            bottom.items.add(
+                BottomItem(
+                    R.id.nav_absence,
+                    R.string.menu_absence,
+                    R.drawable.module_absence
+                )
+            )
+
+        if (user.isModuleEnabled(User.SUBJECTS))
+            bottom.items.add(
+                BottomItem(
+                    R.id.nav_teacher_list,
+                    R.string.menu_teacher_list,
+                    R.drawable.module_teacher
+                )
+            )
+
+        if (user.isModuleEnabled(User.SUBJECTS))
+            bottom.items.add(
+                BottomItem(
+                    R.id.nav_subject_list,
+                    R.string.menu_subject_list,
+                    R.drawable.module_subjects
+                )
+            )
+
+        bottom.dataUpdated()
     }
 
     /**When side navigation or the bottom bar was selected*/
