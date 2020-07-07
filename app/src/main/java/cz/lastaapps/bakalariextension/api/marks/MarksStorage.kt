@@ -99,6 +99,7 @@ class MarksStorage {
                 output.close()
 
             } catch (e: Exception) {
+                e.printStackTrace()
                 App.context.sendBroadcast(Intent(MainActivity.FULL_STORAGE))
             }
         }

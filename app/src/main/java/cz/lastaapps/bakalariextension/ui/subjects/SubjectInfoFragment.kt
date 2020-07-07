@@ -34,6 +34,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.navArgs
+import cz.lastaapps.bakalariextension.MobileNavigationDirections
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.absence.data.AbsenceSubject
 import cz.lastaapps.bakalariextension.api.homework.data.Homework
@@ -78,6 +80,7 @@ class SubjectInfoFragment : Fragment() {
     private val homeworkViewModel: HmwViewModel by activityViewModels()
     private val marksViewModel: MarksViewModel by activityViewModels()
     private lateinit var themeViewModel: ThemeViewModel
+    private val args: SubjectInfoFragmentArgs by navArgs()
 
     private lateinit var subject: Subject
     private lateinit var subjectId: String
@@ -100,7 +103,7 @@ class SubjectInfoFragment : Fragment() {
         binding.themeLayout.list.adapter = ThemeAdapter()
 
         //loads arguments
-        subjectId = requireArguments().getString(SUBJECT_EXTRA) ?: ""
+        subjectId = args.subjectId
 
         //loads subjects
         subjectViewModel.executeOrRefresh(lifecycle) { showData() }
@@ -153,7 +156,9 @@ class SubjectInfoFragment : Fragment() {
         binding.subject = subject
 
         binding.teacher.setOnClickListener {
-            TeacherInfoFragment.show(childFragmentManager, subject.teacher.id)
+            requireActivity().findNavController(R.id.nav_host_fragment).navigate(
+                MobileNavigationDirections.actionTeacherInfo(subject.teacher.id)
+            )
         }
 
         //shows absence for subject given

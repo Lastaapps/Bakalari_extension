@@ -28,6 +28,8 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.findNavController
+import cz.lastaapps.bakalariextension.MobileNavigationDirections
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.subjects.data.Teacher
 import cz.lastaapps.bakalariextension.databinding.LoadingListTemplateBinding
@@ -90,6 +92,8 @@ class TeacherListFragment : Fragment() {
 
     /**teacher's name was selected*/
     private fun teacherClicked(teacher: Teacher) {
-        TeacherInfoFragment.show(childFragmentManager, teacher.id)
+        requireActivity().findNavController(R.id.nav_host_fragment).navigate(
+            MobileNavigationDirections.actionTeacherInfo(teacher.id)
+        )
     }
 }

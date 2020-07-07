@@ -50,7 +50,10 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/sett_timetable">
+    <PreferenceCategory
+        app:title="@string/sett_timetable"
+        app:key="@string/sett_key_timetable_category">
+
         <ListPreference
             app:key="@string/sett_key_timetable_day"
             app:title="@string/sett_timetable_day_title"
@@ -71,21 +74,36 @@
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/sett_marks">
+    <PreferenceCategory
+        app:title="@string/sett_marks"
+        app:key="@string/sett_key_marks_category">
+
         <ListPreference
             app:title="@string/sett_marks_new_mark"
             app:key="@string/sett_key_marks_new_mark"
             app:defaultValue="@string/sett_marks_new_mark_default"
             app:entries="@array/sett_marks_new_mark_entries"
             app:entryValues="@array/sett_marks_new_mark"
-            app:useSimpleSummaryProvider="true"/>
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/sett_events_category"
+        app:key="@string/sett_key_events_category">
+
+        <ListPreference
+            app:key="@string/sett_key_events_show_for_day"
+            app:title="@string/sett_events_show_for_day"
+            app:entries="@array/sett_events_show_for_day_entries"
+            app:entryValues="@array/sett_events_show_for_day"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/sett_analytics">
         <SwitchPreferenceCompat
             app:key="@string/sett_key_send_town_school"
             android:title="@string/sett_send_town_school"
-            android:defaultValue="@string/sett_send_town_school_default"/>
+            android:defaultValue="@string/sett_send_town_school_default" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/sett_others">

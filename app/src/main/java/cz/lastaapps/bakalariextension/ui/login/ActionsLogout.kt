@@ -26,10 +26,12 @@ import android.content.pm.PackageManager
 import android.util.Log
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.api.absence.AbsenceStorage
+import cz.lastaapps.bakalariextension.api.events.EventsLoader
+import cz.lastaapps.bakalariextension.api.events.EventsStorage
 import cz.lastaapps.bakalariextension.api.homework.HomeworkStorage
 import cz.lastaapps.bakalariextension.api.marks.MarksStorage
 import cz.lastaapps.bakalariextension.api.subjects.SubjectStorage
-import cz.lastaapps.bakalariextension.api.timetable.TTStorage
+import cz.lastaapps.bakalariextension.api.timetable.TimetableStorage
 import cz.lastaapps.bakalariextension.api.user.UserStorage
 import cz.lastaapps.bakalariextension.receivers.BootReceiver
 import cz.lastaapps.bakalariextension.receivers.TimeChangeReceiver
@@ -58,7 +60,7 @@ class ActionsLogout {
             UserStorage.delete()
 
             //deletes timetables
-            TTStorage.deleteAll()
+            TimetableStorage.deleteAll()
 
             //deletes marks
             MarksStorage.delete()
@@ -71,6 +73,10 @@ class ActionsLogout {
 
             //deletes absence
             AbsenceStorage.delete()
+
+            //deletes events
+            for (type in EventsLoader.EventType.values())
+                EventsStorage.delete(type.url)
 
             //disables receivers
             val receivers = arrayOf(

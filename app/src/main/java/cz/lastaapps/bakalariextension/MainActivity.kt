@@ -110,7 +110,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             setOf(
                 R.id.nav_home, R.id.nav_timetable, R.id.nav_marks,
                 R.id.nav_homework, R.id.nav_teacher_list, R.id.nav_subject_list,
-                R.id.nav_absence
+                R.id.nav_absence, R.id.nav_events
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -129,6 +129,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         //shows popup when storage is full
         registerReceiver(fullStorageReceiver, IntentFilter(FULL_STORAGE))
+
+        navController.addOnDestinationChangedListener { controller, destination, arguments ->
+            println("Current: ${destination.label}")
+        }
     }
 
     override fun onDestroy() {
@@ -182,7 +186,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         findNavController(R.id.nav_host_fragment).apply {
 
-            navigate(R.id.nav_home)
+            //removes all navigation destinations from stack except default/home one - nav_home
+            popBackStack()
 
             //show some externally required fragment
             val navigateTo = intent.getIntExtra(NAVIGATE, -1)
@@ -201,13 +206,20 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         navView.getHeaderView(0).findViewById<TextView>(R.id.nav_name).text = user.normalFunName
         navView.getHeaderView(0).findViewById<TextView>(R.id.nav_type).text = user.getClassAndRole()
 
-        var homeOrder = navView.menu.findItem(R.id.nav_home).order
+        var firstOrder = 0
+
+        navView.menu.add(
+            R.id.nav_items_group,
+            R.id.nav_home,
+            firstOrder,
+            R.string.menu_home
+        ).setIcon(R.drawable.nav_home)
 
         if (user.isModuleEnabled(User.TIMETABLE))
             navView.menu.add(
                 R.id.nav_items_group,
                 R.id.nav_timetable,
-                ++homeOrder,
+                ++firstOrder,
                 R.string.menu_timetable
             ).setIcon(R.drawable.nav_timetable)
 
@@ -215,7 +227,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             navView.menu.add(
                 R.id.nav_items_group,
                 R.id.nav_marks,
-                ++homeOrder,
+                ++firstOrder,
                 R.string.menu_marks
             ).setIcon(R.drawable.nav_marks)
 
@@ -223,15 +235,23 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             navView.menu.add(
                 R.id.nav_items_group,
                 R.id.nav_homework,
-                ++homeOrder,
+                ++firstOrder,
                 R.string.menu_homework
             ).setIcon(R.drawable.nav_homework)
+
+        if (user.isModuleEnabled(User.EVENTS))
+            navView.menu.add(
+                R.id.nav_items_group,
+                R.id.nav_events,
+                ++firstOrder,
+                R.string.menu_events
+            ).setIcon(R.drawable.nav_events)
 
         if (user.isModuleEnabled(User.ABSENCE))
             navView.menu.add(
                 R.id.nav_items_group,
                 R.id.nav_absence,
-                ++homeOrder,
+                ++firstOrder,
                 R.string.menu_absence
             ).setIcon(R.drawable.nav_absence)
 
@@ -239,7 +259,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             navView.menu.add(
                 R.id.nav_items_group,
                 R.id.nav_teacher_list,
-                ++homeOrder,
+                ++firstOrder,
                 R.string.menu_teacher_list
             ).setIcon(R.drawable.nav_teacher)
 
@@ -247,14 +267,15 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             navView.menu.add(
                 R.id.nav_items_group,
                 R.id.nav_subject_list,
-                ++homeOrder,
+                ++firstOrder,
                 R.string.menu_subject_list
             ).setIcon(R.drawable.nav_subjects)
 
 
+        //BOTTOM navigation
         val bottom =
             //findViewById<BottomNavigationView>(R.id.bottom_nav)
-            (supportFragmentManager.findFragmentByTag("BOTTOM_TAG") as BottomFragment)
+            (supportFragmentManager.findFragmentByTag(getString(R.string.bottom_fragment_tag)) as BottomFragment)
 
         bottom.items.add(
             BottomItem(
@@ -288,6 +309,15 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                     R.id.nav_homework,
                     R.string.menu_homework,
                     R.drawable.module_homework
+                )
+            )
+
+        if (user.isModuleEnabled(User.EVENTS))
+            bottom.items.add(
+                BottomItem(
+                    R.id.nav_events,
+                    R.string.menu_events,
+                    R.drawable.module_events
                 )
             )
 

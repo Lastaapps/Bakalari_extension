@@ -1,0 +1,65 @@
+<!--
+  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~
+  ~     This file is part of Bakalari extension.
+  ~
+  ~     Bakalari extension is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Bakalari extension is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="128dp"
+    android:height="128dp"
+    android:viewportWidth="128"
+    android:viewportHeight="128">
+    <path
+        android:pathData="m119.163,31.94 l0.183,63.803 -55.163,32.06 -55.346,-31.743 -0.183,-63.803 55.163,-32.06z"
+        android:strokeWidth="@integer/icons_stoke_medium_nav"
+        android:strokeColor="@color/icons_nav_stroke" />
+    <path
+        android:pathData="M29.899,37.635L98.101,37.635A6.134,6.134 45,0 1,104.235 43.768L104.235,88.98A6.134,6.134 0,0 1,98.101 95.113L29.899,95.113A6.134,6.134 0,0 1,23.765 88.98L23.765,43.768A6.134,6.134 0,0 1,29.899 37.635z"
+        android:strokeLineJoin="round"
+        android:strokeWidth="@integer/icons_stoke_medium_nav"
+        android:fillColor="#00000000"
+        android:strokeColor="@color/icons_nav_stroke"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="m41.009,31.887l0,11.496"
+        android:strokeLineJoin="miter"
+        android:strokeWidth="@integer/icons_stoke_medium_nav"
+        android:fillColor="#00000000"
+        android:strokeColor="@color/icons_nav_stroke"
+        android:strokeLineCap="butt" />
+    <path
+        android:pathData="m86.991,31.887l0,11.496"
+        android:strokeLineJoin="miter"
+        android:strokeWidth="@integer/icons_stoke_medium_nav"
+        android:fillColor="#00000000"
+        android:strokeColor="@color/icons_nav_stroke"
+        android:strokeLineCap="butt" />
+    <path
+        android:pathData="M23.765,51.177L104.235,51.177"
+        android:strokeLineJoin="miter"
+        android:strokeWidth="@integer/icons_stoke_medium_nav"
+        android:fillColor="#00000000"
+        android:strokeColor="@color/icons_nav_stroke"
+        android:strokeLineCap="butt" />
+    <path
+        android:pathData="m50.892,74.035 l10.083,10.083 16.133,-24.199"
+        android:strokeLineJoin="round"
+        android:strokeWidth="@integer/icons_stoke_medium_nav"
+        android:fillColor="#00000000"
+        android:strokeColor="@color/icons_nav_stroke"
+        android:strokeLineCap="round" />
+</vector>

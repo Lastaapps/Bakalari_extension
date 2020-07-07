@@ -26,7 +26,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.subjects.ThemeList
-import cz.lastaapps.bakalariextension.databinding.ThemeEntryBinding
+import cz.lastaapps.bakalariextension.databinding.EntryThemeBinding
 
 /**Adapter showing themes*/
 class ThemeAdapter(var themeList: ThemeList = ThemeList()) :
@@ -36,13 +36,13 @@ class ThemeAdapter(var themeList: ThemeList = ThemeList()) :
         setHasStableIds(true)
     }
 
-    class BindingHolder(val binding: ThemeEntryBinding) : RecyclerView.ViewHolder(binding.root)
+    class BindingHolder(val binding: EntryThemeBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BindingHolder {
         return BindingHolder(
             DataBindingUtil.inflate(
                 LayoutInflater.from(parent.context),
-                R.layout.theme_entry,
+                R.layout.entry_theme,
                 parent,
                 false
             )

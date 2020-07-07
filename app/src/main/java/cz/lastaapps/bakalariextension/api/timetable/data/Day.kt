@@ -89,18 +89,26 @@ data class Day(
 
     /**@return index of the first not empty lesson of the day*/
     fun firstLessonIndex(hours: DataIdList<Hour>, cycle: Cycle? = null): Int {
-        for (i in 0 until hours.size) {
-            if (!isFree(hours[i], cycle))
-                return i
+        if (isWorkDay())
+            for (i in 0 until hours.size) {
+                if (!isFree(hours[i], cycle))
+                    return i
+            }
+        else if (isHoliday()) {
+            return 0
         }
         return -1
     }
 
     /**@return index of the last not empty lesson of the day*/
     fun lastLessonIndex(hours: DataIdList<Hour>, cycle: Cycle? = null): Int {
-        for (i in (hours.size - 1) downTo 0) {
-            if (!isFree(hours[i], cycle))
-                return i
+        if (isWorkDay())
+            for (i in (hours.size - 1) downTo 0) {
+                if (!isFree(hours[i], cycle))
+                    return i
+            }
+        else if (isHoliday()) {
+            return 5 //minimum timetable size to show holiday
         }
         return -1
     }

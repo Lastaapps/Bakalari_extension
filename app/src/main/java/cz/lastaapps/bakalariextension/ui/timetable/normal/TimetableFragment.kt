@@ -37,8 +37,8 @@ import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.MainActivity
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.homework.HomeworkLoader
-import cz.lastaapps.bakalariextension.api.timetable.TTStorage
 import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
+import cz.lastaapps.bakalariextension.api.timetable.TimetableStorage
 import cz.lastaapps.bakalariextension.databinding.FragmentTimetableBinding
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import cz.lastaapps.bakalariextension.tools.lastUpdated
@@ -402,7 +402,7 @@ class TimetableFragment : Fragment() {
                 getString(R.string.timetable_permanent)
 
         //add when was timetable last updated
-        val lastUpdated = TTStorage.lastUpdated(
+        val lastUpdated = TimetableStorage.lastUpdated(
             if (!vm.isPermanent)
                 vm.dateTime
             else

@@ -29,9 +29,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import cz.lastaapps.bakalariextension.MobileNavigationDirections
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.subjects.SubjectList
 import cz.lastaapps.bakalariextension.api.subjects.data.Teacher
@@ -42,21 +44,11 @@ class TeacherInfoFragment : BottomSheetDialogFragment() {
 
     companion object {
         private val TAG = TeacherInfoFragment::class.java.simpleName
-
-        private const val TEACHER_EXTRA = "TEACHER_EXTRA"
-
-        /**shows fragment on the bottom of the screen*/
-        fun show(manager: FragmentManager, teacherId: String) {
-            TeacherInfoFragment().apply {
-                arguments = Bundle().apply {
-                    putString(TEACHER_EXTRA, teacherId)
-                }
-            }.show(manager, TAG)
-        }
     }
 
     private lateinit var binding: FragmentTeacherInfoBinding
     private val viewModel: SubjectViewModel by activityViewModels()
+    private val args: TeacherInfoFragmentArgs by navArgs()
 
     private lateinit var teacherId: String
     private lateinit var teacher: Teacher
@@ -75,16 +67,9 @@ class TeacherInfoFragment : BottomSheetDialogFragment() {
         binding.setLifecycleOwner { lifecycle }
 
         //gets teacher's id from input data
-        teacherId = requireArguments().getString(TEACHER_EXTRA) ?: ""
+        teacherId = args.teacherId
 
-        viewModel.subjects.apply {
-            observe({ lifecycle }) { showData() }
-            if (value != null) {
-                showData()
-            } else {
-                viewModel.onRefresh()
-            }
-        }
+        viewModel.executeOrRefresh(lifecycle) { showData() }
 
         return binding.root
     }
@@ -117,8 +102,9 @@ class TeacherInfoFragment : BottomSheetDialogFragment() {
 
                 //shows subject info
                 onItemClicked = { subject ->
-                    SubjectInfoFragment.navigateTo(requireActivity(), subject.id)
-
+                    requireActivity().findNavController(R.id.nav_host_fragment).navigate(
+                        MobileNavigationDirections.actionSubjectInfo(subject.id)
+                    )
                     dismiss()
                 }
             }

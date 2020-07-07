@@ -18,19 +18,26 @@
  *
  */
 
-package cz.lastaapps.bakalariextension.ui
+package cz.lastaapps.bakalariextension.api.events.data
 
-import android.text.method.MovementMethod
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.databinding.BindingAdapter
+import cz.lastaapps.bakalariextension.tools.TimeTools
+import java.time.ZonedDateTime
 
-@BindingAdapter("android:src")
-fun setImageResource(imageView: ImageView, resource: Int) {
-    imageView.setImageResource(resource)
-}
+class EventTime(
+    var wholeDay: Boolean,
+    var startTime: String,
+    var endTime: String
+) {
 
-@BindingAdapter("app:movementMethod")
-fun setMovementMethod(textView: TextView, movementMethod: MovementMethod) {
-    textView.movementMethod = movementMethod
+    val dateStart: ZonedDateTime = parseTime(startTime)
+    val dateEnd: ZonedDateTime = parseTime(endTime)
+
+    //time formats differ not sure why and when, to try catch is used
+    private fun parseTime(time: String): ZonedDateTime {
+        return try {
+            TimeTools.parse(time, TimeTools.COMPLETE_FORMAT)
+        } catch (e: Exception) {
+            TimeTools.parse(time, TimeTools.COMPLETE_SHORTER)
+        }
+    }
 }

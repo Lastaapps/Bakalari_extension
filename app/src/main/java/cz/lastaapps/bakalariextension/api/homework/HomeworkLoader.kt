@@ -47,7 +47,7 @@ class HomeworkLoader {
 
                 var toReturn: HomeworkList? = null
 
-                if (forceReload || HomeworkStorage.lastUpdated() == null) {
+                if (forceReload || shouldReload()) {
                     toReturn = loadFromServer(from)
                 } else {
                     if (!shouldReload())

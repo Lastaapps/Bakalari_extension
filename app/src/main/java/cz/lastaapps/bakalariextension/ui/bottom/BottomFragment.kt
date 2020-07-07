@@ -27,6 +27,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import cz.lastaapps.bakalariextension.R
@@ -80,7 +81,7 @@ class BottomFragment : Fragment() {
 
         layout.adapter = BottomAdapter(items).apply {
             onClick = { id, position ->
-                controller.navigate(id)
+                doNavigation(id)
             }
         }
         layout.layoutManager =
@@ -95,12 +96,14 @@ class BottomFragment : Fragment() {
             val height = bottom - top
 
             if (height != 0) {
-                val itemsShown = width / columnWidth
+                if (showSwitch == UNKNOWN) {
+                    val itemsShown = width / columnWidth
 
-                showSwitch = if (itemsShown >= items.size) HIDE else SHOW
+                    showSwitch = if (itemsShown >= items.size) HIDE else SHOW
 
-                controller.currentDestination?.let {
-                    autoManageDestinations(it.id)
+                    controller.currentDestination?.let {
+                        autoManageDestinations(it.id)
+                    }
                 }
             }
         }
@@ -181,6 +184,20 @@ class BottomFragment : Fragment() {
             }
 
         this.state = state
+    }
+
+    private fun doNavigation(id: Int) {
+        val builder = NavOptions.Builder()
+            .setLaunchSingleTop(true)
+
+        builder.setPopUpTo(
+            R.id.nav_home,
+            false
+        )
+
+        val options = builder.build()
+
+        controller.navigate(id, null, options)
     }
 
     fun dataUpdated() {

@@ -28,6 +28,7 @@ class TimeTools {
     companion object {
 
         const val COMPLETE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssXXX"
+        const val COMPLETE_SHORTER = "yyyy-MM-dd'T'HH:mmXXX"
         const val DATE_FORMAT = "yyyy-MM-dd"
         const val TIME_FORMAT = "H:mm"
         val UTC: ZoneId = ZoneId.of("UTC")
@@ -103,11 +104,18 @@ class TimeTools {
             get() {
                 var firstSeptemberThisYear = today
                     .withDayOfMonth(1)
-                    .withMonth(9 - 1)
+                    .withMonth(9)
                 while (firstSeptemberThisYear > today)
                     firstSeptemberThisYear = firstSeptemberThisYear.minusYears(1)
                 return firstSeptemberThisYear
             }
+
+        /**The last day of the school year*/
+        val lastJune: ZonedDateTime
+            get() = firstSeptember
+                .plusYears(1)
+                .withMonth(Month.JUNE.value)
+                .withDayOfMonth(30)
 
         /**Trims dateTimes time to midnight
          * @return previous midnight*/

@@ -28,6 +28,8 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.findNavController
+import cz.lastaapps.bakalariextension.MobileNavigationDirections
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.subjects.data.Subject
 import cz.lastaapps.bakalariextension.databinding.LoadingListTemplateBinding
@@ -89,6 +91,8 @@ class SubjectListFragment : Fragment() {
 
     /**shows subject info*/
     private fun subjectClicked(subject: Subject) {
-        SubjectInfoFragment.navigateTo(requireActivity(), subject.id)
+        requireActivity().findNavController(R.id.nav_host_fragment).navigate(
+            MobileNavigationDirections.actionSubjectInfo(subject.id)
+        )
     }
 }

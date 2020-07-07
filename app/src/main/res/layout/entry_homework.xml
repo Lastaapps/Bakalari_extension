@@ -98,7 +98,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/progressBox"
 
-            android:visibility="invisible" />
+            android:visibility="invisible"
+
+            tools:text="Well, it can sometimes happen..." />
 
         <TextView
             style="@style/Homework.Text"
@@ -113,7 +115,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/progressBox"
-            tools:text="So, it can sometimes happen..." />
+            tools:text="Well, it can sometimes happen..." />
 
         <TextView
             style="@style/Homework.Text"

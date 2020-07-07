@@ -47,12 +47,12 @@ open class SimpleData(
 ) : DataId<String>(id), Comparable<SimpleData> {
 
     override fun toString(): String {
-        return "{id=$id name=$name shortcut=$shortcut}"
+        return if (name != "") name else shortcut
     }
 
     override fun compareTo(other: SimpleData): Int {
         val collator = Collator.getInstance(Locale.getDefault())
 
-        return collator.compare(name, other.name)
+        return collator.compare(this.toString(), other.toString())
     }
 }

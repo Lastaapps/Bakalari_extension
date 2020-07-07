@@ -69,14 +69,22 @@ class MySettings(val context: Context) {
         get() = getString(R.string.sett_key_log_out)
     val DOWNLOAD_LOCATION
         get() = getString(R.string.sett_key_download_location)
+    val TIMETABLE_CATEGORY
+        get() = getString(R.string.sett_key_timetable_category)
     val TIMETABLE_DAY
         get() = getString(R.string.sett_key_timetable_day)
     val TIMETABLE_NOTIFICATION
         get() = getString(R.string.sett_key_timetable_notification)
     val TIMETABLE_PREVIEW
         get() = getString(R.string.sett_key_timetable_preview)
+    val MARKS_CATEGORY
+        get() = getString(R.string.sett_key_marks_category)
     val MARKS_SHOW_NEW
         get() = getString(R.string.sett_key_marks_new_mark)
+    val EVENTS_CATEGORY
+        get() = getString(R.string.sett_key_events_category)
+    val EVENTS_SHOW_FOR_DAY
+        get() = getString(R.string.sett_key_events_show_for_day)
     val SEND_TOWN_SCHOOL
         get() = getString(R.string.sett_key_send_town_school)
     val RESET
@@ -130,6 +138,9 @@ class MySettings(val context: Context) {
 
             if (sp.getString(MARKS_SHOW_NEW, "") == "")
                 editor.putString(MARKS_SHOW_NEW, getString(R.string.sett_marks_new_mark_default))
+
+            if (sp.getString(EVENTS_SHOW_FOR_DAY, "") == "")
+                editor.putString(EVENTS_SHOW_FOR_DAY, getArray(R.array.sett_events_show_for_day)[5])
 
             editor.apply()
         }
@@ -189,36 +200,51 @@ class MySettings(val context: Context) {
         return getSP().getBoolean(TIMETABLE_NOTIFICATION, true)
     }
 
-    /**@return if the timetable preview for tomorrow should be shown*/
-    fun showTomorrowsPreview(now: ZonedDateTime, lessonsEnd: ZonedDateTime): ZonedDateTime {
+    /**@return if the data for tomorrow should be shown
+     * used with #TIMETABLE_PREVIEW and #EVENTS_SHOW_FOR_DAY */
+    fun showTomorrow(
+        now: ZonedDateTime,
+        lessonsEnd: ZonedDateTime,
+        settKey: String,
+        arrayId: Int
+    ): ZonedDateTime {
 
-        if (lessonsEnd.dayOfWeek == DayOfWeek.FRIDAY) return now
         if (lessonsEnd.dayOfWeek == DayOfWeek.SATURDAY) return now.plusDays(2)
         if (lessonsEnd.dayOfWeek == DayOfWeek.SUNDAY) return now.plusDays(1)
 
         if (now < lessonsEnd) return now
 
-        val invalidDuration = when (getArray(R.array.sett_timetable_preview).indexOf(
-            getSP().getString(TIMETABLE_PREVIEW, "")
+        val invalidDuration = when (getArray(arrayId).indexOf(
+            getSP().getString(settKey, "")
         )) {
             0 -> Duration.between(lessonsEnd, TimeTools.toMidnight(lessonsEnd.plusDays(1)))
             1 -> Duration.ZERO
             2 -> Duration.ofHours(1)
             3 -> Duration.ofHours(2)
             4 -> Duration.ofHours(3)
-            5 -> Duration.between(lessonsEnd, TimeTools.toMidnight(lessonsEnd).withHour(17))
-            6 -> Duration.between(lessonsEnd, TimeTools.toMidnight(lessonsEnd).withHour(18))
-            7 -> Duration.between(lessonsEnd, TimeTools.toMidnight(lessonsEnd).withHour(19))
+            5 -> Duration.between(now, TimeTools.toMidnight(lessonsEnd).withHour(17))
+            6 -> Duration.between(now, TimeTools.toMidnight(lessonsEnd).withHour(18))
+            7 -> Duration.between(now, TimeTools.toMidnight(lessonsEnd).withHour(19))
             else -> return now
         }
         val currentDuration = Duration.between(lessonsEnd, now)
 
-        return if (currentDuration >= invalidDuration) {
-            now.plusDays(1)
+        return if (currentDuration.seconds >= invalidDuration.seconds) {
+
+            if (lessonsEnd.dayOfWeek != DayOfWeek.FRIDAY)
+                now.plusDays(1)
+            else
+                now.plusDays(3)
         } else {
             now
         }
     }
+
+    /** if week is required to get valid date for #showTomorrow()*/
+    fun weekRequired(settKey: String, arrayId: Int): Boolean = (getArray(arrayId).indexOf(
+        getSP().getString(settKey, "")
+    ) in 1..4)
+
 
     /**@return for how many days should be mark shown as new*/
     fun getNewMarkDuration(): Int {

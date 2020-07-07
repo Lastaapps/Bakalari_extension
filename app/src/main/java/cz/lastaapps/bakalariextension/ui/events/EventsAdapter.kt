@@ -18,51 +18,46 @@
  *
  */
 
-package cz.lastaapps.bakalariextension.ui.homework
+package cz.lastaapps.bakalariextension.ui.events
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
-import cz.lastaapps.bakalariextension.databinding.EntryHomeworkBinding
+import cz.lastaapps.bakalariextension.api.events.data.EventList
+import cz.lastaapps.bakalariextension.databinding.EntryEventBinding
 
-/** Adapter to show homework list - uses homework_entry layout*/
-class HmwAdapter(private val activity: AppCompatActivity, var list: HomeworkList = HomeworkList()) :
-    RecyclerView.Adapter<HmwAdapter.BindingHolder>() {
+class EventsAdapter(var list: EventList = EventList()) :
+    RecyclerView.Adapter<EventsAdapter.BindingHolder>() {
+
+    class BindingHolder(val binding: EntryEventBinding) : RecyclerView.ViewHolder(binding.root)
 
     init {
         setHasStableIds(true)
     }
 
-    /**holds binding instead of view*/
-    class BindingHolder(var binding: EntryHomeworkBinding) : RecyclerView.ViewHolder(binding.root)
-
-    /**inflates binding and saves it into holder*/
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BindingHolder {
         return BindingHolder(
             DataBindingUtil.inflate(
                 LayoutInflater.from(parent.context),
-                R.layout.entry_homework,
+                R.layout.entry_event,
                 parent,
                 false
             )
         )
     }
 
-    /**updates binding with data*/
     override fun onBindViewHolder(holder: BindingHolder, position: Int) {
         val binding = holder.binding
+        val event = list[position]
 
-        val homework = list[position]
-        binding.hw = homework
-        binding.mgr = HmwEntryManager(activity, binding, homework)
+        binding.event = event
+        binding.mgr = EventEntryManager(binding, event)
     }
 
-    fun update(newList: HomeworkList) {
-        list = newList
+    fun update(list: EventList) {
+        this.list = list
         notifyDataSetChanged()
     }
 
@@ -71,6 +66,6 @@ class HmwAdapter(private val activity: AppCompatActivity, var list: HomeworkList
     }
 
     override fun getItemId(position: Int): Long {
-        return list[position].id.hashCode().toLong()
+        return list[position].hashCode().toLong()
     }
 }

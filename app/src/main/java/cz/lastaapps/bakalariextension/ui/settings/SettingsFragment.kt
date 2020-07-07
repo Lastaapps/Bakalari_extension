@@ -26,6 +26,7 @@ import android.net.Uri
 import android.os.*
 import android.provider.Settings
 import android.util.Log
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import androidx.preference.Preference
@@ -165,6 +166,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
 
         //TIMETABLE
+        prefVisibility(sett.TIMETABLE_CATEGORY, user?.isModuleEnabled(User.TIMETABLE) ?: false)
+
         //from which day should be next week shown
         prefChange(
             sett.TIMETABLE_DAY,
@@ -197,8 +200,39 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
 
         //MARKS
+        prefVisibility(sett.MARKS_CATEGORY, user?.isModuleEnabled(User.MARKS) ?: false)
+
         //for how long is a mark shown as new
         prefVisibility(sett.MARKS_SHOW_NEW, user?.isModuleEnabled(User.MARKS) ?: false)
+
+
+        //EVENTS
+        prefVisibility(sett.EVENTS_CATEGORY, user?.isModuleEnabled(User.EVENTS) ?: false)
+
+        //for showing events for the next days
+        prefChange(
+            sett.EVENTS_SHOW_FOR_DAY,
+            user?.isFeatureEnabled(User.EVENTS_SHOW) ?: false
+        ) { _, newValue ->
+            Log.i(TAG, "Show events for the next day changed to $newValue")
+
+            if (user?.isModuleEnabled(User.TIMETABLE) != true) {
+                val array = resources.getStringArray(R.array.sett_events_show_for_day)
+
+                if (array.indexOf(newValue) in 1..4) {
+
+                    Toast.makeText(
+                        requireContext(),
+                        R.string.sett_events_show_for_day_disabled,
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                    return@prefChange false
+                }
+            }
+
+            true
+        }
 
 
         //ANALYTICS

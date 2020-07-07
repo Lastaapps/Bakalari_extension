@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~
+  ~     This file is part of Bakalari extension.
+  ~
+  ~     Bakalari extension is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Bakalari extension is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <import type="android.text.method.LinkMovementMethod" />
+
+        <variable
+            name="event"
+            type="cz.lastaapps.bakalariextension.api.events.data.Event" />
+
+        <variable
+            name="mgr"
+            type="cz.lastaapps.bakalariextension.ui.events.EventEntryManager" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_basic">
+
+        <TextView
+            android:id="@+id/label"
+            style="@style/AppTheme.Text.Bigger"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{event.title}"
+            android:layout_margin="@dimen/margin_basic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Boston Tea Party" />
+
+        <!-- Used to measure if content text is longer than default number of lines-->
+
+        <TextView
+            android:id="@+id/template"
+            style="@style/AppTheme.Text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="@integer/homework_visible_lines"
+            android:layout_margin="@dimen/margin_basic"
+            android:text="@{event.description}"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label" />
+
+        <TextView
+            android:id="@+id/content"
+            style="@style/AppTheme.Text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:autoLink="all"
+            android:linksClickable="true"
+            android:maxLines="@integer/homework_visible_lines"
+            android:layout_margin="@dimen/margin_basic"
+            android:text="@{event.description}"
+            android:textIsSelectable="true"
+            android:visibility="@{!event.description.equals(``) ? View.VISIBLE : View.GONE}"
+            app:movementMethod="@{LinkMovementMethod.getInstance()}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label"
+            tools:text="Let's have a drink!" />
+
+        <TextView
+            android:id="@+id/show_more"
+            style="@style/AppTheme.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_basic"
+            android:onClick="@{(view) -> mgr.onShowMoreClick()}"
+            android:text="@string/homework_show_more"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/content"
+            tools:text="Show more"
+            tools:visibility="visible" />
+
+        <TextView
+            style="@style/AppTheme.Text"
+            android:id="@+id/classes"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_basic"
+            android:textIsSelectable="true"
+            android:text="@{mgr.classesString()}"
+            android:visibility="@{!event.classes.empty ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/show_more"
+            tools:text="Classes: 1.A" />
+
+        <TextView
+            style="@style/AppTheme.Text"
+            android:id="@+id/teachers"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_basic"
+            android:textIsSelectable="true"
+            android:text="@{mgr.teachersString()}"
+            android:visibility="@{!event.teachers.empty ? View.VISIBLE : View.GONE}"
+            app:movementMethod="@{LinkMovementMethod.getInstance()}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/classes"
+            tools:text="Teachers: Mr. Black" />
+
+        <TextView
+            style="@style/AppTheme.Text"
+            android:id="@+id/rooms"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_basic"
+            android:textIsSelectable="true"
+            android:text="@{mgr.roomsString()}"
+            android:visibility="@{!event.rooms.empty ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/teachers"
+            tools:text="Rooms: 1.A" />
+
+        <TextView
+            android:id="@+id/students"
+            style="@style/AppTheme.Text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_basic"
+            android:textIsSelectable="true"
+            android:text="@{mgr.studentsString()}"
+            android:visibility="@{!event.students.empty ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rooms"
+            tools:text="Students: Hannah" />
+
+        <TextView
+            style="@style/AppTheme.Text"
+            android:id="@+id/date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="textEnd"
+            android:textIsSelectable="true"
+            android:text="@{ mgr.dateText() }"
+            android:layout_margin="@dimen/margin_basic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/students"
+            tools:text="31.2. 11:00 - 13:00" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

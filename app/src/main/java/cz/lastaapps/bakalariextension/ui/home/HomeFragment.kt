@@ -34,6 +34,7 @@ import cz.lastaapps.bakalariextension.databinding.FragmentHomeBinding
 import cz.lastaapps.bakalariextension.ui.UserViewModel
 import cz.lastaapps.bakalariextension.ui.WhatsNew
 import cz.lastaapps.bakalariextension.ui.absence.AbsenceOverviewFragment
+import cz.lastaapps.bakalariextension.ui.events.EventsUpcomingFragment
 import cz.lastaapps.bakalariextension.ui.homework.HmwOverview
 import cz.lastaapps.bakalariextension.ui.marks.NewMarksFragment
 import cz.lastaapps.bakalariextension.ui.timetable.small.SmallTimetableFragment
@@ -50,9 +51,7 @@ class HomeFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        requireActivity().actionBar?.let {
-            it.show()
-        }
+        requireActivity().actionBar?.show()
 
         //What's new - shown only once per version
         if (WhatsNew(requireContext()).shouldShow()) {
@@ -102,6 +101,10 @@ class HomeFragment : Fragment() {
 
         if (user.isModuleEnabled(User.HOMEWORK)) {
             transaction.add(R.id.homework_fragment, HmwOverview())
+        }
+
+        if (user.isModuleEnabled(User.EVENTS)) {
+            transaction.add(R.id.events_fragment, EventsUpcomingFragment())
         }
 
         if (user.isModuleEnabled(User.ABSENCE)) {

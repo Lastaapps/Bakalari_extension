@@ -67,7 +67,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/bottom_nav"
-        android:tag="BOTTOM_TAG"
+        android:tag="@string/bottom_fragment_tag"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:name="cz.lastaapps.bakalariextension.ui.bottom.BottomFragment"

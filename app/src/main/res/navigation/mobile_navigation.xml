@@ -62,6 +62,9 @@
         <action
             android:id="@+id/action_nav_home_to_licenseFragment"
             app:destination="@id/nav_license" />
+        <action
+            android:id="@+id/action_nav_home_to_eventsRootFragment"
+            app:destination="@id/nav_events" />
     </fragment>
 
     <fragment
@@ -98,29 +101,25 @@
         android:id="@+id/nav_teacher_list"
         android:name="cz.lastaapps.bakalariextension.ui.subjects.TeacherListFragment"
         android:label="@string/menu_teacher_list"
-        tools:layout="@layout/loading_list_template">
-        <action
-            android:id="@+id/action_nav_teacher_list_to_nav_subject_info"
-            app:destination="@id/nav_subject_info" />
-    </fragment>
+        tools:layout="@layout/loading_list_template" />
     <fragment
         android:id="@+id/nav_subject_list"
         android:name="cz.lastaapps.bakalariextension.ui.subjects.SubjectListFragment"
         android:label="@string/menu_subject_list"
-        tools:layout="@layout/loading_list_template">
-        <action
-            android:id="@+id/action_nav_subject_list_to_nav_subject_info"
-            app:destination="@id/nav_subject_info" />
-    </fragment>
+        tools:layout="@layout/loading_list_template" />
     <fragment
         android:id="@+id/nav_subject_info"
         android:name="cz.lastaapps.bakalariextension.ui.subjects.SubjectInfoFragment"
         android:label="@string/menu_subject_info"
-        tools:layout="@layout/fragment_subject_info" />
+        tools:layout="@layout/fragment_subject_info">
+        <argument
+            android:name="subject_id"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/nav_loading"
         android:name="cz.lastaapps.bakalariextension.ui.loading.LoadingFragment"
-        android:label="fragment_loading"
+        android:label=""
         tools:layout="@layout/fragment_loading">
         <action
             android:id="@+id/action_loadingFragment_to_nav_home"
@@ -149,10 +148,30 @@
     <fragment
         android:id="@+id/nav_login"
         android:name="cz.lastaapps.bakalariextension.ui.login.LoginFragment"
-        android:label="@string/menu_login">
+        android:label="@string/menu_login"
+        tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_nav_login_to_nav_home"
             app:destination="@id/nav_home" />
     </fragment>
+    <fragment
+        android:id="@+id/nav_events"
+        android:name="cz.lastaapps.bakalariextension.ui.events.EventsRootFragment"
+        android:label="@string/menu_events"
+        tools:layout="@layout/fragment_events" />
+    <dialog
+        android:id="@+id/nav_teacher_info"
+        android:name="cz.lastaapps.bakalariextension.ui.subjects.TeacherInfoFragment"
+        tools:layout="@layout/fragment_teacher_info">
+        <argument
+            android:name="teacher_id"
+            app:argType="string" />
+    </dialog>
+    <action
+        android:id="@+id/action_teacher_info"
+        app:destination="@id/nav_teacher_info" />
+    <action
+        android:id="@+id/action_subject_info"
+        app:destination="@id/nav_subject_info" />
 
 </navigation>

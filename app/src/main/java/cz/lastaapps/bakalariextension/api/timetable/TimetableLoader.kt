@@ -96,7 +96,7 @@ class TimetableLoader {
                     val week = TimetableParser.parseJson(date, json)
 
                     //saves json
-                    TTStorage.save(date, json)
+                    TimetableStorage.save(date, json)
 
                     //updates notification service, if it is running
                     TTNotifyService.startService(App.context)
@@ -128,7 +128,7 @@ class TimetableLoader {
 
                 return@withContext try {
 
-                    val json = withContext(Dispatchers.IO) { TTStorage.load(time) }
+                    val json = withContext(Dispatchers.IO) { TimetableStorage.load(time) }
                         ?: return@withContext null
 
                     TimetableParser.parseJson(date, json)
@@ -143,7 +143,7 @@ class TimetableLoader {
 
         /**@return if the timetable for this date is outdated - should be refreshed/downloaded*/
         fun shouldReload(date: ZonedDateTime): Boolean {
-            val lastUpdated = TTStorage.lastUpdated(date) ?: return true
+            val lastUpdated = TimetableStorage.lastUpdated(date) ?: return true
 
             return (lastUpdated <= TimeTools.now.minusDays(1)
                     || date == TimeTools.PERMANENT)

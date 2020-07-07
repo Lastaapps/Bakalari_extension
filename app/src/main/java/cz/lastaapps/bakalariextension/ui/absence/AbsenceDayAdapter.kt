@@ -28,7 +28,7 @@ import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.absence.data.AbsenceDataHolder
 import cz.lastaapps.bakalariextension.api.absence.data.AbsenceRoot
-import cz.lastaapps.bakalariextension.databinding.AbsenceDayEntryBinding
+import cz.lastaapps.bakalariextension.databinding.EntryAbsenceDayBinding
 
 
 class AbsenceDayAdapter :
@@ -46,13 +46,13 @@ class AbsenceDayAdapter :
         this.list = list as DataIdList<AbsenceDataHolder>
     }
 
-    class BindingHolder(val binding: AbsenceDayEntryBinding) : RecyclerView.ViewHolder(binding.root)
+    class BindingHolder(val binding: EntryAbsenceDayBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BindingHolder {
         return BindingHolder(
             DataBindingUtil.inflate(
                 LayoutInflater.from(parent.context),
-                R.layout.absence_day_entry,
+                R.layout.entry_absence_day,
                 parent,
                 false
             )

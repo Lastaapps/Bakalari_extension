@@ -30,9 +30,9 @@ import androidx.fragment.app.activityViewModels
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.tools.MySettings
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.tools.validDate
 import cz.lastaapps.bakalariextension.ui.UserViewModel
 import cz.lastaapps.bakalariextension.ui.homework.HmwViewModel
-import java.time.ZonedDateTime
 
 class SmallTimetableFragment : Fragment() {
 
@@ -93,52 +93,23 @@ class SmallTimetableFragment : Fragment() {
      * @return if request for other Timetable was made
      */
     private fun initDate(): Boolean {
-        //gets date to load final timetable
-        if (vm.week.value != null) {
-            val oldDate = vm.date.value!!
 
-            val hours = vm.week.value!!.hours
-            val today = vm.week.value!!.today()
+        val oldDate = vm.date.value!!
+        val newDate = validDate(
+            vm.week.value,
+            MySettings.withAppContext().TIMETABLE_PREVIEW,
+            R.array.sett_timetable_preview
+        ) ?: return false
 
-            //in the evening tomorrows timetable can be loaded
-            vm.date.value = MySettings(requireContext()).showTomorrowsPreview(
-                TimeTools.now,
-
-                if (today != null) {
-                    val index = today.lastLessonIndex(hours, null)
-                    if (index >= 0) {
-                        //for normal days, gets end of the last lesson
-                        val hour = hours[index]
-                        val endTime =
-                            TimeTools.parseTime(
-                                hour.end,
-                                TimeTools.TIME_FORMAT,
-                                TimeTools.CET
-                            )
-
-                        ZonedDateTime.of(
-                            TimeTools.today.toLocalDate(),
-                            endTime,
-                            TimeTools.CET
-                        )
-                    } else {
-                        //for holidays and empty days
-                        TimeTools.today.withHour(14)
-                    }
-                } else {
-                    //for weekend, returns next Monday
-                    TimeTools.now
-                }
-            )
-
-            if (TimeTools.toMonday(oldDate).toLocalDate()
-                != TimeTools.toMonday(vm.date.value!!).toLocalDate()
-            ) {
-                vm.onRefresh()
-                return true
-            }
+        return if (TimeTools.toMonday(oldDate).toLocalDate()
+            != TimeTools.toMonday(newDate).toLocalDate()
+        ) {
+            vm.date.value = newDate
+            vm.onRefresh()
+            true
+        } else {
+            false
         }
-        return false
     }
 
     private fun onSuccess() {
@@ -147,13 +118,13 @@ class SmallTimetableFragment : Fragment() {
             Log.i(TAG, "Showing data")
 
             //updates data
-            val week = vm.week.value!!
+            val week = vm.week.value ?: return
             val date = vm.date.value!!
             val homework = vmHomework.homework.value
 
             val day = week.getDay(date)
             if (day == null) {
-                view.setError(resources.getString(R.string.timetable_no_timetable_today))
+                view.setError(resources.getString(R.string.timetable_no_timetable))
             } else {
                 view.updateTimetable(week, day, userViewModel.requireData(), homework)
             }

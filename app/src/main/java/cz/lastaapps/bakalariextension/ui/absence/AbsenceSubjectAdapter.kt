@@ -28,7 +28,7 @@ import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.absence.data.AbsenceRoot
 import cz.lastaapps.bakalariextension.api.absence.data.AbsenceSubject
-import cz.lastaapps.bakalariextension.databinding.AbsenceSubjectEntryBinding
+import cz.lastaapps.bakalariextension.databinding.EntryAbsenceSubjectBinding
 
 class AbsenceSubjectAdapter :
     RecyclerView.Adapter<AbsenceSubjectAdapter.BindingHolder> {
@@ -50,14 +50,14 @@ class AbsenceSubjectAdapter :
         this.list = list
     }
 
-    class BindingHolder(val binding: AbsenceSubjectEntryBinding) :
+    class BindingHolder(val binding: EntryAbsenceSubjectBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BindingHolder {
         return BindingHolder(
             DataBindingUtil.inflate(
                 LayoutInflater.from(parent.context),
-                R.layout.absence_subject_entry,
+                R.layout.entry_absence_subject,
                 parent,
                 false
             )

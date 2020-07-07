@@ -82,7 +82,7 @@
 
                 <include
                     android:id="@+id/absence"
-                    layout="@layout/absence_subject_entry"
+                    layout="@layout/entry_absence_subject"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -99,7 +99,6 @@
                     android:visibility="gone"
                     tools:visibility="visible"
                     app:layout_constrainedHeight="true"
-                    app:layout_constraintBottom_toTopOf="@+id/homework_box"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/absence">
@@ -146,7 +145,6 @@
                     android:visibility="gone"
                     tools:visibility="visible"
                     app:layout_constrainedHeight="true"
-                    app:layout_constraintBottom_toTopOf="@+id/theme_box"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/marks_box">
@@ -160,7 +158,8 @@
                         app:layout_constrainedHeight="true"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toTopOf="@id/homework_list" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/homework_list"
@@ -169,7 +168,6 @@
                         android:layout_margin="@dimen/margin_basic"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         app:layout_constrainedHeight="true"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/homework_label" />
@@ -199,6 +197,7 @@
                         android:id="@+id/theme_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_basic"
                         app:layout_constrainedHeight="true"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"

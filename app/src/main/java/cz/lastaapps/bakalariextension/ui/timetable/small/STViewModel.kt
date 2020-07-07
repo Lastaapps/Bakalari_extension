@@ -48,7 +48,9 @@ class STViewModel : RefreshableViewModel<Week>(TAG) {
         return if (arrayOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)
                 .contains(now.dayOfWeek)
         ) {
-            MySettings.withAppContext().showTomorrowsPreview(now, now)
+            MySettings.withAppContext().run {
+                showTomorrow(now, now, TIMETABLE_PREVIEW, R.array.sett_timetable_preview)
+            }
         } else
             now
     }
@@ -73,10 +75,10 @@ class STViewModel : RefreshableViewModel<Week>(TAG) {
     }
 
     override fun emptyText(context: Context): String {
-        return context.getString(R.string.timetable_no_timetable_today)
+        return context.getString(R.string.timetable_no_timetable)
     }
 
     override fun failedText(context: Context): String {
-        return context.getString(R.string.timetable_download_failed)
+        return context.getString(R.string.timetable_failed_to_load)
     }
 }

@@ -92,7 +92,7 @@ abstract class RefreshableViewModel<E>(val TAG: String) : ViewModel() {
                 isRefreshing.value = false
 
                 //shows Toast if there is no data to show on if user requested server update and it failed
-                if (data.value == null || force)
+                if (data.value == null || (force && loaded == null))
                     showToast()
             }
         }
@@ -150,11 +150,8 @@ abstract class RefreshableViewModel<E>(val TAG: String) : ViewModel() {
      */
     fun executeOrRefresh(lifecycle: Lifecycle, todo: ((E) -> Unit)) {
         data.observe({ lifecycle }) { todo(it) }
-        if (data.value != null) {
-            todo(data.value!!)
-        } else {
+        if (data.value == null)
             onRefresh()
-        }
     }
 
     /**@return text to be shown in UI when data set is empty*/

@@ -127,11 +127,41 @@
     </string-array>
     <!-- Do not change order -->
     <!-- Do not translate -->
-    <string-array name="sett_marks_new_mark" >
+    <string-array name="sett_marks_new_mark">
         <item>1</item>
         <item>2</item>
         <item>3</item>
         <item>4</item>
+    </string-array>
+
+
+    <!-- Events -->
+    <string name="sett_events_category">Events</string>
+
+    <string name="sett_events_show_for_day">Show next day preview</string>
+    <string name="sett_events_show_for_day_disabled">Timetable module required!</string>
+    <!-- Do not change order -->
+    <string-array name="sett_events_show_for_day_entries">
+        <item>At midnight</item>
+        <item>After last lesson</item>
+        <item>After 1 hour</item>
+        <item>After 2 hours</item>
+        <item>After 3 hours</item>
+        <item>At 5 p.m.</item>
+        <item>At 6 p.m.</item>
+        <item>At 7 p.m.</item>
+    </string-array>
+    <!-- Do not change order -->
+    <!-- Do not translate -->
+    <string-array name="sett_events_show_for_day">
+        <item>at midnight</item>
+        <item>after last lesson</item>
+        <item>after 1 hour</item>
+        <item>after 2 hours</item>
+        <item>after 3 hours</item>
+        <item>at 5 p.m.</item>
+        <item>at 6 p.m.</item>
+        <item>at 7 p.m.</item>
     </string-array>
 
 
@@ -161,10 +191,14 @@
     <string name="sett_key_log_out" translatable="false">log_out</string>
     <string name="sett_key_language" translatable="false">language</string>
     <string name="sett_key_download_location" translatable="false">download_location</string>
+    <string name="sett_key_timetable_category" translatable="false">timetable_category</string>
     <string name="sett_key_timetable_day" translatable="false">timetable_day</string>
     <string name="sett_key_timetable_notification" translatable="false">timetable_notification</string>
     <string name="sett_key_timetable_preview" translatable="false">timetable_preview</string>
+    <string name="sett_key_marks_category" translatable="false">marks_category</string>
     <string name="sett_key_marks_new_mark" translatable="false">marks_new_mark</string>
+    <string name="sett_key_events_category" translatable="false">events_category</string>
+    <string name="sett_key_events_show_for_day" translatable="false">events_show_for_day</string>
     <string name="sett_key_send_town_school" translatable="false">send_town_school</string>
     <string name="sett_key_reset" translatable="false">reset</string>
     <string name="sett_key_show_whats_new" translatable="false">whats_new</string>

@@ -30,6 +30,7 @@ import android.os.Build
 import android.util.Log
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.absence.AbsenceLoader
+import cz.lastaapps.bakalariextension.api.events.EventsLoader
 import cz.lastaapps.bakalariextension.api.homework.HomeworkLoader
 import cz.lastaapps.bakalariextension.api.marks.MarksLoader
 import cz.lastaapps.bakalariextension.api.subjects.SubjectLoader
@@ -122,6 +123,10 @@ class ActionsLogin {
 
                 //downloads absence
                 AbsenceLoader.loadFromServer()
+
+                //downlands events
+                EventsLoader.loadFromServer()
+
             }
 
             return true

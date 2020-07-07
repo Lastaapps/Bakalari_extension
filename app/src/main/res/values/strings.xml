@@ -25,6 +25,7 @@
 
     <string name="beta">beta</string>
 
+    <string name="bottom_fragment_tag" translatable="false">bakalari.bottom_navigation</string>
 
     <!-- Global -->
     <plurals name="attachment">
@@ -53,6 +54,7 @@
     <string name="menu_timetable">Timetable</string>
     <string name="menu_marks">Marks</string>
     <string name="menu_homework">Homework</string>
+    <string name="menu_events">Events</string>
     <string name="menu_absence">Absence</string>
     <string name="menu_teacher_list">Teachers</string>
     <string name="menu_subject_list">Subjects</string>
@@ -148,7 +150,7 @@
     <string name="license_agree">Agree</string>
     <string name="license_view">View license</string>
     <string name="license_agreement">This apps is distributed under GNU GPL-3.0 or later license, open source code license.\n
-        App collects some data about the app usage for future improvements
+        App collects some data about the app usage for the future improvements
         using Firebase analytics. This data are anonymised and will also include your town and school
         (you can switch it off in settings). I am just interested to know how my app grows ;)\n
         App also report crashes with no personal data.
@@ -191,10 +193,9 @@
     <string name="timetable_change_canceled">Canceled</string>
 
     <!-- Errors-->
-    <string name="timetable_no_timetable">Failed to load timetable</string>
-    <string name="timetable_download_failed">Cannot download timetable from server</string>
+    <string name="timetable_failed_to_load">Failed to download timetable</string>
     <string name="timetable_no_internet">Failed to load timetable, try connection to internet</string>
-    <string name="timetable_no_timetable_today">No timetable for today</string>
+    <string name="timetable_no_timetable">No timetable</string>
     <string name="timetable_download_failed_open_app">Failed to download timetable, open app</string>
 
     <!-- Timetable notification -->
@@ -226,7 +227,7 @@
     <!-- Last updated section -->
     <string name="last_updated_template">Last updated %d %s ago</string>
     <string name="last_updated_right_now">Last updated right now</string>
-    <string name="last_updated_in_future">Last updated in future</string>
+    <string name="last_updated_in_future">Last updated in the future</string>
     <plurals name="last_updated_minutes">
         <item quantity="one">minute</item>
         <item quantity="other">minutes</item>
@@ -291,6 +292,28 @@
     </plurals>
 
 
+    <!-- Events -->
+    <string name="events_filter_all">All</string>
+    <string name="events_filter_my">My</string>
+    <string name="events_filter_public">Public</string>
+    <string name="events_failed_to_load">Failed to load events</string>
+    <string name="events_no_events">No events</string>
+    <string name="events_select_all">Select all</string>
+    <string name="events_participants_classes">Classes</string>
+    <string name="events_participants_teachers">Teachers</string>
+    <string name="events_participants_rooms">Rooms</string>
+    <string name="events_participants_students">Students</string>
+    <string name="events_whole_day">Whole day</string>
+    <string name="events_upcoming_no">No upcoming events</string>
+    <string name="events_upcoming_placeholder">%d your %s and %d public %s for %s</string> <!-- 2 your events and 1 public event for today -->
+    <plurals name="events_upcoming_any">
+        <item quantity="one">event</item>
+        <item quantity="other">events</item>
+    </plurals>
+    <string name="events_upcoming_today">today</string>
+    <string name="events_upcoming_tomorrow">tomorrow</string>
+
+
     <!-- Absence -->
     <string name="absence_failed_to_load">Failed to download absence</string>
     <string name="absence_no_absence">No absence yet, you are doing great!</string>
@@ -308,7 +331,7 @@
     <string name="absence_late">Late arrival</string>
     <string name="absence_soon">Soon arrival</string>
     <string name="absence_school">School event</string>
-    <string name="absence_overview_ok">Everything fine in terms of absence!</string>
+    <string name="absence_overview_ok">Everything fine in terms of absence</string>
     <plurals name="absence_overview_template">
         <item quantity="other">%d unsolved absence!</item>
     </plurals>

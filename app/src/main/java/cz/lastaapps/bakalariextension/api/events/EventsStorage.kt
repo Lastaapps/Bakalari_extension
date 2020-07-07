@@ -18,7 +18,7 @@
  *
  */
 
-package cz.lastaapps.bakalariextension.api.absence
+package cz.lastaapps.bakalariextension.api.events
 
 import android.content.Intent
 import android.util.Log
@@ -33,27 +33,29 @@ import java.io.OutputStreamWriter
 import java.time.Instant
 import java.time.ZonedDateTime
 
-class AbsenceStorage {
-    companion object {
-        private val TAG = AbsenceStorage::class.java.simpleName
+/**Manages events saving and loading*/
+class EventsStorage {
 
-        private const val FILE_PREFIX = "Absence"
+    companion object {
+        private val TAG = EventsStorage::class.java.simpleName
+
+        private const val FILE_PREFIX = "Events"
         private const val FILE_SUFFIX = ".json"
 
-        private var cache: JSONObject? = null
+        private var cache = HashMap<String, JSONObject?>()
         private fun releaseCache() {
-            cache = null
+            cache.clear()
         }
 
-        /**Tries to load homework
-         * @return json or null, if there isn't such a week saved*/
-        fun load(): JSONObject? {
+        /**Tries to load data
+         * @return json or null, if there isn't data saved*/
+        fun load(type: String): JSONObject? {
 
-            if (cache != null)
-                return cache
+            if (cache[type] != null)
+                return cache[type]
 
             //gets file name
-            val file = getFile()
+            val file = getFile(type)
             Log.i(TAG, "Loading ${file.name}")
 
             if (!file.exists())
@@ -72,19 +74,19 @@ class AbsenceStorage {
             //caches loaded data to speed up app
             val json = JSONObject(data)
 
-            cache = json
+            cache[type] = json
 
             return json
         }
 
         /**saves json*/
-        fun save(json: JSONObject) {
+        fun save(json: JSONObject, type: String) {
             try {
 
-                cache = json
+                cache[type] = json
 
                 //gets new name
-                val file = getFile()
+                val file = getFile(type)
                 Log.i(TAG, "Saving ${file.name}")
 
                 if (!file.exists()) {
@@ -102,16 +104,10 @@ class AbsenceStorage {
             }
         }
 
-        /**@return if there are saved homework*/
-        fun exists(): Boolean {
-            val file = getFile()
-            return file.exists()
-        }
+        /**@return when was data last updated, of null if they aren't saved yet*/
+        fun lastUpdated(type: String): ZonedDateTime? {
 
-        /**@return when was homework last updated, of null if they aren't saned yet*/
-        fun lastUpdated(): ZonedDateTime? {
-
-            val file = getFile()
+            val file = getFile(type)
             if (!file.exists())
                 return null
 
@@ -122,16 +118,16 @@ class AbsenceStorage {
         }
 
         /**deletes saved homework*/
-        fun delete() {
-            Log.e(TAG, "Deleting homework")
+        fun delete(type: String) {
+            Log.e(TAG, "Deleting  $type")
 
-            getFile().delete()
+            getFile(type).delete()
             releaseCache()
         }
 
         /**Returns file name*/
-        private fun getFile(): File {
-            val filename = (FILE_PREFIX + FILE_SUFFIX)
+        private fun getFile(type: String): File {
+            val filename = ("$FILE_PREFIX-$type$FILE_SUFFIX")
             return File(App.context.filesDir, filename)
         }
     }

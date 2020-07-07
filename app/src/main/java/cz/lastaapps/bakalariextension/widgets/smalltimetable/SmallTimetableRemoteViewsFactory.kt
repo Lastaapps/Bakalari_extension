@@ -198,7 +198,7 @@ class SmallTimetableRemoteViewsFactory(
     }
 
     override fun getCount(): Int {
-        return if (isEmpty)
+        return if (isEmpty || !this::week.isInitialized)
             0
         else
             max(0, lastIndex + 1 - firstIndex)

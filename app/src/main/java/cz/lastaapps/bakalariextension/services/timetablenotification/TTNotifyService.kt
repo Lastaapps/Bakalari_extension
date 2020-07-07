@@ -153,7 +153,7 @@ class TTNotifyService : BaseService() {
                 if (week == null) {
                     MyToast.makeText(
                         this@TTNotifyService,
-                        R.string.timetable_download_failed,
+                        R.string.timetable_failed_to_load,
                         Toast.LENGTH_LONG
                     ).show()
 
@@ -174,7 +174,7 @@ class TTNotifyService : BaseService() {
             } else {
                 MyToast.makeText(
                     this@TTNotifyService,
-                    R.string.timetable_no_timetable,
+                    R.string.timetable_failed_to_load,
                     Toast.LENGTH_LONG
                 ).show()
                 return

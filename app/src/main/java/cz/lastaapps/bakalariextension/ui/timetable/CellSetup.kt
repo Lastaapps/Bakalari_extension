@@ -33,6 +33,7 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
 import cz.lastaapps.bakalariextension.App
+import cz.lastaapps.bakalariextension.MobileNavigationDirections
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.homework.data.Homework
 import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
@@ -42,8 +43,6 @@ import cz.lastaapps.bakalariextension.databinding.TimetableLessonInfoBinding
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import cz.lastaapps.bakalariextension.ui.BasicRecyclerAdapter
 import cz.lastaapps.bakalariextension.ui.homework.HmwRootFragment
-import cz.lastaapps.bakalariextension.ui.subjects.SubjectInfoFragment
-import cz.lastaapps.bakalariextension.ui.subjects.TeacherInfoFragment
 import kotlin.math.max
 
 /**Provides methods for settings up lesson cells*/
@@ -257,10 +256,12 @@ class CellSetup {
                 ) {
                     //navigates to subject info
                     user.runIfFeatureEnabled(User.SUBJECTS_SHOW) {
-                        SubjectInfoFragment.navigateTo(
-                            (binding.root.context as AppCompatActivity).findNavController(R.id.nav_host_fragment),
-                            lesson.subjectId
-                        )
+                        (binding.root.context as AppCompatActivity)
+                            .findNavController(R.id.nav_host_fragment)
+                            .navigate(
+                                MobileNavigationDirections.actionSubjectInfo(lesson.subjectId)
+                            )
+
                         dialog.dismiss()
                     }
                 }
@@ -273,10 +274,11 @@ class CellSetup {
                 ) {
                     //shows teacher info fragment
                     user.runIfFeatureEnabled(User.SUBJECTS_SHOW) {
-                        TeacherInfoFragment.show(
-                            (binding.root.context as AppCompatActivity).supportFragmentManager,
-                            lesson.teacherId
-                        )
+                        (binding.root.context as AppCompatActivity)
+                            .findNavController(R.id.nav_host_fragment)
+                            .navigate(
+                                MobileNavigationDirections.actionTeacherInfo(lesson.teacherId)
+                            )
                     }
                 }
 

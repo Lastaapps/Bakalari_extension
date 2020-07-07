@@ -22,6 +22,7 @@ package cz.lastaapps.bakalariextension.tools
 
 import android.content.Context
 import cz.lastaapps.bakalariextension.R
+import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import java.text.Normalizer
 import java.time.Duration
 import java.time.ZonedDateTime
@@ -117,4 +118,65 @@ fun searchNeutralText(input: String): String {
     return Normalizer.normalize(lower, Normalizer.Form.NFD)
         .replace("[\\p{InCombiningDiacriticalMarks}]".toRegex(), "")
 }
+
+fun validDate(week: Week?, settKey: String, arrayId: Int): ZonedDateTime? {
+    val toReturn: ZonedDateTime
+
+    val sett = MySettings.withAppContext()
+    val weekRequired = sett.weekRequired(settKey, arrayId)
+
+    if (weekRequired) {
+
+        //week object required to determinate these data
+        week ?: return null
+
+        val hours = week.hours
+        val today = week.today()
+
+        //in the evening tomorrows timetable can be loaded
+        val now = TimeTools.now
+        toReturn = MySettings.withAppContext().showTomorrow(
+            now,
+
+            if (today != null) {
+
+                val index = today.lastLessonIndex(hours, null)
+                if (index >= 0) {
+
+                    //for normal days, gets end of the last lesson
+                    val hour = hours[index]
+                    val endTime =
+                        TimeTools.parseTime(hour.end, TimeTools.TIME_FORMAT, TimeTools.CET)
+
+                    ZonedDateTime.of(
+                        TimeTools.today.toLocalDate(),
+                        endTime,
+                        TimeTools.CET
+                    )
+
+                } else {
+
+                    //for holidays and empty days
+                    TimeTools.today.withHour(14)
+                }
+            } else {
+                //for weekend, returns next Monday
+                now
+            },
+            settKey, arrayId
+        )
+    } else {
+
+        //values like midnight or 5 p.m. works any time, for example now
+        //bots now have to be the same or to work properly
+        val now = TimeTools.now
+        toReturn = MySettings.withAppContext().showTomorrow(
+            now, now,
+            settKey, arrayId
+        )
+    }
+
+    return toReturn
+}
+
 

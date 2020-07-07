@@ -35,10 +35,10 @@ import java.time.LocalTime
 import java.time.ZonedDateTime
 
 /**Manages storing of timetable JSONs*/
-class TTStorage {
+class TimetableStorage {
 
     companion object {
-        private val TAG = TTStorage::class.java.simpleName
+        private val TAG = TimetableStorage::class.java.simpleName
 
         private const val FILE_PREFIX = "Timetable-"
         private const val FILE_SUFFIX = ".json"
@@ -109,6 +109,7 @@ class TTStorage {
                 output.close()
 
             } catch (e: Exception) {
+                e.printStackTrace()
                 App.context.sendBroadcast(Intent(MainActivity.FULL_STORAGE))
             }
         }

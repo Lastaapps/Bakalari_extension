@@ -28,7 +28,7 @@ import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.homework.data.Homework
-import cz.lastaapps.bakalariextension.databinding.HomeworkEntryBinding
+import cz.lastaapps.bakalariextension.databinding.EntryHomeworkBinding
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import cz.lastaapps.bakalariextension.ui.attachment.AttachmentDialog
 import java.time.Duration
@@ -36,7 +36,7 @@ import java.time.Duration
 /**sets up binding view with homework*/
 class HmwEntryManager(
     val activity: AppCompatActivity,
-    val binding: HomeworkEntryBinding,
+    val binding: EntryHomeworkBinding,
     val homework: Homework
 ) {
 

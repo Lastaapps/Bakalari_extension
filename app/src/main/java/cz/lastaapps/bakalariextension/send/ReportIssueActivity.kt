@@ -40,7 +40,7 @@ import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.homework.HomeworkStorage
 import cz.lastaapps.bakalariextension.api.marks.MarksStorage
 import cz.lastaapps.bakalariextension.api.subjects.SubjectStorage
-import cz.lastaapps.bakalariextension.api.timetable.TTStorage
+import cz.lastaapps.bakalariextension.api.timetable.TimetableStorage
 import cz.lastaapps.bakalariextension.api.user.UserLoader
 import cz.lastaapps.bakalariextension.databinding.ActivityReportBinding
 import cz.lastaapps.bakalariextension.tools.BaseActivity
@@ -229,12 +229,12 @@ class ReportIssueActivity : BaseActivity() {
 
     /**Loads all timetables from storage*/
     private fun getTimetables(): ArrayList<String>? {
-        val dates = TTStorage.getAll()
+        val dates = TimetableStorage.getAll()
         val toReturn = ArrayList<String>()
 
         //parses all timetable available
         for (date in dates) {
-            toReturn.add(TTStorage.load(date).toString())
+            toReturn.add(TimetableStorage.load(date).toString())
         }
 
         return toReturn

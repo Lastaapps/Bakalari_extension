@@ -49,6 +49,8 @@
         <item>org.jetbrains.kotlinx:kotlinx-coroutines-core</item>
         <item>org.jetbrains.kotlin:kotlin-stdlib-jdk7</item>
         <item>XmlToJson github.com/smart-fun/XmlToJson</item>
+        <item>FlexboxLayout github.com/google/flexbox-layout</item>
+        <item>Flextools github.com/mrHerintsoaHasina/flextools</item>
     </array>
 
     <array name="license_mit">

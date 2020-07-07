@@ -292,43 +292,42 @@ class ConnMgr {
 
                 Log.i(TAG, "Server: ${urlConnection.responseCode} ${urlConnection.responseMessage}")
 
-                //reads response
-                var response = ""
-                var line: String?
-                val br = BufferedReader(InputStreamReader(urlConnection.inputStream))
-                while (br.readLine().also { line = it } != null) {
-                    response += line
-                }
+                if (urlConnection.responseCode == 200) {
 
-                Log.i(TAG, "Read succeed")
+                    //reads response
+                    var response = ""
+                    var line: String?
+                    val br = BufferedReader(InputStreamReader(urlConnection.inputStream))
+                    while (br.readLine().also { line = it } != null) {
+                        response += line
+                    }
 
-                output.close()
-                br.close()
+                    Log.i(TAG, "Read succeed")
 
-                //failed, app is broken...
-                if (urlConnection.responseCode != 200) {
+                    output.close()
+                    br.close()
+
+                    val json = JSONObject(response)
+
+                    //saves data
+                    saveData(json)
+
+                    //notifies that backup should be made
+                    BackupManager.dataChanged(App.context.packageName)
+
+                    true
+                } else {
+                    //failed, app is broken...
 
                     //refresh token is not valid anymore
                     if (urlConnection.responseCode == 400) {
 
-                        val json = JSONObject(response)
+                        App.context.sendBroadcast(Intent(MainActivity.INVALID_REFRESH_TOKEN))
 
-                        if (json.getString("error") == "invalid_grant") {
-                            App.context.sendBroadcast(Intent(MainActivity.INVALID_REFRESH_TOKEN))
-                        }
                     }
                     throw java.lang.Exception("Wrong response code")
                 }
 
-                val json = JSONObject(response)
-
-                //saves data
-                saveData(json)
-
-                //notifies that backup should be made
-                BackupManager.dataChanged(App.context.packageName)
-
-                true
             } catch (e: Exception) {
                 e.printStackTrace()
                 Log.e(TAG, "Failed to obtain new tokens")
