@@ -20,7 +20,8 @@
 
 package cz.lastaapps.bakalariextension.ui.bottom
 
-class BottomItem(
+/**Represents selectable navigation item to be shown in the bottom nav*/
+data class BottomItem(
     val navId: Int,
     val title: Int,
     val drawableResource: Int

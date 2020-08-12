@@ -92,4 +92,7 @@
     <dimen name="absence_day_value_width">20sp</dimen>
     <dimen name="absence_day_icon_size">16dp</dimen>
 
+    <!-- Homework icon size-->
+    <dimen name="homework_attachment_icon_size">24dp</dimen>
+
 </resources>

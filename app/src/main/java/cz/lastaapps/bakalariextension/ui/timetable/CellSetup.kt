@@ -35,9 +35,13 @@ import androidx.navigation.findNavController
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.MobileNavigationDirections
 import cz.lastaapps.bakalariextension.R
+import cz.lastaapps.bakalariextension.api.SimpleData
 import cz.lastaapps.bakalariextension.api.homework.data.Homework
 import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
-import cz.lastaapps.bakalariextension.api.timetable.data.*
+import cz.lastaapps.bakalariextension.api.timetable.data.Change
+import cz.lastaapps.bakalariextension.api.timetable.data.Day
+import cz.lastaapps.bakalariextension.api.timetable.data.Hour
+import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import cz.lastaapps.bakalariextension.api.user.data.User
 import cz.lastaapps.bakalariextension.databinding.TimetableLessonInfoBinding
 import cz.lastaapps.bakalariextension.tools.TimeTools
@@ -57,7 +61,7 @@ class CellSetup {
             week: Week,
             day: Day,
             hour: Hour,
-            cycle: Cycle?,
+            cycle: SimpleData?,
             homework: HomeworkList?,
             highlight: Boolean = true
         ) {
@@ -78,7 +82,7 @@ class CellSetup {
 
         /**@return Map<resource id of the TextView, text>*/
         fun getStrings(
-            week: Week, day: Day, hour: Hour, cycle: Cycle?
+            week: Week, day: Day, hour: Hour, cycle: SimpleData?
         ): HashMap<Int, String> {
             val map = HashMap<Int, String>()
 
@@ -121,7 +125,7 @@ class CellSetup {
         /**@param highlight if cell can be highlighted as actual
          * @return background color for the cell*/
         fun getBackgroundColor(
-            week: Week, day: Day, hour: Hour, cycle: Cycle?,
+            week: Week, day: Day, hour: Hour, cycle: SimpleData?,
             highlight: Boolean
         ): Int {
             val lesson = day.getLesson(hour, cycle)
@@ -165,7 +169,7 @@ class CellSetup {
 
         /**If homework actually exists*/
         fun isHomeworkWarningVisible(
-            week: Week, day: Day, hour: Hour, cycle: Cycle?, homework: HomeworkList?
+            week: Week, day: Day, hour: Hour, cycle: SimpleData?, homework: HomeworkList?
         ): Boolean {
             if (!week.isPermanent()) {
                 val lesson = day.getLesson(hour, cycle)
@@ -184,7 +188,7 @@ class CellSetup {
         val week: Week,
         val day: Day,
         val hour: Hour,
-        val cycle: Cycle?,
+        val cycle: SimpleData?,
         val user: User,
         val homework: HomeworkList?
     ) : View.OnClickListener {

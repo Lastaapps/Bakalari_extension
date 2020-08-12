@@ -22,6 +22,7 @@ package cz.lastaapps.bakalariextension.api.timetable
 
 import android.util.Log
 import cz.lastaapps.bakalariextension.api.DataIdList
+import cz.lastaapps.bakalariextension.api.SimpleData
 import cz.lastaapps.bakalariextension.api.timetable.data.*
 import org.json.JSONArray
 import org.json.JSONException
@@ -154,13 +155,13 @@ class TimetableParser {
             )
         }
 
-        private fun parseClasses(jsonArray: JSONArray): DataIdList<Class> {
-            val list = DataIdList<Class>()
+        private fun parseClasses(jsonArray: JSONArray): DataIdList<SimpleData> {
+            val list = DataIdList<SimpleData>()
 
             for (i in 0 until jsonArray.length()) {
                 val json = jsonArray.getJSONObject(i)
 
-                val item = Class(
+                val item = SimpleData(
                     json.getString("Id"),
                     json.getString("Abbrev"),
                     json.getString("Name")
@@ -191,13 +192,13 @@ class TimetableParser {
             return list
         }
 
-        private fun parseSubjects(jsonArray: JSONArray): DataIdList<Subject> {
-            val list = DataIdList<Subject>()
+        private fun parseSubjects(jsonArray: JSONArray): DataIdList<SimpleData> {
+            val list = DataIdList<SimpleData>()
 
             for (i in 0 until jsonArray.length()) {
                 val json = jsonArray.getJSONObject(i)
 
-                val item = Subject(
+                val item = SimpleData(
                     json.getString("Id"),
                     json.getString("Abbrev"),
                     json.getString("Name")
@@ -209,13 +210,13 @@ class TimetableParser {
             return list
         }
 
-        private fun parseTeachers(jsonArray: JSONArray): DataIdList<Teacher> {
-            val list = DataIdList<Teacher>()
+        private fun parseTeachers(jsonArray: JSONArray): DataIdList<SimpleData> {
+            val list = DataIdList<SimpleData>()
 
             for (i in 0 until jsonArray.length()) {
                 val json = jsonArray.getJSONObject(i)
 
-                val item = Teacher(
+                val item = SimpleData(
                     json.getString("Id"),
                     json.getString("Abbrev"),
                     json.getString("Name")
@@ -227,13 +228,13 @@ class TimetableParser {
             return list
         }
 
-        private fun parseRooms(jsonArray: JSONArray): DataIdList<Room> {
-            val list = DataIdList<Room>()
+        private fun parseRooms(jsonArray: JSONArray): DataIdList<SimpleData> {
+            val list = DataIdList<SimpleData>()
 
             for (i in 0 until jsonArray.length()) {
                 val json = jsonArray.getJSONObject(i)
 
-                val item = Room(
+                val item = SimpleData(
                     json.getString("Id"),
                     json.getString("Abbrev"),
                     json.getString("Name")
@@ -245,13 +246,13 @@ class TimetableParser {
             return list
         }
 
-        private fun parseCycles(jsonArray: JSONArray): DataIdList<Cycle> {
-            val list = DataIdList<Cycle>()
+        private fun parseCycles(jsonArray: JSONArray): DataIdList<SimpleData> {
+            val list = DataIdList<SimpleData>()
 
             for (i in 0 until jsonArray.length()) {
                 val json = jsonArray.getJSONObject(i)
 
-                val item = Cycle(
+                val item = SimpleData(
                     json.getString("Id"),
                     json.getString("Abbrev"),
                     json.getString("Name")

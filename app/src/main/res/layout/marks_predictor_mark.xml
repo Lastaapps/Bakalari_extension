@@ -35,14 +35,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/delete"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
             <TextView
                 android:id="@+id/mark"
                 style="@style/Marks.Mark"
@@ -56,23 +48,21 @@
                 android:layout_margin="5dp"
                 tools:text="100" />
 
-            <TextView
-                android:id="@+id/weight"
-                style="@style/Marks.Weight"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{@string/marks_weight + ` ` + String.valueOf(markData.weight)}"
-                android:textColor="@{markData.showAsNew() ? @color/marks_new_mark : @color/primary_text_light}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_margin="@dimen/margin_basic"
-                android:visibility="@{markData.weight != null ? View.VISIBLE : View.GONE}"
-                tools:text="4"
-                tools:visibility="visible" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
+        <TextView
+            android:id="@+id/weight"
+            style="@style/Marks.Weight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_basic"
+            android:text="@{@string/marks_weight + ` ` + String.valueOf(markData.weight)}"
+            android:textColor="@{markData.showAsNew() ? @color/marks_new_mark : @color/primary_text_light}"
+            android:visibility="@{markData.weight != null ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/delete"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="4"
+            tools:visibility="visible" />
 
         <ImageButton
             android:id="@+id/delete"

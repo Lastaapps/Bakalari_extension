@@ -22,12 +22,15 @@ package cz.lastaapps.bakalariextension
 
 import android.app.Application
 import android.content.Context
+import android.content.IntentFilter
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.util.Log
+import androidx.annotation.*
 import androidx.core.content.ContextCompat
 import com.google.firebase.analytics.FirebaseAnalytics
+import cz.lastaapps.bakalariextension.receivers.UserChangedRefresher
 import cz.lastaapps.bakalariextension.tools.LocaleManager
 import cz.lastaapps.bakalariextension.tools.MySettings
 
@@ -62,27 +65,27 @@ class App : Application() {
             get() = context.resources
 
         /**@return string from app's resources*/
-        fun getString(id: Int): String {
+        fun getString(@StringRes id: Int): String {
             return resources.getString(id)
         }
 
         /**@return string array from app's resources*/
-        fun getStringArray(id: Int): Array<String> {
+        fun getStringArray(@ArrayRes id: Int): Array<String> {
             return resources.getStringArray(id)
         }
 
         /**@return color from app's resources*/
-        fun getColor(id: Int): Int {
+        fun getColor(@ColorRes id: Int): Int {
             return ContextCompat.getColor(context, id)
         }
 
         /**@return drawable from app's resources*/
-        fun getDrawable(id: Int): Drawable? {
+        fun getDrawable(@DrawableRes id: Int): Drawable? {
             return ContextCompat.getDrawable(context, id)
         }
 
         /**@return dimen from app's resources*/
-        fun getDimension(id: Int): Int {
+        fun getDimension(@DimenRes id: Int): Int {
             return resources.getDimensionPixelSize(id)
         }
     }
@@ -105,6 +108,8 @@ class App : Application() {
             updateDarkTheme()
         }
 
+        //deleted user data when new user object is loaded
+        registerReceiver(UserChangedRefresher(), IntentFilter(MainActivity.USER_CHANGED))
     }
 
     override fun attachBaseContext(base: Context) {

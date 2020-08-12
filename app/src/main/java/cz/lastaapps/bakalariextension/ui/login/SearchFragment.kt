@@ -24,6 +24,7 @@ import android.app.Dialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AlertDialog
@@ -37,6 +38,7 @@ import cz.lastaapps.bakalariextension.ui.BasicRecyclerAdapter
 import cz.lastaapps.bakalariextension.ui.login.LoginFragment.School
 import cz.lastaapps.bakalariextension.ui.login.LoginFragment.Town
 
+/**Searches through the town or school list*/
 class SearchFragment : DialogFragment() {
 
     companion object {
@@ -57,9 +59,12 @@ class SearchFragment : DialogFragment() {
     private val viewModel: LoginViewModel by activityViewModels()
     private lateinit var binding: FragmentLoginSearchBinding
 
+    /**If towns or schools should be shown*/
     private var isTown: Boolean = false
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+
+        Log.i(TAG, "Creating dialog")
 
         binding = DataBindingUtil.inflate(
             LayoutInflater.from(requireContext()),
@@ -81,6 +86,7 @@ class SearchFragment : DialogFragment() {
 
         binding.search.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
+                //filters based on new search input
                 updateData()
             }
 
@@ -107,9 +113,11 @@ class SearchFragment : DialogFragment() {
             .create()
     }
 
+    /**puts data into place*/
     private fun updateData() {
         val filter = binding.search.text.toString()
 
+        /**Obtains the correct list*/
         val dataList =
             if (isTown) {
                 viewModel.townList.value!!
@@ -117,8 +125,10 @@ class SearchFragment : DialogFragment() {
                 viewModel.getSchoolList(viewModel.selectedTown.value!!).value!!
             }
 
+        //extracts names of the objects
         val stringList = ArrayList<Any>()
 
+        //filters data
         for (any in dataList) {
             val name = any.toString()
             if (searchNeutralText(name).contains(searchNeutralText(filter)))
@@ -134,6 +144,7 @@ class SearchFragment : DialogFragment() {
         }
     }
 
+    /**when item is selected*/
     private fun itemClicked(clicked: Any) {
         if (isTown) {
 

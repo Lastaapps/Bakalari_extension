@@ -21,13 +21,15 @@
 package cz.lastaapps.bakalariextension.api.homework
 
 import android.util.Log
-import cz.lastaapps.bakalariextension.api.ConnMgr
+import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.api.homework.data.Homework
 import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import java.time.ZonedDateTime
 
 class HomeworkLoader {
@@ -72,8 +74,10 @@ class HomeworkLoader {
                     //downloads homework
                     val dataMap = mapOf(Pair("from", TimeTools.format(from, TimeTools.DATE_FORMAT)))
                     val json =
-                        withContext(Dispatchers.IO) { ConnMgr.serverGet("homeworks", dataMap) }
-                            ?: return@withContext null
+                    //TODO revert
+                    //withContext(Dispatchers.IO) { ConnMgr.serverGet("homeworks", dataMap) }
+                        //    ?: return@withContext null
+                        JSONObject(BufferedReader(InputStreamReader(App.context.assets.open("homework.json"))).readText())
 
                     //parses json
                     val week = HomeworkParser.parseJson(json)
@@ -132,6 +136,10 @@ class HomeworkLoader {
                     }
 
                     HomeworkStorage.save(HomeworkParser.encodeJson(combined.toList()))
+                } else {
+
+                    //to update lastUpdated variable
+                    HomeworkStorage.save(saved)
                 }
             }
         }

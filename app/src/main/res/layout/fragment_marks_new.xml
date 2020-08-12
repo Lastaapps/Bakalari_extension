@@ -90,21 +90,56 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_basic"
                 app:layout_constraintBottom_toBottomOf="@+id/icon"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/show_more"
                 app:layout_constraintStart_toEndOf="@+id/icon"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="A lot to do" />
 
-            <androidx.recyclerview.widget.RecyclerView
+            <ImageButton
+                style="@style/AppTheme.SmallImageButton"
+                android:id="@+id/show_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/icon"
+                app:layout_constraintEnd_toStartOf="@+id/refresh"
+                app:layout_constraintTop_toTopOf="@+id/icon"
+                app:srcCompat="@drawable/nav_whats_new"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <ImageButton
+                android:id="@+id/refresh"
+                style="@style/AppTheme.SmallImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/icon"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/icon"
+                app:srcCompat="@drawable/reload"
+                android:onClick="@{() -> viewmodel.onRefresh(true)}"
+                android:visibility="@{!viewmodel.isRefreshing() ? View.VISIBLE : View.INVISIBLE}" />
+
+            <ProgressBar
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintStart_toStartOf="@id/refresh"
+                app:layout_constraintBottom_toBottomOf="@+id/refresh"
+                app:layout_constraintEnd_toEndOf="@+id/refresh"
+                app:layout_constraintTop_toTopOf="@+id/refresh"
+                android:visibility="@{viewmodel.isRefreshing() ? View.VISIBLE : View.GONE}" />
+
+            <cz.lastaapps.bakalariextension.ui.views.BetterRecyclerView
                 android:id="@+id/list"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_basic"
+                android:visibility="gone"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/icon" />
+                app:layout_constraintTop_toBottomOf="@+id/icon"
+                tools:visibility="visible" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </FrameLayout>

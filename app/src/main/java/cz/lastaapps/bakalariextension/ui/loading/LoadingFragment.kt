@@ -51,7 +51,7 @@ class LoadingFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         userViewModel.data.observe({ lifecycle }) {
-            (requireActivity() as MainActivity).startupCheckSucceed()
+            (requireActivity() as MainActivity).loginCheckDone()
         }
 
         mainViewModel.apply {
@@ -96,14 +96,9 @@ class LoadingFragment : Fragment() {
                 }
             }
 
-            if (result.value != MainViewModel.UNKNOWN) {
+            result.observe({ lifecycle }, doWork)
 
-                doWork(result.value!!)
-
-            } else {
-
-                result.observe({ lifecycle }, doWork)
-
+            if (result.value == MainViewModel.UNKNOWN) {
                 doDecision()
             }
         }

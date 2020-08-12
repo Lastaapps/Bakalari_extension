@@ -35,36 +35,11 @@
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out" />
         <action
-            android:id="@+id/action_nav_home_to_nav_timetable"
-            app:destination="@id/nav_timetable"
-            app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right"
-            app:popEnterAnim="@android:anim/slide_in_left"
-            app:popExitAnim="@android:anim/slide_out_right" />
-        <action
-            android:id="@+id/action_nav_home_to_nav_marks"
-            app:destination="@id/nav_marks" />
-        <action
-            android:id="@+id/action_nav_home_to_nav_homework"
-            app:destination="@id/nav_homework" />
-        <action
-            android:id="@+id/action_nav_home_to_nav_teacher_list"
-            app:destination="@id/nav_teacher_list" />
-        <action
-            android:id="@+id/action_nav_home_to_nav_subject_list"
-            app:destination="@id/nav_subject_list" />
-        <action
-            android:id="@+id/action_nav_home_to_navigation"
-            app:destination="@id/nav_absence" />
-        <action
             android:id="@+id/action_nav_home_to_settingsFragment"
             app:destination="@id/nav_settings" />
         <action
             android:id="@+id/action_nav_home_to_licenseFragment"
             app:destination="@id/nav_license" />
-        <action
-            android:id="@+id/action_nav_home_to_eventsRootFragment"
-            app:destination="@id/nav_events" />
     </fragment>
 
     <fragment
@@ -77,36 +52,29 @@
         android:id="@+id/nav_timetable"
         android:name="cz.lastaapps.bakalariextension.ui.timetable.normal.TimetableFragment"
         android:label="@string/menu_timetable"
-        tools:layout="@layout/fragment_timetable">
-        <action
-            android:id="@+id/action_nav_timetable_to_nav_teacher_list"
-            app:destination="@id/nav_teacher_list" />
-        <action
-            android:id="@+id/action_nav_timetable_to_nav_subject_list"
-            app:destination="@id/nav_subject_list" />
-    </fragment>
+        tools:layout="@layout/fragment_timetable" />
 
     <fragment
         android:id="@+id/nav_marks"
         android:name="cz.lastaapps.bakalariextension.ui.marks.MarksRootFragment"
         android:label="@string/menu_marks"
-        tools:layout="@layout/fragment_marks_root" />
+        tools:layout="@layout/template_loading_root" />
 
     <fragment
         android:id="@+id/nav_homework"
         android:name="cz.lastaapps.bakalariextension.ui.homework.HmwRootFragment"
         android:label="@string/menu_homework"
-        tools:layout="@layout/loading_root_template" />
+        tools:layout="@layout/template_loading_root" />
     <fragment
         android:id="@+id/nav_teacher_list"
         android:name="cz.lastaapps.bakalariextension.ui.subjects.TeacherListFragment"
         android:label="@string/menu_teacher_list"
-        tools:layout="@layout/loading_list_template" />
+        tools:layout="@layout/template_loading_list" />
     <fragment
         android:id="@+id/nav_subject_list"
         android:name="cz.lastaapps.bakalariextension.ui.subjects.SubjectListFragment"
         android:label="@string/menu_subject_list"
-        tools:layout="@layout/loading_list_template" />
+        tools:layout="@layout/template_loading_list" />
     <fragment
         android:id="@+id/nav_subject_info"
         android:name="cz.lastaapps.bakalariextension.ui.subjects.SubjectInfoFragment"
@@ -135,7 +103,7 @@
         android:id="@+id/nav_absence"
         android:name="cz.lastaapps.bakalariextension.ui.absence.AbsenceRootFragment"
         android:label="@string/menu_absence"
-        tools:layout="@layout/loading_root_template" />
+        tools:layout="@layout/template_loading_root" />
     <fragment
         android:id="@+id/nav_settings"
         android:name="cz.lastaapps.bakalariextension.ui.settings.SettingsFragment"
@@ -173,5 +141,45 @@
     <action
         android:id="@+id/action_subject_info"
         app:destination="@id/nav_subject_info" />
+    <dialog
+        android:id="@+id/nav_attachment"
+        android:name="cz.lastaapps.bakalariextension.ui.attachment.AttachmentDialog">
+        <action
+            android:id="@+id/action_nav_attachment_to_attachmentFileExistsDialog"
+            app:destination="@id/nav_attachment_file_exists" />
+        <argument
+            android:name="attachments"
+            app:argType="cz.lastaapps.bakalariextension.api.attachment.data.Attachment[]" />
+    </dialog>
+    <dialog
+        android:id="@+id/nav_attachment_file_exists"
+        android:name="cz.lastaapps.bakalariextension.ui.attachment.AttachmentFileExistsDialog">
+        <argument
+            android:name="attachment"
+            app:argType="cz.lastaapps.bakalariextension.api.attachment.data.Attachment" />
+        <argument
+            android:name="fileName"
+            app:argType="string" />
+    </dialog>
+    <action
+        android:id="@+id/action_attachment"
+        app:destination="@id/nav_attachment" />
+    <dialog
+        android:id="@+id/nav_attachment_downloaded"
+        android:name="cz.lastaapps.bakalariextension.ui.attachment.AttachmentDownloadedDialog"
+        android:label="AttachmentDownloadedDialog">
+        <argument
+            android:name="fileName"
+            app:argType="string" />
+        <argument
+            android:name="intent"
+            app:argType="android.content.Intent" />
+        <argument
+            android:name="uri"
+            app:argType="android.net.Uri" />
+    </dialog>
+    <action
+        android:id="@+id/action_attachment_downloaded"
+        app:destination="@id/nav_attachment_downloaded" />
 
 </navigation>

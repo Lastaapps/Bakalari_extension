@@ -20,12 +20,16 @@
 
 package cz.lastaapps.bakalariextension.api
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+import kotlinx.android.parcel.RawValue
 import java.io.Serializable
 import java.text.Collator
 import java.util.*
 
 /**Parent of the most of the items, the can be then used in DataIDList*/
-open class DataId<T>(var id: T) : Serializable {
+@Parcelize
+open class DataId<T>(open var id: @RawValue T) : Serializable, Parcelable {
 
     override fun equals(other: Any?): Boolean {
         return if (other is DataId<*>)
@@ -40,10 +44,11 @@ open class DataId<T>(var id: T) : Serializable {
 }
 
 /**Parent for classes containing just id, name and shortcut*/
+@Parcelize
 open class SimpleData(
-    id: String,
-    var shortcut: String,
-    var name: String
+    override var id: String,
+    open var shortcut: String,
+    open var name: String
 ) : DataId<String>(id), Comparable<SimpleData> {
 
     override fun toString(): String {

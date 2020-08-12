@@ -32,8 +32,9 @@ import com.google.android.material.tabs.TabLayoutMediator
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.absence.AbsenceStorage
 import cz.lastaapps.bakalariextension.api.user.data.User
-import cz.lastaapps.bakalariextension.databinding.LoadingRootTemplateBinding
+import cz.lastaapps.bakalariextension.databinding.TemplateLoadingRootBinding
 import cz.lastaapps.bakalariextension.ui.UserViewModel
+
 
 class AbsenceRootFragment : Fragment() {
 
@@ -43,25 +44,23 @@ class AbsenceRootFragment : Fragment() {
 
     private val viewModel: AbsenceViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
-    private lateinit var binding: LoadingRootTemplateBinding
+    private lateinit var binding: TemplateLoadingRootBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        if (!this::binding.isInitialized) {
-            Log.i(TAG, "Creating view")
+        Log.i(TAG, "Creating view")
 
-            binding =
-                DataBindingUtil.inflate(inflater, R.layout.loading_root_template, container, false)
-            binding.setLifecycleOwner { lifecycle }
-            binding.viewmodel = viewModel
+        binding =
+            DataBindingUtil.inflate(inflater, R.layout.template_loading_root, container, false)
+        binding.setLifecycleOwner { lifecycle }
+        binding.viewmodel = viewModel
 
-            binding.pager.isSaveEnabled = false
-
-        } else
-            Log.i(TAG, "Already created")
+        //clears any other old adapter to prevent adapter not 'fresh' exception
+        binding.pager.adapter = null
+        binding.pager.offscreenPageLimit = 2
 
         //updates data based on user object
         userViewModel.executeOrRefresh(lifecycle) { setupPager() }

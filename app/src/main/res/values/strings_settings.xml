@@ -26,7 +26,8 @@
 
     <string name="sett_notification_settings">Notifications</string>
 
-    <string name="sett_mobile_data">Use mobile data while running in background</string>
+    <string name="sett_mobile_data">Use mobile data</string>
+    <string name="sett_mobile_data_summary">Use mobile data while updating data in the background</string>
 
     <string name="sett_dark_mode">Theme</string>
     <string name="sett_dark_mode_default" translatable="false">true</string>
@@ -85,7 +86,7 @@
         <item>Sunday</item>
         <item>Monday</item>
     </string-array>
-    <string name="sett_timetable_notification_title">Show notification with lesson info</string>
+    <string name="sett_timetable_notification_title">Show lesson info notification</string>
     <string name="sett_timetable_notification_default" translatable="false">true</string>
     <string name="sett_timetable_preview">Show next day preview</string>
     <!-- Do not change order -->
@@ -168,7 +169,8 @@
     <!-- Analytics -->
     <string name="sett_analytics">Analytics</string>
 
-    <string name="sett_send_town_school">Include town and school into analytic data</string>
+    <string name="sett_send_town_school">Include town and school</string>
+    <string name="sett_send_town_school_summary">Include town and school into anonymous analytic data to make it easier to identify bugs and spread the app</string>
     <string name="sett_send_town_school_default" translatable="false">true</string>
 
 
@@ -182,7 +184,7 @@
 
     <string name="sett_about">About</string>
 
-    <string name="sett_license">License</string>
+    <string name="sett_license">License notices</string>
 
 
     <string name="sett_key_notification_settings" translatable="false">notification_settings</string>

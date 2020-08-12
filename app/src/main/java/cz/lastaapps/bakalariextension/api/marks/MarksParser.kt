@@ -22,9 +22,9 @@ package cz.lastaapps.bakalariextension.api.marks
 
 import android.util.Log
 import cz.lastaapps.bakalariextension.api.DataIdList
+import cz.lastaapps.bakalariextension.api.SimpleData
 import cz.lastaapps.bakalariextension.api.marks.data.Mark
 import cz.lastaapps.bakalariextension.api.marks.data.MarksRoot
-import cz.lastaapps.bakalariextension.api.marks.data.Subject
 import cz.lastaapps.bakalariextension.api.marks.data.SubjectMarks
 import org.json.JSONArray
 import org.json.JSONException
@@ -105,9 +105,9 @@ class MarksParser {
         }
 
         /**parse array in /Subjects/Subject */
-        private fun parseSubject(json: JSONObject): Subject {
+        private fun parseSubject(json: JSONObject): SimpleData {
 
-            return Subject(
+            return SimpleData(
                 json.getString("Id"),
                 json.getString("Abbrev").trim(),
                 json.getString("Name")

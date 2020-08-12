@@ -33,7 +33,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.homework.HomeworkStorage
 import cz.lastaapps.bakalariextension.api.homework.data.Homework
-import cz.lastaapps.bakalariextension.databinding.LoadingRootTemplateBinding
+import cz.lastaapps.bakalariextension.databinding.TemplateLoadingRootBinding
 
 /**Contains all oder homework related homework*/
 class HmwRootFragment : Fragment() {
@@ -43,7 +43,7 @@ class HmwRootFragment : Fragment() {
         const val navigateToHomeworkId = "homeworkId"
     }
 
-    lateinit var binding: LoadingRootTemplateBinding
+    lateinit var binding: TemplateLoadingRootBinding
     val viewModel: HmwViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -52,19 +52,22 @@ class HmwRootFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        //inflates views only once
-        if (!this::binding.isInitialized) {
-            Log.i(TAG, "Creating view")
-            binding =
-                DataBindingUtil.inflate(inflater, R.layout.loading_root_template, container, false)
-            binding.lifecycleOwner = LifecycleOwner { lifecycle }
-            binding.viewmodel = viewModel
+        Log.i(TAG, "Creating view")
+        binding =
+            DataBindingUtil.inflate(inflater, R.layout.template_loading_root, container, false)
+        binding.lifecycleOwner = LifecycleOwner { lifecycle }
+        binding.viewmodel = viewModel
 
-            binding.pager.isSaveEnabled = false
+        //add adapter to pager and sets up the connection with the TabLayout
+        HmwPager(this@HmwRootFragment).also {
+            binding.pager.adapter = it
 
-        } else {
-            Log.i(TAG, "Already created")
+            TabLayoutMediator(binding.tabs, binding.pager) { tab, position ->
+
+                tab.text = it.getPageTitle(position)
+            }.attach()
         }
+        binding.pager.offscreenPageLimit = 2
 
         //updates if the homework list is loaded or starts loading
         viewModel.executeOrRefresh(lifecycle) { dataChanged() }
@@ -77,7 +80,7 @@ class HmwRootFragment : Fragment() {
         Log.i(TAG, "Updating based on new data")
 
         onHomeworkValid()
-        setupViewPager()
+        //setupViewPager()
         lastUpdated()
     }
 

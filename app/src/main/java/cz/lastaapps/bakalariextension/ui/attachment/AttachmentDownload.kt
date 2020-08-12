@@ -28,13 +28,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.database.Cursor
 import android.net.Uri
 import android.os.Build
-import android.os.FileUtils
+import android.provider.OpenableColumns
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
@@ -42,6 +42,7 @@ import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
 import cz.lastaapps.bakalariextension.App
+import cz.lastaapps.bakalariextension.MainActivity
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.ConnMgr
 import cz.lastaapps.bakalariextension.services.timetablenotification.TTNotifyService
@@ -53,6 +54,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.InputStream
+import java.io.OutputStream
 
 
 /**Downloads attachment and checks if file can be downloaded in this location
@@ -67,24 +70,18 @@ class AttachmentDownload {
         /**@return if file with name given exists*/
         fun exists(context: Context, fileName: String): Boolean {
 
-            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val sett = MySettings.withAppContext()
-                val dirUri = Uri.parse(sett.getDownloadLocation())
-                val pickedDir = DocumentFile.fromTreeUri(context, dirUri)
+            val sett = MySettings.withAppContext()
+            val dirUri = Uri.parse(sett.getDownloadLocation())
+            val pickedDir = DocumentFile.fromTreeUri(context, dirUri)
 
-                if (pickedDir == null || !pickedDir.exists() || !pickedDir.canWrite()) {
-                    Log.e(TAG, "Even directory does not exist")
-                    false
+            return if (pickedDir == null || !pickedDir.exists() || !pickedDir.canWrite()) {
+                Log.e(TAG, "Even directory does not exist")
+                false
 
-                } else {
-
-                    pickedDir.findFile(fileName) ?: return false
-                    true
-                }
             } else {
 
-                val sett = MySettings.withAppContext()
-                File(sett.getDownloadLocation(), fileName).exists()
+                pickedDir.findFile(fileName) ?: return false
+                true
             }.also {
                 Log.i(TAG, "File exists: $it")
             }
@@ -95,26 +92,16 @@ class AttachmentDownload {
             if (!exists(context, fileName))
                 return true
 
-            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val sett = MySettings.withAppContext()
-                val dirUri = Uri.parse(sett.getDownloadLocation())
-                val pickedDir = DocumentFile.fromTreeUri(context, dirUri)
+            val sett = MySettings.withAppContext()
+            val dirUri = Uri.parse(sett.getDownloadLocation())
+            val pickedDir = DocumentFile.fromTreeUri(context, dirUri)
 
-                if (pickedDir == null || !pickedDir.exists() || !pickedDir.canWrite()) {
-                    Log.e(TAG, "Cannot access the whole directory")
-                    false
-                } else {
-
-                    val file = pickedDir.findFile(fileName) ?: return true
-                    file.canWrite()
-                }
-
+            return if (pickedDir == null || !pickedDir.exists() || !pickedDir.canWrite()) {
+                Log.e(TAG, "Cannot access the whole directory")
+                false
             } else {
 
-                val sett = MySettings.withAppContext()
-                File(sett.getDownloadLocation(), fileName).canWrite()
-            }.also {
-                Log.i(TAG, "File is accessible: $it")
+                pickedDir.findFile(fileName)?.canWrite() ?: true
             }
         }
 
@@ -136,18 +123,15 @@ class AttachmentDownload {
                     }
 
                     /*
-                    * for Android Q+ file is downloaded into cache directory (source uri)
-                    * and then moved into actual file (target uri)
-                    * on older version source uri == target uri
-                    */
+                * for Android Q+ file is downloaded into cache directory (source uri)
+                * and then moved into actual file (target uri)
+                * on older version source uri == target uri
+                */
 
                     //target file uri
-                    val targetUri = getTargetUri(activity, fileName, mime)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        targetUri ?: return@launch
-                    }
+                    val targetUri = getTargetUri(activity, fileName, mime) ?: return@launch
 
-                    val sourceUri = getFileUri(activity, fileName) ?: return@launch
+                    val cacheUri = getCacheUri(activity, fileName) ?: return@launch
 
                     //sets up download request
                     val request =
@@ -156,7 +140,7 @@ class AttachmentDownload {
                             .setTitle(fileName) // Title of the Download Notification
                             .setDescription(activity.getString(R.string.attachment_downloading_subtitle)) // Description of the Download Notification
                             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE) // Visibility of the download Notification
-                            .setDestinationUri(sourceUri)
+                            .setDestinationUri(cacheUri)
                             .setAllowedOverMetered(true)
                             .setAllowedOverRoaming(true)
                             .addRequestHeader(
@@ -191,7 +175,7 @@ class AttachmentDownload {
                                 downloadId,
                                 fileName,
                                 mime,
-                                sourceUri,
+                                cacheUri,
                                 targetUri
                             ), filter
                         )
@@ -259,59 +243,44 @@ class AttachmentDownload {
         }
 
         /**@return the file uri to download file to*/
-        private fun getFileUri(context: Context, fileName: String): Uri? {
-            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-
-                File(context.externalCacheDir, fileName)
-                    .toUri()
-
-            } else {
-
-                val sett = MySettings.withAppContext()
-                File(sett.getDownloadLocation(), fileName)
-                    .toUri()
-            }
+        private fun getCacheUri(context: Context, fileName: String): Uri? {
+            return File(context.externalCacheDir, fileName).toUri()
         }
 
         /**@return the uri of the final file*/
         fun getTargetUri(context: Context, fileName: String, mime: String): Uri? {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val sett = MySettings.withAppContext()
-                val dirUri = Uri.parse(sett.getDownloadLocation())
-                val pickedDir = DocumentFile.fromTreeUri(context, dirUri)
+            val sett = MySettings.withAppContext()
+            val dirUri = Uri.parse(sett.getDownloadLocation())
+            val pickedDir = DocumentFile.fromTreeUri(context, dirUri)
 
-                if (pickedDir == null || !pickedDir.exists() || !pickedDir.canWrite()) {
-                    MyToast.makeText(context, R.string.attachment_choose_again, Toast.LENGTH_LONG)
-                        .show()
-                    Log.e(TAG, "Failed to obtain directory")
-                    return null
-                }
-
-                val file = pickedDir.findFile(fileName) ?: pickedDir.createFile(
-                    mime, fileName
-                )
-
-                if (file == null || !file.exists()) {
-                    Log.e(TAG, "Failed to create file")
-                    MyToast.makeText(context, R.string.attachment_choose_again, Toast.LENGTH_LONG)
-                        .show()
-                    return null
-                }
-
-                Log.i(TAG, "New file uri ${file.uri}")
-
-                return file.uri
-            } else {
-                return getFileUri(context, fileName)
+            if (pickedDir == null || !pickedDir.exists() || !pickedDir.canWrite()) {
+                MyToast.makeText(context, R.string.attachment_choose_again, Toast.LENGTH_LONG)
+                    .show()
+                Log.e(TAG, "Failed to obtain directory")
+                return null
             }
+
+            val file = pickedDir.findFile(fileName) ?: pickedDir.createFile(
+                mime, fileName
+            )
+
+            if (file == null || !file.exists()) {
+                Log.e(TAG, "Failed to create file")
+                MyToast.makeText(context, R.string.attachment_choose_again, Toast.LENGTH_LONG)
+                    .show()
+                return null
+            }
+
+            return file.uri
         }
+
 
         /**executes action after download is finished*/
         private class DownloadReceiver(
             val downloadId: Long,
             val fileName: String,
             val mime: String,
-            val sourceUri: Uri,
+            val cacheUri: Uri,
             val targetUri: Uri?
         ) : BroadcastReceiver() {
 
@@ -319,6 +288,9 @@ class AttachmentDownload {
                 context: Context,
                 intent: Intent
             ) {
+                val downloadManager =
+                    context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+
                 val reference = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
 
                 if (downloadId == reference) {
@@ -328,70 +300,107 @@ class AttachmentDownload {
                     //removes itself from memory
                     context.unregisterReceiver(this)
 
-                    /*val manager =
-                    context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-                    var uri = manager.getUriForDownloadedFile(downloadId)*/
+                    Log.i(TAG, "Cache uri: $cacheUri")
+                    Log.i(TAG, "Target uri: $targetUri")
 
-                    //uri of (the cache file and then of) the final file
-                    var uri = sourceUri
+                    val action = intent.action
+                    if (DownloadManager.ACTION_DOWNLOAD_COMPLETE == action) {
 
-                    //moves cached file into final location
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        if (!moveToSharedStorage(context, uri, targetUri!!)) {
-                            Toast.makeText(
-                                context,
-                                R.string.attachment_error_file_system,
-                                Toast.LENGTH_LONG
-                            ).show()
-                            return
+                        val query = DownloadManager.Query()
+                        query.setFilterById(reference)
+                        val c: Cursor = downloadManager.query(query)
+
+                        if (c.moveToFirst()) {
+                            val columnIndex: Int = c.getColumnIndex(DownloadManager.COLUMN_STATUS)
+                            when (c.getInt(columnIndex)) {
+                                DownloadManager.STATUS_SUCCESSFUL -> downlandSucceed(
+                                    context,
+                                    cacheUri,
+                                    targetUri!!,
+                                    fileName,
+                                    mime
+                                )
+                                else -> downloadFailed(
+                                    context,
+                                    cacheUri,
+                                    targetUri!!,
+                                    fileName,
+                                    mime
+                                )
+                            }
                         }
-                        uri = targetUri
                     }
-
-                    //probably useless
-                    //notifyMediaService(context, uri, mime)
-
-                    Log.i(TAG, "Uri: $uri")
-
-                    //shows notification with opens downloaded file
-                    val fileIntent = getIntent(uri, mime)
-
-                    val notification = createNotification(context, fileIntent, fileName)
-
-                    val mNotificationManager =
-                        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                    mNotificationManager.notify(fileName.hashCode(), notification)
                 }
             }
         }
 
+        private fun downlandSucceed(
+            context: Context,
+            cacheUri: Uri,
+            targetUri: Uri,
+            fileName: String,
+            mime: String
+        ) {
+
+            //moves cached file into final location
+            if (!moveToSharedStorage(context, cacheUri, targetUri)) {
+                Toast.makeText(
+                    context,
+                    R.string.attachment_error_file_system,
+                    Toast.LENGTH_LONG
+                ).show()
+                return
+            }
+
+            //probably useless
+            //notifyMediaService(context, uri, mime)
+
+            onSuccessUI(context, targetUri, fileName, mime)
+        }
+
         /**moves file from cache*/
-        @RequiresApi(Build.VERSION_CODES.Q)
         private fun moveToSharedStorage(context: Context, source: Uri, target: Uri): Boolean {
 
             var toReturn: Boolean
             try {
-                val sourceFile = source.toFile()
-                FileUtils.copy(
-                    sourceFile.inputStream(),
-                    context.contentResolver.openOutputStream(target)!!
-                )
+                context.contentResolver.apply {
+                    copyFile(openInputStream(source)!!, openOutputStream(target)!!)
+                }
 
                 toReturn = true
-            } catch (e: java.lang.Exception) {
+            } catch (e: Exception) {
                 e.printStackTrace()
+
+                try {
+                    context.contentResolver.delete(target, "", arrayOf<String>())
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
 
                 toReturn = false
             } finally {
                 try {
                     //clears cache
                     source.toFile().delete()
-                } catch (e: java.lang.Exception) {
+                } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }
 
             return toReturn
+        }
+
+        private fun copyFile(
+            source: InputStream,
+            dest: OutputStream
+        ) {
+            val buf = ByteArray(1024)
+            var len = 0
+            while (source.read(buf).also { len = it } > 0) {
+                dest.write(buf, 0, len)
+            }
+            source.close()
+            dest.close()
         }
 
         /**@return intent witch opens the file downloaded*/
@@ -403,6 +412,24 @@ class AttachmentDownload {
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
             return intent
+        }
+
+        private fun onSuccessUI(context: Context, targetUri: Uri, fileName: String, mime: String) {
+
+            //shows notification with opens downloaded file
+            val fileIntent = getIntent(targetUri, mime)
+
+            val notification = createNotification(context, fileIntent, fileName)
+
+            val mNotificationManager =
+                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            mNotificationManager.notify(fileName.hashCode(), notification)
+
+            context.sendBroadcast(Intent(MainActivity.ATTACHMENT_DOWNLOADED).apply {
+                putExtra(MainActivity.ATTACHMENT_DOWNLOADED_FILENAME, fileName)
+                putExtra(MainActivity.ATTACHMENT_DOWNLOADED_INTENT, fileIntent)
+                putExtra(MainActivity.ATTACHMENT_DOWNLOADED_URI, targetUri)
+            })
         }
 
         /**creates notification with pending intent*/
@@ -443,6 +470,45 @@ class AttachmentDownload {
                     .setContentIntent(pendingIntent)
                     .setSmallIcon(android.R.drawable.stat_sys_download_done)
                 builder.build()
+            }
+        }
+
+        private fun downloadFailed(
+            context: Context,
+            cacheUri: Uri,
+            targetUri: Uri,
+            fileName: String,
+            mime: String
+        ) {
+
+            Log.e(TAG, "Download failed")
+
+            deleteFiles(context, cacheUri, targetUri)
+
+            val text =
+                String.format(context.getString(R.string.attachment_download_failed), fileName)
+            Toast.makeText(context, text, Toast.LENGTH_LONG).show()
+        }
+
+        /**deletes cache and target if it contains nothing*/
+        @SuppressLint("Recycle")
+        private fun deleteFiles(context: Context, cacheUri: Uri, targetUri: Uri) {
+            //deletes cache
+            cacheUri.toFile().deleteOnExit()
+
+            //deletes the final file if there is nothing written in it (overwrite protection)
+            var size = 0L
+
+            context.contentResolver.query(
+                targetUri, null, null, null, null
+            )?.let {
+                it.moveToFirst()
+                size = it.getLong(it.getColumnIndex(OpenableColumns.SIZE))
+                it.close()
+            }
+
+            if (size <= 0) {
+                context.contentResolver.delete(targetUri, "", arrayOf())
             }
         }
     }

@@ -41,7 +41,7 @@
             android:layout_gravity="center"
             android:text="@{viewmodel.failedText(context)}"
             android:visibility="@{viewmodel.failed ? View.VISIBLE : View.GONE}"
-            tools:text="Data doesn\'t want to talk to us" />
+            tools:text="Data don\'t want to come to us" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -49,7 +49,7 @@
             android:layout_gravity="center"
             android:text="@{viewmodel.emptyText(context)}"
             android:visibility="@{viewmodel.isEmpty() ? View.VISIBLE : View.GONE}"
-            tools:text="Data went for a walk" />
+            tools:text="Data have went for a walk" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:layout_width="match_parent"
@@ -119,7 +119,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toEndOf="@id/filter_type"
-                        app:srcCompat="@drawable/whats_new" />
+                        app:srcCompat="@drawable/nav_whats_new" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -133,7 +133,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/radio_layout" />
 
-                <androidx.recyclerview.widget.RecyclerView
+                <cz.lastaapps.bakalariextension.ui.views.BetterRecyclerView
                     android:id="@+id/list"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"

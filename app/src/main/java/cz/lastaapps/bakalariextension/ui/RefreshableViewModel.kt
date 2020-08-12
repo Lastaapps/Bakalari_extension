@@ -135,7 +135,7 @@ abstract class RefreshableViewModel<E>(val TAG: String) : ViewModel() {
     /**Shows Toast with text from #failedText()*/
     protected open fun showToast() {
         val context = App.context
-        Toast.makeText(context, failedText(context), Toast.LENGTH_LONG).show()
+        Toast.makeText(context, failedText(context), Toast.LENGTH_SHORT).show()
     }
 
     /**removes need to use !! in code all the time*/
@@ -150,7 +150,7 @@ abstract class RefreshableViewModel<E>(val TAG: String) : ViewModel() {
      */
     fun executeOrRefresh(lifecycle: Lifecycle, todo: ((E) -> Unit)) {
         data.observe({ lifecycle }) { todo(it) }
-        if (data.value == null)
+        if (data.value == null && !failed.value!!/*runs auto update once only*/)
             onRefresh()
     }
 

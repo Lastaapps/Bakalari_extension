@@ -31,23 +31,23 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.events.EventsLoader
-import cz.lastaapps.bakalariextension.databinding.FragmentOverviewBinding
+import cz.lastaapps.bakalariextension.databinding.TemplateOverviewBinding
 import cz.lastaapps.bakalariextension.tools.MySettings
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import cz.lastaapps.bakalariextension.tools.validDate
 import cz.lastaapps.bakalariextension.ui.timetable.small.STViewModel
 import java.time.ZonedDateTime
 
+/**Shows upcoming event for today or tomorrow based on settings*/
 class EventsUpcomingFragment : Fragment() {
-
 
     companion object {
         private val TAG = EventsUpcomingFragment::class.simpleName
     }
 
-    private lateinit var binding: FragmentOverviewBinding
+    private lateinit var binding: TemplateOverviewBinding
     private val viewModel: EventsViewModel by activityViewModels()
-    private val smallTimetableViewModel: STViewModel by activityViewModels()
+    private val smallTimetableViewModel: STViewModel by activityViewModels() //to obtain timetable
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,7 +60,7 @@ class EventsUpcomingFragment : Fragment() {
         binding =
             DataBindingUtil.inflate(
                 inflater,
-                R.layout.fragment_overview,
+                R.layout.template_overview,
                 container,
                 false
             )

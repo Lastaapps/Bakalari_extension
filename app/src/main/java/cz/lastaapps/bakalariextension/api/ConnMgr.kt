@@ -27,6 +27,8 @@ import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.MainActivity
 import cz.lastaapps.bakalariextension.ui.login.LoginData
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import org.json.JSONException
@@ -48,6 +50,8 @@ class ConnMgr {
 
     companion object {
         private val TAG = ConnMgr::class.java.simpleName
+
+        private val mutex = Mutex()
 
         /**@return json containing downloaded data of null if connection failed*/
         suspend fun serverGet(
@@ -182,7 +186,7 @@ class ConnMgr {
             br.close()
 
             //read was successful
-            Log.i(TAG, "Read succeed")
+            Log.i(TAG, "Read succeed ${builder.length / 1024}kb")
 
             JSONObject(String(builder))
         }
@@ -349,14 +353,19 @@ class ConnMgr {
         }
 
         /**refreshes access token if needed */
-        fun getValidAccessToken(): String {
-            //tries to obtain new ACCESS token, if the old one is expired
-            if (isExpired()) {
-                if (!refreshAccessToken()) {
-                    throw Exception("Failed to obtain new access token")
+        suspend fun getValidAccessToken(): String {
+
+            //runs method synchronized
+            mutex.withLock {
+
+                //tries to obtain new ACCESS token, if the old one is expired
+                if (isExpired()) {
+                    if (!refreshAccessToken()) {
+                        throw Exception("Failed to obtain new access token")
+                    }
                 }
+                return LoginData.accessToken
             }
-            return LoginData.accessToken
         }
 
         /**@return if refreshing access token is necessary*/

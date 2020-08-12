@@ -30,7 +30,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.databinding.LoadingListTemplateBinding
+import cz.lastaapps.bakalariextension.databinding.TemplateLoadingListBinding
 
 /**Shows subjects and their marks
  * placed in MarksRootFragment*/
@@ -40,7 +40,7 @@ class BySubjectFragment : Fragment() {
     }
 
     //views
-    lateinit var binding: LoadingListTemplateBinding
+    lateinit var binding: TemplateLoadingListBinding
 
     //ViewModel with views
     val viewModel: MarksViewModel by activityViewModels()
@@ -56,7 +56,7 @@ class BySubjectFragment : Fragment() {
             Log.i(TAG, "Creating view")
 
             binding =
-                DataBindingUtil.inflate(inflater, R.layout.loading_list_template, container, false)
+                DataBindingUtil.inflate(inflater, R.layout.template_loading_list, container, false)
             binding.apply {
                 viewmodel = viewModel
                 lifecycleOwner = LifecycleOwner { lifecycle }
@@ -64,14 +64,7 @@ class BySubjectFragment : Fragment() {
                 list.adapter = SubjectAdapter()
             }
 
-            viewModel.apply {
-                marks.observe({ lifecycle }) { showSubjects() }
-                if (marks.value != null) {
-                    showSubjects()
-                } else {
-                    onRefresh()
-                }
-            }
+            viewModel.executeOrRefresh(lifecycle) { showSubjects() }
 
         } else {
             Log.i(TAG, "View already created")

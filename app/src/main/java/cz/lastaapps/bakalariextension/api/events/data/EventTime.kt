@@ -20,14 +20,17 @@
 
 package cz.lastaapps.bakalariextension.api.events.data
 
+import android.os.Parcelable
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import kotlinx.android.parcel.Parcelize
 import java.time.ZonedDateTime
 
+@Parcelize
 class EventTime(
     var wholeDay: Boolean,
     var startTime: String,
     var endTime: String
-) {
+) : Parcelable {
 
     val dateStart: ZonedDateTime = parseTime(startTime)
     val dateEnd: ZonedDateTime = parseTime(endTime)

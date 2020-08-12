@@ -132,6 +132,25 @@ class SmallTimetableWidget : AppWidgetProvider() {
             //changes text color
             views.setTextColor(R.id.error_message, foreground)
             views.setTextColor(R.id.date_label, foreground)
+            views.setTextColor(R.id.holiday, foreground)
+
+            views.setViewVisibility(R.id.error_message, View.GONE)
+            views.setViewVisibility(R.id.holiday, View.GONE)
+            views.setViewVisibility(R.id.grid_view, View.GONE)
+
+            //opens full timetable
+            val intent = Intent(context, MainActivity::class.java)
+            intent.putExtra(MainActivity.NAVIGATE, R.id.nav_timetable)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK and Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            val pendingIntent = PendingIntent.getActivity(
+                context,
+                1,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+            views.setPendingIntentTemplate(R.id.grid_view, pendingIntent)
+
+            views.setOnClickPendingIntent(R.id.widget_root, pendingIntent)
 
             //loads week
             val date = TimeTools.today
@@ -145,14 +164,12 @@ class SmallTimetableWidget : AppWidgetProvider() {
                 week = loadTimetable(date)
                 if (week == null) {
                     views.setViewVisibility(R.id.error_message, View.VISIBLE)
-                    views.setViewVisibility(R.id.grid_view, View.GONE)
                     return
                 }
                 day = week.getDay(date)
                 //on weekend is null
                 if (day == null) {
                     views.setViewVisibility(R.id.error_message, View.VISIBLE)
-                    views.setViewVisibility(R.id.grid_view, View.GONE)
                     return
                 }
             } else {
@@ -160,20 +177,7 @@ class SmallTimetableWidget : AppWidgetProvider() {
                 day = null
             }
 
-            //opens full timetable
-            val intent = Intent(context, MainActivity::class.java)
-            intent.putExtra(MainActivity.NAVIGATE, R.id.nav_timetable)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            val pendingIntent = PendingIntent.getActivity(
-                context,
-                1,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-            )
-            views.setPendingIntentTemplate(R.id.grid_view, pendingIntent)
-
-            views.setEmptyView(R.id.grid_view, R.id.error_message)
+            //views.setEmptyView(R.id.grid_view, R.id.error_message)
 
             //differs for holiday and workday
             if (useDefault || (day != null && !day.isHoliday())) {
@@ -208,7 +212,7 @@ class SmallTimetableWidget : AppWidgetProvider() {
 
                 //sets up holiday view
                 views.setTextViewText(R.id.holiday, day!!.getHolidayDescription())
-                views.setViewVisibility(R.id.cell_main, View.VISIBLE)
+                views.setViewVisibility(R.id.holiday, View.VISIBLE)
             }
         }
 

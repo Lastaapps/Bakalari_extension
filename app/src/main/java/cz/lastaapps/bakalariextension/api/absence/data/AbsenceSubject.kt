@@ -21,9 +21,11 @@
 package cz.lastaapps.bakalariextension.api.absence.data
 
 import cz.lastaapps.bakalariextension.api.DataId
+import kotlinx.android.parcel.Parcelize
 import java.text.Collator
 import java.util.*
 
+@Parcelize
 class AbsenceSubject(
     val name: String,
     val lessonCount: Int,

@@ -25,32 +25,60 @@
     android:padding="@dimen/bottom_fragment_bottom_margin">
 
     <View
-        android:id="@+id/view2"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/bottom_row_height"
+        android:id="@+id/oder_site"
+        style="@style/AppTheme.SmallImageButton"
+        android:layout_margin="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/show_more"
-        app:layout_constraintStart_toStartOf="@+id/show_more" />
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <View
+        android:id="@+id/margin_left"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/layout"
+        app:layout_constraintStart_toEndOf="@+id/oder_site" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/show_more"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/margin_right"
+        app:layout_constraintStart_toEndOf="@+id/margin_left"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/margin_right"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/alignment"
+        app:layout_constraintStart_toEndOf="@+id/layout" />
+
+    <View
+        android:id="@+id/alignment"
+        style="@style/AppTheme.SmallImageButton"
+        android:layout_margin="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="@dimen/bottom_row_height"
+        app:layout_constraintBottom_toBottomOf="@id/layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
         android:id="@+id/show_more"
         style="@style/AppTheme.SmallImageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_margin="0dp"
-        android:layout_marginStart="@dimen/margin_basic"
-        app:layout_constraintBottom_toBottomOf="@+id/view2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/layout"
-        app:layout_constraintTop_toTopOf="@+id/view2"
-        app:srcCompat="@drawable/whats_new" />
+        app:layout_constraintBottom_toBottomOf="@+id/layout"
+        app:layout_constraintEnd_toEndOf="@id/alignment"
+        app:layout_constraintTop_toTopOf="@+id/guideline"
+        app:srcCompat="@drawable/nav_whats_new" />
 </androidx.constraintlayout.widget.ConstraintLayout>

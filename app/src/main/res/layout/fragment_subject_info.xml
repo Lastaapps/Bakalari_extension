@@ -125,7 +125,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/marks_label" />
 
-                    <androidx.recyclerview.widget.RecyclerView
+                    <cz.lastaapps.bakalariextension.ui.views.BetterRecyclerView
                         android:id="@+id/list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -161,7 +161,7 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toTopOf="@id/homework_list" />
 
-                    <androidx.recyclerview.widget.RecyclerView
+                    <cz.lastaapps.bakalariextension.ui.views.BetterRecyclerView
                         android:id="@+id/homework_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -193,7 +193,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <include
-                        layout="@layout/loading_list_template"
+                        layout="@layout/template_loading_list"
                         android:id="@+id/theme_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

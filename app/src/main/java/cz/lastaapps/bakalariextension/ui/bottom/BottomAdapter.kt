@@ -27,6 +27,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import cz.lastaapps.bakalariextension.R
 
+/**Creates view to be shown in the BottomDialog*/
 class BottomAdapter(var list: List<BottomItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     init {
@@ -36,6 +37,7 @@ class BottomAdapter(var list: List<BottomItem>) : RecyclerView.Adapter<RecyclerV
     //menu item, id, position
     var onClick: ((Int, Int) -> Unit)? = null
 
+    /**Creates a simple view with image and a text*/
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return object : RecyclerView.ViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.botton_nav_item, parent, false)
@@ -58,6 +60,10 @@ class BottomAdapter(var list: List<BottomItem>) : RecyclerView.Adapter<RecyclerV
                 it(item.navId, position)
             }
         }
+    }
+
+    override fun getItemId(position: Int): Long {
+        return list[position].navId.toLong()
     }
 
     override fun getItemCount(): Int {

@@ -23,6 +23,7 @@ package cz.lastaapps.bakalariextension.api.user
 import android.util.Log
 import cz.lastaapps.bakalariextension.api.ConnMgr
 import cz.lastaapps.bakalariextension.api.user.data.User
+import cz.lastaapps.bakalariextension.tools.TimeTools
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -60,7 +61,7 @@ class UserLoader {
         suspend fun loadFromServer(): User? {
             return withContext(Dispatchers.Default) {
                 try {
-                    Log.i(TAG, "Loading subjects from server")
+                    Log.i(TAG, "Loading user from server")
 
                     //downloads subjects
                     val json = withContext(Dispatchers.IO) { ConnMgr.serverGet("user") }
@@ -68,6 +69,9 @@ class UserLoader {
 
                     //parses json
                     val data = UserParser.parseJson(json)
+
+                    //notifies activity and the others that user object has changed and the old data should be removed
+                    UserChangeObserver.onNew(json)
 
                     //saves json
                     UserStorage.save(json)
@@ -86,7 +90,7 @@ class UserLoader {
         suspend fun loadFromStorage(): User? {
             return withContext(Dispatchers.Default) {
 
-                Log.i(TAG, "Loading subjects from storage")
+                Log.i(TAG, "Loading user from storage")
 
                 return@withContext try {
 
@@ -103,10 +107,12 @@ class UserLoader {
             }
         }
 
-        /**@return if subjects are loaded*/
+        /**@return if user object should be refreshed - refreshed every day*/
         fun shouldReload(): Boolean {
-            UserStorage.lastUpdated() ?: return true
-            return false
+            val date = UserStorage.lastUpdated() ?: return true
+            val today = TimeTools.today //midnight
+
+            return date < today
         }
     }
 }

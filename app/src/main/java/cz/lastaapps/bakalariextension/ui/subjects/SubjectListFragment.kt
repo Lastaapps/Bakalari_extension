@@ -32,7 +32,7 @@ import androidx.navigation.findNavController
 import cz.lastaapps.bakalariextension.MobileNavigationDirections
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.subjects.data.Subject
-import cz.lastaapps.bakalariextension.databinding.LoadingListTemplateBinding
+import cz.lastaapps.bakalariextension.databinding.TemplateLoadingListBinding
 import cz.lastaapps.bakalariextension.ui.BasicRecyclerAdapter
 
 typealias SubjectAdapter = BasicRecyclerAdapter<Subject>
@@ -43,7 +43,7 @@ class SubjectListFragment : Fragment() {
         private val TAG = SubjectListFragment::class.java.simpleName
     }
 
-    private lateinit var binding: LoadingListTemplateBinding
+    private lateinit var binding: TemplateLoadingListBinding
     private val viewModel: SubjectViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -56,7 +56,7 @@ class SubjectListFragment : Fragment() {
 
         //views setup
         binding =
-            DataBindingUtil.inflate(inflater, R.layout.loading_list_template, container, false)
+            DataBindingUtil.inflate(inflater, R.layout.template_loading_list, container, false)
         binding.viewmodel = viewModel
         binding.setLifecycleOwner { lifecycle }
 

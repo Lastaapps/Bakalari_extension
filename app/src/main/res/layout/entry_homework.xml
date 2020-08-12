@@ -25,10 +25,7 @@
     <data>
 
         <import type="android.view.View" />
-
-        <variable
-            name="hw"
-            type="cz.lastaapps.bakalariextension.api.homework.data.Homework" />
+        <import type="android.text.method.LinkMovementMethod" />
 
         <variable
             name="mgr"
@@ -41,183 +38,172 @@
         android:layout_margin="10dp">
 
         <TextView
-            style="@style/Homework.Subject"
             android:id="@+id/subject"
+            style="@style/Homework.Subject"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{hw.subject.name}"
+            android:text="@{mgr.homework.subject.name}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Eaten by a dog" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/progressBox"
+        <ProgressBar
+            android:id="@+id/progress"
+            style="@style/Homework.Progress"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:visibility="@{hw.closed ? View.GONE : View.VISIBLE}"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_margin="@dimen/margin_basic"
+            android:max="100"
+            android:progress="@{mgr.progress}"
+            app:layout_constraintBottom_toTopOf="@id/barrier_progress_bottom"
+            app:layout_constraintEnd_toStartOf="@+id/days_left"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/subject">
-
-            <TextView
-                style="@style/Homework.Text"
-                android:id="@+id/days_left"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{mgr.daysLeftText()}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/progress"
-                tools:text="69 days" />
-
-            <androidx.core.widget.ContentLoadingProgressBar
-                style="@style/Homework.Progress"
-                android:id="@+id/progress"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:progress="@{mgr.progress}"
-                android:max="100"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/days_left"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintTop_toBottomOf="@+id/subject" />
 
         <!-- Used to measure if content text is longer than default number of lines-->
         <TextView
+            android:id="@+id/days_left"
             style="@style/Homework.Text"
-            android:id="@+id/template"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@{hw.content}"
-            android:maxLines="@integer/homework_visible_lines"
-            android:ellipsize="end"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/progressBox"
-
-            android:visibility="invisible"
-
-            tools:text="Well, it can sometimes happen..." />
-
-        <TextView
-            style="@style/Homework.Text"
-            android:id="@+id/content"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@{hw.content}"
-            android:maxLines="@integer/homework_visible_lines"
-            android:linksClickable="true"
-            android:textIsSelectable="true"
-            android:autoLink="all"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/progressBox"
-            tools:text="Well, it can sometimes happen..." />
-
-        <TextView
-            style="@style/Homework.Text"
-            android:id="@+id/show_more"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:text="@string/homework_show_more"
+            android:text="@{mgr.daysLeftText()}"
+            app:layout_constraintBottom_toTopOf="@id/barrier_progress_bottom"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/subject"
+            tools:text="69 days" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{mgr.homework.closed ? View.GONE : View.VISIBLE}"
+            app:constraint_referenced_ids="progress,days_left" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_progress_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="progress,days_left"
+            tools:layout_editor_absoluteY="16dp" />
+
+        <TextView
+            android:id="@+id/template"
+            style="@style/Homework.Text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="@integer/homework_visible_lines"
+            android:text="@{mgr.homework.content}"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/barrier_progress_bottom"
+
+            tools:text="Well, it can sometimes happen..." />
+
+        android:movementMethod="@{LinkMovementMethod.getInstance()}"
+
+        <TextView
+            android:id="@+id/content"
+            style="@style/Homework.Text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:autoLink="all"
+            android:linksClickable="true"
+            android:maxLines="@integer/homework_visible_lines"
+            android:text="@{mgr.homework.content}"
+            android:textIsSelectable="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/barrier_progress_bottom"
+            tools:text="Well, it can sometimes happen..." />
+
+        <TextView
+            android:id="@+id/show_more"
+            style="@style/Homework.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:onClick="@{(view) -> mgr.onShowMoreClick()}"
+            android:text="@string/homework_show_more"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/content"
             tools:text="Show more" />
 
         <TextView
-            style="@style/Homework.Secondary"
             android:id="@+id/notice"
+            style="@style/Homework.Secondary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:visibility="@{hw.notice.equals(``) ? View.GONE : View.VISIBLE}"
-            android:text="@{hw.notice}"
-            app:layout_constraintStart_toStartOf="parent"
+            android:text="@{mgr.homework.notice}"
+            android:visibility="@{mgr.homework.notice.equals(``) ? View.GONE : View.VISIBLE}"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/show_more"
             tools:text="Really,believe me" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/attachmentBox"
+        <ImageView
+            android:id="@+id/attachment_image"
+            style="@style/AppTheme.SmallImageButton"
+            android:layout_width="@dimen/homework_attachment_icon_size"
+            android:layout_height="@dimen/homework_attachment_icon_size"
+            android:onClick="@{(view) -> mgr.onAttachment()}"
+            app:layout_constraintBottom_toTopOf="@id/barrier_attachment_bottom"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/notice"
+            tools:srcCompat="@drawable/attachment" />
+
+        <TextView
+            android:id="@+id/attachment_text"
+            style="@style/Homework.Text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="@{mgr.attachmentText}"
             android:onClick="@{(view) -> mgr.onAttachment()}"
-            android:visibility="@{hw.attachments.size() > 0 ? View.VISIBLE : View.GONE}"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/barrier_attachment_bottom"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/notice">
+            app:layout_constraintStart_toEndOf="@id/attachment_image"
+            app:layout_constraintTop_toBottomOf="@id/notice"
+            tools:text="Attachments (2)" />
 
-            <ImageView
-                style="@style/AppTheme.SmallImageButton"
-                android:id="@+id/attachment_image"
-                android:visibility="@{hw.attachments.empty ? View.GONE : View.VISIBLE}"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:srcCompat="@drawable/attachment" />
-
-            <TextView
-                style="@style/Homework.Text"
-                android:id="@+id/attachment_text"
-                android:visibility="@{hw.attachments.size() > 0 ? View.VISIBLE : View.GONE}"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@{mgr.attachmentText}"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toEndOf="@id/attachment_image"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                tools:text="Attachments (2)" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/startBox"
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_attachment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@id/endBox"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/attachmentBox"
-            app:layout_constraintHorizontal_chainStyle="spread_inside">
+            android:visibility="@{mgr.homework.attachments.size() > 0 ? View.VISIBLE : View.GONE}"
+            app:constraint_referenced_ids="attachment_text,attachment_image" />
 
-            <TextView
-                style="@style/Homework.Text"
-                android:id="@+id/start"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{mgr.formattedStart()}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="30.2" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/endBox"
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_attachment_bottom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/startBox"
-            app:layout_constraintTop_toBottomOf="@+id/attachmentBox">
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="attachment_text,attachment_image"
+            tools:layout_editor_absoluteY="32dp" />
 
-            <TextView
-                style="@style/Homework.Text"
-                android:id="@+id/end"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{mgr.formattedEnd()}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="1.4." />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/start"
+            style="@style/Homework.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{mgr.formattedStart()}"
+            app:layout_constraintEnd_toStartOf="@+id/end"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/barrier_attachment_bottom"
+            tools:text="30.2" />
+
+        <TextView
+            android:id="@+id/end"
+            style="@style/Homework.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{mgr.formattedEnd()}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/start"
+            app:layout_constraintTop_toBottomOf="@id/barrier_attachment_bottom"
+            tools:text="1.4." />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

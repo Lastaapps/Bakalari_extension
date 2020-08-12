@@ -68,6 +68,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
+                        android:selectedItemPosition="@={viewmodel.predictorSelected}"
                         app:layout_constraintEnd_toStartOf="@+id/add_mark"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -128,7 +129,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/content">
 
-                    <androidx.recyclerview.widget.RecyclerView
+                    <cz.lastaapps.bakalariextension.ui.views.BetterRecyclerView
                         android:id="@+id/added_marks_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -139,7 +140,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
 
-                    </androidx.recyclerview.widget.RecyclerView>
+                    </cz.lastaapps.bakalariextension.ui.views.BetterRecyclerView>
 
                     <View
                         android:id="@+id/divider"
@@ -151,7 +152,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/added_marks_list" />
 
-                    <androidx.recyclerview.widget.RecyclerView
+                    <cz.lastaapps.bakalariextension.ui.views.BetterRecyclerView
                         android:id="@+id/list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

@@ -21,6 +21,7 @@
 package cz.lastaapps.bakalariextension.ui.events
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,9 +41,15 @@ import cz.lastaapps.bakalariextension.api.events.data.EventList
 import cz.lastaapps.bakalariextension.databinding.FragmentEventsBinding
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import cz.lastaapps.bakalariextension.tools.lastUpdated
+import cz.lastaapps.bakalariextension.ui.EmptyAdapter
 import java.time.ZonedDateTime
 
+/**The main fragment for all the events*/
 class EventsRootFragment : Fragment() {
+
+    companion object {
+        private val TAG = EventsRootFragment::class.java.simpleName
+    }
 
     private val viewModel: EventsViewModel by activityViewModels()
     private lateinit var binding: FragmentEventsBinding
@@ -53,26 +60,32 @@ class EventsRootFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
+        Log.i(TAG, "Creating view")
+
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_events, container, false)
         binding.viewmodel = viewModel
         binding.setLifecycleOwner { lifecycle }
 
-        binding.list.adapter = EventsAdapter()
+        binding.list.adapter = EmptyAdapter(EventsAdapter())
 
+        //shows and hides the advanced options
         binding.advanced.setOnClickListener {
             viewModel.advancedFilterVisible.apply {
                 value = value != true
             }
         }
 
+        //advanced options setup
         binding.advancedFilter.apply {
             layoutManager = FlexboxLayoutManager(requireContext(), FlexDirection.ROW, FlexWrap.WRAP)
             adapter = EventAdvanceFilterAdapter(
                 listOf(),
                 { viewModel.selectAllChecked },
                 { viewModel.getAdvanceLiveData(it) })
+
         }
 
+        //observes for the data change
         viewModel.executeOrRefresh(lifecycle) { dataUpdated() }
 
         viewModel.filterId.observe({ lifecycle }) {
@@ -84,6 +97,7 @@ class EventsRootFragment : Fragment() {
         return binding.root
     }
 
+    /**when data changed - updates all the components*/
     private fun dataUpdated() {
         val types = HashSet<SimpleData>()
 
@@ -98,7 +112,9 @@ class EventsRootFragment : Fragment() {
             types.toList().sorted()
         )
 
+
         //last updated text
+        //there are more events sets, finds the oldest one
         var theOldest: ZonedDateTime? = null
         for (type in EventsLoader.EventType.values()) {
             EventsStorage.lastUpdated(type.url)?.let {
@@ -116,12 +132,14 @@ class EventsRootFragment : Fragment() {
         showData()
     }
 
+    /**updates the event list only*/
     private fun showData() {
         val data = viewModel.data.value ?: return
 
         val filtered = filter(data.toMutableList())
-        (binding.list.adapter as EventsAdapter).update(filtered)
+        ((binding.list.adapter as EmptyAdapter).adapter as EventsAdapter).update(filtered)
 
+        //scrolls to today
         var scrollTo = 0
         val now = TimeTools.today
         for (event in filtered) {
@@ -135,8 +153,10 @@ class EventsRootFragment : Fragment() {
             .scrollToPositionWithOffset(scrollTo, 0)
     }
 
+    /**filters out all the unwanted events*/
     private fun filter(list: List<Event>): EventList {
 
+        //basic filter
         val filtered =
             when (viewModel.filterId.value) {
                 R.id.filter_all -> list.toMutableList()
@@ -165,6 +185,7 @@ class EventsRootFragment : Fragment() {
                 else -> list.toMutableList()
             }
 
+        //advance filter
         val selected = viewModel.getAdvanceSelectedFilters()
         for (event in filtered.toMutableList()) {
             if (!selected.contains(event.type))

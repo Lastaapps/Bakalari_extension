@@ -27,6 +27,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.findNavController
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.tools.MySettings
 import cz.lastaapps.bakalariextension.tools.TimeTools
@@ -56,6 +57,10 @@ class SmallTimetableFragment : Fragment() {
             if (state) {
                 view.setLoading()
             }
+        }
+
+        view.setOnClickListener {
+            requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.nav_timetable)
         }
 
         //sets date and observes for updates
@@ -132,6 +137,6 @@ class SmallTimetableFragment : Fragment() {
     }
 
     private fun onFail() {
-        view.setError(resources.getString(R.string.timetable_no_internet))
+        view.setError(resources.getString(R.string.timetable_failed_to_load))
     }
 }

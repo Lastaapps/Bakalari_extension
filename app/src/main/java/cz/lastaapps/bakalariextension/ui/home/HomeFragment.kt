@@ -32,7 +32,6 @@ import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.user.data.User
 import cz.lastaapps.bakalariextension.databinding.FragmentHomeBinding
 import cz.lastaapps.bakalariextension.ui.UserViewModel
-import cz.lastaapps.bakalariextension.ui.WhatsNew
 import cz.lastaapps.bakalariextension.ui.absence.AbsenceOverviewFragment
 import cz.lastaapps.bakalariextension.ui.events.EventsUpcomingFragment
 import cz.lastaapps.bakalariextension.ui.homework.HmwOverview
@@ -52,11 +51,6 @@ class HomeFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         requireActivity().actionBar?.show()
-
-        //What's new - shown only once per version
-        if (WhatsNew(requireContext()).shouldShow()) {
-            WhatsNew(requireContext()).showDialog()
-        }
     }
 
     override fun onCreateView(

@@ -35,12 +35,19 @@ import cz.lastaapps.bakalariextension.api.events.data.Event
 import cz.lastaapps.bakalariextension.databinding.EntryEventBinding
 import cz.lastaapps.bakalariextension.tools.TimeTools
 
+/**Actions for the entry showing the event info*/
 class EventEntryManager(val binding: EntryEventBinding, val event: Event) {
     val context: Context = binding.root.context
 
+    companion object {
+        //states of the multiline section
+        private const val LINES_UNKNOWN = -1
+        private const val LINES_NORMAL = 0
+        private const val LINES_MORE = 1
+    }
+
     private val onPreDrawListener = ViewTreeObserver.OnPreDrawListener {
         onPreDraw()
-        true
     }
 
     private var cycles = 0
@@ -51,29 +58,46 @@ class EventEntryManager(val binding: EntryEventBinding, val event: Event) {
      * determined and text is made selectable
      * how many times was TextView preDrawn
      */
-    private fun onPreDraw() {
+    private fun onPreDraw(): Boolean {
+        //the opposite of the if layout changed, so it shouldn't be drawn yet
+        var viewsUnchanged = true
+
         binding.apply {
             if (cycles < 2) { //works on second pass
 
-                showMore.visibility =
-                    if (isMoreLines()) {
-                        cycles = 10
-                        onPreDraw()
-
-                        View.VISIBLE
-                    } else
-                        View.GONE
                 cycles++
+
+                when (isMoreLines()) {
+                    LINES_UNKNOWN -> {
+                        viewsUnchanged = false
+                    }
+                    LINES_NORMAL -> {
+                        viewsUnchanged = cycles != 1
+                    }
+                    LINES_MORE -> {
+                        showMore.visibility = View.VISIBLE
+                        viewsUnchanged = false
+
+                        cycles = Int.MAX_VALUE
+                        onPreDraw()
+                    }
+                }
+
             } else {
                 //stops listening for preDraw
                 removeViewTreeObserver()
             }
         }
+
+        return viewsUnchanged
     }
 
     init {
         //observes for text preDraw
         binding.template.viewTreeObserver.addOnPreDrawListener(onPreDrawListener)
+
+        binding.showMore.visibility = View.GONE
+        binding.showMore.text = context.getString(R.string.homework_show_more)
     }
 
     /** Stops observing for text preDraw*/
@@ -82,21 +106,19 @@ class EventEntryManager(val binding: EntryEventBinding, val event: Event) {
     }
 
     //checks if string takes more than default number of lines in a TextView
-    private fun isMoreLines(): Boolean {
-        if (binding.showMore.text != context.getString(R.string.homework_show_more))
-            return true
+    private fun isMoreLines(): Int {
 
         //layout may not has been created yet
-        val layout: Layout = binding.template.layout ?: return false
+        val layout: Layout = binding.template.layout ?: return LINES_UNKNOWN
 
         val lines = layout.lineCount
         if (lines > 0) {
             val ellipsisCount = layout.getEllipsisCount(lines - 1)
             if (ellipsisCount > 0) {
-                return true
+                return LINES_MORE
             }
         }
-        return false
+        return LINES_NORMAL
     }
 
     /**Shows/hides all the lines of the homework content*/
@@ -226,6 +248,7 @@ class EventEntryManager(val binding: EntryEventBinding, val event: Event) {
         return builder
     }
 
+    /**@return appropriate time representation depending on the period length*/
     fun dateText(): String = event.run {
         when {
             isPartOfDay -> {

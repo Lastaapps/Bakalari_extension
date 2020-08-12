@@ -18,167 +18,171 @@
   ~
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:padding="@dimen/padding_basic">
+    android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/label"
-        layout="@layout/logo_label"
-        android:layout_width="wrap_content"
+    <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="@dimen/margin_basic" />
+        android:padding="@dimen/padding_basic">
 
-    <TextView
-        android:id="@+id/author"
-        style="@style/AppTheme.Text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/label"
-
-        android:layout_centerHorizontal="true"
-        android:layout_margin="@dimen/margin_basic"
-        android:layout_marginStart="@dimen/margin_basic"
-        android:layout_marginTop="@dimen/margin_basic"
-        android:layout_marginEnd="@dimen/margin_basic"
-        android:layout_marginBottom="@dimen/margin_basic"
-        tools:text="Lasta apps YYYY" />
-
-    <LinearLayout
-        android:id="@+id/thanks_box"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/author"
-        android:layout_centerHorizontal="true"
-
-        android:gravity="center"
-        android:orientation="vertical">
+        <include
+            android:id="@+id/label"
+            layout="@layout/logo_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="@dimen/margin_basic" />
 
         <TextView
-            android:id="@+id/thanks"
+            android:id="@+id/author"
             style="@style/AppTheme.Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/label"
+
+            android:layout_centerHorizontal="true"
             android:layout_margin="@dimen/margin_basic"
-            android:text="@string/about_thanks"
-
-            android:textAlignment="center" />
-
-        <ImageButton
-            android:id="@+id/api"
-            style="@style/AppTheme.SmallImageButton"
-            android:layout_margin="@dimen/margin_basic"
-
-            app:srcCompat="@drawable/nav_api" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/follow"
-        style="@style/AppTheme.Text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/thanks_box"
-
-        android:layout_centerHorizontal="true"
-        android:layout_margin="@dimen/margin_basic"
-        android:text="@string/about_follow" />
-
-    <LinearLayout
-        android:id="@+id/button_box"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/follow"
-
-        android:layout_centerHorizontal="true"
-        android:orientation="horizontal">
-
-        <ImageButton
-            android:id="@+id/facebook"
-            style="@style/AppTheme.SmallImageButton"
-            app:srcCompat="@drawable/nav_facebook" />
-
-        <ImageButton
-            android:id="@+id/share"
-            style="@style/AppTheme.SmallImageButton"
-            app:srcCompat="@drawable/nav_share" />
-
-        <ImageButton
-            android:id="@+id/rate"
-            style="@style/AppTheme.SmallImageButton"
-            app:srcCompat="@drawable/nav_rate" />
-
-        <ImageButton
-            android:id="@+id/google_play"
-            style="@style/AppTheme.SmallImageButton"
-            app:srcCompat="@drawable/nav_google_play" />
-
-        <ImageButton
-            android:id="@+id/github"
-            style="@style/AppTheme.SmallImageButton"
-            app:srcCompat="@drawable/nav_github" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/other_box"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/button_box"
-        android:layout_centerHorizontal="true"
-        android:orientation="horizontal">
+            android:layout_marginStart="@dimen/margin_basic"
+            android:layout_marginTop="@dimen/margin_basic"
+            android:layout_marginEnd="@dimen/margin_basic"
+            android:layout_marginBottom="@dimen/margin_basic"
+            tools:text="Lasta apps YYYY" />
 
         <LinearLayout
+            android:id="@+id/thanks_box"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_basic"
+            android:layout_below="@id/author"
+            android:layout_centerHorizontal="true"
+
             android:gravity="center"
             android:orientation="vertical">
 
-
-            <ImageButton
-                android:id="@+id/whats_new"
-                style="@style/AppTheme.SmallImageButton"
-                app:srcCompat="@drawable/whats_new" />
-
             <TextView
-                style="@android:style/TextAppearance"
+                android:id="@+id/thanks"
+                style="@style/AppTheme.Text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/whats_new_title" />
+                android:layout_margin="@dimen/margin_basic"
+                android:text="@string/about_thanks"
+
+                android:textAlignment="center" />
+
+            <ImageButton
+                android:id="@+id/api"
+                style="@style/AppTheme.SmallImageButton"
+                android:layout_margin="@dimen/margin_basic"
+
+                app:srcCompat="@drawable/nav_api" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/follow"
+            style="@style/AppTheme.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/thanks_box"
+
+            android:layout_centerHorizontal="true"
+            android:layout_margin="@dimen/margin_basic"
+            android:text="@string/about_follow" />
+
+        <LinearLayout
+            android:id="@+id/button_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/follow"
+
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/facebook"
+                style="@style/AppTheme.SmallImageButton"
+                app:srcCompat="@drawable/nav_facebook" />
+
+            <ImageButton
+                android:id="@+id/share"
+                style="@style/AppTheme.SmallImageButton"
+                app:srcCompat="@drawable/nav_share" />
+
+            <ImageButton
+                android:id="@+id/rate"
+                style="@style/AppTheme.SmallImageButton"
+                app:srcCompat="@drawable/nav_rate" />
+
+            <ImageButton
+                android:id="@+id/google_play"
+                style="@style/AppTheme.SmallImageButton"
+                app:srcCompat="@drawable/nav_google_play" />
+
+            <ImageButton
+                android:id="@+id/github"
+                style="@style/AppTheme.SmallImageButton"
+                app:srcCompat="@drawable/nav_github" />
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/other_box"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_basic"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:layout_below="@id/button_box"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal">
 
-
-            <ImageButton
-                android:id="@+id/license"
-                style="@style/AppTheme.SmallImageButton"
-                app:srcCompat="@drawable/nav_license" />
-
-            <TextView
-                style="@android:style/TextAppearance"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/license" />
+                android:layout_margin="@dimen/margin_basic"
+                android:gravity="center"
+                android:orientation="vertical">
+
+
+                <ImageButton
+                    android:id="@+id/whats_new"
+                    style="@style/AppTheme.SmallImageButton"
+                    app:srcCompat="@drawable/nav_whats_new" />
+
+                <TextView
+                    style="@android:style/TextAppearance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/whats_new_title" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_basic"
+                android:gravity="center"
+                android:orientation="vertical">
+
+
+                <ImageButton
+                    android:id="@+id/license"
+                    style="@style/AppTheme.SmallImageButton"
+                    app:srcCompat="@drawable/nav_license" />
+
+                <TextView
+                    style="@android:style/TextAppearance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/license" />
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
 
-    <TextView
-        android:id="@+id/version"
-        style="@style/AppTheme.Text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/other_box"
+        <TextView
+            android:id="@+id/version"
+            style="@style/AppTheme.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/other_box"
 
-        android:layout_centerHorizontal="true"
-        tools:text="1.0.0 180010000" />
+            android:layout_centerHorizontal="true"
+            tools:text="1.0.0 180010000" />
 
-</RelativeLayout>
+    </RelativeLayout>
+</ScrollView>

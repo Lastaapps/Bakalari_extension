@@ -21,11 +21,14 @@
 package cz.lastaapps.bakalariextension.api.marks
 
 import android.util.Log
-import cz.lastaapps.bakalariextension.api.ConnMgr
+import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.api.marks.data.MarksRoot
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.json.JSONObject
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
 class MarksLoader {
     companion object {
@@ -64,8 +67,11 @@ class MarksLoader {
                     Log.i(TAG, "Loading marks from server")
 
                     //downloads marks
-                    val json = withContext(Dispatchers.IO) { ConnMgr.serverGet("marks") }
-                        ?: return@withContext null
+                    val json =
+                    //TODO revert
+                        /*withContext(Dispatchers.IO) { ConnMgr.serverGet("marks") }
+                            ?: return@withContext null*/
+                        JSONObject(BufferedReader(InputStreamReader(App.context.assets.open("marks.json"))).readText())
 
                     //parses json
                     val week = MarksParser.parseJson(json)

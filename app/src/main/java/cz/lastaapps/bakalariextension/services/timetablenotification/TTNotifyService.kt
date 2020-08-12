@@ -29,7 +29,6 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.navigation.NavDeepLinkBuilder
 import cz.lastaapps.bakalariextension.App
@@ -37,7 +36,10 @@ import cz.lastaapps.bakalariextension.MainActivity
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
-import cz.lastaapps.bakalariextension.tools.*
+import cz.lastaapps.bakalariextension.tools.BaseService
+import cz.lastaapps.bakalariextension.tools.CheckInternet
+import cz.lastaapps.bakalariextension.tools.MySettings
+import cz.lastaapps.bakalariextension.tools.TimeTools
 import cz.lastaapps.bakalariextension.ui.login.LoginData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -151,32 +153,11 @@ class TTNotifyService : BaseService() {
                 }
 
                 if (week == null) {
-                    MyToast.makeText(
-                        this@TTNotifyService,
-                        R.string.timetable_failed_to_load,
-                        Toast.LENGTH_LONG
-                    ).show()
-
-                    Log.i(TAG, "Cannot download timetable")
-                    //error messages
-                    replaceNotification(
-                        generateNotification(
-                            "Cannot download timetable",
-                            "Please connect to internet"
-                        )
-                    )
-
-                    //stops foreground service
-                    stopForeground(false)
-                    isServiceRunningInForeground = false
+                    onDownloadFailed()
                     return
                 }
             } else {
-                MyToast.makeText(
-                    this@TTNotifyService,
-                    R.string.timetable_failed_to_load,
-                    Toast.LENGTH_LONG
-                ).show()
+                onDownloadFailed()
                 return
             }
         }
@@ -202,6 +183,29 @@ class TTNotifyService : BaseService() {
         //stops on error
         Log.i(TAG, "Stopping foreground")
         stopForeground(true)
+        isServiceRunningInForeground = false
+    }
+
+    /**Called when all attempts to download timetable failed*/
+    private fun onDownloadFailed() {
+
+        /*MyToast.makeText(
+            this@TTNotifyService,
+            R.string.timetable_failed_to_load,
+            Toast.LENGTH_LONG
+        ).show()*/
+
+        Log.i(TAG, "Cannot download timetable")
+        //error messages
+        replaceNotification(
+            generateNotification(
+                "Cannot download timetable",
+                "Please connect to internet"
+            )
+        )
+
+        //stops foreground service
+        stopForeground(false)
         isServiceRunningInForeground = false
     }
 

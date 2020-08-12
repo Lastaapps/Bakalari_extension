@@ -98,7 +98,7 @@ class HomeworkParser {
                         safeJson(json, "Id"),
                         safeJson(json, "Name"),
                         safeJson(json, "Type"),
-                        json.getInt("Size")
+                        json.getLong("Size")
                     )
                 )
             }

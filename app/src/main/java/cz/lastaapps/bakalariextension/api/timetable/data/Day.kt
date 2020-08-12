@@ -20,21 +20,25 @@
 
 package cz.lastaapps.bakalariextension.api.timetable.data
 
+import android.os.Parcelable
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.DataIdList
+import cz.lastaapps.bakalariextension.api.SimpleData
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import kotlinx.android.parcel.Parcelize
 import java.io.Serializable
 import java.time.ZonedDateTime
 
 /**Represent day of week containing lessons*/
+@Parcelize
 data class Day(
     val dayOfWeek: Int,
     val date: String,
     val description: String,
     val dayType: String,
     val lessons: DataIdList<Lesson>
-) : Comparable<Day>, Serializable {
+) : Comparable<Day>, Serializable, Parcelable {
 
     override fun compareTo(other: Day): Int {
         return TimeTools.parse(
@@ -49,7 +53,7 @@ data class Day(
     /**@param hour which lesson should be returned
      * @param cycle (optional) returns lesson for specific week, if null, returns first found
      * @return lesson if there is OR WAS lesson (removed), of null, if cell is empty*/
-    fun getLesson(hour: Hour, cycle: Cycle? = null): Lesson? {
+    fun getLesson(hour: Hour, cycle: SimpleData? = null): Lesson? {
         if (cycle == null)
             return lessons.getById(hour.id)
 
@@ -69,26 +73,26 @@ data class Day(
     }
 
     /**@return if this lesson if empty or removed*/
-    fun isFree(hour: Hour, cycle: Cycle? = null): Boolean {
+    fun isFree(hour: Hour, cycle: SimpleData? = null): Boolean {
         val lesson = getLesson(hour, cycle) ?: return true
         if (lesson.isRemoved()) return true
         return false
     }
 
     /**@return if lesson is regular of added*/
-    fun isNormal(hour: Hour, cycle: Cycle? = null): Boolean {
+    fun isNormal(hour: Hour, cycle: SimpleData? = null): Boolean {
         val lesson = getLesson(hour, cycle) ?: return false
         return lesson.isNormal()
     }
 
     /**@return if current lesson is absence*/
-    fun isAbsence(hour: Hour, cycle: Cycle? = null): Boolean {
+    fun isAbsence(hour: Hour, cycle: SimpleData? = null): Boolean {
         val lesson = getLesson(hour, cycle) ?: return false
         return lesson.isAbsence()
     }
 
     /**@return index of the first not empty lesson of the day*/
-    fun firstLessonIndex(hours: DataIdList<Hour>, cycle: Cycle? = null): Int {
+    fun firstLessonIndex(hours: DataIdList<Hour>, cycle: SimpleData? = null): Int {
         if (isWorkDay())
             for (i in 0 until hours.size) {
                 if (!isFree(hours[i], cycle))
@@ -101,7 +105,7 @@ data class Day(
     }
 
     /**@return index of the last not empty lesson of the day*/
-    fun lastLessonIndex(hours: DataIdList<Hour>, cycle: Cycle? = null): Int {
+    fun lastLessonIndex(hours: DataIdList<Hour>, cycle: SimpleData? = null): Int {
         if (isWorkDay())
             for (i in (hours.size - 1) downTo 0) {
                 if (!isFree(hours[i], cycle))
@@ -114,7 +118,7 @@ data class Day(
     }
 
     /**@return true, if there is no free lesson between #firstLessonIndex and #lastLessonIndex*/
-    fun endsWithLunch(hours: DataIdList<Hour>, cycle: Cycle? = null): Boolean {
+    fun endsWithLunch(hours: DataIdList<Hour>, cycle: SimpleData? = null): Boolean {
         for (i in firstLessonIndex(hours)..lastLessonIndex(hours)) {
             if (i < 0) return false
 

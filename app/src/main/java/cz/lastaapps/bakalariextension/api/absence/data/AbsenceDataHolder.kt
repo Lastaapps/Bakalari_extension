@@ -25,12 +25,12 @@ import cz.lastaapps.bakalariextension.api.DataId
 /** Data to be shown in absence_day_entry.xml*/
 abstract class AbsenceDataHolder(
     id: Int,
-    val unsolved: Int,
-    val ok: Int,
-    val missed: Int,
-    val late: Int,
-    val soon: Int,
-    val school: Int
+    open val unsolved: Int,
+    open val ok: Int,
+    open val missed: Int,
+    open val late: Int,
+    open val soon: Int,
+    open val school: Int
 ) : DataId<Int>(id) {
     /**@return text to be shown as row label in absence_day_entry.xml*/
     abstract fun getLabel(): String

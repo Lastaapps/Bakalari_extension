@@ -18,10 +18,16 @@
  *
  */
 
-package cz.lastaapps.bakalariextension.api.marks.data
+package cz.lastaapps.bakalariextension.api.timetable.data
 
 import cz.lastaapps.bakalariextension.api.SimpleData
+import kotlinx.android.parcel.Parcelize
 
-/**Subject info*/
-class Subject (id: String, shortcut: String, name: String) :
-    SimpleData(id, shortcut, name)
+@Parcelize
+class Group(
+    var classId: String,
+    override var id: String,
+    override var shortcut: String,
+    override var name: String
+) : SimpleData(id, shortcut, name)
+

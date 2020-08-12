@@ -30,6 +30,7 @@ import cz.lastaapps.bakalariextension.api.SimpleData
 import cz.lastaapps.bakalariextension.ui.LifecycleAdapter
 import cz.lastaapps.bakalariextension.ui.LifecycleViewHolder
 
+/**Creates selection to filter items like all, school, free time,...*/
 class EventAdvanceFilterAdapter(
     var list: List<SimpleData>,
     var selectAllLiveData: (() -> MutableLiveData<Boolean>),
@@ -52,6 +53,7 @@ class EventAdvanceFilterAdapter(
         }) {}
     }
 
+    /**Uses LifeData to save and sync data, logic contained in the ViewModel*/
     override fun onBindViewHolder(holder: LifecycleViewHolder, position: Int) {
         val liveData = when (holder.itemViewType) {
             TYPE_ALL -> {

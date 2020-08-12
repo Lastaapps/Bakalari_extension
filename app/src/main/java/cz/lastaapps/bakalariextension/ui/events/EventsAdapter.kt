@@ -28,6 +28,7 @@ import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.events.data.EventList
 import cz.lastaapps.bakalariextension.databinding.EntryEventBinding
 
+/**Adapter showing events in a RecyclerView*/
 class EventsAdapter(var list: EventList = EventList()) :
     RecyclerView.Adapter<EventsAdapter.BindingHolder>() {
 
@@ -52,10 +53,11 @@ class EventsAdapter(var list: EventList = EventList()) :
         val binding = holder.binding
         val event = list[position]
 
-        binding.event = event
+        //uses new manager to update view structure based on the new data
         binding.mgr = EventEntryManager(binding, event)
     }
 
+    /**replaces the old items with the new ones*/
     fun update(list: EventList) {
         this.list = list
         notifyDataSetChanged()

@@ -24,20 +24,22 @@ import android.content.Context
 import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.tools.LocaleManager
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import kotlinx.android.parcel.Parcelize
 import java.time.Month
 import java.time.Month.*
 import java.time.format.TextStyle
 
 /** Generated in code, holds data for all days with absence data from one month*/
+@Parcelize
 class AbsenceMonth(
     val monthName: String,
     val monthIndex: Int,
-    unsolved: Int,
-    ok: Int,
-    missed: Int,
-    late: Int,
-    soon: Int,
-    school: Int
+    override val unsolved: Int,
+    override val ok: Int,
+    override val missed: Int,
+    override val late: Int,
+    override val soon: Int,
+    override val school: Int
 ) : AbsenceDataHolder(monthIndex, unsolved, ok, missed, late, soon, school),
     Comparable<AbsenceMonth> {
 

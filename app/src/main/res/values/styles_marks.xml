@@ -22,7 +22,7 @@
 <resources>
 
     <style name="Marks.Text" parent="AppTheme.Text">
-
+        <item name="android:layout_margin">@dimen/margin_basic</item>
     </style>
     <style name="Marks.Mark" parent="Marks.Text">
         <item name="android:textSize">20sp</item>

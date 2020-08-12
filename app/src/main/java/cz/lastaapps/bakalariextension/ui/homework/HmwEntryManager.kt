@@ -22,15 +22,15 @@ package cz.lastaapps.bakalariextension.ui.homework
 
 import android.text.Layout
 import android.text.TextUtils
-import android.text.method.LinkMovementMethod
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.findNavController
+import cz.lastaapps.bakalariextension.MobileNavigationDirections
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.homework.data.Homework
 import cz.lastaapps.bakalariextension.databinding.EntryHomeworkBinding
 import cz.lastaapps.bakalariextension.tools.TimeTools
-import cz.lastaapps.bakalariextension.ui.attachment.AttachmentDialog
 import java.time.Duration
 
 /**sets up binding view with homework*/
@@ -40,9 +40,14 @@ class HmwEntryManager(
     val homework: Homework
 ) {
 
+    companion object {
+        private const val LINES_UNKNOWN = -1
+        private const val LINES_NORMAL = 0
+        private const val LINES_MORE = 1
+    }
+
     private val onPreDrawListener = ViewTreeObserver.OnPreDrawListener {
         onPreDraw()
-        true
     }
 
     private var cycles = 0
@@ -53,24 +58,38 @@ class HmwEntryManager(
      * determined and text is made selectable
      * how many times was TextView preDrawn
      */
-    private fun onPreDraw() {
+    private fun onPreDraw(): Boolean {
+        //the opposite of the if layout changed, so it shouldn't be drawn yet
+        var viewsUnchanged = true
+
         binding.apply {
             if (cycles < 2) { //works on second pass
 
-                showMore.visibility =
-                    if (isMoreLines()) {
-                        cycles = 10
-                        onPreDraw()
-
-                        View.VISIBLE
-                    } else
-                        View.GONE
                 cycles++
+
+                when (isMoreLines()) {
+                    LINES_UNKNOWN -> {
+                        viewsUnchanged = false
+                    }
+                    LINES_NORMAL -> {
+                        viewsUnchanged = cycles != 1
+                    }
+                    LINES_MORE -> {
+                        showMore.visibility = View.VISIBLE
+                        viewsUnchanged = false
+
+                        cycles = Int.MAX_VALUE
+                        onPreDraw()
+                    }
+                }
+
             } else {
                 //stops listening for preDraw
                 removeViewTreeObserver()
             }
         }
+
+        return viewsUnchanged
     }
 
     init {
@@ -78,11 +97,8 @@ class HmwEntryManager(
         binding.apply {
             template.viewTreeObserver.addOnPreDrawListener(onPreDrawListener)
 
-            //makes text selectable
-            content.setTextIsSelectable(true)
-
-            //makes links clickable
-            content.movementMethod = LinkMovementMethod.getInstance()
+            showMore.visibility = View.GONE
+            showMore.text = activity.getString(R.string.homework_show_more)
         }
     }
 
@@ -91,82 +107,20 @@ class HmwEntryManager(
         binding.template.viewTreeObserver.removeOnPreDrawListener(onPreDrawListener)
     }
 
-    //Replaces normal text strings with clickable links
-    //replaced with autoLink - works with addressees without protocol, emails and phone numbers
-    /*fun httpEnabledText(): CharSequence {
-
-        //available protocols
-        val protocols = arrayListOf("http://", "https://", "ftp://")
-        //links are replaced with this string and then replaced with valid Html <a></a> tag
-        val key = "\r\t\n\r"
-        //characters that ends url
-        val breakCharacters = " \n\r\t\'\""
-
-        //text to be edited
-        var text = homework.content
-
-        for (protocol in protocols) {
-
-            //list of links temporally replaced by keys
-            val replacedLinks = ArrayList<String>()
-
-            //runs until links are found
-            while (true) {
-                val index = text.indexOf(protocol)
-                if (index < 0)
-                    break
-
-                //link characters are added here
-                val builder = StringBuilder(68)
-                builder.append(protocol)
-
-                //locks for the end of the link of the end of the string
-                for (i in index + protocol.length until text.length) {
-                    val char = text[i]
-
-                    if (breakCharacters.contains(char)) {
-                        break
-                    } else if (i == text.length - 1) {
-                        builder.append(char)
-                        break
-                    } else {
-                        builder.append(char)
-                    }
-                }
-
-                //saves link text for future and replaces it in text with key
-                val linkText = builder.toString()
-                text = text.replaceFirst(linkText, key)
-                replacedLinks.add(linkText)
-            }
-
-            //replaces keys with Html <a><a/> tag with original links
-            for (linkText in replacedLinks) {
-                val htmlLink = "<a href=\"$linkText\">$linkText</a>"
-                text = text.replaceFirst(key, htmlLink)
-            }
-        }
-
-        //parses string to spannable html with clickable links
-        return Html.fromHtml(text)
-    }*/
-
     //checks if string takes more than default number of lines in a TextView
-    private fun isMoreLines(): Boolean {
-        if (binding.showMore.text != activity.getString(R.string.homework_show_more))
-            return true
+    private fun isMoreLines(): Int {
 
         //layout may not has been created yet
-        val layout: Layout = binding.template.layout ?: return false
+        val layout: Layout = binding.template.layout ?: return LINES_UNKNOWN
 
         val lines = layout.lineCount
         if (lines > 0) {
             val ellipsisCount = layout.getEllipsisCount(lines - 1)
             if (ellipsisCount > 0) {
-                return true
+                return LINES_MORE
             }
         }
-        return false
+        return LINES_NORMAL
     }
 
     /**Shows/hides all the lines of the homework content*/
@@ -196,8 +150,9 @@ class HmwEntryManager(
 
     /**Manages on attachment clicked*/
     fun onAttachment() {
-        val attachmentDialog = AttachmentDialog.newInstance(homework.attachments)
-        attachmentDialog.show(activity, AttachmentDialog.FRAGMENT_TAG)
+        val attachmentDialog =
+            MobileNavigationDirections.actionAttachment(homework.attachments.toTypedArray())
+        activity.findNavController(R.id.nav_host_fragment).navigate(attachmentDialog)
     }
 
     /**@return the text with the number of attachment of the homework*/

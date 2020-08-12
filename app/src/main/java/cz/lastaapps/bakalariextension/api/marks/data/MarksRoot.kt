@@ -20,16 +20,22 @@
 
 package cz.lastaapps.bakalariextension.api.marks.data
 
+import android.os.Parcelable
 import cz.lastaapps.bakalariextension.api.DataIdList
+import cz.lastaapps.bakalariextension.api.SimpleData
+import kotlinx.android.parcel.IgnoredOnParcel
+import kotlinx.android.parcel.Parcelize
 
 typealias MarksList = DataIdList<Mark>
 
 /**List of all info about marks and their subjects*/
+@Parcelize
 class MarksRoot(
     val subjects: ArrayList<SubjectMarks>
-) {
+) : Parcelable {
 
     //marks from all subjects
+    @IgnoredOnParcel
     private var _allMarks: DataIdList<Mark>? = null
 
     /**@return marks from all subjects sorted by date*/
@@ -52,7 +58,7 @@ class MarksRoot(
     }
 
     /**@return subject info for mark given*/
-    fun getSubjectForMark(mark: Mark): Subject? {
+    fun getSubjectForMark(mark: Mark): SimpleData? {
         //goes through subjects
         for (subject in subjects) {
             //checks if marks match

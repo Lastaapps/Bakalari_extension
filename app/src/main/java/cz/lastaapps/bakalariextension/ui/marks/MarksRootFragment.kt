@@ -32,7 +32,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.google.android.material.tabs.TabLayoutMediator
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.marks.MarksStorage
-import cz.lastaapps.bakalariextension.databinding.FragmentMarksRootBinding
+import cz.lastaapps.bakalariextension.databinding.TemplateLoadingRootBinding
 import cz.lastaapps.bakalariextension.tools.lastUpdated
 
 /** Fragment placed in MainActivity in HomeFragment
@@ -43,22 +43,10 @@ class MarksRootFragment : Fragment() {
     }
 
     //root view
-    lateinit var binding: FragmentMarksRootBinding
+    lateinit var binding: TemplateLoadingRootBinding
 
     //data with marks - puts new marks in
     val viewModel: MarksViewModel by activityViewModels()
-
-    private val failObserver = { failed: Boolean ->
-        if (failed)
-            onFail()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        //observes for marks change
-        viewModel.failed.observe({ lifecycle }, failObserver)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -66,18 +54,23 @@ class MarksRootFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        if (!this::binding.isInitialized) {
-            Log.i(TAG, "Creating views")
-            //inflates views
-            binding =
-                DataBindingUtil.inflate(inflater, R.layout.fragment_marks_root, container, false)
-            binding.viewmodel = viewModel
-            binding.lifecycleOwner = LifecycleOwner { lifecycle }
+        Log.i(TAG, "Creating views")
+        //inflates views
+        binding =
+            DataBindingUtil.inflate(inflater, R.layout.template_loading_root, container, false)
+        binding.viewmodel = viewModel
+        binding.lifecycleOwner = LifecycleOwner { lifecycle }
 
-            binding.pager.isSaveEnabled = false
-        } else {
-            Log.i(TAG, "Already created")
+        //sets up ViewPager for oder fragments
+        MarksPager(this@MarksRootFragment).also {
+            binding.pager.adapter = it
+
+            TabLayoutMediator(binding.tabs, binding.pager) { tab, position ->
+
+                tab.text = it.getPageTitle(position)
+            }.attach()
         }
+        binding.pager.offscreenPageLimit = 2
 
         viewModel.executeOrRefresh(lifecycle) { marksUpdated() }
 
@@ -89,52 +82,6 @@ class MarksRootFragment : Fragment() {
         Log.i(TAG, "Updating based on mew marks")
 
         updateLastUpdated()
-        loadMarks()
-    }
-
-    /**loads marks to ViewModel*/
-    private fun loadMarks() {
-
-        //hides view until marks are loaded
-        binding.apply {
-            pager.visibility = View.GONE
-            errorMessage.visibility = View.GONE
-            lastUpdated.visibility = View.GONE
-
-            //error - no marks
-            if (viewModel.marks.value!!.subjects.isEmpty()) {
-                errorMessage.setText(R.string.marks_no_marks)
-                errorMessage.visibility = View.VISIBLE
-                return
-            }
-
-            pager.visibility = View.VISIBLE
-            lastUpdated.visibility = View.VISIBLE
-
-            //sets up ViewPager for oder fragments
-            if (pager.adapter == null) {
-                MarksPager(this@MarksRootFragment).also {
-                    pager.adapter = it
-
-                    TabLayoutMediator(binding.tabs, pager) { tab, position ->
-
-                        tab.text = it.getPageTitle(position)
-                    }.attach()
-                }
-            }
-        }
-    }
-
-    /**executed when no marks was loaded*/
-    private fun onFail() {
-        //error message - loading error
-        binding.apply {
-            pager.visibility = View.GONE
-            errorMessage.visibility = View.VISIBLE
-            lastUpdated.visibility = View.GONE
-
-            errorMessage.setText(R.string.marks_failed_to_load)
-        }
     }
 
     private fun updateLastUpdated() {

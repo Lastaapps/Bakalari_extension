@@ -47,6 +47,10 @@
         <item name="android:textSize">@dimen/primary_text_bold</item>
     </style>
 
+    <style name="AppTheme.Text.Secondary" parent="Theme.AppCompat">
+        <item name="android:textSize">@dimen/primary_text</item>
+    </style>
+
     <style name="AppTheme.Heading" parent="AppTheme.Text">
         <item name="android:textSize">@dimen/heading_text_size</item>
         <item name="android:fontFamily">sans-serif-medium</item>
@@ -97,10 +101,32 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
+    <style name="AppTheme.Dialog" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="android:padding">10dp</item>
+    </style>
+
+    <style name="AppTheme.Dialog.Title" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="android:textColor">@color/primary_text_light</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="AppTheme.Dialog.Message" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="android:textColor">@color/primary_text_light</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="AppTheme.Dialog.Button" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:layout_margin">@dimen/margin_basic</item>
+        <item name="backgroundColor">#0000</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:padding">10dp</item>
+    </style>
 
     <!-- License activity styles-->
-    <style name="License.Activity" parent="AppTheme">
-    </style>
+    <style name="License.Activity" parent="AppTheme"></style>
 
     <style name="License.Label" parent="AppTheme.Text">
         <item name="android:textSize">@dimen/heading_text_size</item>

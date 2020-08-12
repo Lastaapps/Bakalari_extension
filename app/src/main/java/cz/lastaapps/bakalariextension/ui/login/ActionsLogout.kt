@@ -56,6 +56,30 @@ class ActionsLogout {
             LoginData.refreshToken = ""
             LoginData.tokenExpiration = 0
 
+            //disables receivers
+            val receivers = arrayOf(
+                BootReceiver::class.java,
+                TimeChangeReceiver::class.java,
+                TTReceiver::class.java,
+                SmallTimetableWidget::class.java
+            )
+            for (receiver in receivers) {
+                val pm: PackageManager = App.context.packageManager
+                val component = ComponentName(App.context, receiver)
+
+                pm.setComponentEnabledSetting(
+                    component, PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                    PackageManager.DONT_KILL_APP
+                )
+            }
+
+            deleteAPIData()
+
+            Log.i(TAG, "Logged out")
+        }
+
+        fun deleteAPIData() {
+
             //deletes user data
             UserStorage.delete()
 
@@ -77,25 +101,6 @@ class ActionsLogout {
             //deletes events
             for (type in EventsLoader.EventType.values())
                 EventsStorage.delete(type.url)
-
-            //disables receivers
-            val receivers = arrayOf(
-                BootReceiver::class.java,
-                TimeChangeReceiver::class.java,
-                TTReceiver::class.java,
-                SmallTimetableWidget::class.java
-            )
-            for (receiver in receivers) {
-                val pm: PackageManager = App.context.packageManager
-                val component = ComponentName(App.context, receiver)
-
-                pm.setComponentEnabledSetting(
-                    component, PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                    PackageManager.DONT_KILL_APP
-                )
-            }
-
-            Log.i(TAG, "Logged out")
         }
     }
 }

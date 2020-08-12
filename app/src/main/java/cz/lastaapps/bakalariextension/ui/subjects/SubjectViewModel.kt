@@ -79,10 +79,10 @@ class SubjectViewModel : RefreshableViewModel<SubjectList>(TAG) {
     }
 
     override fun emptyText(context: Context): String {
-        return context.getString(R.string.teacher_no_teachers)
+        return context.getString(R.string.subject_teacher_no_data)
     }
 
     override fun failedText(context: Context): String {
-        return context.getString(R.string.teacher_failed_to_load)
+        return context.getString(R.string.subject_teacher_failed_to_load)
     }
 }

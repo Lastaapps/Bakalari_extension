@@ -20,9 +20,12 @@
 
 package cz.lastaapps.bakalariextension.ui.homework
 
+import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import cz.lastaapps.bakalariextension.R
@@ -33,8 +36,15 @@ import cz.lastaapps.bakalariextension.databinding.EntryHomeworkBinding
 class HmwAdapter(private val activity: AppCompatActivity, var list: HomeworkList = HomeworkList()) :
     RecyclerView.Adapter<HmwAdapter.BindingHolder>() {
 
+    private val attachmentBitmap: Bitmap
+
     init {
         setHasStableIds(true)
+
+        //loads image only once to save resources
+        val size = activity.resources.getDimensionPixelSize(R.dimen.homework_attachment_icon_size)
+        attachmentBitmap = ContextCompat.getDrawable(activity, R.drawable.attachment)!!
+            .toBitmap(size, size, Bitmap.Config.ARGB_8888)
     }
 
     /**holds binding instead of view*/
@@ -42,14 +52,18 @@ class HmwAdapter(private val activity: AppCompatActivity, var list: HomeworkList
 
     /**inflates binding and saves it into holder*/
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BindingHolder {
-        return BindingHolder(
-            DataBindingUtil.inflate(
-                LayoutInflater.from(parent.context),
-                R.layout.entry_homework,
-                parent,
-                false
-            )
+
+        val binding: EntryHomeworkBinding = DataBindingUtil.inflate(
+            LayoutInflater.from(parent.context),
+            R.layout.entry_homework,
+            parent,
+            false
         )
+
+        //uses cached image
+        binding.attachmentImage.setImageBitmap(attachmentBitmap)
+
+        return BindingHolder(binding)
     }
 
     /**updates binding with data*/
@@ -57,7 +71,6 @@ class HmwAdapter(private val activity: AppCompatActivity, var list: HomeworkList
         val binding = holder.binding
 
         val homework = list[position]
-        binding.hw = homework
         binding.mgr = HmwEntryManager(activity, binding, homework)
     }
 

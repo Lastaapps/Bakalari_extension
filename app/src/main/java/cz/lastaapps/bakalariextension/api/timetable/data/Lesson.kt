@@ -21,10 +21,12 @@
 package cz.lastaapps.bakalariextension.api.timetable.data
 
 import cz.lastaapps.bakalariextension.api.DataId
+import kotlinx.android.parcel.Parcelize
 
 /**Stores info about lesson and the change of the lesson*/
+@Parcelize
 class Lesson(
-    hourId: Int,
+    override var id: Int,
     var groupIds: ArrayList<String>,
     var subjectId: String,
     var teacherId: String,
@@ -33,7 +35,7 @@ class Lesson(
     var change: Change?,
     var homeworkIds: ArrayList<String>,
     var theme: String
-) : DataId<Int>(hourId) {
+) : DataId<Int>(id) {
 
     fun isNormal(): Boolean {
         if (change == null) return true

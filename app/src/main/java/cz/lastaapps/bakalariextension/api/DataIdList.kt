@@ -27,6 +27,8 @@ class DataIdList<T : DataId<*>> : ArrayList<T> {
 
     constructor(list: List<T>) : super(list)
 
+    constructor(array: Array<T>) : super(array.toList())
+
     fun getById(id: Any?): T? {
         for (it in this) {
             if (it.id == id)

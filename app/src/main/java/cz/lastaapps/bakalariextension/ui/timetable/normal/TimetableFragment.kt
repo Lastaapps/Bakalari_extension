@@ -292,7 +292,7 @@ class TimetableFragment : Fragment() {
                         //failed to load week
                         binding.apply {
                             errorMessage.visibility = View.VISIBLE
-                            errorMessage.text = getString(R.string.timetable_no_internet)
+                            errorMessage.text = getString(R.string.timetable_failed_to_load)
                             lastUpdated.text = ""
                         }
 

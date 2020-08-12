@@ -25,12 +25,14 @@ import cz.lastaapps.bakalariextension.api.DataId
 import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.tools.MySettings
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import kotlinx.android.parcel.Parcelize
 import java.time.Duration
 import java.time.ZonedDateTime
 import java.util.*
 import kotlin.math.roundToInt
 
 /**Represents mark, contains all mark info*/
+@Parcelize
 class Mark(
     var markDate: String,
     var editDate: String,
@@ -50,7 +52,7 @@ class Mark(
     var isPoints: Boolean,
     var calculatedMarkText: String,
     var classRankText: String,
-    id: String,
+    override var id: String,
     /**Does not contain number of points*/
     var pointsText: String,
     var maxPoints: Int
@@ -132,7 +134,7 @@ class Mark(
             return String.format(
                 Locale("cs"), "%.2f", when {
                     //no marks
-                    marks.isEmpty() -> 0
+                    marks.isEmpty() -> 0.0
 
                     //normal marks
                     isAllNormal(marks) -> {
@@ -174,7 +176,7 @@ class Mark(
 
                     //mixed marks
                     else -> {
-                        0
+                        0.0
                     }
                 }
             )

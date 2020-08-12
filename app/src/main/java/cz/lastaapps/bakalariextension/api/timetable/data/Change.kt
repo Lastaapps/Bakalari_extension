@@ -20,9 +20,12 @@
 
 package cz.lastaapps.bakalariextension.api.timetable.data
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 import java.io.Serializable
 
 /**Represents change in timetable*/
+@Parcelize
 data class Change(
     var subject: String,
     var day: String,
@@ -32,7 +35,7 @@ data class Change(
     var time: String,
     var typeShortcut: String,
     var typeName: String
-): Serializable {
+) : Serializable, Parcelable {
     /**Absence, normal lesson is canceled because of this*/
     fun isCanceled(): Boolean {
         return changeType == CANCELED

@@ -21,13 +21,10 @@
 package cz.lastaapps.bakalariextension.ui.homework
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -59,66 +56,56 @@ class HmwSearchFragment : Fragment() {
 
         Log.i(TAG, "Creating fragment view")
 
-        //init views, called only once
-        if (!this::binding.isInitialized) {
+        //inflates views
+        binding = DataBindingUtil.inflate(
+            inflater,
+            R.layout.fragment_homework_search,
+            container,
+            false
+        )
+        //init
+        binding.viewmodel = viewModel
+        binding.setLifecycleOwner { lifecycle }
 
-            //inflates views
-            binding = DataBindingUtil.inflate(
-                inflater,
-                R.layout.fragment_homework_search,
-                container,
-                false
-            )
-            //init
-            binding.viewmodel = viewModel
-            binding.setLifecycleOwner { lifecycle }
+        binding.subjectSpinner.adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line,
+            ArrayList<String>()
+        )
 
-            binding.subjectSpinner.onItemSelectedListener =
-                object : AdapterView.OnItemSelectedListener {
-                    override fun onNothingSelected(parent: AdapterView<*>?) {}
+        binding.list.adapter = HmwAdapter(requireActivity() as AppCompatActivity)
 
-                    override fun onItemSelected(
-                        parent: AdapterView<*>?,
-                        view: View?,
-                        position: Int,
-                        id: Long
-                    ) {
-                        viewModel.subjectIndex.value = position
-                        updateList()
-                    }
-                }
-            //restores text
-            binding.text.setText(viewModel.searchText.value!!)
-            binding.text.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
-                    viewModel.searchText.value = s.toString()
-                    updateList()
-                }
+        //TODO one button and animations + date filter
+        //switches between search methods - subjects spinner and text
+        binding.searchSelectButton.setOnClickListener {
+            viewModel.searchingUsingSpinner.value = viewModel.searchingUsingSpinner.value != true
+        }
 
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                }
+        binding.searchTextButton.setOnClickListener {
+            viewModel.searchingUsingSpinner.value = viewModel.searchingUsingSpinner.value != true
+        }
 
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            })
-
-            binding.list.adapter = HmwAdapter(requireActivity() as AppCompatActivity)
-
-            //shows list if there is any data
-            viewModel.apply {
-                homework.observe({ lifecycle }) { dataUpdated() }
-
-                if (homework.value != null) {
-                    dataUpdated()
+        viewModel.searchingUsingSpinner.observe({ lifecycle }) {
+            binding.apply {
+                if (it) {
+                    searchSelectButton.visibility = View.INVISIBLE
+                    searchTextButton.visibility = View.VISIBLE
+                    textSearch.visibility = View.INVISIBLE
+                    subjectSpinner.visibility = View.VISIBLE
                 } else {
-                    onRefresh()
+                    searchSelectButton.visibility = View.VISIBLE
+                    searchTextButton.visibility = View.INVISIBLE
+                    textSearch.visibility = View.VISIBLE
+                    subjectSpinner.visibility = View.INVISIBLE
                 }
             }
         }
+
+        //shows list if there is any data
+        viewModel.executeOrRefresh(lifecycle) { dataUpdated() }
+
+        viewModel.searchText.observe({ lifecycle }) { updateList() }
+        viewModel.subjectIndex.observe({ lifecycle }) { updateList() }
 
         return binding.root
     }
@@ -129,7 +116,7 @@ class HmwSearchFragment : Fragment() {
         viewModel.homework.value?.forEach {
             subjects.add(it.subject)
         }
-        subjectList = ArrayList(subjects.sortedBy { it.name })
+        subjectList = ArrayList(subjects.sorted())
     }
 
     /**sets up spinner with All subject option and subject names*/
@@ -145,16 +132,16 @@ class HmwSearchFragment : Fragment() {
         }
 
         //reselect same item as before if possible
-        binding.subjectSpinner.setSelection(0)
-        binding.subjectSpinner.adapter =
-            ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, names)
+        (binding.subjectSpinner.adapter as? ArrayAdapter<String>)?.also {
+            it.clear()
+            it.addAll(names)
+            it.notifyDataSetChanged()
+        }
 
         //protection against if list gets shorter and index is now greater then new list size
         if (viewModel.subjectIndex.value!! >= names.size) {
-            viewModel.subjectIndex.value = names.size - 1
+            viewModel.subjectIndex.value = names.lastIndex
         }
-
-        binding.subjectSpinner.setSelection(viewModel.subjectIndex.value!!)
     }
 
     /**On homework list updated*/
@@ -168,7 +155,7 @@ class HmwSearchFragment : Fragment() {
 
     /**updates view with filtered homework list*/
     private fun updateList() {
-        var filtered = viewModel.homework.value!!
+        var filtered = viewModel.homework.value ?: return
 
         //filters by subject
         getSubjectId()?.let {

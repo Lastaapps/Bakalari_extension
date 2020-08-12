@@ -69,6 +69,11 @@ class NewMarksFragment : Fragment() {
             it.findNavController().navigate(R.id.nav_marks)
         }
 
+        binding.showMore.setOnClickListener {
+            binding.list.visibility = if (binding.list.visibility == View.VISIBLE)
+                View.GONE else View.VISIBLE
+        }
+
         //starts marks loading if they aren't yet
         viewModel.executeOrRefresh(lifecycle) { dataChanged() }
 
@@ -83,12 +88,17 @@ class NewMarksFragment : Fragment() {
         val newMarks = marks.getNewMarks()
 
         val text = if (newMarks.isNotEmpty()) {
+            binding.showMore.visibility = View.VISIBLE
+
             resources.getQuantityString(
                 R.plurals.marks_new_template,
                 newMarks.size,
                 newMarks.size
             )
         } else {
+            binding.showMore.visibility = View.GONE
+            binding.list.visibility = View.GONE
+
             getString(R.string.marks_new_no_marks)
         }
 

@@ -32,7 +32,7 @@ import androidx.fragment.app.activityViewModels
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.homework.data.Homework
 import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
-import cz.lastaapps.bakalariextension.databinding.LoadingListTemplateBinding
+import cz.lastaapps.bakalariextension.databinding.TemplateLoadingListBinding
 
 /** Shows current and not done yet homework list*/
 class HmwCurrentFragment : Fragment() {
@@ -40,7 +40,7 @@ class HmwCurrentFragment : Fragment() {
         private val TAG = HmwCurrentFragment::class.java.simpleName
     }
 
-    lateinit var binding: LoadingListTemplateBinding
+    lateinit var binding: TemplateLoadingListBinding
     val viewModel: HmwViewModel by activityViewModels()
 
     /**observers for homework list change*/
@@ -68,7 +68,7 @@ class HmwCurrentFragment : Fragment() {
 
             binding = DataBindingUtil.inflate(
                 inflater,
-                R.layout.loading_list_template,
+                R.layout.template_loading_list,
                 container,
                 false
             )
@@ -104,9 +104,11 @@ class HmwCurrentFragment : Fragment() {
 
     /**If there was request to show specific homework, scrolls there*/
     private fun scrollToHomework(homeworkList: HomeworkList) {
-        Log.i(TAG, "Scrolling to selected homework")
 
         viewModel.selectedHomeworkId.value?.let {
+
+            Log.i(TAG, "Scrolling to selected homework")
+
             val index = homeworkList.getIndexById(it)
             if (index >= 0) {
                 viewModel.selectedHomeworkId.value = null

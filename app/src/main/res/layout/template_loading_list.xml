@@ -42,7 +42,7 @@
             android:layout_gravity="center"
             android:text="@{viewmodel.failedText(context)}"
             android:visibility="@{viewmodel.failed ? View.VISIBLE : View.GONE}"
-            tools:text="Data doesn\'t want to talk to us" />
+            tools:text="Data don\'t want to come to us" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -50,7 +50,7 @@
             android:layout_gravity="center"
             android:text="@{viewmodel.emptyText(context)}"
             android:visibility="@{viewmodel.isEmpty() ? View.VISIBLE : View.GONE}"
-            tools:text="Data went for a walk" />
+            tools:text="Data have went for a walk" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:layout_width="match_parent"
@@ -64,7 +64,7 @@
             app:onRefreshListener="@{() -> viewmodel.onRefresh(true)}"
             app:refreshing="@{viewmodel.isRefreshing()}">
 
-            <androidx.recyclerview.widget.RecyclerView
+            <cz.lastaapps.bakalariextension.ui.views.BetterRecyclerView
                 android:id="@+id/list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

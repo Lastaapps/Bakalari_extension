@@ -21,6 +21,7 @@
 package cz.lastaapps.bakalariextension.ui.bottom
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,7 +32,9 @@ import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import cz.lastaapps.bakalariextension.R
+import java.lang.Integer.min
 
+/**Manages the bottom navigation*/
 class BottomFragment : Fragment() {
 
     companion object {
@@ -44,8 +47,8 @@ class BottomFragment : Fragment() {
 
         //for the showSwitch variable
         const val UNKNOWN = -1
-        const val HIDE = 0
-        const val SHOW = 1
+        const val DISABLED = 0
+        const val ENABLED = 1
 
     }
 
@@ -70,48 +73,40 @@ class BottomFragment : Fragment() {
 
     ): View {
 
+        Log.i(TAG, "Creating view")
+
+        //loads resources
         columnWidth = resources.getDimensionPixelSize(R.dimen.bottom_column_width)
         rowHeight = resources.getDimensionPixelSize(R.dimen.bottom_row_height)
 
+        //for the navigation
         controller = requireActivity().findNavController(R.id.nav_host_fragment)
 
+        //finds views
         root = inflater.inflate(R.layout.fragment_bottom, container, false)
         switch = root.findViewById(R.id.show_more)
         layout = root.findViewById(R.id.layout)
 
+        //RecyclerView setup
         layout.adapter = BottomAdapter(items).apply {
             onClick = { id, position ->
                 doNavigation(id)
             }
         }
-        layout.layoutManager =
-            AutoFitLayoutManager(
-                requireContext(),
-                resources.getDimensionPixelSize(R.dimen.bottom_column_width),
-                RecyclerView.VERTICAL,
-                true
-            )
-        layout.addOnLayoutChangeListener { v, left, top, right, bottom, _, _, _, _ ->
-            val width = right - left
-            val height = bottom - top
+        layout.layoutManager = AutoFitLayoutManager(
+            requireContext(),
+            resources.getDimensionPixelSize(R.dimen.bottom_column_width),
+            RecyclerView.VERTICAL,
+            true
+        )
 
-            if (height != 0) {
-                if (showSwitch == UNKNOWN) {
-                    val itemsShown = width / columnWidth
-
-                    showSwitch = if (itemsShown >= items.size) HIDE else SHOW
-
-                    controller.currentDestination?.let {
-                        autoManageDestinations(it.id)
-                    }
-                }
-            }
-        }
+        addPaddingObserver()
 
         controller.addOnDestinationChangedListener { _, destination, _ ->
             autoManageDestinations(destination.id)
         }
 
+        //show more lines switch setup
         switch.visibility = View.GONE
         switch.setOnClickListener {
             setState(if (state != MINIMIZED) MINIMIZED else EXPANDED)
@@ -120,11 +115,16 @@ class BottomFragment : Fragment() {
         return root
     }
 
+    /**shows appropriate state for fragment given*/
     private fun autoManageDestinations(id: Int) {
         val hidden = arrayOf(R.id.nav_loading, R.id.nav_login)
         val expanded = arrayOf(R.id.nav_home)
-        val doNothing = arrayOf(R.id.nav_about, R.id.nav_license)
-        val minimized = arrayOf(0) //all zhe others
+        val doNothing = arrayOf(
+            R.id.nav_about, R.id.nav_license,
+            R.id.nav_attachment, R.id.nav_attachment_downloaded, R.id.nav_attachment_file_exists,
+            R.id.nav_teacher_info
+        )
+        val minimized = arrayOf(0) //all the others
 
         when {
             hidden.contains(id) -> setState(HIDDEN)
@@ -139,11 +139,12 @@ class BottomFragment : Fragment() {
         switchVisibility(!hideSwitch.contains(id))
     }
 
+    /**shows state switch if it is required and available*/
     private fun switchVisibility(canBeShown: Boolean) {
         switch.visibility =
             when (showSwitch) {
-                HIDE -> View.GONE
-                SHOW -> {
+                DISABLED -> View.GONE
+                ENABLED -> {
                     if (canBeShown)
                         View.VISIBLE
                     else
@@ -154,38 +155,39 @@ class BottomFragment : Fragment() {
             }
     }
 
+    /**Sets the state - hidden, minimized, expanded*/
     private fun setState(state: Int) {
-        if (this.state != state)
-            when (state) {
-                MINIMIZED -> {
-                    root.layoutParams = root.layoutParams.apply {
-                        height = ViewGroup.LayoutParams.WRAP_CONTENT
-                    }
-                    layout.layoutParams = layout.layoutParams.apply {
-                        height = rowHeight
-                    }
+        when (state) {
+            MINIMIZED -> {
+                root.layoutParams = root.layoutParams.apply {
+                    height = ViewGroup.LayoutParams.WRAP_CONTENT
                 }
-                EXPANDED -> {
-                    root.layoutParams = root.layoutParams.apply {
-                        height = ViewGroup.LayoutParams.WRAP_CONTENT
-                    }
-                    layout.layoutParams = layout.layoutParams.apply {
-                        height = ViewGroup.LayoutParams.WRAP_CONTENT
-                    }
-                }
-                HIDDEN -> {
-                    root.layoutParams = root.layoutParams.apply {
-                        height = 0
-                    }
-                    layout.layoutParams = layout.layoutParams.apply {
-                        height = 0
-                    }
+                layout.layoutParams = layout.layoutParams.apply {
+                    height = rowHeight
                 }
             }
+            EXPANDED -> {
+                root.layoutParams = root.layoutParams.apply {
+                    height = ViewGroup.LayoutParams.WRAP_CONTENT
+                }
+                layout.layoutParams = layout.layoutParams.apply {
+                    height = ViewGroup.LayoutParams.WRAP_CONTENT
+                }
+            }
+            HIDDEN -> {
+                root.layoutParams = root.layoutParams.apply {
+                    height = 0
+                }
+                layout.layoutParams = layout.layoutParams.apply {
+                    height = 0
+                }
+            }
+        }
 
         this.state = state
     }
 
+    /**Navigates to selected destination*/
     private fun doNavigation(id: Int) {
         val builder = NavOptions.Builder()
             .setLaunchSingleTop(true)
@@ -200,8 +202,97 @@ class BottomFragment : Fragment() {
         controller.navigate(id, null, options)
     }
 
+
+    //padding to center the items
+    private val paddingListener: (() -> Boolean) = {
+        layout.run {
+            applyPadding(left, top, right, bottom)
+        }
+    }
+
+    /**centers items and sets if state switch can be used at all (disabled for wide enough screens)*/
+    private fun applyPadding(
+        left: Int, top: Int, right: Int, bottom: Int
+    ): Boolean {
+
+        var drawnUnchanged = true
+
+        //used to center items
+        val marginLeft = root.findViewById<View>(R.id.margin_left)
+        val marginRight = root.findViewById<View>(R.id.margin_right)
+
+        val width = right - left + marginLeft.width * 2
+        val height = bottom - top
+
+        if (width != 0) {
+
+            (layout.adapter as? BottomAdapter)?.let { adapter ->
+
+                //computes the number of items based of the new size
+                val itemsShown = min(width / columnWidth, adapter.list.size)
+                val itemsSize = itemsShown * columnWidth
+                val margin = (width - itemsSize) / 2
+
+                //true if the centering of the items is required
+                if (marginLeft.width != margin) {
+
+                    Log.i(TAG, "Updating padding")
+
+                    drawnUnchanged = false
+
+                    val setWidth: ((view: View) -> Unit) = {
+                        it.layoutParams = it.layoutParams.also { view ->
+                            view.width = margin
+                        }
+                    }
+                    setWidth(marginLeft)
+                    setWidth(marginRight)
+
+                }
+
+                //stops observing after a successful attempt
+                removePaddingObserver()
+
+                //wasn't working
+                /*layout.layoutParams =
+                    (layout.layoutParams as ViewGroup.MarginLayoutParams).apply {
+                        setMargins(margin, 0, margin, 0)
+                    }*/
+                //sometimes overlapped items
+                //layout.setPadding(margin, 0, margin, 0)
+
+                //determinate if the state switch should be shows
+                val old = showSwitch
+                showSwitch = if (items.size <= itemsShown) DISABLED else ENABLED
+
+                if (showSwitch != old) {
+
+                    controller.currentDestination?.apply {
+                        autoManageDestinations(id)
+                    }
+                }
+            }
+        }
+
+        return drawnUnchanged
+    }
+
+    //just to make methods available inside the paddingListener
+    private fun addPaddingObserver() {
+        //layout.addOnLayoutChangeListener(paddingListener)
+        layout.viewTreeObserver.addOnPreDrawListener(paddingListener)
+    }
+
+    private fun removePaddingObserver() {
+        //layout.removeOnLayoutChangeListener(paddingListener)
+        layout.viewTreeObserver.removeOnPreDrawListener(paddingListener)
+    }
+
+    /**updates adapter that the data has been changed*/
     fun dataUpdated() {
-        if (this::layout.isInitialized)
+        if (this::layout.isInitialized) {
+            addPaddingObserver()
             layout.adapter?.notifyDataSetChanged()
+        }
     }
 }

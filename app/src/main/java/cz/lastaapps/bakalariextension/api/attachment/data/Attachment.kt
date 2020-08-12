@@ -21,11 +21,13 @@
 package cz.lastaapps.bakalariextension.api.attachment.data
 
 import cz.lastaapps.bakalariextension.api.DataId
+import kotlinx.android.parcel.Parcelize
 
 /**Represent attachment - contains all necessary info*/
+@Parcelize
 class Attachment(
-    id: String,
+    override var id: String,
     var fileName: String,
     var type: String,
-    var size: Int
+    var size: Long
 ) : DataId<String>(id)

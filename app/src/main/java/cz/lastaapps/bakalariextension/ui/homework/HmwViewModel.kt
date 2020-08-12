@@ -46,6 +46,9 @@ class HmwViewModel : RefreshableViewModel<HomeworkList>(TAG) {
     /**Index of selected subject*/
     val subjectIndex = MutableLiveData(0)
 
+    /**If subjects spinner is currently used to filter data*/
+    val searchingUsingSpinner = MutableLiveData(true)
+
     override suspend fun loadServer(): HomeworkList? {
         return HomeworkLoader.loadFromServer()
     }

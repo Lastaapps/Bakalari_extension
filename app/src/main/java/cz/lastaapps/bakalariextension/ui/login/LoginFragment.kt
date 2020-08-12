@@ -60,11 +60,13 @@ class LoginFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        //hides the app bar and saves it's state
         (requireActivity() as MainActivity).supportActionBar?.let {
             wasAppBarShown = it.isShowing
             it.hide()
         }
 
+        //observes for the data
         viewModel.townList.observe({ lifecycle }) { onTownsLoaded() }
         viewModel.loadTownsIfNeeded()
 
@@ -76,6 +78,7 @@ class LoginFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
 
+        //restores the app bar
         (requireActivity() as MainActivity).supportActionBar?.let {
             if (wasAppBarShown)
                 it.show()
@@ -129,7 +132,7 @@ class LoginFragment : Fragment() {
         return binding.root
     }
 
-    //selects default school if there isn't any
+    /**selects default school if there isn't any*/
     private fun onTownsLoaded() {
         if (viewModel.selectedTown.value == null) {
 
@@ -150,6 +153,7 @@ class LoginFragment : Fragment() {
         }
     }
 
+    /**executed when town selection changes*/
     private fun onTownSelected() {
 
         viewModel.selectedSchool.value = null
@@ -162,6 +166,7 @@ class LoginFragment : Fragment() {
         }
     }
 
+    /**executed when the school list changes*/
     private fun onSchoolLoaded(list: List<School>) {
         if (viewModel.selectedTown.value == list[0].town) {
 
@@ -257,7 +262,7 @@ class LoginFragment : Fragment() {
         dialog.show()
     }
 
-
+    /**holds the info about a town*/
     class Town(
         var name: String,
         var schoolNumber: Int
@@ -284,6 +289,7 @@ class LoginFragment : Fragment() {
         }
     }
 
+    /**Holds the info about a school*/
     class School(
         var town: Town,
         var id: String,

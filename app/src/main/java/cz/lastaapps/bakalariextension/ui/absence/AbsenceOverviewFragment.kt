@@ -31,7 +31,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.findNavController
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.databinding.FragmentOverviewBinding
+import cz.lastaapps.bakalariextension.databinding.TemplateOverviewBinding
 
 /**shows how many lesson has user unexcused or ok text when everything is ok*/
 class AbsenceOverviewFragment : Fragment() {
@@ -40,7 +40,7 @@ class AbsenceOverviewFragment : Fragment() {
         private val TAG = AbsenceOverviewFragment::class.simpleName
     }
 
-    private lateinit var binding: FragmentOverviewBinding
+    private lateinit var binding: TemplateOverviewBinding
     private val viewModel: AbsenceViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -54,7 +54,7 @@ class AbsenceOverviewFragment : Fragment() {
         binding =
             DataBindingUtil.inflate(
                 inflater,
-                R.layout.fragment_overview,
+                R.layout.template_overview,
                 container,
                 false
             )

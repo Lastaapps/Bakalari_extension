@@ -31,10 +31,10 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import cz.lastaapps.bakalariextension.BuildConfig
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.ui.WhatsNew
-import cz.lastaapps.bakalariextension.ui.license.LicenseFragment
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -121,7 +121,7 @@ class AboutFragment : Fragment() {
         }
         //view license
         root.findViewById<ImageButton>(R.id.license).setOnClickListener {
-            requireActivity().startActivity(Intent(requireContext(), LicenseFragment::class.java))
+            requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.nav_license)
         }
 
         return root

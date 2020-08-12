@@ -21,9 +21,11 @@
 package cz.lastaapps.bakalariextension.api.user.data
 
 import cz.lastaapps.bakalariextension.api.DataId
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 class Semester(
-    id: Int,
-    from: String,
-    to: String
+    override var id: Int,
+    val from: String,
+    val to: String
 ) : DataId<Int>(id)

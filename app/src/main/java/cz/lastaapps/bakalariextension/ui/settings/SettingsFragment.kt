@@ -88,7 +88,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
         //GENERAL
         //notification settings
-        prefChange(sett.NOTIFICATION_SETTINGS, true) { _, _ ->
+        prefClick(sett.NOTIFICATION_SETTINGS, true) { _ ->
             Log.i(TAG, "Opening notification settings")
 
             val intent = Intent()
@@ -156,9 +156,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
             Log.i(TAG, "Download location changing")
 
-            sett.chooseDownloadDirectory(requireActivity()) { _ ->
-                setDownloadLocationText(it)
-            }
+            sett.chooseDownloadDirectory(requireActivity())
 
             true
         }
@@ -371,32 +369,31 @@ class SettingsFragment : PreferenceFragmentCompat() {
         var result: String? = ""
         val stringUri = Uri.decode(sett.getDownloadLocation())
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-
-            if (stringUri != "") {
-                val index = {
-                    var toReturn = -1
-                    var spotted = 0
-                    for (i in stringUri.indices) {
-                        val c = stringUri[i]
-                        if (c == '/') {
-                            if (spotted < 2)
-                                spotted++
-                            else {
-                                toReturn = i
-                                break
-                            }
+        //backup solution
+        if (stringUri != "") {
+            val index = {
+                var toReturn = -1
+                var spotted = 0
+                for (i in stringUri.indices) {
+                    val c = stringUri[i]
+                    if (c == '/') {
+                        if (spotted < 2)
+                            spotted++
+                        else {
+                            toReturn = i
+                            break
                         }
                     }
+                }
 
-                    toReturn
-                }.invoke()
-                result = stringUri.substring(index)
-            }
-
-        } else {
-            result = stringUri
+                toReturn
+            }.invoke()
+            result = stringUri.substring(index)
         }
+
+        val uri = Uri.parse(stringUri)
+        result = uri.lastPathSegment ?: result
+
         preference.summary = result ?: ""
     }
 

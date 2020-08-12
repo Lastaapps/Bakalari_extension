@@ -38,13 +38,14 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.URL
 
-/**Contains data for LoginActivity*/
+/**Contains  and downloads some data for LoginActivity*/
 class LoginViewModel : ViewModel() {
 
     companion object {
         private val TAG = LoginViewModel::class.java.simpleName
     }
 
+    /**List of downloaded schools*/
     val townList = MutableLiveData<List<Town>>()
 
     val selectedTown = MutableLiveData<Town>()
@@ -52,6 +53,7 @@ class LoginViewModel : ViewModel() {
 
     private var loadingTowns = false
 
+    /**if there is no school list downloaded yet, downloads one*/
     fun loadTownsIfNeeded() {
         if (townList.value != null) return
         if (loadingTowns) return
@@ -106,7 +108,10 @@ class LoginViewModel : ViewModel() {
         }
     }
 
+    /**contains schools loaded for all the towns*/
     private val schoolLists = HashMap<Town, MutableLiveData<List<School>>>()
+
+    /**@return school list for the town given*/
     fun getSchoolList(town: Town): MutableLiveData<List<School>> {
         if (!schoolLists.keys.contains(town)) {
             schoolLists[town] = MutableLiveData<List<School>>().also {
@@ -117,6 +122,7 @@ class LoginViewModel : ViewModel() {
         return schoolLists[town]!!
     }
 
+    /**downloads schools from the server if required*/
     private fun loadSchools(town: Town, data: MutableLiveData<List<School>>) {
         if (town.schools != null) return
 
@@ -142,7 +148,7 @@ class LoginViewModel : ViewModel() {
                         .toJson()!!
                     val list = ArrayList<School>()
 
-                    println(root)
+                    //println(root)
 
                     val array = root
                         .getJSONObject("municipality")
@@ -173,5 +179,4 @@ class LoginViewModel : ViewModel() {
             }
         }
     }
-
 }

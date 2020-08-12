@@ -100,7 +100,10 @@ class EventsParser {
             val list = DataIdList<SimpleData>()
 
             for (i in 0 until array.length()) {
-                list.add(parseSimple(array.getJSONObject(i)))
+                parseSimple(array.getJSONObject(i)).also {
+                    if (it.id != "")
+                        list.add(it)
+                }
             }
 
             return list

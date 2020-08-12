@@ -28,8 +28,8 @@ import android.widget.*
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.DataIdList
+import cz.lastaapps.bakalariextension.api.SimpleData
 import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
-import cz.lastaapps.bakalariextension.api.timetable.data.Cycle
 import cz.lastaapps.bakalariextension.api.timetable.data.Hour
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import cz.lastaapps.bakalariextension.api.user.data.User
@@ -121,7 +121,7 @@ class TimetableCreator {
         suspend fun createTimetable(
             root: View,
             week: Week,
-            cycle: Cycle?,
+            cycle: SimpleData?,
             user: User,
             homework: HomeworkList?
         ) {
@@ -261,7 +261,7 @@ class TimetableCreator {
         private suspend fun setupLessons(
             table: TableLayout,
             week: Week,
-            cycle: Cycle?,
+            cycle: SimpleData?,
             validHours: DataIdList<Hour>,
             user: User,
             homework: HomeworkList?

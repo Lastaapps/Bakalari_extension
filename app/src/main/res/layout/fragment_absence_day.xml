@@ -60,7 +60,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:visibility="@{viewmodel.isEmpty() ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -71,7 +70,8 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:visibility="@{viewmodel.isEmpty() ? View.GONE : View.VISIBLE}">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/legend"
@@ -150,7 +150,7 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <androidx.recyclerview.widget.RecyclerView
+                <cz.lastaapps.bakalariextension.ui.views.BetterRecyclerView
                     android:id="@+id/list"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"

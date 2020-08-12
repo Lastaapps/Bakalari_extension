@@ -34,7 +34,6 @@ import androidx.fragment.app.activityViewModels
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.marks.data.Mark
-import cz.lastaapps.bakalariextension.api.marks.data.MarksRoot
 import cz.lastaapps.bakalariextension.databinding.FragmentMarksPredictorBinding
 import cz.lastaapps.bakalariextension.ui.marks.MarksAdapter
 import cz.lastaapps.bakalariextension.ui.marks.MarksViewModel
@@ -51,45 +50,33 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
     //ViewModel with marks data
     val viewModel: MarksViewModel by activityViewModels()
 
-    /**Updates on marks changed*/
-    private val marksObserver = { _: MarksRoot ->
-        Log.i(TAG, "updating based on new marks")
-        loadSubjects()
-        loadMarks()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        //observes for marks change
-        viewModel.marks.observe({ lifecycle }, marksObserver)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         //inflates views
-        if (!this::binding.isInitialized) {
-            Log.i(TAG, "Creating view")
+        Log.i(TAG, "Creating view")
 
-            binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_marks_predictor, container, false
-            )
-            binding.viewmodel = viewModel
-            binding.setLifecycleOwner { lifecycle }
+        binding = DataBindingUtil.inflate(
+            inflater, R.layout.fragment_marks_predictor, container, false
+        )
+        binding.viewmodel = viewModel
+        binding.setLifecycleOwner { lifecycle }
 
-            //sets add mark button functionality
-            binding.addMark.setOnClickListener(this)
+        binding.list.adapter = MarksAdapter()
+
+        //sets add mark button functionality
+        binding.addMark.setOnClickListener(this)
+
+        viewModel.executeOrRefresh(lifecycle) {
+            Log.i(TAG, "updating based on new marks")
 
             loadSubjects()
             checkValidity()
             loadMarks()
             loadAddedMarks()
             updateNewAverage()
-        } else {
-            Log.i(TAG, "Already created")
         }
 
         return binding.root
@@ -134,7 +121,7 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
 
     /**Inits subject spinner*/
     private fun loadSubjects() {
-        val marks = viewModel.marks.value!!
+        val marks = viewModel.requireData()
 
         //subject names or "No marks"
         val subjectNames = ArrayList<String>()
@@ -178,7 +165,7 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
         val marks = viewModel.subjectMarks
 
         viewModel.average.value = viewModel.selectedSubject.averageText
-        binding.list.adapter = MarksAdapter(marks)
+        (binding.list.adapter as MarksAdapter).updateMarks(marks)
     }
 
     /**Loads predicted marks for subject given*/

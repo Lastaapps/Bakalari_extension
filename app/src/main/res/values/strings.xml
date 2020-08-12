@@ -32,11 +32,13 @@
         <item quantity="one">%d attachment</item>
         <item quantity="other">%d attachments</item>
     </plurals>
+    <string name="ok">OK</string>
     <string name="close">Close</string>
     <string name="retry">Retry</string>
     <string name="downloading">Downloading</string>
     <string name="select_download_location">Choose download location</string>
     <string name="share_message">Try this better Bakalari app as I did!</string>
+    <string name="no_items">No items</string>
 
 
     <!-- User types -->
@@ -86,6 +88,7 @@
     <string name="login_prompt_url">School\'s Bakalari URL</string>
     <string name="login_prompt_username">Username</string>
     <string name="login_prompt_password">Password</string>
+    <string name="login_loading_towns">Loading towns…</string>
     <string name="login_choose_town">Choose town:</string>
     <string name="login_choose_school">Choose school:</string>
     <string name="login_loading">Loading towns…</string>
@@ -161,7 +164,7 @@
     <string name="license_apache">Apache 2.0</string>
     <string name="license_mit">MIT License</string>
     <string name="license_mozilla">Mozilla Public License 2.0</string>
-    <string name="licence_inspiration_title">I took some inspiration (not copied main functions ideas) from these apps:</string>
+    <string name="licence_inspiration_title">I have taken some inspiration from these apps:</string>
     <string name="licence_inspiration_better_schedule"><a href="https://play.google.com/store/apps/details?id=cz.vitskalicky.lepsirozvrh">Better schedule</a></string>
     <string name="licence_inspiration_bakalari"><a href="https://play.google.com/store/apps/details?id=cz.impire.bakalari.student">Bakalari</a></string>
     <string name="licence_inspiration_bakalari_online"><a href="https://play.google.com/store/apps/details?id=cz.bakalari.mobile">Bakalari OnLine</a></string>
@@ -351,8 +354,6 @@
 
 
     <!-- Teacher list -->
-    <string name="teacher_failed_to_load">Failed to download teachers</string>
-    <string name="teacher_no_teachers">No teachers</string>
     <string name="teacher_name">Name:</string>
     <string name="teacher_email">Email:</string>
     <string name="teacher_web">Web:</string>
@@ -366,6 +367,8 @@
 
 
     <!-- Subject -->
+    <string name="subject_teacher_failed_to_load">Failed to download data</string>
+    <string name="subject_teacher_no_data">No data</string>
     <string name="subject_marks_list">Marks:</string>
     <string name="subject_homework_list">Homework list:</string>
     <string name="subject_theme_list">Themes:</string>
@@ -381,6 +384,7 @@
     <string name="attachment_downloading_subtitle">Downloading attachment…</string>
     <string name="attachment_downloading_subtitle_done">Attachment downloaded</string>
     <string name="attachment_download_started">Download started!</string>
+    <string name="attachment_download_failed">Download of %s failed</string>
     <string name="attachment_choose_again">Error, please choose download location again</string>
     <string name="attachment_error_file_system">Error while working with file system</string>
     <string name="attachment_error_no_internet">No internet connection</string>
@@ -389,6 +393,9 @@
     <string name="attachment_file_exists_replace">Replace</string>
     <string name="attachment_file_exists_cancel">Cancel</string>
     <string name="attachment_file_exists_rename">Rename to %s</string>
+    <string name="attachment_done_title">%s downloaded!</string>
+    <string name="attachment_done_open">Open</string>
+    <string name="attachment_done_dismiss">Dismiss</string>
 
 
     <!-- Permissions -->
@@ -415,6 +422,15 @@
     <string name="full_storage_message">There is no more space to save data, so the offline data may not be updated or saved</string>
     <string name="full_storage_button">I will see</string>
 
+    <!-- User changed dialog data -->
+    <string name="user_changed_title">New semester detected on the server</string>
+    <string name="user_changed_message">The old data will be now removed and replaced with the new ones</string>
+    <string name="user_changed_button">OK</string>
+
+    <!-- Teacher account warning -->
+    <string name="teacher_warning_title">Teacher account</string>
+    <string name="teacher_warning_message">App is not designed to offer all the teacher features, but you can still use the basic ones.</string>
+    <string name="teacher_warning_button">OK</string>
 
     <!--Notification channels-->
     <string name="chanel_timetable_name">Current lesson</string>
@@ -422,19 +438,5 @@
         - it\'s class, teacher, etc.</string>
     <string name="chanel_attachment_downloading_name">Attachment downloads</string>
     <string name="chanel_attachment_downloading_description">Shows downloaded attachments to open them fast</string>
-
-
-    <!-- File chooser -->
-    <string name="filechoooser_selectLabel">Select</string>
-    <string name="filechoooser_createLabel">Create</string>
-    <string name="filechoooser_newFolderLabel">New Folder</string>
-    <string name="filechoooser_cancelLabel">Cancel</string>
-    <string name="filechoooser_overviewHeading">Choose Storage</string>
-    <string name="filechoooser_internalStorageText">Internal Storage</string>
-    <string name="filechoooser_freeSpaceText">%s free</string>
-    <string name="filechoooser_folderCreatedToastText">Folder Created</string>
-    <string name="filechoooser_folderErrorToastText">Error occurred while creating folder. Try again.</string>
-    <string name="filechoooser_textfieldHintText">Folder Name</string>
-    <string name="filechoooser_textfieldErrorText">Empty Folder Name</string>
 
 </resources>

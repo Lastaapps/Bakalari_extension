@@ -21,12 +21,12 @@
 package cz.lastaapps.bakalariextension.ui.bottom
 
 import android.content.Context
-import android.util.TypedValue
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Recycler
 import kotlin.math.max
+
 
 /**source https://stackoverflow.com/questions/26666143/recyclerview-gridlayoutmanager-how-to-auto-detect-span-count*/
 class AutoFitLayoutManager : GridLayoutManager {
@@ -39,9 +39,10 @@ class AutoFitLayoutManager : GridLayoutManager {
     constructor(context: Context, columnWidth: Int) : super(context, 1) {
         /* Initially set spanCount to 1, will be changed automatically later. */
 
-        setColumnWidth(checkedColumnWidth(context, columnWidth))
+        setColumnWidth(columnWidth)
     }
 
+    /**Orientation is reversed!!!*/
     constructor(
         context: Context,
         columnWidth: Int,
@@ -51,23 +52,10 @@ class AutoFitLayoutManager : GridLayoutManager {
 
         /* Initially set spanCount to 1, will be changed automatically later. */
 
-        setColumnWidth(checkedColumnWidth(context, columnWidth))
+        setColumnWidth(columnWidth)
     }
 
-    private fun checkedColumnWidth(context: Context, columnWidth: Int): Int {
-        var columnWidth = columnWidth
-        if (columnWidth <= 0) {
-            /* Set default columnWidth value (48dp here). It is better to move this constant
-            to static constant on top, but we need context to convert it to dp, so can't really
-            do so. */
-            columnWidth = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 48f,
-                context.resources.displayMetrics
-            ).toInt()
-        }
-        return columnWidth
-    }
-
+    /**Sets the width of columns*/
     private fun setColumnWidth(newColumnWidth: Int) {
         if (newColumnWidth > 0 && newColumnWidth != columnWidth) {
             columnWidth = newColumnWidth
@@ -75,9 +63,9 @@ class AutoFitLayoutManager : GridLayoutManager {
         }
     }
 
+    /**updates views when changed*/
     override fun onLayoutChildren(recycler: Recycler, state: RecyclerView.State) {
-        val width = width
-        val height = height
+
         if (columnWidth > 0 && width > 0 && height > 0 && (isColumnWidthChanged || lastWidth != width || lastHeight != height)) {
             val totalSpace =
                 if (orientation == LinearLayoutManager.VERTICAL) {
@@ -85,12 +73,15 @@ class AutoFitLayoutManager : GridLayoutManager {
                 } else {
                     height - paddingTop - paddingBottom
                 }
+
             val spanCount = max(1, totalSpace / columnWidth)
             setSpanCount(spanCount)
             isColumnWidthChanged = false
         }
+
         lastWidth = width
         lastHeight = height
+
         super.onLayoutChildren(recycler, state)
     }
 

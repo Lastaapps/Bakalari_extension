@@ -20,6 +20,7 @@
 
 package cz.lastaapps.bakalariextension.tools
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -27,13 +28,11 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Resources
 import android.os.Build
-import android.os.Environment
+import android.provider.DocumentsContract
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
-import com.codekidlabs.storagechooser.Content
-import com.codekidlabs.storagechooser.StorageChooser
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
 import java.time.DayOfWeek
@@ -119,16 +118,6 @@ class MySettings(val context: Context) {
 
             if (sp.getString(LANGUAGE, "") == "")
                 editor.putString(LANGUAGE, getArray(R.array.sett_language)[0])
-
-            if (sp.getString(DOWNLOAD_LOCATION, "") == "")
-                editor.putString(
-                    DOWNLOAD_LOCATION,
-                    if (Build.VERSION.SDK_INT >= 29) {
-                        ""
-                    } else {
-                        context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)!!.absolutePath
-                    }
-                )
 
             if (sp.getString(TIMETABLE_DAY, "") == "")
                 editor.putString(TIMETABLE_DAY, getArray(R.array.sett_timetable_day)[2])
@@ -259,83 +248,47 @@ class MySettings(val context: Context) {
     }
 
     /**Pops up dialog, in which user chooses default download location*/
-    fun chooseDownloadDirectory(activity: Activity, onDone: ((newPath: String) -> Unit)) {
+    @SuppressLint("InlinedApi")
+    fun chooseDownloadDirectory(activity: Activity) {
 
         Toast.makeText(activity, R.string.select_download_location, Toast.LENGTH_LONG).show()
 
-        if (Build.VERSION.SDK_INT >= 29) {
+        //    For the Samsung My files
+        //    val intent = Intent("com.sec.android.app.myfiles.PICK_DATA")
+        //    intent.putExtra("CONTENT_TYPE", DocumentsContract.Document.MIME_TYPE_DIR)
+        //    intent.addCategory(Intent.CATEGORY_DEFAULT)
+        //    startActivityForResult(intent, REQUEST_CODE)
 
-            //    val intent = Intent("com.sec.android.app.myfiles.PICK_DATA")
-            //    intent.putExtra("CONTENT_TYPE", DocumentsContract.Document.MIME_TYPE_DIR)
-            //    intent.addCategory(Intent.CATEGORY_DEFAULT)
-            //    startActivityForResult(intent, REQUEST_CODE)
+        val intent = when (Build.VERSION.SDK_INT) {
+            in 19..20 -> Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                type = DocumentsContract.Document.MIME_TYPE_DIR
+            }
 
-            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
+            in 21..28 -> Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+
+            else -> Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
                 flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or
                         Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
             }
-            //intent.type = DocumentsContract.Document.MIME_TYPE_DIR
-            //intent.addCategory(Intent.CATEGORY_OPENABLE)
-
-            try {
-                //response
-                activity.startActivityForResult(
-                    //Intent.createChooser(intent, "Select a File to Upload"),
-                    intent,
-                    FILE_SELECT_CODE
-                )
-            } catch (ex: ActivityNotFoundException) {
-                // Potentially direct the user to the Market with a Dialog
-                Toast.makeText(
-                    activity,
-                    "Please install a File Manager.",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        } else {
-            val chooser = StorageChooser.Builder()
-                .withActivity(activity)
-                .withFragmentManager(activity.fragmentManager)
-                .withMemoryBar(true)
-                .allowCustomPath(true)
-                .disableMultiSelect()
-                .withContent(object : Content() {
-                    init {
-                        activity.apply {
-                            selectLabel = getString(R.string.filechoooser_selectLabel)
-                            createLabel = getString(R.string.filechoooser_createLabel)
-                            newFolderLabel = getString(R.string.filechoooser_newFolderLabel)
-                            cancelLabel = getString(R.string.filechoooser_cancelLabel)
-                            overviewHeading = getString(R.string.filechoooser_overviewHeading)
-                            internalStorageText =
-                                getString(R.string.filechoooser_internalStorageText)
-                            freeSpaceText = getString(R.string.filechoooser_freeSpaceText)
-                            folderCreatedToastText =
-                                getString(R.string.filechoooser_folderCreatedToastText)
-                            folderErrorToastText =
-                                getString(R.string.filechoooser_folderErrorToastText)
-                            textfieldHintText = getString(R.string.filechoooser_textfieldHintText)
-                            textfieldErrorText = getString(R.string.filechoooser_textfieldErrorText)
-                        }
-                    }
-                })
-                .setType(StorageChooser.DIRECTORY_CHOOSER)
-                .allowAddFolder(true)
-                .setDialogTitle(activity.getString(R.string.select_download_location))
-                .withPredefinedPath(getDownloadLocation())
-                .build()
-
-            // Show dialog whenever you want by
-            chooser.show()
-
-            // get path that the user has chosen
-            chooser.setOnSelectListener { path ->
-                Log.i(TAG, "New download directory $path")
-                setDownloadLocation(path)
-                onDone(path)
-            }
         }
+        //intent.addCategory(Intent.CATEGORY_OPENABLE)
 
+        try {
+            //response
+            activity.startActivityForResult(
+                //Intent.createChooser(intent, "Select a File to Upload"),
+                intent,
+                FILE_SELECT_CODE
+            )
+        } catch (ex: ActivityNotFoundException) {
+            // Potentially direct the user to the Market with a Dialog
+            Toast.makeText(
+                activity,
+                "Please install a File Manager.",
+                Toast.LENGTH_SHORT
+            ).show()
+
+        }
     }
 
     /**@return Setting's shared preferences*/

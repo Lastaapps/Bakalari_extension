@@ -26,14 +26,16 @@ import cz.lastaapps.bakalariextension.api.SimpleData
 import cz.lastaapps.bakalariextension.api.attachment.data.Attachment
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import cz.lastaapps.bakalariextension.tools.searchNeutralText
+import kotlinx.android.parcel.Parcelize
 import java.time.ZonedDateTime
 
 /**defines Homework list to make code simpler to read*/
 typealias HomeworkList = DataIdList<Homework>
 
 /** All data from homework json*/
+@Parcelize
 class Homework(
-    id: String,
+    override var id: String,
     var dateAward: String,
     var dateControl: String,
     var dateDone: String,

@@ -29,10 +29,6 @@
         <import type="android.text.method.LinkMovementMethod" />
 
         <variable
-            name="event"
-            type="cz.lastaapps.bakalariextension.api.events.data.Event" />
-
-        <variable
             name="mgr"
             type="cz.lastaapps.bakalariextension.ui.events.EventEntryManager" />
     </data>
@@ -47,7 +43,7 @@
             style="@style/AppTheme.Text.Bigger"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{event.title}"
+            android:text="@{mgr.event.title}"
             android:layout_margin="@dimen/margin_basic"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -64,7 +60,7 @@
             android:ellipsize="end"
             android:maxLines="@integer/homework_visible_lines"
             android:layout_margin="@dimen/margin_basic"
-            android:text="@{event.description}"
+            android:text="@{mgr.event.description}"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
 
@@ -80,14 +76,14 @@
             android:linksClickable="true"
             android:maxLines="@integer/homework_visible_lines"
             android:layout_margin="@dimen/margin_basic"
-            android:text="@{event.description}"
+            android:text="@{mgr.event.description}"
             android:textIsSelectable="true"
-            android:visibility="@{!event.description.equals(``) ? View.VISIBLE : View.GONE}"
-            app:movementMethod="@{LinkMovementMethod.getInstance()}"
+            android:visibility="@{!mgr.event.description.equals(``) ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/label"
             tools:text="Let's have a drink!" />
+        android:movementMethod="@{LinkMovementMethod.getInstance()}"
 
         <TextView
             android:id="@+id/show_more"
@@ -111,7 +107,7 @@
             android:layout_margin="@dimen/margin_basic"
             android:textIsSelectable="true"
             android:text="@{mgr.classesString()}"
-            android:visibility="@{!event.classes.empty ? View.VISIBLE : View.GONE}"
+            android:visibility="@{!mgr.event.classes.empty ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/show_more"
@@ -125,8 +121,8 @@
             android:layout_margin="@dimen/margin_basic"
             android:textIsSelectable="true"
             android:text="@{mgr.teachersString()}"
-            android:visibility="@{!event.teachers.empty ? View.VISIBLE : View.GONE}"
-            app:movementMethod="@{LinkMovementMethod.getInstance()}"
+            android:visibility="@{!mgr.event.teachers.empty ? View.VISIBLE : View.GONE}"
+            android:movementMethod="@{LinkMovementMethod.getInstance()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/classes"
@@ -140,7 +136,7 @@
             android:layout_margin="@dimen/margin_basic"
             android:textIsSelectable="true"
             android:text="@{mgr.roomsString()}"
-            android:visibility="@{!event.rooms.empty ? View.VISIBLE : View.GONE}"
+            android:visibility="@{!mgr.event.rooms.empty ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/teachers"
@@ -154,7 +150,7 @@
             android:layout_margin="@dimen/margin_basic"
             android:textIsSelectable="true"
             android:text="@{mgr.studentsString()}"
-            android:visibility="@{!event.students.empty ? View.VISIBLE : View.GONE}"
+            android:visibility="@{!mgr.event.students.empty ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rooms"

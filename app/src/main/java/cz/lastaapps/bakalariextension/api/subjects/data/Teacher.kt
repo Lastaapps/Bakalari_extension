@@ -23,12 +23,14 @@ package cz.lastaapps.bakalariextension.api.subjects.data
 import cz.lastaapps.bakalariextension.api.DataId
 import cz.lastaapps.bakalariextension.api.subjects.SubjectList
 import cz.lastaapps.bakalariextension.api.subjects.TeacherList
+import kotlinx.android.parcel.Parcelize
 import java.text.Collator
 import java.util.*
 import kotlin.collections.HashSet
 
+@Parcelize
 class Teacher(
-    id: String,
+    override var id: String,
     val name: String,
     val shortcut: String,
     val email: String,

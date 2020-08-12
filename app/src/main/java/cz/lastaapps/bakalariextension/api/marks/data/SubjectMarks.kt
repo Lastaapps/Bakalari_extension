@@ -20,25 +20,29 @@
 
 package cz.lastaapps.bakalariextension.api.marks.data
 
+import android.os.Parcelable
 import cz.lastaapps.bakalariextension.api.DataIdList
+import cz.lastaapps.bakalariextension.api.SimpleData
+import kotlinx.android.parcel.Parcelize
 import java.text.Collator
 import java.util.*
 
 /**Subject marking info with marks and subject info*/
+@Parcelize
 class SubjectMarks(
     val marks: DataIdList<Mark>,
-    val subject: Subject,
+    val subject: SimpleData,
     val averageText: String,
     val tempMark: String,
     val subjectNote: String,
     val tempMarkNote: String,
     val pointsOnly: Boolean,
     val predictorEnabled: Boolean
-) : Comparable<SubjectMarks> {
+) : Comparable<SubjectMarks>, Parcelable {
     companion object {
         val default: SubjectMarks
             get() = SubjectMarks(
-                DataIdList(), Subject("", "", ""), "0,00", "", "", "",
+                DataIdList(), SimpleData("", "", ""), "0,00", "", "", "",
                 pointsOnly = false,
                 predictorEnabled = false
             )

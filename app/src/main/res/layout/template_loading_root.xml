@@ -40,25 +40,43 @@
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="@{viewmodel.data == null &amp;&amp; viewmodel.isRefreshing() ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:visibility="@{!viewmodel.failed &amp;&amp; viewmodel.data == null ? View.VISIBLE : View.GONE}"
-            tools:visibility="visible" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            style="@style/AppTheme.Text"
-            android:id="@+id/error_message"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="@{viewmodel.failed &amp;&amp; !viewmodel.isRefreshing() ? View.VISIBLE : View.INVISIBLE}"
+            app:layout_constraintBottom_toBottomOf="@+id/last_updated"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:text="@{viewmodel.failedText(context)}"
-            android:visibility="@{viewmodel.failed ? View.VISIBLE : View.GONE}"
-            tools:visibility="visible" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/error_message"
+                style="@style/AppTheme.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewmodel.failedText(context)}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Failed to load" />
+
+            <ImageButton
+                android:id="@+id/refresh"
+                style="@style/AppTheme.SmallImageButton"
+                android:onClick="@{() -> viewmodel.onRefresh(true)}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/error_message"
+                app:srcCompat="@drawable/reload" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
@@ -76,12 +94,11 @@
             app:layout_constraintBottom_toTopOf="@+id/last_updated"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tabs"
-            tools:visibility="visible" />
+            app:layout_constraintTop_toBottomOf="@+id/tabs" />
 
         <TextView
-            style="@style/AppTheme.LastUpdate"
             android:id="@+id/last_updated"
+            style="@style/AppTheme.LastUpdate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"

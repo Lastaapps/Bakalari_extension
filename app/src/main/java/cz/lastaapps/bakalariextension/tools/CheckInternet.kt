@@ -22,6 +22,8 @@ package cz.lastaapps.bakalariextension.tools
 
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.util.Log
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.ui.login.LoginData
@@ -43,7 +45,7 @@ class CheckInternet {
 
             //checks if device is connected (internet don't have to work)
             val activeNetwork = cm.activeNetworkInfo
-            return if (activeNetwork != null && activeNetwork.isConnected) {
+            return if (isConnected(App.context)) {
 
                 try {
                     //at first tries school's url, then google.com
@@ -62,8 +64,8 @@ class CheckInternet {
                     val urlc: HttpURLConnection = url.openConnection() as HttpURLConnection
                     urlc.setRequestProperty("User-Agent", "test")
                     urlc.setRequestProperty("Connection", "Keep-Alive")
-                    urlc.connectTimeout = 2000
-                    urlc.readTimeout = 2000
+                    urlc.connectTimeout = 5000
+                    urlc.readTimeout = 5000
                     urlc.connect()
 
                     //connection succeed
@@ -75,6 +77,38 @@ class CheckInternet {
                     false
                 }
             } else false
+        }
+
+        private fun isConnected(context: Context): Boolean {
+            var result = false
+            val connectivityManager =
+                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val networkCapabilities = connectivityManager.activeNetwork ?: return false
+                val actNw =
+                    connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+                result = when {
+                    actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                    actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                    actNw.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+                    else -> false
+                }
+            } else {
+                connectivityManager.run {
+                    connectivityManager.activeNetworkInfo?.run {
+                        result = when (type) {
+                            ConnectivityManager.TYPE_WIFI -> true
+                            ConnectivityManager.TYPE_MOBILE -> true
+                            ConnectivityManager.TYPE_ETHERNET -> true
+                            else -> false
+                        }
+
+                    }
+                }
+            }
+
+            return result
         }
 
         /**@return if app can obtain data trough internet now*/

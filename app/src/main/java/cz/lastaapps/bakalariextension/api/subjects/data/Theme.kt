@@ -22,7 +22,9 @@ package cz.lastaapps.bakalariextension.api.subjects.data
 
 import cz.lastaapps.bakalariextension.api.DataId
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 class Theme(
     val date: String,
     val theme: String,
@@ -30,8 +32,9 @@ class Theme(
     val hourCaption: String,
     val lessonLabel: String
 ) : DataId<String>(lessonLabel), Comparable<Theme> {
+
     override fun compareTo(other: Theme): Int {
-        return lessonLabel.toInt().compareTo(other.lessonLabel.toInt())
+        return -1 * lessonLabel.toInt().compareTo(other.lessonLabel.toInt())
     }
 
     /**formats string to show in views*/

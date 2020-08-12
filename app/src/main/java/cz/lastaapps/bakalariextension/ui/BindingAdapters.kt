@@ -30,7 +30,33 @@ fun setImageResource(imageView: ImageView, resource: Int) {
     imageView.setImageResource(resource)
 }
 
-@BindingAdapter("app:movementMethod")
+@BindingAdapter("android:movementMethod")
 fun setMovementMethod(textView: TextView, movementMethod: MovementMethod) {
     textView.movementMethod = movementMethod
 }
+
+/*
+//Two way data binding for ViewPager2 - not working correctly - position set before adapter attached
+@BindingAdapter("currentItem")
+fun setViewPager2Position(pager: ViewPager2, index: Int) {
+    if (pager.currentItem != index)
+        pager.setCurrentItem(index, false)
+}
+
+@InverseBindingAdapter(attribute = "currentItem")
+fun getViewPager2Position(pager: ViewPager2): Int {
+    return pager.currentItem
+}
+
+@BindingAdapter("currentItemAttrChanged")
+fun setViewPager2Listener(pager: ViewPager2, attrChange: InverseBindingListener) {
+    pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        override fun onPageSelected(position: Int) {
+            pager.adapter?.let {
+                attrChange.onChange()
+            }
+        }
+    })
+}
+*/
+

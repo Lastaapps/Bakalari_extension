@@ -32,7 +32,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.findNavController
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.homework.data.Homework
-import cz.lastaapps.bakalariextension.databinding.FragmentOverviewBinding
+import cz.lastaapps.bakalariextension.databinding.TemplateOverviewBinding
 
 /**placed inside HomeFragment, shows how many current homework are there*/
 class HmwOverview : Fragment() {
@@ -41,7 +41,7 @@ class HmwOverview : Fragment() {
         private val TAG = HmwOverview::class.simpleName
     }
 
-    private lateinit var binding: FragmentOverviewBinding
+    private lateinit var binding: TemplateOverviewBinding
     private val viewModel: HmwViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -55,7 +55,7 @@ class HmwOverview : Fragment() {
         binding =
             DataBindingUtil.inflate(
                 inflater,
-                R.layout.fragment_overview,
+                R.layout.template_overview,
                 container,
                 false
             )

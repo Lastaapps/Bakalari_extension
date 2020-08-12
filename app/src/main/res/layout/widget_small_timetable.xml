@@ -26,8 +26,8 @@
     android:orientation="vertical">
 
     <TextView
-        style="@style/AppTheme.Text"
         android:id="@+id/date_label"
+        style="@style/AppTheme.Text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -68,10 +68,15 @@
             android:visibility="gone"
             tools:visibility="visible" />
 
-        <include
-            layout="@layout/timetable_holiday"
+        <TextView
+            android:id="@+id/holiday"
+            style="@style/Timetable.Main"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:text="Holiday" />
     </FrameLayout>
 </LinearLayout>

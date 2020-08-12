@@ -24,11 +24,13 @@ import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.DataId
 import cz.lastaapps.bakalariextension.api.SimpleData
+import kotlinx.android.parcel.Parcelize
 
 typealias ModuleMap = HashMap<String, ArrayList<String>>
 
+@Parcelize
 class User(
-    uid: String,
+    private val uid: String,
     val classInfo: SimpleData,
     val fullName: String,
     val schoolName: String,

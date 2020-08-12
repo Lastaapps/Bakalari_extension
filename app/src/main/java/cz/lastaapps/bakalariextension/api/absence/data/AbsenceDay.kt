@@ -21,16 +21,18 @@
 package cz.lastaapps.bakalariextension.api.absence.data
 
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import kotlinx.android.parcel.Parcelize
 import java.time.ZonedDateTime
 
+@Parcelize
 class AbsenceDay(
     val date: String,
-    unsolved: Int,
-    ok: Int,
-    missed: Int,
-    late: Int,
-    soon: Int,
-    school: Int
+    override val unsolved: Int,
+    override val ok: Int,
+    override val missed: Int,
+    override val late: Int,
+    override val soon: Int,
+    override val school: Int
 ) : AbsenceDataHolder(date.hashCode(), unsolved, ok, missed, late, soon, school),
     Comparable<AbsenceDay> {
 

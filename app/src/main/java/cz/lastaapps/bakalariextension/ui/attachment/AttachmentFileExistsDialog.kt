@@ -20,102 +20,88 @@
 
 package cz.lastaapps.bakalariextension.ui.attachment
 
-import android.app.Activity
-import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
-import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.DialogFragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.navigation.fragment.navArgs
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import cz.lastaapps.bakalariextension.R
+import cz.lastaapps.bakalariextension.api.attachment.data.Attachment
+import cz.lastaapps.bakalariextension.ui.views.createDialog
+import cz.lastaapps.bakalariextension.ui.views.setDialogItems
+import cz.lastaapps.bakalariextension.ui.views.setDialogTitle
 
 /**Show oder options if file cannot be downloaded directly*/
-class AttachmentFileExistsDialog : DialogFragment() {
+class AttachmentFileExistsDialog : BottomSheetDialogFragment() {
 
     companion object {
-        val TAG = AttachmentFileExistsDialog::class.java.simpleName
-        const val FRAGMENT_TAG =
-            "cz.lastaapps.bakalariextension.ui.attachment.AttachmentFileExistsDialog"
-
-        /**creates new dialog instance*/
-        fun newInstance(
-            fileName: String,
-            callback: ((activity: Activity, fileName: String, ignoreExist: Boolean) -> Unit)
-        ): AttachmentFileExistsDialog {
-
-            val frag = AttachmentFileExistsDialog()
-            //passes data into dialog
-            val args = Bundle()
-            args.putString("filename", fileName)
-            frag.arguments = args
-            Companion.callback = callback
-
-            return frag
-        }
-
-        private var callback: ((activity: Activity, fileName: String, ignoreExist: Boolean) -> Unit)? =
-            null
+        private val TAG = AttachmentFileExistsDialog::class.java.simpleName
     }
 
+    private val args: AttachmentFileExistsDialogArgs by navArgs()
+    private lateinit var attachment: Attachment
     private lateinit var fileName: String
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+    private lateinit var root: View
 
-        Log.i(TAG, "Creating dialog")
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+
+        Log.i(TAG, "Creating view")
 
         //loads data
-        fileName = requireArguments().getString("filename")!!
+        attachment = args.attachment
+        fileName = args.fileName
+
         val newFileName = getFileNameWithNumber(fileName)
 
-        //if app can write file, i can replace it
-        val selection = if (AttachmentDownload.accessible(requireContext(), fileName)) {
-            arrayOf(
-                getString(R.string.attachment_file_exists_open),
-                String.format(getString(R.string.attachment_file_exists_rename), newFileName),
-                getString(R.string.attachment_file_exists_cancel),
-                getString(R.string.attachment_file_exists_replace)
-            )
-        } else {
-            arrayOf(
-                getString(R.string.attachment_file_exists_open),
-                String.format(getString(R.string.attachment_file_exists_rename), newFileName),
-                getString(R.string.attachment_file_exists_cancel)
-            )
+        //the list of options
+        val selection = arrayListOf(
+            getString(R.string.attachment_file_exists_open),
+            String.format(getString(R.string.attachment_file_exists_rename), newFileName),
+            getString(R.string.attachment_file_exists_cancel)
+        )
+
+        //replace available only it the app has permission to write to the file
+        if (AttachmentDownload.accessible(requireContext(), fileName)) {
+            selection.add(getString(R.string.attachment_file_exists_replace))
         }
 
-        //sets up dialog
-        return AlertDialog.Builder(requireContext()).apply {
-
-            setCancelable(true)
-            setTitle(R.string.attachment_file_exists_label)
-            setItems(selection) { _, position ->
+        root = createDialog(requireContext(), container)
+            .setDialogTitle(R.string.attachment_file_exists_label)
+            .setDialogItems(selection) { position ->
                 when (position) {
+                    //Open
                     0 -> {
-                        callback?.let {
-                            val uri = AttachmentDownload.getTargetUri(context, fileName, "")!!
-                            val intent = AttachmentDownload.getIntent(
-                                uri,
-                                context.contentResolver.getType(uri)!!
-                            )
-                            context.startActivity(intent)
-                        }
+                        val uri = AttachmentDownload.getTargetUri(requireContext(), fileName, "")!!
+                        val intent = AttachmentDownload.getIntent(
+                            uri,
+                            requireContext().contentResolver.getType(uri)!!
+                        )
+                        requireContext().startActivity(intent)
                     }
+                    //Rename with number (1)
                     1 -> {
-                        callback?.let {
-                            it(requireActivity(), newFileName, false)
-                        }
+                        onDownloadClick(requireActivity(), attachment, newFileName, false)
                     }
+                    //Close
                     2 -> {
                         dismiss()
                     }
+                    //replace
                     3 -> {
-                        callback?.let {
-                            it(requireActivity(), fileName, true)
-                        }
+                        onDownloadClick(requireActivity(), attachment, fileName, true)
                     }
                 }
+                dismiss()
             }
 
-        }.create()
+        return root
     }
 
     /**creates filename with added number (in rename mode) name -> name (1)*/

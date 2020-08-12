@@ -29,8 +29,9 @@ import java.time.ZonedDateTime
 
 typealias EventList = DataIdList<Event>
 
+//TODO @Parcelize - *sets needed
 class Event(
-    id: String,
+    override var id: String,
     var group: Int = 0,
     var title: String,
     var description: String,

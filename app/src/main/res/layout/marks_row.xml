@@ -34,7 +34,7 @@
 
         <variable
             name="subjectData"
-            type="cz.lastaapps.bakalariextension.api.marks.data.Subject" />
+            type="cz.lastaapps.bakalariextension.api.SimpleData" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -54,80 +54,65 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="100" />
 
-        <LinearLayout
-            android:id="@+id/linearLayout"
+        <TextView
+            android:id="@+id/subject"
+            style="@style/Marks.Subject"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:gravity="center_vertical|start"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/constraintLayout"
+            android:text="@{subjectData.name}"
+            android:visibility="@{subjectData == null ? View.GONE : View.VISIBLE}"
+            app:layout_constraintBottom_toTopOf="@+id/caption"
+            app:layout_constraintEnd_toStartOf="@id/barrier"
             app:layout_constraintStart_toEndOf="@+id/mark"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="Python" />
 
-            <TextView
-                android:id="@+id/subject"
-                style="@style/Marks.Subject"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{subjectData.name}"
-                android:visibility="@{subjectData == null ? View.GONE : View.VISIBLE}"
-                tools:text="Python" />
+        <TextView
+            android:id="@+id/caption"
+            style="@style/Marks.Caption"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{markData.type + ((markData.type.equals(``) || markData.caption.equals(``)) ? `` : ` - `) + markData.caption}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/barrier"
+            app:layout_constraintStart_toEndOf="@+id/mark"
+            app:layout_constraintTop_toBottomOf="@+id/subject"
+            tools:text="Nobody expected Spanish inquisition" />
 
-            <TextView
-                android:id="@+id/caption"
-                style="@style/Marks.Caption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{markData.type + ((markData.type.equals(``) || markData.caption.equals(``)) ? `` : ` - `) + markData.caption}"
-                tools:text="Nobody expected Spanish inquisition" />
-
-        </LinearLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout"
+        <TextView
+            android:id="@+id/date"
+            style="@style/Marks.Date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
+            android:text="@{markData.simpleDate()}"
+            android:textAlignment="textEnd"
+            app:layout_constraintBottom_toTopOf="@+id/weight"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/linearLayout">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="spread_inside"
+            tools:text="30.2." />
 
-            <TextView
-                android:id="@+id/date"
-                style="@style/Marks.Date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="10dp"
-                android:text="@{markData.simpleDate()}"
-                android:textAlignment="textEnd"
-                app:layout_constraintBottom_toTopOf="@id/weight"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_chainStyle="spread_inside"
-                tools:text="30.2." />
+        <TextView
+            android:id="@+id/weight"
+            style="@style/Marks.Weight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{@string/marks_weight + ` ` + String.valueOf(markData.weight)}"
+            android:textAlignment="textEnd"
+            android:visibility="@{markData.weight != null ? View.VISIBLE : View.INVISIBLE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/date"
+            tools:text="Weight 4" />
 
-
-            <TextView
-                android:id="@+id/weight"
-                style="@style/Marks.Weight"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_marginEnd="10dp"
-                android:text="@{@string/marks_weight + ` ` + String.valueOf(markData.weight)}"
-                android:textAlignment="textEnd"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/date"
-                android:visibility="@{markData.weight != null ? View.VISIBLE : View.INVISIBLE}"
-                tools:text="Weight 4"
-                tools:visibility="visible" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="left"
+            app:constraint_referenced_ids="date,weight"
+            tools:layout_editor_absoluteX="411dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -154,6 +154,10 @@ class EventsLoader {
                     }
 
                     EventsStorage.save(EventsParser.encodeJson(combined.toList()), type)
+                } else {
+
+                    //to update lastUpdated variable
+                    EventsStorage.save(saved, type)
                 }
             }
         }

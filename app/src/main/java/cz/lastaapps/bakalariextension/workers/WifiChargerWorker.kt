@@ -24,6 +24,11 @@ import android.content.Context
 import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import cz.lastaapps.bakalariextension.api.absence.AbsenceLoader
+import cz.lastaapps.bakalariextension.api.events.EventsLoader
+import cz.lastaapps.bakalariextension.api.homework.HomeworkLoader
+import cz.lastaapps.bakalariextension.api.marks.MarksLoader
+import cz.lastaapps.bakalariextension.api.subjects.SubjectLoader
 import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
 import cz.lastaapps.bakalariextension.api.user.UserLoader
 import cz.lastaapps.bakalariextension.tools.TimeTools
@@ -43,15 +48,23 @@ class WifiChargerWorker(context: Context, workerParameters: WorkerParameters) :
         //if all actions succeed
         var success = true
 
-        UserLoader.loadFromServer()
+        success = UserLoader.loadFromServer() != null
 
         //updates current timetable
-        if (TimetableLoader.loadFromServer(TimeTools.monday) == null)
-            success = false
+        TimetableLoader.loadFromServer(TimeTools.monday)
 
         //loads timetable for the next week
-        if (TimetableLoader.loadFromServer(TimeTools.monday.plusDays(7)) == null)
-            success = false
+        TimetableLoader.loadFromServer(TimeTools.monday.plusDays(7))
+
+        MarksLoader.loadFromServer()
+
+        HomeworkLoader.loadFromServer()
+
+        AbsenceLoader.loadFromServer()
+
+        EventsLoader.loadFromServer()
+
+        SubjectLoader.loadFromServer()
 
         return if (success)
             Result.success()

@@ -21,115 +21,102 @@
 package cz.lastaapps.bakalariextension.ui.attachment
 
 import android.app.Activity
-import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.DialogFragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.navArgs
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.attachment.data.Attachment
 import cz.lastaapps.bakalariextension.tools.MySettings
+import cz.lastaapps.bakalariextension.ui.views.createDialog
+import cz.lastaapps.bakalariextension.ui.views.setDialogButton
+import cz.lastaapps.bakalariextension.ui.views.setDialogList
+import cz.lastaapps.bakalariextension.ui.views.setDialogTitle
 
 /**Shows the list on attachments and makes them available to download*/
-class AttachmentDialog : DialogFragment() {
+class AttachmentDialog : BottomSheetDialogFragment() {
 
     companion object {
-        const val FRAGMENT_TAG = "cz.lastaapps.bakalariextension.ui.attachment.AttachmentDialog"
         val TAG = AttachmentDialog::class.java.simpleName
-
-        /**creates an instance of dialog*/
-        fun newInstance(attachments: DataIdList<Attachment>): AttachmentDialog {
-            val frag = AttachmentDialog()
-            val args = Bundle()
-            args.putSerializable("attachments", attachments)
-            frag.arguments = args
-            return frag
-        }
-
-        /**on item selected*/
-        fun onDownloadClick(
-            activity: Activity,
-            attachment: Attachment,
-            fileName: String,
-            ignoreExist: Boolean
-        ) {
-            Log.i(TAG, "Attachment selected $fileName")
-
-            //checks if download is possible
-            if ((AttachmentDownload.exists(activity, fileName) && !ignoreExist)
-                || !AttachmentDownload.accessible(activity, fileName)
-            ) {
-
-                //shows dialog with alternatives
-                val dialog =
-                    AttachmentFileExistsDialog.newInstance(attachment.fileName) { activity, fileName, ignoreExist ->
-                        onDownloadClick(activity, attachment, fileName, ignoreExist)
-                    }
-                dialog.show(
-                    (activity as AppCompatActivity).supportFragmentManager,
-                    AttachmentFileExistsDialog.FRAGMENT_TAG
-                )
-
-                return
-            }
-
-            //starts file download
-            AttachmentDownload.download(
-                activity,
-                fileName,
-                attachment.type,
-                attachment.id
-            )
-        }
     }
+
+    private val args: AttachmentDialogArgs by navArgs()
 
     private lateinit var attachments: DataIdList<Attachment>
+    private lateinit var root: View
 
-    //alternative show method
-    fun show(activity: AppCompatActivity, tag: String?) {
-        val sett = MySettings.withAppContext()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val sett = MySettings(requireContext())
         if (sett.getDownloadLocation() == "") {
-            sett.chooseDownloadDirectory(activity) {}
-        } else
-            super.show(activity.supportFragmentManager, tag)
+            sett.chooseDownloadDirectory(requireActivity())
+            dismiss()
+        }
     }
 
-    /**creates dialog*/
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
-        Log.i(TAG, "Creating dialog")
+        Log.i(TAG, "Creating view")
 
         //gets attachment
-        attachments = requireArguments().getSerializable("attachments")!! as DataIdList<Attachment>
+        attachments = DataIdList(args.attachments)
 
-        //list of filenames
-        val filenames = Array(attachments.size) { "" }
-        attachments.forEachIndexed { i, it ->
-            filenames[i] = it.fileName
-        }
-
-        return AlertDialog.Builder(requireContext()).apply {
-
-            setCancelable(true)
-            setItems(filenames) { _, position ->
-                onDownloadClick(
-                    requireActivity(),
-                    attachments[position],
-                    attachments[position].fileName,
-                    false
-                )
+        root = createDialog(requireContext(), container)
+            .setDialogTitle(R.string.attachment_label)
+            .setDialogButton(R.id.positive, R.string.attachment_change_location) {
+                MySettings(requireContext()).chooseDownloadDirectory(requireActivity())
+                dismiss()
             }
-            setTitle(R.string.attachment_label)
-
-        }.create().apply {
-
-            //dialog is not dismissed on button click
-            setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.attachment_change_location))
-            { _, _ ->
-                MySettings(requireContext()).chooseDownloadDirectory(requireActivity()) {}
+            .setDialogList {
+                it.adapter = AttachmentAdapter(attachments) {
+                    onDownloadClick(requireActivity(), it, it.fileName, false)
+                }
             }
-        }
+
+        return root
     }
+
+}
+
+/**on item selected*/
+fun onDownloadClick(
+    activity: Activity,
+    attachment: Attachment,
+    fileName: String,
+    ignoreExist: Boolean
+) {
+    Log.i(AttachmentDialog.TAG, "Attachment selected $fileName")
+
+    //checks if download is possible
+    if ((AttachmentDownload.exists(activity, fileName) && !ignoreExist)
+        || !AttachmentDownload.accessible(activity, fileName)
+    ) {
+
+        //shows dialog with alternatives
+        val action = AttachmentDialogDirections.actionNavAttachmentToAttachmentFileExistsDialog(
+            attachment,
+            fileName
+        )
+        activity.findNavController(R.id.nav_host_fragment).navigate(action)
+
+        return
+    }
+
+    //starts file download
+    AttachmentDownload.download(
+        activity,
+        fileName,
+        attachment.type,
+        attachment.id
+    )
 }

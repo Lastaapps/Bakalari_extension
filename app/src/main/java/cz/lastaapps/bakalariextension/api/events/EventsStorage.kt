@@ -119,7 +119,7 @@ class EventsStorage {
 
         /**deletes saved homework*/
         fun delete(type: String) {
-            Log.e(TAG, "Deleting  $type")
+            Log.e(TAG, "Deleting $type")
 
             getFile(type).delete()
             releaseCache()

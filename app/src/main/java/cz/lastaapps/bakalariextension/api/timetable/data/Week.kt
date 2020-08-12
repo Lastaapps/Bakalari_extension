@@ -20,26 +20,32 @@
 
 package cz.lastaapps.bakalariextension.api.timetable.data
 
+import android.os.Parcelable
 import cz.lastaapps.bakalariextension.api.DataIdList
+import cz.lastaapps.bakalariextension.api.SimpleData
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import kotlinx.android.parcel.IgnoredOnParcel
+import kotlinx.android.parcel.Parcelize
 import java.io.Serializable
 import java.time.ZonedDateTime
 import kotlin.math.min
 
 /**contains all the data downloaded and parsed from server*/
+@Parcelize
 data class Week(
     val hours: DataIdList<Hour>,
     val days: ArrayList<Day>,
-    val classes: DataIdList<Class>,
+    val classes: DataIdList<SimpleData>,
     val groups: DataIdList<Group>,
-    val subjects: DataIdList<Subject>,
-    val teachers: DataIdList<Teacher>,
-    val rooms: DataIdList<Room>,
-    val cycles: DataIdList<Cycle>,
+    val subjects: DataIdList<SimpleData>,
+    val teachers: DataIdList<SimpleData>,
+    val rooms: DataIdList<SimpleData>,
+    val cycles: DataIdList<SimpleData>,
     val loadedForDate: ZonedDateTime
-): Serializable {
+) : Serializable, Parcelable {
 
     /**returns first day of this week*/
+    @IgnoredOnParcel
     val monday: ZonedDateTime = loadedForDate
 
     /**@return day of the week for date selected

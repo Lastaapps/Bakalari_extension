@@ -49,7 +49,9 @@ import cz.lastaapps.bakalariextension.api.user.data.User
 import cz.lastaapps.bakalariextension.send.ReportIssueActivity
 import cz.lastaapps.bakalariextension.send.SendIdeaActivity
 import cz.lastaapps.bakalariextension.tools.BaseActivity
+import cz.lastaapps.bakalariextension.ui.TeacherWarning
 import cz.lastaapps.bakalariextension.ui.UserViewModel
+import cz.lastaapps.bakalariextension.ui.WhatsNew
 import cz.lastaapps.bakalariextension.ui.bottom.BottomFragment
 import cz.lastaapps.bakalariextension.ui.bottom.BottomItem
 import cz.lastaapps.bakalariextension.ui.login.ActionsLogout
@@ -68,7 +70,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         const val INVALID_REFRESH_TOKEN = "cz.lastaapps.bakalariextension.INVALID_REFRESH_TOKEN"
         const val FULL_STORAGE = "cz.lastaapps.bakalariextension.FULL_STORAGE"
-
+        const val USER_CHANGED = "cz.lastaapps.bakalariextension.USER_CHANGED"
+        const val ATTACHMENT_DOWNLOADED = "cz.lastaapps.bakalariextension.ATTACHMENT_DOWNLOADED"
+        const val ATTACHMENT_DOWNLOADED_FILENAME =
+            "cz.lastaapps.bakalariextension.ATTACHMENT_DOWNLOADED.FileName"
+        const val ATTACHMENT_DOWNLOADED_INTENT =
+            "cz.lastaapps.bakalariextension.ATTACHMENT_DOWNLOADED.Intent"
+        const val ATTACHMENT_DOWNLOADED_URI =
+            "cz.lastaapps.bakalariextension.ATTACHMENT_DOWNLOADED.Uri"
     }
 
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -83,7 +92,14 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         //goes fullscreen in landscape mode
         val orientation = resources.configuration.orientation
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            //TODO target 30
             window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+
+            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                window.insetsController?.hide(WindowInsets.Type.statusBars())
+            } else {
+                window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+            }*/
         }
 
         setContentView(R.layout.activity_main)
@@ -98,6 +114,13 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         //finds controller used for switching fragments
         val navController = findNavController(R.id.nav_host_fragment)
+
+        //manages loading and navigation view visibility changes
+        if (mainViewModel.result.value == MainViewModel.UNKNOWN) {
+            navController.navigate(R.id.nav_loading)
+        } else if (mainViewModel.loggedIn.value == true) {
+            setupWithUserData()
+        }
 
         //sets up bottom navigation with same navController
         //findViewById<BottomNavigationView>(R.id.bottom_nav)
@@ -117,18 +140,17 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         navView.setupWithNavController(navController)
         navView.setNavigationItemSelectedListener(this)
 
-        //manages loading and navigation view visibility changes
-        if (mainViewModel.result.value == MainViewModel.UNKNOWN) {
-            navController.navigate(R.id.nav_loading)
-        } else if (mainViewModel.loggedIn.value == true) {
-            startupCheckSucceed()
-        }
-
         //shows popup when refresh token is invalid
         registerReceiver(invalidRefreshTokenReceiver, IntentFilter(INVALID_REFRESH_TOKEN))
 
         //shows popup when storage is full
         registerReceiver(fullStorageReceiver, IntentFilter(FULL_STORAGE))
+
+        //shows popup when user object changes and the data should be reloaded
+        registerReceiver(userChangedReceiver, IntentFilter(USER_CHANGED))
+
+        //shows popup when attachment downloaded with the opinion to open it
+        registerReceiver(attachmentDownloaded, IntentFilter(ATTACHMENT_DOWNLOADED))
 
         navController.addOnDestinationChangedListener { controller, destination, arguments ->
             println("Current: ${destination.label}")
@@ -140,6 +162,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         unregisterReceiver(invalidRefreshTokenReceiver)
         unregisterReceiver(fullStorageReceiver)
+        unregisterReceiver(userChangedReceiver)
+        unregisterReceiver(attachmentDownloaded)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -162,8 +186,25 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
     }
 
+    fun loginCheckDone() {
+
+        setupWithUserData()
+
+        findNavController(R.id.nav_host_fragment).apply {
+
+            //removes all navigation destinations from stack except default/home one - nav_home
+            popBackStack()
+
+            //show some externally required fragment
+            val navigateTo = intent.getIntExtra(NAVIGATE, -1)
+            if (navigateTo != -1) {
+                navigate(navigateTo)
+            }
+        }
+    }
+
     /**shows home fragment*/
-    fun startupCheckSucceed() {
+    private fun setupWithUserData() {
         mainViewModel.loggedIn.value = true
 
         mainViewModel.launchInitRun.apply {
@@ -182,19 +223,15 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         findViewById<View>(R.id.nav_view).visibility = View.VISIBLE
         findViewById<View>(R.id.appBarLayout).visibility = View.VISIBLE
 
-        setupNavMenus()
-
-        findNavController(R.id.nav_host_fragment).apply {
-
-            //removes all navigation destinations from stack except default/home one - nav_home
-            popBackStack()
-
-            //show some externally required fragment
-            val navigateTo = intent.getIntExtra(NAVIGATE, -1)
-            if (navigateTo != -1) {
-                navigate(navigateTo)
-            }
+        //What's new - shown only once per version
+        if (WhatsNew(this).shouldShow()) {
+            WhatsNew(this).showDialog()
         }
+
+        if (TeacherWarning.shouldShow(this, userViewModel.requireData()))
+            TeacherWarning().show(supportFragmentManager)
+
+        setupNavMenus()
     }
 
     /**adds navigation items of the enabled modules*/
@@ -501,5 +538,42 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 }
             }
         }
+    }
+
+    private val userChangedReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == USER_CHANGED) {
+                Log.i(TAG, "User object changed")
+
+                AlertDialog.Builder(this@MainActivity)
+                    .setTitle(R.string.user_changed_title)
+                    .setMessage(R.string.user_changed_message)
+                    .setPositiveButton(R.string.user_changed_button) { _, _ ->
+                        startActivity(
+                            Intent(this@MainActivity, MainActivity::class.java)
+                        )
+                        finish()
+                    }
+                    .setCancelable(false)
+                    .show()
+            }
+        }
+    }
+
+    private val attachmentDownloaded = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == ATTACHMENT_DOWNLOADED) {
+                Log.i(TAG, "Attachment downloaded received, navigation to the destination")
+
+                findNavController(R.id.nav_host_fragment).navigate(
+                    MobileNavigationDirections.actionAttachmentDownloaded(
+                        intent.getStringExtra(ATTACHMENT_DOWNLOADED_FILENAME)!!,
+                        intent.getParcelableExtra(ATTACHMENT_DOWNLOADED_INTENT)!!,
+                        intent.getParcelableExtra(ATTACHMENT_DOWNLOADED_URI)!!
+                    )
+                )
+            }
+        }
+
     }
 }

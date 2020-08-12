@@ -18,20 +18,24 @@
  *
  */
 
-package cz.lastaapps.bakalariextension.api.timetable.data
+package cz.lastaapps.bakalariextension.api.user
 
-import cz.lastaapps.bakalariextension.api.SimpleData
+import android.content.Intent
+import cz.lastaapps.bakalariextension.App
+import cz.lastaapps.bakalariextension.MainActivity
+import org.json.JSONObject
 
-//simple classes containing only id, shortcut and name (group also class id)
-class Room(id: String, shortcut: String, name: String) : SimpleData(id, shortcut, name)
+/** Notifies main activity and the others that user object has changed on server and the data should be reloaded*/
+class UserChangeObserver {
 
-class Teacher(id: String, shortcut: String, name: String) : SimpleData(id, shortcut, name)
+    companion object {
+        fun onNew(new: JSONObject) {
+            val old = UserStorage.load() ?: return
 
-class Subject(id: String, shortcut: String, name: String) : SimpleData(id, shortcut, name)
-
-class Group(var classId: String, id: String, shortcut: String, name: String):
-    SimpleData(id, shortcut, name)
-
-class Class(id: String, shortcut: String, name: String) : SimpleData(id, shortcut, name)
-
-class Cycle(id: String, shortcut: String, name: String) : SimpleData(id, shortcut, name)
+            if (new.toString() != old.toString()) {
+                val intent = Intent(MainActivity.USER_CHANGED)
+                App.context.sendBroadcast(intent)
+            }
+        }
+    }
+}

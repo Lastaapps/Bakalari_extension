@@ -21,11 +21,13 @@
 package cz.lastaapps.bakalariextension.api.subjects.data
 
 import cz.lastaapps.bakalariextension.api.DataId
+import kotlinx.android.parcel.Parcelize
 import java.text.Collator
 import java.util.*
 
+@Parcelize
 class Subject(
-    id: String,
+    override var id: String,
     val name: String,
     val shortcut: String,
     val teacher: Teacher
