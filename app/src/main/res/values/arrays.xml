@@ -25,7 +25,7 @@
     </array>
 
     <array name="license_apache">
-        <item>Android Studio icon clip art</item>
+        <item>Android Studio icon clipart</item>
         <item>androidx.annotation:annotation</item>
         <item>androidx.appcompat:appcompat</item>
         <item>androidx.constraintlayout:constraintlayout</item>
@@ -39,18 +39,22 @@
         <item>androidx.swiperefreshlayout:swiperefreshlayout</item>
         <item>androidx.vectordrawable:vectordrawable</item>
         <item>androidx.work:work-runtime-ktx</item>
-        <item>com.android.support:multidex</item>
-        <item>com.crashlytics.sdk.android:crashlytics</item>
         <item>com.google.android.material</item>
+        <item></item>
+        <item>com.crashlytics.sdk.android:crashlytics</item>
         <item>com.google.firebase:firebase-analytics</item>
         <item>com.google.firebase:firebase-core</item>
         <item>com.google.firebase:firebase-database</item>
+        <item></item>
         <item>org.jetbrains.kotlinx:kotlinx-coroutines-android</item>
         <item>org.jetbrains.kotlinx:kotlinx-coroutines-core</item>
         <item>org.jetbrains.kotlin:kotlin-stdlib-jdk7</item>
+        <item></item>
+        <item>com.android.support:multidex</item>
         <item>XmlToJson github.com/smart-fun/XmlToJson</item>
         <item>FlexboxLayout github.com/google/flexbox-layout</item>
         <item>Flextools github.com/mrHerintsoaHasina/flextools</item>
+        <item>KeyboardVisibilityEvent github.com/yshrsmz/KeyboardVisibilityEvent</item>
     </array>
 
     <array name="license_mit">

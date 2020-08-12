@@ -137,7 +137,7 @@ class EventsRootFragment : Fragment() {
         val data = viewModel.data.value ?: return
 
         val filtered = filter(data.toMutableList())
-        ((binding.list.adapter as EmptyAdapter).adapter as EventsAdapter).update(filtered)
+        EmptyAdapter.getAdapter<EventsAdapter>(binding.list).update(filtered)
 
         //scrolls to today
         var scrollTo = 0

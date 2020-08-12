@@ -34,6 +34,7 @@ import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.SimpleData
 import cz.lastaapps.bakalariextension.api.homework.data.Homework
 import cz.lastaapps.bakalariextension.databinding.FragmentHomeworkSearchBinding
+import cz.lastaapps.bakalariextension.ui.EmptyAdapter
 
 /**searches in all homework*/
 class HmwSearchFragment : Fragment() {
@@ -73,7 +74,7 @@ class HmwSearchFragment : Fragment() {
             ArrayList<String>()
         )
 
-        binding.list.adapter = HmwAdapter(requireActivity() as AppCompatActivity)
+        binding.list.adapter = EmptyAdapter(HmwAdapter(requireActivity() as AppCompatActivity))
 
         //TODO one button and animations + date filter
         //switches between search methods - subjects spinner and text
@@ -169,7 +170,7 @@ class HmwSearchFragment : Fragment() {
         }
 
         //sets up view with adapter or updates current adapter
-        (binding.list.adapter as HmwAdapter).update(filtered)
+        EmptyAdapter.getAdapter<HmwAdapter>(binding.list).update(filtered)
     }
 
     /**@return id of currently selected subject or null for all subjects*/

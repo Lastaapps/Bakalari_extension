@@ -27,11 +27,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import cz.lastaapps.bakalariextension.R
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 import java.lang.Integer.min
 
 /**Manages the bottom navigation*/
@@ -111,6 +114,17 @@ class BottomFragment : Fragment() {
         switch.setOnClickListener {
             setState(if (state != MINIMIZED) MINIMIZED else EXPANDED)
         }
+
+        KeyboardVisibilityEvent.setEventListener(
+            requireActivity(),
+            LifecycleOwner { lifecycle },
+            object : KeyboardVisibilityEventListener {
+                override fun onVisibilityChanged(isOpen: Boolean) {
+
+                    root.visibility = if (isOpen) View.GONE else View.VISIBLE
+                }
+            })
+
 
         return root
     }

@@ -27,16 +27,22 @@ import androidx.recyclerview.widget.RecyclerView
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
 
-class EmptyAdapter(
-    val adapter: RecyclerView.Adapter<*>,
+class EmptyAdapter<T : RecyclerView.ViewHolder>(
+    private val adapter: RecyclerView.Adapter<T>,
     var emptyMessage: String = App.getString(R.string.no_items)
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
-        const val ID_NO: Long = RecyclerView.NO_ID
         const val ID_EMPTY = Long.MIN_VALUE
-        const val TYPE_EMPTY = -2
-        const val TYPE_INVALID = RecyclerView.INVALID_TYPE
+        const val TYPE_EMPTY = Int.MIN_VALUE
+
+        /**@return adapter hidden inside EmptyAdapter casted to the proper value*/
+        fun <T : RecyclerView.Adapter<*>> getAdapter(recyclerView: RecyclerView): T {
+            return (recyclerView.adapter as EmptyAdapter<*>).run {
+                notifyDataSetChanged()
+                adapter as T
+            }
+        }
     }
 
     private var isEmpty: Boolean = adapter.itemCount == 0
@@ -50,7 +56,7 @@ class EmptyAdapter(
         viewType: Int
     ): RecyclerView.ViewHolder {
 
-        return if (viewType == TYPE_EMPTY && isEmpty) {
+        return if (viewType == TYPE_EMPTY) {
             object : RecyclerView.ViewHolder(
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.empty_message, parent, false)
@@ -62,11 +68,11 @@ class EmptyAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        return if (holder.itemViewType == TYPE_EMPTY && isEmpty) {
+        return if (holder.itemViewType == TYPE_EMPTY) {
             holder.itemView.findViewById<TextView>(R.id.text).text = emptyMessage
 
         } else {
-            adapter.run { onBindViewHolder(holder, position) }
+            adapter.onBindViewHolder(holder as T, position)
         }
     }
 
@@ -94,20 +100,20 @@ class EmptyAdapter(
             adapter.itemCount
     }
 
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        adapter.onAttachedToRecyclerView(recyclerView)
-    }
-
     override fun onBindViewHolder(
         holder: RecyclerView.ViewHolder,
         position: Int,
         payloads: MutableList<Any>
     ) {
-        if (canShow())
+        if (holder.itemViewType == TYPE_EMPTY)
             super.onBindViewHolder(holder, position, payloads)
         else {
-            adapter.run { onBindViewHolder(holder, position, payloads) }
+            adapter.onBindViewHolder(holder as T, position, payloads)
         }
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        adapter.onAttachedToRecyclerView(recyclerView)
     }
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
@@ -115,35 +121,35 @@ class EmptyAdapter(
     }
 
     override fun onFailedToRecycleView(holder: RecyclerView.ViewHolder): Boolean {
-        return if (canShow())
+        return if (holder.itemViewType == TYPE_EMPTY)
             super.onFailedToRecycleView(holder)
         else {
-            adapter.run { onFailedToRecycleView(holder) }
+            adapter.onFailedToRecycleView(holder as T)
         }
     }
 
     override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
-        if (canShow())
+        if (holder.itemViewType == TYPE_EMPTY)
             super.onViewAttachedToWindow(holder)
         else {
-            adapter.run { onViewAttachedToWindow(holder) }
+            adapter.onViewAttachedToWindow(holder as T)
         }
     }
 
     override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
-        if (canShow())
+        if (holder.itemViewType == TYPE_EMPTY)
             super.onViewDetachedFromWindow(holder)
         else {
-            adapter.run { onViewDetachedFromWindow(holder) }
+            adapter.onViewDetachedFromWindow(holder as T)
         }
     }
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
 
-        if (canShow())
+        if (holder.itemViewType == TYPE_EMPTY)
             super.onViewRecycled(holder)
         else {
-            adapter.run { onViewRecycled(holder) }
+            adapter.onViewRecycled(holder as T)
         }
     }
 }
