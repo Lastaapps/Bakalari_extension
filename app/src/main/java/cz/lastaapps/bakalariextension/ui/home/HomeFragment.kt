@@ -20,16 +20,19 @@
 
 package cz.lastaapps.bakalariextension.ui.home
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.user.data.User
+import cz.lastaapps.bakalariextension.api.web.LoginToken
 import cz.lastaapps.bakalariextension.databinding.FragmentHomeBinding
 import cz.lastaapps.bakalariextension.ui.UserViewModel
 import cz.lastaapps.bakalariextension.ui.absence.AbsenceOverviewFragment
@@ -37,6 +40,9 @@ import cz.lastaapps.bakalariextension.ui.events.EventsUpcomingFragment
 import cz.lastaapps.bakalariextension.ui.homework.HmwOverview
 import cz.lastaapps.bakalariextension.ui.marks.NewMarksFragment
 import cz.lastaapps.bakalariextension.ui.timetable.small.SmallTimetableFragment
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeFragment : Fragment() {
 
@@ -49,6 +55,8 @@ class HomeFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        setHasOptionsMenu(true)
 
         requireActivity().actionBar?.show()
     }
@@ -106,5 +114,36 @@ class HomeFragment : Fragment() {
         }
 
         transaction.commit()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.web_app_bar, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return if (item.itemId == R.id.menu_web_module) {
+
+            lifecycleScope.launch(Dispatchers.IO) {
+
+                val url = LoginToken.loginUrl()
+
+                withContext(Dispatchers.Main) {
+                    if (url != null) {
+                        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                        browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        requireContext().startActivity(browserIntent)
+                    } else {
+                        Toast.makeText(
+                            requireContext(),
+                            R.string.web_module_no_internet,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+
+            true
+        } else
+            super.onOptionsItemSelected(item)
     }
 }

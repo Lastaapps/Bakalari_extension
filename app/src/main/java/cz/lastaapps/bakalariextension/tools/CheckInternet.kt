@@ -26,7 +26,7 @@ import android.net.NetworkCapabilities
 import android.os.Build
 import android.util.Log
 import cz.lastaapps.bakalariextension.App
-import cz.lastaapps.bakalariextension.ui.login.LoginData
+import cz.lastaapps.bakalariextension.api.ConnMgr
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -49,7 +49,7 @@ class CheckInternet {
 
                 try {
                     //at first tries school's url, then google.com
-                    var stringUrl = LoginData.url
+                    var stringUrl = ConnMgr.getAPIUrl()
                     if (stringUrl == "") {
                         if (canBeGoogle) {
                             Log.i(TAG, "No school url set, checking at least google")

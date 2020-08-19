@@ -57,7 +57,15 @@ class ConnMgr {
         suspend fun serverGet(
             module: String,
             dataPairs: Map<String, String> = HashMap()
-        ): JSONObject? = withContext(Dispatchers.IO) {
+        ): JSONObject? {
+            return JSONObject(serverGetString(module, dataPairs) ?: return null)
+        }
+
+        /**@return String containing downloaded data of null if connection failed*/
+        suspend fun serverGetString(
+            module: String,
+            dataPairs: Map<String, String> = HashMap()
+        ): String? = withContext(Dispatchers.IO) {
             return@withContext try {
 
                 val data = getGetDataString(dataPairs)
@@ -84,7 +92,7 @@ class ConnMgr {
 
                 if (urlConnection.responseCode == 200) {
 
-                    readDataToJson(urlConnection)
+                    readData(urlConnection)
                 } else {
 
                     Log.e(TAG, "Wrong server response code, connection failed")
@@ -96,13 +104,24 @@ class ConnMgr {
             }
         }
 
+
         /**Sends post request to server
          * @param dataPairs contains data pairs
-         * @return json containing downloaded data of null if connection failed*/
+         * @return String containing downloaded data of null if connection failed*/
         suspend fun serverPost(
             module: String,
             dataPairs: Map<String, String>
-        ): JSONObject? = withContext(Dispatchers.IO) {
+        ): JSONObject? {
+            return JSONObject(serverPostString(module, dataPairs) ?: return null)
+        }
+
+        /**Sends post request to server
+         * @param dataPairs contains data pairs
+         * @return json containing downloaded data of null if connection failed*/
+        suspend fun serverPostString(
+            module: String,
+            dataPairs: Map<String, String>
+        ): String? = withContext(Dispatchers.IO) {
             return@withContext try {
 
                 //creates data to be send via POST
@@ -145,7 +164,7 @@ class ConnMgr {
 
                 if (urlConnection.responseCode == 200) {
 
-                    readDataToJson(urlConnection)
+                    readData(urlConnection)
                 } else {
                     Log.e(TAG, "Wrong server response code, connection failed")
                     null
@@ -157,9 +176,9 @@ class ConnMgr {
         }
 
         /**reads data from stream and creates json from them*/
-        private suspend fun readDataToJson(
+        private suspend fun readData(
             urlConnection: URLConnection
-        ): JSONObject = withContext(Dispatchers.IO) {
+        ): String = withContext(Dispatchers.IO) {
 
             //downloads data in chunks, so yield() can be called to make Dispatchers.IO
             // usable for other task, like reading from storage or parallel downloads
@@ -188,7 +207,7 @@ class ConnMgr {
             //read was successful
             Log.i(TAG, "Read succeed ${builder.length / 1024}kb")
 
-            JSONObject(String(builder))
+            String(builder)
         }
 
         const val LOGIN_WRONG = -1

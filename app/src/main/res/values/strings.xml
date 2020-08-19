@@ -75,6 +75,7 @@
     <string name="menu_github">See code on Github</string>
     <string name="menu_api">Bakalari API doc</string>
     <string name="menu_license">License notices</string>
+    <string name="menu_open_web">Open web</string>
 
 
     <!-- Loading -->
@@ -396,6 +397,9 @@
     <string name="attachment_done_title">%s downloaded!</string>
     <string name="attachment_done_open">Open</string>
     <string name="attachment_done_dismiss">Dismiss</string>
+
+    <!-- Web module -->
+    <string name="web_module_no_internet">Cannot connect to the server</string>
 
 
     <!-- Permissions -->
