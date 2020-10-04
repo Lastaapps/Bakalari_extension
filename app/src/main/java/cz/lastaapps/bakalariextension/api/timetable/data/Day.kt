@@ -21,33 +21,46 @@
 package cz.lastaapps.bakalariextension.api.timetable.data
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.SimpleData
-import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.api.database.APIBase
 import kotlinx.android.parcel.Parcelize
 import java.io.Serializable
-import java.time.ZonedDateTime
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 /**Represent day of week containing lessons*/
 @Parcelize
+@Entity(tableName = APIBase.TIMETABLE_DAY)
 data class Day(
-    val dayOfWeek: Int,
-    val date: String,
-    val description: String,
-    val dayType: String,
-    val lessons: DataIdList<Lesson>
+    var dayOfWeek: Int,
+    @PrimaryKey
+    @ColumnInfo(index = true)
+    var date: LocalDate,
+    var description: String, //never contains emojis, used for widget and notifications
+    var descriptionEmoji: String, //description with emoji on celebrations
+    var dayType: String,
+    @Ignore
+    var lessons: DataIdList<Lesson>
 ) : Comparable<Day>, Serializable, Parcelable {
 
+    @Deprecated("For Room initialization only")
+    constructor(
+        dayOfWeek: Int,
+        date: LocalDate,
+        description: String,
+        descriptionEmoji: String,
+        dayType: String,
+    ) : this(dayOfWeek, date, description, descriptionEmoji, dayType, DataIdList())
+
     override fun compareTo(other: Day): Int {
-        return TimeTools.parse(
-            date, TimeTools.COMPLETE_FORMAT
-        ).compareTo(
-            TimeTools.parse(
-                other.date, TimeTools.COMPLETE_FORMAT
-            )
-        )
+        return date.compareTo(other.date)
     }
 
     /**@param hour which lesson should be returned
@@ -99,7 +112,7 @@ data class Day(
                     return i
             }
         else if (isHoliday()) {
-            return 0
+            return HOLIDAY_INDEX
         }
         return -1
     }
@@ -112,7 +125,7 @@ data class Day(
                     return i
             }
         else if (isHoliday()) {
-            return 5 //minimum timetable size to show holiday
+            return HOLIDAY_INDEX //minimum timetable size to show holiday
         }
         return -1
     }
@@ -141,49 +154,47 @@ data class Day(
 
     /**@return if day is workday*/
     fun isWorkDay(): Boolean {
-        return dayType == "WorkDay"
+        return dayType == WORKDAY
     }
 
     /**@return if day is holiday (and also empty)*/
     fun isHoliday(): Boolean {
-        return dayType == "Celebration" || dayType == "Holiday"
+        return dayType == CELEBRATION || dayType == HOLIDAY
     }
 
     /**@return if day is weekend (and also empty)
      * weekend is not normally presented in data set, but can occur in some abnormal situations,
      * like the beginning of the school year*/
     fun isWeekend(): Boolean {
-        return dayType == "Weekend"
+        return dayType == WEEKEND
     }
 
     /**@return Special day description or default string*/
-    fun getHolidayDescription(): String {
+    fun getHolidayDescription(emoji: Boolean = false): String {
         return if (description != "") {
-            description
+            if (!emoji) description else descriptionEmoji
         } else {
-            if (dayType == "Celebration")
+            if (dayType == CELEBRATION)
                 App.getString(R.string.timetable_celebration)
             else
                 App.getString(R.string.timetable_holiday)
         }
     }
 
-    /**caches parsed date*/
-    private var _toDate: ZonedDateTime? = null
-
-    /**parses current date*/
-    fun toDate(): ZonedDateTime {
-        if (_toDate == null) {
-            _toDate = if (date == "") {
-                TimeTools.PERMANENT
-            } else {
-                TimeTools.parse(date, TimeTools.COMPLETE_FORMAT)
-            }
-        }
-        return _toDate!!
+    override fun toString(): String {
+        return "{Day: ${date.format(DateTimeFormatter.BASIC_ISO_DATE)} $lessons}"
     }
 
-    override fun toString(): String {
-        return "{Day: $date $lessons}"
+    companion object {
+
+        const val WORKDAY = "WorkDay"
+        const val WEEKEND = "Weekend"
+        const val CELEBRATION = "Celebration"
+        const val HOLIDAY = "Holiday"
+
+        private const val HOLIDAY_INDEX = -2
+
+        fun getEmptyDay(dayOfWeek: Int, date: LocalDate): Day =
+            Day(dayOfWeek, date, "", "", HOLIDAY)
     }
 }

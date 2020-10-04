@@ -23,9 +23,9 @@ package cz.lastaapps.bakalariextension
 import android.content.Context
 import android.util.Log
 import androidx.work.*
-import cz.lastaapps.bakalariextension.api.timetable.TimetableStorage
 import cz.lastaapps.bakalariextension.services.timetablenotification.TTNotifyService
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.tools.TimeTools.Companion.toCzechDate
 import cz.lastaapps.bakalariextension.widgets.WidgetUpdater
 import cz.lastaapps.bakalariextension.workers.WifiChargerWorker
 import kotlinx.coroutines.delay
@@ -52,13 +52,14 @@ class AppStartInit(val context: Context) {
         WidgetUpdater.updateAndSetup(context)
 
         //deletes old timetables
-        TimetableStorage.deleteOld(
-            TimeTools.previousWeek(
-                TimeTools.previousWeek(
-                    TimeTools.today
-                )
-            )
-        )
+        val database = CurrentUser.requireDatabase()
+        for (day in database.timetableRepository.getWeeks()) {
+            if (day < TimeTools.monday.toCzechDate()
+                    .minusDays(2 * 7) && day != TimeTools.PERMANENT
+            ) {
+                database.timetableRepository.getRepositoryForDate(day).deleteAll()
+            }
+        }
 
         //sets up background workers
         setupWorkers(context)

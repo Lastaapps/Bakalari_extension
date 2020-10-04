@@ -29,11 +29,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import cz.lastaapps.bakalariextension.R
+import cz.lastaapps.bakalariextension.api.user.data.User
 import cz.lastaapps.bakalariextension.tools.MySettings
-import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.tools.TimeTools.Companion.toCzechDate
+import cz.lastaapps.bakalariextension.tools.TimeTools.Companion.toMonday
 import cz.lastaapps.bakalariextension.tools.validDate
 import cz.lastaapps.bakalariextension.ui.UserViewModel
 import cz.lastaapps.bakalariextension.ui.homework.HmwViewModel
+import cz.lastaapps.bakalariextension.ui.timetable.TimetableMainViewModel
+import cz.lastaapps.bakalariextension.ui.timetable.TimetableViewModel
+import java.time.format.DateTimeFormatter
 
 class SmallTimetableFragment : Fragment() {
 
@@ -42,7 +47,8 @@ class SmallTimetableFragment : Fragment() {
     }
 
     private lateinit var view: SmallTimetableView
-    private val vm: STViewModel by activityViewModels()
+    private val mainViewModel: TimetableMainViewModel by activityViewModels()
+    private lateinit var currentViewModel: TimetableViewModel
     private val userViewModel: UserViewModel by activityViewModels()
     private val vmHomework: HmwViewModel by activityViewModels()
 
@@ -53,41 +59,27 @@ class SmallTimetableFragment : Fragment() {
         Log.i(TAG, "Creating view")
 
         view = SmallTimetableView(inflater.context)
-        vm.isRefreshing.observe({ lifecycle }) { state: Boolean ->
-            if (state) {
-                view.setLoading()
-            }
-        }
+
+        setCurrentViewModel(mainViewModel.getTimetableViewModel(mainViewModel.shownDate.value!!))
 
         view.setOnClickListener {
             requireActivity().findNavController(R.id.nav_host_fragment).navigate(R.id.nav_timetable)
         }
 
         //sets date and observes for updates
-        vm.date.value?.let { view.setDate(it) }
-        vm.date.observe({ lifecycle }) {
-            Log.i(TAG, "Date updated to ${TimeTools.format(it, TimeTools.COMPLETE_FORMAT)}")
+        mainViewModel.shownDate.observe({ lifecycle }) {
+            Log.i(TAG, "Date updated to ${it.format(DateTimeFormatter.ISO_LOCAL_DATE)}")
             view.setDate(it)
         }
 
-        //observes for data changes
-        vm.failed.observe({ lifecycle }) {
-            if (it) {
-                Log.i(TAG, "Failed to load")
-                onFail()
+        userViewModel.data.observe({ lifecycle }) {
+            it.runIfModuleEnabled(User.HOMEWORK) {
+                //loads the homework list if it wasn't already done
+                vmHomework.runOrRefresh(vmHomework.homework, lifecycle) {
+                    Log.i(TAG, "Homework list loaded")
+                    onSuccess()
+                }
             }
-        }
-
-        //loads the timetable if it wasn't already done
-        vm.executeOrRefresh(lifecycle) {
-            Log.i(TAG, "Data loaded")
-            onSuccess()
-        }
-
-        //loads the homework list if it wasn't already done
-        vmHomework.executeOrRefresh(lifecycle) {
-            Log.i(TAG, "Homework list loaded")
-            onSuccess()
         }
 
         return view
@@ -99,18 +91,16 @@ class SmallTimetableFragment : Fragment() {
      */
     private fun initDate(): Boolean {
 
-        val oldDate = vm.date.value!!
+        val oldDate = mainViewModel.shownDate.value!!
         val newDate = validDate(
-            vm.week.value,
+            currentViewModel.data.value,
             MySettings.withAppContext().TIMETABLE_PREVIEW,
             R.array.sett_timetable_preview
-        ) ?: return false
+        )?.toCzechDate() ?: return false
 
-        return if (TimeTools.toMonday(oldDate).toLocalDate()
-            != TimeTools.toMonday(newDate).toLocalDate()
-        ) {
-            vm.date.value = newDate
-            vm.onRefresh()
+        return if (oldDate.toMonday() != newDate.toMonday()) {
+            mainViewModel.shownDate.value = newDate
+            setCurrentViewModel(mainViewModel.getTimetableViewModel(newDate))
             true
         } else {
             false
@@ -120,12 +110,12 @@ class SmallTimetableFragment : Fragment() {
     private fun onSuccess() {
         if (!initDate()) {
 
-            Log.i(TAG, "Showing data")
-
             //updates data
-            val week = vm.week.value ?: return
-            val date = vm.date.value!!
+            val week = currentViewModel.data.value ?: return
+            val date = mainViewModel.shownDate.value!!
             val homework = vmHomework.homework.value
+
+            Log.i(TAG, "Showing data for date " + date.format(DateTimeFormatter.ISO_LOCAL_DATE))
 
             val day = week.getDay(date)
             if (day == null) {
@@ -136,7 +126,34 @@ class SmallTimetableFragment : Fragment() {
         }
     }
 
-    private fun onFail() {
-        view.setError(resources.getString(R.string.timetable_failed_to_load))
+    private fun setCurrentViewModel(current: TimetableViewModel) {
+
+        if (this@SmallTimetableFragment::currentViewModel.isInitialized) {
+            currentViewModel.isLoading.removeObservers { lifecycle }
+            currentViewModel.isFailed.removeObservers { lifecycle }
+            currentViewModel.data.removeObservers { lifecycle }
+        }
+
+        currentViewModel = current
+
+        currentViewModel.isLoading.observe({ lifecycle }) { state: Boolean ->
+            if (state) {
+                view.setLoading()
+            }
+        }
+
+        //observes for data changes
+        currentViewModel.isFailed.observe({ lifecycle }) { state: Boolean ->
+            if (state) {
+                Log.i(TAG, "Failed to load")
+                view.setError(resources.getString(R.string.timetable_failed_to_load))
+            }
+        }
+
+        //loads the timetable if it wasn't already done
+        currentViewModel.runOrRefresh(lifecycle) {
+            Log.i(TAG, "Data loaded")
+            onSuccess()
+        }
     }
 }

@@ -24,14 +24,6 @@ import android.content.Context
 import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import cz.lastaapps.bakalariextension.api.absence.AbsenceLoader
-import cz.lastaapps.bakalariextension.api.events.EventsLoader
-import cz.lastaapps.bakalariextension.api.homework.HomeworkLoader
-import cz.lastaapps.bakalariextension.api.marks.MarksLoader
-import cz.lastaapps.bakalariextension.api.subjects.SubjectLoader
-import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
-import cz.lastaapps.bakalariextension.api.user.UserLoader
-import cz.lastaapps.bakalariextension.tools.TimeTools
 
 /**Runs some tasks on charger when not metered connection to internet is available*/
 class WifiChargerWorker(context: Context, workerParameters: WorkerParameters) :
@@ -45,28 +37,9 @@ class WifiChargerWorker(context: Context, workerParameters: WorkerParameters) :
 
         Log.i(TAG, "Working...")
 
-        //if all actions succeed
-        var success = true
+        //TODO auto data download
 
-        success = UserLoader.loadFromServer() != null
-
-        //updates current timetable
-        TimetableLoader.loadFromServer(TimeTools.monday)
-
-        //loads timetable for the next week
-        TimetableLoader.loadFromServer(TimeTools.monday.plusDays(7))
-
-        MarksLoader.loadFromServer()
-
-        HomeworkLoader.loadFromServer()
-
-        AbsenceLoader.loadFromServer()
-
-        EventsLoader.loadFromServer()
-
-        SubjectLoader.loadFromServer()
-
-        return if (success)
+        return if (true)
             Result.success()
         else
             Result.retry()

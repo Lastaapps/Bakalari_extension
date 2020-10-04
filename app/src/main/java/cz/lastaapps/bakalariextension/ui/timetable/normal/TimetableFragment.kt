@@ -20,34 +20,37 @@
 
 package cz.lastaapps.bakalariextension.ui.timetable.normal
 
-import android.app.DatePickerDialog
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
-import android.widget.ImageButton
-import androidx.core.content.ContextCompat
+import android.view.*
+import android.widget.ProgressBar
+import android.widget.TextView
+import androidx.annotation.UiThread
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.MainActivity
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.homework.HomeworkLoader
-import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
-import cz.lastaapps.bakalariextension.api.timetable.TimetableStorage
+import cz.lastaapps.bakalariextension.api.SimpleData
+import cz.lastaapps.bakalariextension.api.timetable.TimetableMainRepository
+import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import cz.lastaapps.bakalariextension.databinding.FragmentTimetableBinding
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.tools.TimeTools.Companion.toCalendar
+import cz.lastaapps.bakalariextension.tools.TimeTools.Companion.toCzechDate
+import cz.lastaapps.bakalariextension.tools.TimeTools.Companion.toMonday
+import cz.lastaapps.bakalariextension.tools.isDarkTheme
 import cz.lastaapps.bakalariextension.tools.lastUpdated
 import cz.lastaapps.bakalariextension.ui.UserViewModel
+import cz.lastaapps.bakalariextension.ui.homework.HmwViewModel
+import cz.lastaapps.bakalariextension.ui.timetable.TimetableMainViewModel
+import cz.lastaapps.bakalariextension.ui.timetable.TimetableViewModel
 import kotlinx.coroutines.*
 import java.time.LocalDate
-import java.time.LocalTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 import kotlin.math.abs
 
 
@@ -58,35 +61,42 @@ class TimetableFragment : Fragment() {
         private val TAG = TimetableFragment::class.java.simpleName
     }
 
+    private lateinit var rangeMin: LocalDate
+    private lateinit var rangeMax: LocalDate
+
+    private var updatingJob: Job? = null
+
+    //holds current state of timetable views, prevents unnecessary updates
+    private var layoutForWeek: Week? = null
+    private var layoutForHeight: Int = -1
+    private var layoutForCycle: SimpleData? = null
+
     //root view of the timetable
     private lateinit var binding: FragmentTimetableBinding
 
     //row height
-    private var height: Int = 0
+    private var totalHeight = 0
+    private var viewsLayout = false
 
     //toolbar is hidden in landscape mode
     private var toolbarVisibility = true
 
     //ViewModel storing all the not orientation related data
-    private val vm: TimetableViewModel by activityViewModels()
+    private val mainVM: TimetableMainViewModel by activityViewModels()
+    private lateinit var currentVM: TimetableViewModel
     private val userViewModel: UserViewModel by activityViewModels()
-
-    private lateinit var scope: CoroutineScope
-
-    /**how many rows does timetable have right now*/
-    private var setOnLessons = -1
+    private val homeworkViewModel: HmwViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        scope = CoroutineScope(Dispatchers.Main)
-    }
+        setHasOptionsMenu(true)
 
-    override fun onDestroy() {
-        super.onDestroy()
+        val user = userViewModel.requireData()
+        rangeMin = user.firstSeptember //1.9.
+        rangeMax = rangeMin.plusYears(1).minusDays(1) //31.8.
 
-        //cancel running work
-        scope.cancel()
+        mainVM.initSelectedDate(user)
     }
 
     override fun onStart() {
@@ -122,296 +132,371 @@ class TimetableFragment : Fragment() {
 
         Log.i(TAG, "Creating view")
 
+        val placeholder =
+            inflater.inflate(R.layout.fragment_timetable_placeholder, container, false) as ViewGroup
+
+        //inflating off the UI thread
+        lifecycleScope.launch(Dispatchers.Default) {
+
+            val root = LayoutInflater.from(requireContext())
+                .inflate(R.layout.fragment_timetable, placeholder, false)
+            root.layoutParams = root.layoutParams.also {
+                it.width = ViewGroup.LayoutParams.MATCH_PARENT
+                it.height = ViewGroup.LayoutParams.MATCH_PARENT
+            }
+
+            Log.i(TAG, "Real view inflated")
+
+            withContext(Dispatchers.Main) {
+                initView(root)
+                yield()
+                placeholder.addView(root)
+                launch {
+                    viewsLayout = true
+                    updateTimetable()
+                }
+                yield()
+                placeholder.findViewById<ProgressBar>(R.id.loading).visibility = View.GONE
+            }
+        }
+
+        prepareDefaultViewModel()
+
+        return placeholder
+    }
+
+    @UiThread
+    private suspend fun initView(root: View) {
+
         //inflates views
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_timetable, container, false)
+        binding = DataBindingUtil.bind(root)!!
+        binding.setLifecycleOwner { lifecycle }
+        binding.mainViewModel = mainVM
+        onSelectionChanged()
+        yield()
 
         //checks for height of timetables to make all rows same height
         binding.apply {
 
-
-            tableBox.viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    height = tableBox.measuredHeight / 6
-                    //val width: Int = edge.measuredWidth
-                    if (height != 0) {
-                        Log.i(TAG, "Height obtained")
-                        tableBox.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            tableLayout.viewTreeObserver.addOnGlobalLayoutListener {
+                //val width: Int = edge.measuredWidth.also{ width -> }
+                tableLayout.measuredHeight.also { height ->
+                    if (height != 0 && totalHeight != height) {
+                        Log.i(TAG, "Height obtained $height")
+                        totalHeight = height
+                        updateTimetable()
                     }
                 }
-            })
+            }
 
             //moves in weeks or cycles backward
             previousWeek.setOnClickListener {
                 Log.i(TAG, "Previous pressed")
 
-                if (!vm.isPermanent) {
+                if (mainVM.isPermanent.value != true) {
 
-                    vm.dateTime = TimeTools.previousWeek(vm.dateTime)
+                    mainVM.selectedDate = mainVM.selectedDate.minusDays(7)
 
                 } else {
 
-                    vm.cycleIndex--
-                    val week = vm.week
-                    if (week != null && vm.cycleIndex < 0) {
-                        vm.cycleIndex = week.cycles.size - 1
+                    mainVM.cycleIndex--
+                    val week = currentVM.data.value
+                    if (week != null && mainVM.cycleIndex < 0) {
+                        mainVM.cycleIndex = week.cycles.size - 1
                     }
                 }
 
-                updateTimetable()
+                onSelectionChanged()
             }
             //moves in weeks or cycles forward
             nextWeek.setOnClickListener {
                 Log.i(TAG, "Next pressed")
 
-                if (!vm.isPermanent) {
-                    vm.dateTime = TimeTools.nextWeek(vm.dateTime)
+                if (mainVM.isPermanent.value != true) {
+                    mainVM.selectedDate = mainVM.selectedDate.plusDays(7)
 
                 } else {
 
-                    vm.cycleIndex++
-                    val week = vm.week
-                    if (week != null && vm.cycleIndex > (week.cycles.size - 1)) {
-                        vm.cycleIndex = 0
+                    mainVM.cycleIndex++
+                    val week = currentVM.data.value
+                    if (week != null && mainVM.cycleIndex > (week.cycles.size - 1)) {
+                        mainVM.cycleIndex = 0
                     }
                 }
 
-                updateTimetable()
+                onSelectionChanged()
             }
 
             //changes to permanent or actual timetable
             permanentSwitch.setOnClickListener {
-                if (vm.isPermanent) {
+                if (mainVM.isPermanent.value == true) {
                     Log.i(TAG, "Switching to normal timetable")
-
-                    vm.cycleIndex = 0
-                    (it as ImageButton).setImageDrawable(
-                        ContextCompat.getDrawable(requireContext(), R.drawable.permanent)
-                    )
-                    calendar.visibility = View.VISIBLE
 
                 } else {
                     Log.i(TAG, "Switching to permanent timetable")
-
-                    (it as ImageButton).setImageDrawable(
-                        ContextCompat.getDrawable(requireContext(), R.drawable.actual)
-                    )
-                    calendar.visibility = View.GONE
                 }
 
-                vm.isPermanent = !vm.isPermanent
-                updateTimetable()
+                mainVM.isPermanent.value = mainVM.isPermanent.value != true
+                onSelectionChanged()
             }
 
             /**Reloads timetable from server*/
             reload.setOnClickListener {
                 Log.i(TAG, "Reload pressed")
 
-                updateTimetable(true)
+                currentVM.loadData()
             }
 
             /**navigates back to today if user is somewhere in a future or a history*/
             home.setOnClickListener {
                 Log.i(TAG, "Home pressed")
 
-                vm.dateTime = TimeTools.monday
+                mainVM.selectedDate = TimeTools.monday.toCzechDate()
                 it.visibility = View.GONE
-                updateTimetable()
+                onSelectionChanged()
             }
 
             /**shows date choose dialog*/
             calendar.setOnClickListener {
-                val selectedDate = vm.dateTime!!
-                val listener = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
-                    val selected = TimeTools.toMonday(
-                        ZonedDateTime.of(
-                            LocalDate.of(year, month + 1, dayOfMonth),
-                            LocalTime.MIDNIGHT,
-                            ZoneId.systemDefault()
-                        )
-                    )
-                    vm.dateTime = selected
-                    updateTimetable()
+
+                val selectedDate = mainVM.selectedDate
+                val listener: (Any, Int, Int, Int) -> Unit = { view, year, month, dayOfMonth ->
+
+                    mainVM.selectedDate = LocalDate.of(year, month + 1, dayOfMonth).toMonday()
+                    onSelectionChanged()
                 }
-                DatePickerDialog(
+
+                //custom time picker
+                /**/com.wdullaer.materialdatetimepicker.date.DatePickerDialog.newInstance(
+                listener,
+                selectedDate.year,
+                selectedDate.monthValue - 1,
+                selectedDate.dayOfMonth
+            ).apply {
+                minDate = rangeMin.toCalendar()
+                maxDate = rangeMax.toCalendar()
+                isThemeDark = isDarkTheme(this@TimetableFragment.requireContext())
+                vibrate(false)
+                dismissOnPause(true) //listeners don't survive orientation changes
+            }.show(childFragmentManager, "$TAG-Date picker")
+
+                //system time picker
+                /*android.app.DatePickerDialog(
                     requireContext(),
                     listener,
                     selectedDate.year,
                     selectedDate.monthValue - 1,
                     selectedDate.dayOfMonth
                 ).apply {
-
-                }.show()
+                    datePicker.apply {
+                        minDate = rangeMin.toInstant().toEpochMilli()
+                        maxDate = rangeMax.toInstant().toEpochMilli()
+                    }
+                }.show()*/
             }
         }
+    }
 
-        updateTimetable()
+    /**Starts data loading before views are layout*/
+    private fun prepareDefaultViewModel() {
+        val date =
+            if (mainVM.isPermanent.value == true) TimeTools.PERMANENT else mainVM.selectedDate
 
-        return binding.root
+        mainVM.getTimetableViewModel(date).data //triggers database query to obtain data
     }
 
     /**Updates timetable for new week / cycle*/
-    private fun updateTimetable(forceReload: Boolean = false) {
+    private fun onSelectionChanged() {
+        if (this::currentVM.isInitialized) {
+            currentVM.data.removeObservers { lifecycle }
+            currentVM.hasData.removeObservers { lifecycle }
 
-        scope.launch {
+            updatingJob?.cancel()
+        }
 
-            //finding views
-            binding.apply {
-                //setting loading state
-                progressBar.visibility = View.VISIBLE
-                errorMessage.visibility = View.GONE
-                tableBox.visibility = View.INVISIBLE
-                bottomBox.visibility = View.INVISIBLE
-                bottomBox.isEnabled = false
-            }
+        layoutForHeight = -1
+        layoutForWeek = null
+        layoutForCycle = null
 
+        val date =
+            if (mainVM.isPermanent.value == true) TimeTools.PERMANENT else mainVM.selectedDate
 
-            //loads timetable and row height
-            withContext(Dispatchers.Default) {
-                val toLoad =
-                    if (!vm.isPermanent)
-                        vm.dateTime
-                    else
-                        TimeTools.PERMANENT
+        currentVM = mainVM.getTimetableViewModel(date)
+        binding.isProcessing = true
+        binding.viewModel = currentVM
 
-                val week = TimetableLoader.loadTimetable(toLoad, forceReload)
-                vm.week = week
+        currentVM.runOrRefresh(lifecycle) {
+            updateTimetable()
+        }
+        currentVM.onDataUpdate(lifecycle) {
+            //sets text like Next week, last updated 12:00 30.2.2020
+            binding.lastUpdated.text = lastUpdatedText()
+        }
 
-                if (vm.homework == null)
-                    vm.homework = HomeworkLoader.loadHomework()
-
-                //waits until view is laid out
-                while (height <= 0)
-                    delay(1)
-
-                //updated UI with downloaded data
-                withContext(Dispatchers.Main) {
-
-                    yield()
-
-                    if (week == null) {
-                        //failed to load week
-                        binding.apply {
-                            errorMessage.visibility = View.VISIBLE
-                            errorMessage.text = getString(R.string.timetable_failed_to_load)
-                            lastUpdated.text = ""
-                        }
-
-                    } else {
-
-                        val cycle =
-                            if (vm.isPermanent) {
-                                if (week.cycles.size > 0)
-                                    week.cycles[vm.cycleIndex]
-                                else
-                                    null
-                            } else
-                                if (week.cycles.size > 0)
-                                    week.cycles[0]
-                                else
-                                    null
-
-                        yield()
-
-                        val lessons = week.trimFreeMorning().size
-                        if (setOnLessons != lessons) {
-                            setOnLessons = lessons
-                        }
-                        TimetableCreator.prepareTimetable(binding.root, height, lessons)
-
-                        yield()
-
-                        //creates actual timetable
-                        TimetableCreator.createTimetable(
-                            binding.root,
-                            week,
-                            cycle,
-                            userViewModel.requireData(),
-                            vm.homework
-                        )
-
-                        yield()
-
-                        binding.apply {
-                            //sets text like Next week, last updated 12:00 30.2.2020
-                            lastUpdated.text = lastUpdatedText()
-
-                            yield()
-
-                            tableBox.visibility = View.VISIBLE
-                        }
-                    }
-
-                    binding.apply {
-                        progressBar.visibility = View.GONE
-                        bottomBox.visibility = View.VISIBLE
-                        bottomBox.isEnabled = true
-                    }
+        binding.apply {
+            isPrevious = true
+            isNext = true
+            if (mainVM.isPermanent.value == false) {
+                if (date.toMonday() <= rangeMin.toMonday()) {
+                    isPrevious = false
+                }
+                if (date.toMonday() >= rangeMax.toMonday()) {
+                    isNext = false
                 }
             }
+        }
+    }
+
+    private fun updateTimetable() = synchronized(this) {
+
+        //loads timetable and row height
+        if (!viewsLayout) return
+        val height: Int = if (totalHeight != 0) totalHeight else return
+        val week: Week = currentVM.data.value ?: return
+
+        val cycle =
+            if (mainVM.isPermanent.value == true) {
+                if (week.cycles.size > 0)
+                    week.cycles[mainVM.cycleIndex]
+                else
+                    null
+            } else
+                if (week.cycles.size > 0)
+                    week.cycles[0]
+                else
+                    null
+
+        if (height == layoutForHeight && week == layoutForWeek && cycle == layoutForCycle) return
+
+        layoutForHeight = height
+        layoutForWeek = week
+        layoutForCycle = cycle
+
+        if (updatingJob?.isActive == true) {
+            updatingJob?.cancel()
+        }
+
+        updatingJob = lifecycleScope.launch(Dispatchers.Main) {
+
+            if (currentVM.isEmpty.value == true) {
+
+                //updates cycle name
+                binding.edge.findViewById<TextView>(R.id.cycle).text = ""
+            } else {
+
+                binding.isProcessing = true
+
+                yield()
+
+                TimetableCreator.prepareTimetable(
+                    binding.root,
+                    height,
+                    week.days.size,
+                    week.trimFreeMorning().size
+                )
+
+                yield()
+
+                //creates actual timetable
+                TimetableCreator.createTimetable(
+                    binding.root,
+                    week,
+                    cycle,
+                    userViewModel.requireData(),
+                    homeworkViewModel.homework.value
+                )
+
+                //updates cycle name
+                binding.edge.findViewById<TextView>(R.id.cycle).text = cycle?.name ?: ""
+
+                yield()
+            }
+
+            binding.isProcessing = false
+
         }
     }
 
     /**@return text saying what week is shown and when was this timetable downloaded*/
     private fun lastUpdatedText(): String {
 
-        var toReturn =
+        var toReturn = if (mainVM.isPermanent.value != true) {
 
-            if (!vm.isPermanent) {
+            //how much has user moved
+            val diff = ChronoUnit.DAYS.between(mainVM.selectedDate, TimeTools.monday.toCzechDate())
+            val weeks = ((diff) / 7.0).toInt() // + 1 to prevent timezone issues
 
-                //how much has user moved
-                val diff = TimeTools.betweenMidnights(vm.dateTime, TimeTools.monday)
-                val weeks = ((diff.toDays()) / 7.0).toInt() // + 1 to prevent timezone issues
-
-                //array used for saying how many week forward/backward user has gone
-                val dataArray = App.getStringArray(R.array.week_variants)
+            //array used for saying how many week forward/backward user has gone
+            val dataArray = App.getStringArray(R.array.week_variants)
 
 
-                //show button whits takes user back to today
-                binding.home.visibility = if (weeks in -2..2) {
-                    View.GONE
-                } else {
-                    View.VISIBLE
+            //show button whits takes user back to today
+            binding.isHome = weeks !in -2..2
+
+            //2-4 and 5+ because of czech inflection
+            when (weeks) {
+                in 5..Int.MAX_VALUE -> {
+                    String.format(dataArray[4], abs(weeks), dataArray[6])
                 }
-
-                //2-4 and 5+ because of czech inflection
-                when (weeks) {
-                    in 5..Int.MAX_VALUE -> {
-                        String.format(dataArray[4], abs(weeks), dataArray[6])
-                    }
-                    in 2..4 -> {
-                        String.format(dataArray[3], abs(weeks), dataArray[6])
-                    }
-                    1 -> {
-                        dataArray[2]
-                    }
-                    0 -> {
-                        dataArray[0]
-                    }
-                    -1 -> {
-                        dataArray[1]
-                    }
-                    in -4..-2 -> {
-                        String.format(dataArray[3], abs(weeks), dataArray[5])
-                    }
-                    //in Int.MIN_VALUE..-5
-                    else -> {
-                        String.format(dataArray[4], abs(weeks), dataArray[5])
-                    }
+                in 2..4 -> {
+                    String.format(dataArray[3], abs(weeks), dataArray[6])
                 }
-            } else
-                getString(R.string.timetable_permanent)
+                1 -> {
+                    dataArray[2]
+                }
+                0 -> {
+                    dataArray[0]
+                }
+                -1 -> {
+                    dataArray[1]
+                }
+                in -4..-2 -> {
+                    String.format(dataArray[3], abs(weeks), dataArray[5])
+                }
+//in Int.MIN_VALUE..-5
+                else -> {
+                    String.format(dataArray[4], abs(weeks), dataArray[5])
+                }
+            }
+        } else
+            getString(R.string.timetable_permanent)
 
-        //add when was timetable last updated
-        val lastUpdated = TimetableStorage.lastUpdated(
-            if (!vm.isPermanent)
-                vm.dateTime
-            else
-                TimeTools.PERMANENT
-        )
+//add when was timetable last updated
+        val lastUpdated = currentVM.lastUpdated()
         lastUpdated?.let {
             toReturn += ", " + lastUpdated(App.context, it)
         }
 
         return toReturn
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        lifecycleScope.launch(Dispatchers.Main) {
+            if (mainVM.isWebTimetableAvailable()) {
+                yield()
+                inflater.inflate(R.menu.timetable_old, menu)
+            }
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return if (item.itemId == R.id.menu_timetable_old) {
+
+            val user = userViewModel.data.value
+
+            if (user != null) {
+                mainVM.openWebTimetable(
+                    requireContext(),
+                    TimetableMainRepository.DATE_ACTUAL,
+                    TimetableMainRepository.TYPE_CLASS,
+                    user.classInfo.id
+                )
+            } else {
+                mainVM.openWebTimetable(requireContext())
+            }
+
+            true
+        } else
+            super.onOptionsItemSelected(item)
     }
 }

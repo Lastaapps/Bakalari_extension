@@ -26,8 +26,8 @@
     <data>
 
         <variable
-            name="subjectData"
-            type="cz.lastaapps.bakalariextension.api.marks.data.SubjectMarks" />
+            name="pair"
+            type="cz.lastaapps.bakalariextension.api.marks.data.MarksPair" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -41,7 +41,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="@{subjectData.subject.name}"
+            android:text="@{pair.subject.subject.name}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text='@{String.format("%s: %s", @string/marks_average, subjectData.averageText)}'
+            android:text='@{String.format("%s: %s", @string/marks_average, pair.subject.averageText)}'
 
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/subject"
@@ -66,7 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="72dp"
             android:layout_marginEnd="88dp"
-            android:text='@{String.format("%s: %s", @string/marks_marks_count, subjectData.marks.size())}'
+            android:text='@{String.format("%s: %s", @string/marks_marks_count, pair.marks.size())}'
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/subject"
             tools:text="marks: 4" />

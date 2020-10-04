@@ -20,18 +20,25 @@
 
 package cz.lastaapps.bakalariextension.api.absence.data
 
+import androidx.room.Ignore
 import cz.lastaapps.bakalariextension.api.DataId
 
 /** Data to be shown in absence_day_entry.xml*/
 abstract class AbsenceDataHolder(
-    id: Int,
+    id: Long,
+    @Ignore
     open val unsolved: Int,
+    @Ignore
     open val ok: Int,
+    @Ignore
     open val missed: Int,
+    @Ignore
     open val late: Int,
+    @Ignore
     open val soon: Int,
+    @Ignore
     open val school: Int
-) : DataId<Int>(id) {
+) : DataId<Long>(id) {
     /**@return text to be shown as row label in absence_day_entry.xml*/
     abstract fun getLabel(): String
 }

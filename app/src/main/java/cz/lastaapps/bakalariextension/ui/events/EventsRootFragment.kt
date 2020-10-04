@@ -25,6 +25,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -34,15 +35,14 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.SimpleData
-import cz.lastaapps.bakalariextension.api.events.EventsLoader
-import cz.lastaapps.bakalariextension.api.events.EventsStorage
 import cz.lastaapps.bakalariextension.api.events.data.Event
 import cz.lastaapps.bakalariextension.api.events.data.EventList
 import cz.lastaapps.bakalariextension.databinding.FragmentEventsBinding
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.tools.TimeTools.Companion.toCzechDate
 import cz.lastaapps.bakalariextension.tools.lastUpdated
 import cz.lastaapps.bakalariextension.ui.EmptyAdapter
-import java.time.ZonedDateTime
+import kotlin.math.max
 
 /**The main fragment for all the events*/
 class EventsRootFragment : Fragment() {
@@ -54,6 +54,13 @@ class EventsRootFragment : Fragment() {
     private val viewModel: EventsViewModel by activityViewModels()
     private lateinit var binding: FragmentEventsBinding
 
+    /**clears search text on back press*/
+    private val clearText: OnBackPressedCallback = object : OnBackPressedCallback(false) {
+        override fun handleOnBackPressed() {
+            clearText()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -63,7 +70,7 @@ class EventsRootFragment : Fragment() {
         Log.i(TAG, "Creating view")
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_events, container, false)
-        binding.viewmodel = viewModel
+        binding.viewModel = viewModel
         binding.setLifecycleOwner { lifecycle }
 
         binding.list.adapter = EmptyAdapter(EventsAdapter())
@@ -86,22 +93,39 @@ class EventsRootFragment : Fragment() {
         }
 
         //observes for the data change
-        viewModel.executeOrRefresh(lifecycle) { dataUpdated() }
+        viewModel.onDataUpdate(lifecycle) { lastUpdatedText() }
 
-        viewModel.filterId.observe({ lifecycle }) {
-            showData()
-        }
+        //observes for the data change
+        viewModel.runOrRefresh(lifecycle) { dataChanged(it) }
+
+        viewModel.filterText.observe({ lifecycle }) { showData() }
+
+        viewModel.filterId.observe({ lifecycle }) { showData() }
 
         viewModel.advancedUpdatedToObserve.observe({ lifecycle }) { showData() }
+
+        //clears filters on bck press
+        requireActivity().onBackPressedDispatcher.addCallback({ lifecycle }, clearText)
+        val changeListener = { _: Any ->
+            clearText.isEnabled = viewModel.filterText.value != ""
+        }
+        viewModel.filterText.observe({ lifecycle }, changeListener)
 
         return binding.root
     }
 
+    /**clears search text on back press*/
+    fun clearText() {
+        viewModel.filterText.value = ""
+    }
+
     /**when data changed - updates all the components*/
-    private fun dataUpdated() {
+    private fun dataChanged(events: EventList) {
+
+        //advance filter setup
         val types = HashSet<SimpleData>()
 
-        for (event in viewModel.requireData())
+        for (event in events)
             types.add(event.type)
 
         //creates live data
@@ -111,23 +135,6 @@ class EventsRootFragment : Fragment() {
         (binding.advancedFilter.adapter as EventAdvanceFilterAdapter).update(
             types.toList().sorted()
         )
-
-
-        //last updated text
-        //there are more events sets, finds the oldest one
-        var theOldest: ZonedDateTime? = null
-        for (type in EventsLoader.EventType.values()) {
-            EventsStorage.lastUpdated(type.url)?.let {
-                if (theOldest == null || it > theOldest)
-                    theOldest = it
-            }
-        }
-
-        binding.lastUpdated.text =
-            if (theOldest != null) {
-                lastUpdated(requireContext(), theOldest!!)
-            } else
-                viewModel.failedText(requireContext())
 
         showData()
     }
@@ -142,12 +149,18 @@ class EventsRootFragment : Fragment() {
         //scrolls to today
         var scrollTo = 0
         val now = TimeTools.today
-        for (event in filtered) {
-            if (event.eventStart.toLocalDate() <= now.toLocalDate()) {
-                scrollTo = filtered.indexOf(event)
+
+        for (index in 0 until filtered.size) {
+            val event = filtered[index]
+
+            if (event.eventStart.toCzechDate() <= now.toCzechDate()) {
+
+                scrollTo = index
                 break
             }
         }
+
+        scrollTo = max(scrollTo - 3, 0) //scrolls to 3rd item before the most recent one
 
         (binding.list.layoutManager as LinearLayoutManager)
             .scrollToPositionWithOffset(scrollTo, 0)
@@ -192,7 +205,18 @@ class EventsRootFragment : Fragment() {
                 filtered.remove(event)
         }
 
-        return EventList(filtered)
+        val textFiltered = Event.filterByText(filtered, viewModel.filterText.value ?: "")
+
+        return EventList(textFiltered)
     }
 
+    private fun lastUpdatedText() {
+        //last updated text
+        val lastUpdatedDate = viewModel.lastUpdated()
+        binding.lastUpdated.text =
+            if (lastUpdatedDate != null) {
+                lastUpdated(requireContext(), lastUpdatedDate)
+            } else
+                viewModel.failedText(requireContext())
+    }
 }

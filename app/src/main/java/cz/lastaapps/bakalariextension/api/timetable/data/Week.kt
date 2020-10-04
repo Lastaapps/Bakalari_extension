@@ -24,10 +24,10 @@ import android.os.Parcelable
 import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.SimpleData
 import cz.lastaapps.bakalariextension.tools.TimeTools
-import kotlinx.android.parcel.IgnoredOnParcel
+import cz.lastaapps.bakalariextension.tools.TimeTools.Companion.toDate
 import kotlinx.android.parcel.Parcelize
 import java.io.Serializable
-import java.time.ZonedDateTime
+import java.time.LocalDate
 import kotlin.math.min
 
 /**contains all the data downloaded and parsed from server*/
@@ -41,39 +41,68 @@ data class Week(
     val teachers: DataIdList<SimpleData>,
     val rooms: DataIdList<SimpleData>,
     val cycles: DataIdList<SimpleData>,
-    val loadedForDate: ZonedDateTime
+    val monday: LocalDate
 ) : Serializable, Parcelable {
 
-    /**returns first day of this week*/
-    @IgnoredOnParcel
-    val monday: ZonedDateTime = loadedForDate
+    /**Ignores entries like teachers, subjects, rooms...
+     * Made to make queries from database simpler to write,
+     * the queries fetch all the data available*/
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Week) return false
 
-    /**@return day of the week for date selected
+        if (days != other.days) return false
+        if (monday != other.monday) return false
+
+        return true
+    }
+
+    /**Ignores entries like teachers, subjects, rooms...
+     * Made to make queries from database simpler to write,
+     * the queries fetch all the data available*/
+    override fun hashCode(): Int {
+        var result = hours.hashCode()
+        result = 31 * result + days.hashCode()
+        result = 31 * result + monday.hashCode()
+        return result
+    }
+
+    /**@return day of the week for date given
      * or null, if date is out of the week range or is weekend
      */
-    fun getDay(cal: ZonedDateTime): Day? {
+    fun getDay(date: LocalDate): Day? {
 
-        return if (TimeTools.toDateTime(days[0].toDate()) <= TimeTools.toDateTime(cal)
-            && TimeTools.toDateTime(cal) < TimeTools.toDateTime(days[4].toDate()).plusDays(1)
-        )
-            days[cal.dayOfWeek.value - 1]
-        else
-            null
+        for (day in days)
+            if (day.date == date)
+                return day
+
+        return null
+    }
+
+    /**@return day of the week for index given
+     * or null, if there is no such a day
+     */
+    fun getDayOfWeek(dayOfWeek: Int): Day? {
+
+        for (day in days)
+            if (day.dayOfWeek == dayOfWeek)
+                return day
+
+        return null
     }
 
     /**@return if week has 5 Work, Holiday or Work days*/
     fun hasValidDays(): Boolean {
-        if (days.size < 5) return false
         for (day in days) {
-            if (!(day.isHoliday() || day.isWorkDay()))
-                return false
+            if (!day.isWeekend())
+                return true
         }
-        return true
+        return false
     }
 
     /**@return today's day object if today is contained in day list*/
     fun today(): Day? {
-        return getDay(TimeTools.now)
+        return getDay(TimeTools.now.toDate(TimeTools.CET))
     }
 
     /**trims hours from beginning, where there is no lesson during whole week*/
@@ -86,14 +115,22 @@ data class Week(
         }
 
         val data = DataIdList<Hour>()
-        if (min in 0 until hours.size)
+        if (min in 0 until hours.size) {
             data.addAll(hours.subList(min, hours.size))
+        } else {
+            for (day in days) {
+                if (day.isHoliday()) {
+                    data.addAll(hours)
+                    break
+                }
+            }
+        }
 
         return data
     }
 
     /**If timetable is permanent*/
-    fun isPermanent():Boolean {
-        return loadedForDate == TimeTools.PERMANENT
+    fun isPermanent(): Boolean {
+        return monday == TimeTools.PERMANENT
     }
 }

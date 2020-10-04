@@ -24,60 +24,98 @@ import cz.lastaapps.bakalariextension.api.DataId
 import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.SimpleData
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.tools.searchNeutralText
+import kotlinx.android.parcel.Parcelize
 import java.time.Duration
+import java.time.Instant
 import java.time.ZonedDateTime
 
 typealias EventList = DataIdList<Event>
 
-//TODO @Parcelize - *sets needed
-class Event(
+@Parcelize
+data class Event(
     override var id: String,
     var group: Int = 0,
     var title: String,
     var description: String,
     var times: ArrayList<EventTime>,
+    var eventStart: ZonedDateTime,
+    var eventEnd: ZonedDateTime,
     var type: SimpleData,
     var classes: DataIdList<SimpleData>,
-    var classSets: Any,
+    //var classSets: Any,
     var teachers: DataIdList<SimpleData>,
-    var teacherSets: Any,
+    //var teacherSets: Any,
     var rooms: DataIdList<SimpleData>,
-    var roomSet: Any,
+    //var roomSet: Any,
     var students: DataIdList<SimpleData>,
-    var note: Any?,
-    var dateChanged: String
+    var note: String?,
+    var dateChanged: ZonedDateTime
 ) : DataId<String>(id), Comparable<Event> {
 
     companion object {
         const val GROUP_MY = 1 shl 0
         const val GROUP_PUBIC = 1 shl 1
+
+        fun getStartTime(times: List<EventTime>): ZonedDateTime {
+            var startTime =
+                ZonedDateTime.ofInstant(Instant.ofEpochMilli(Long.MAX_VALUE), TimeTools.CET)
+
+            for (time in times) {
+                if (time.start < startTime) {
+                    startTime = time.start
+                }
+            }
+            return startTime
+        }
+
+        fun getEndTime(times: List<EventTime>): ZonedDateTime {
+            var endTime: ZonedDateTime =
+                ZonedDateTime.ofInstant(Instant.ofEpochMilli(Long.MIN_VALUE), TimeTools.CET)
+
+            for (time in times) {
+                if (time.end >= endTime) {
+                    endTime = time.end
+                }
+            }
+            return endTime
+        }
+
+        fun filterByText(list: List<Event>, text: String): List<Event> {
+            return list.filter { event ->
+                val title = event.title.searchNeutralText()
+                val description = event.description.searchNeutralText()
+                val note = event.note?.searchNeutralText() ?: ""
+                val toSearch = text.searchNeutralText()
+
+                if (title.contains(toSearch)
+                    || description.contains(toSearch)
+                    || note.contains(toSearch)
+                ) return@filter true
+
+                for (classData in event.classes)
+                    if (classData.name.searchNeutralText().contains(toSearch))
+                        return@filter true
+
+                for (teacher in event.teachers)
+                    if (teacher.name.searchNeutralText().contains(toSearch))
+                        return@filter true
+
+                for (room in event.rooms)
+                    if (room.name.searchNeutralText().contains(toSearch))
+                        return@filter true
+
+                for (student in event.students)
+                    if (student.name.searchNeutralText().contains(toSearch))
+                        return@filter true
+
+                return@filter false
+            }
+        }
     }
 
     override fun compareTo(other: Event): Int {
         return -1 * eventStart.compareTo(other.eventStart)
-    }
-
-    val date: ZonedDateTime = TimeTools.parse(dateChanged, TimeTools.COMPLETE_FORMAT)
-
-    val eventStart: ZonedDateTime
-
-    val eventEnd: ZonedDateTime
-
-    init {
-        var firstTime: ZonedDateTime = TimeTools.lastJune.plusDays(1)
-        var lastTime: ZonedDateTime = TimeTools.firstSeptember
-
-        for (time in times) {
-            if (time.dateStart < firstTime) {
-                firstTime = time.dateStart
-            }
-            if (time.dateEnd > lastTime) {
-                lastTime = time.dateEnd
-            }
-        }
-
-        eventStart = firstTime
-        eventEnd = lastTime
     }
 
     val isPartOfDay: Boolean

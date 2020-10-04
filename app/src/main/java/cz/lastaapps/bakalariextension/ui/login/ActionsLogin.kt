@@ -28,14 +28,9 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
+import cz.lastaapps.bakalariextension.CurrentUser
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.absence.AbsenceLoader
-import cz.lastaapps.bakalariextension.api.events.EventsLoader
-import cz.lastaapps.bakalariextension.api.homework.HomeworkLoader
-import cz.lastaapps.bakalariextension.api.marks.MarksLoader
-import cz.lastaapps.bakalariextension.api.subjects.SubjectLoader
-import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
-import cz.lastaapps.bakalariextension.api.user.UserLoader
+import cz.lastaapps.bakalariextension.api.database.APIRepo
 import cz.lastaapps.bakalariextension.receivers.BootReceiver
 import cz.lastaapps.bakalariextension.receivers.TimeChangeReceiver
 import cz.lastaapps.bakalariextension.services.timetablenotification.TTNotifyService
@@ -74,8 +69,18 @@ class ActionsLogin {
             initNotificationChannels(context)
 
             //download default user data
-            if (UserLoader.loadFromServer() == null)
-                return false
+            val channelReceiver =
+                CurrentUser.requireDatabase().userRepository.refreshData().openSubscription()
+
+            while (true) {
+                when (channelReceiver.receive()) {
+                    APIRepo.LOADING -> continue
+                    APIRepo.FAILED -> return false
+                }
+                break
+            }
+            channelReceiver.cancel()
+
 
             //enables receivers and services
             val receivers = arrayOf(
@@ -98,35 +103,19 @@ class ActionsLogin {
             if (!CheckInternet.connectedMobileData()) {
                 Log.i(TAG, "Downloading default data")
 
+                //TODO auto data download
+
                 //download timetables
                 val date = TimeTools.monday
                 //what timetables should be loaded
                 val array = arrayOf(
                     TimeTools.PERMANENT,
                     date,
-                    TimeTools.previousWeek(date),
-                    TimeTools.nextWeek(date)
+                    date.minusDays(7),
+                    date.plusDays(7)
                 )
 
-                for (it in array)
-                    TimetableLoader.loadFromServer(it)
-
-
-                //downloads marks
-                MarksLoader.loadFromServer()
-
-                //download homework
-                HomeworkLoader.loadFromServer()
-
-                //downloads subjects
-                SubjectLoader.loadFromServer()
-
-                //downloads absence
-                AbsenceLoader.loadFromServer()
-
-                //downlands events
-                EventsLoader.loadFromServer()
-
+                for (it in array);
             }
 
             return true
@@ -139,9 +128,9 @@ class ActionsLogin {
                 //Timetable notification
                 {
                     val name =
-                        context.getString(R.string.chanel_timetable_name)
+                        context.getString(R.string.channel_timetable_name)
                     val descriptionText =
-                        context.getString(R.string.chanel_timetable_description)
+                        context.getString(R.string.channel_timetable_description)
                     val importance = NotificationManager.IMPORTANCE_DEFAULT
                     val mChannel = NotificationChannel(
                         TTNotifyService.NOTIFICATION_CHANEL_ID,
@@ -164,9 +153,9 @@ class ActionsLogin {
                 //Download attachment notification
                 {
                     val name =
-                        context.getString(R.string.chanel_attachment_downloading_name)
+                        context.getString(R.string.channel_attachment_downloading_name)
                     val descriptionText =
-                        context.getString(R.string.chanel_attachment_downloading_description)
+                        context.getString(R.string.channel_attachment_downloading_description)
 
                     val mChannel = NotificationChannel(
                         AttachmentDownload.ATTACHMENT_DOWNLOAD_CHANEL,

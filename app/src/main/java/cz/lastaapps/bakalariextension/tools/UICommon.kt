@@ -21,6 +21,7 @@
 package cz.lastaapps.bakalariextension.tools
 
 import android.content.Context
+import android.content.res.Configuration
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import java.text.Normalizer
@@ -112,9 +113,20 @@ fun formatTimeDifference(context: Context, start: ZonedDateTime, end: ZonedDateT
     }
 }
 
+fun isDarkTheme(context: Context): Boolean {
+    when (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+        Configuration.UI_MODE_NIGHT_YES -> return true
+
+        Configuration.UI_MODE_NIGHT_NO -> return false
+
+        Configuration.UI_MODE_NIGHT_UNDEFINED -> return false
+    }
+    return false
+}
+
 /** Replaces diacritics from text with their basic alternative and makes the text lowercase*/
-fun searchNeutralText(input: String): String {
-    val lower = input.toLowerCase(Locale.ROOT)
+fun String.searchNeutralText(): String {
+    val lower = toLowerCase(Locale.ROOT)
     return Normalizer.normalize(lower, Normalizer.Form.NFD)
         .replace("[\\p{InCombiningDiacriticalMarks}]".toRegex(), "")
 }

@@ -33,18 +33,19 @@ import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
 import cz.lastaapps.bakalariextension.api.timetable.data.Hour
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import cz.lastaapps.bakalariextension.api.user.data.User
-import cz.lastaapps.bakalariextension.tools.TimeTools
 import cz.lastaapps.bakalariextension.ui.timetable.CellSetup
 import kotlinx.coroutines.yield
-import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 /**Creates normal timetable cell structure*/
 class TimetableCreator {
     companion object {
         private val TAG = TimetableCreator::class.java.simpleName
 
-        fun prepareTimetable(root: View, height: Int, lessons: Int) {
+        fun prepareTimetable(root: View, totalHeight: Int, days: Int, lessons: Int) {
             Log.i(TAG, "Preparing timetable views")
+
+            val height = totalHeight / (1 + days)
 
             val table = root.findViewById<TableLayout>(R.id.table)
 
@@ -58,7 +59,7 @@ class TimetableCreator {
 
             val inflater = LayoutInflater.from(root.context)
 
-            for (i in 0 until table.childCount) {
+            for (i in 0 until (1 + days * 2)) {
 
                 //view is TableRow of Holiday
                 val view = table.getChildAt(i) as ViewGroup
@@ -113,8 +114,22 @@ class TimetableCreator {
                         //updates background of holiday, default w and h is match_parent
                         view.getChildAt(0).layoutParams =
                             RelativeLayout.LayoutParams(tableChildParams)
+                        view.findViewById<TextView>(R.id.holiday).textAlignment =
+                            TextView.TEXT_ALIGNMENT_VIEW_START
                     }
                 }
+            }
+
+            val daysTable = root.findViewById<LinearLayout>(R.id.table_days)
+
+            val dayParams = LinearLayout.LayoutParams(
+                App.getDimension(R.dimen.timetable_column_size_first),
+                height
+            )
+
+            for (i in 0 until 1 + days) {//edge and 5 days
+                val view = daysTable.getChildAt(i)
+                view.layoutParams = dayParams
             }
         }
 
@@ -131,48 +146,16 @@ class TimetableCreator {
             val daysTable = root.findViewById<LinearLayout>(R.id.table_days)
             val table = root.findViewById<TableLayout>(R.id.table)
 
-            /**Height of one table row*/
-            val height = root.findViewById<ViewGroup>(R.id.table_box).measuredHeight / 6
-
             //sets up first column
             setupDayNames(
                 daysTable,
-                week,
-                height
+                week
             )
 
             yield()
 
-            //init cycle name, cycle in week is null during empty weeks
-            val edge = daysTable.findViewById<ViewGroup>(R.id.edge)
-            edge.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-            edge.layoutParams = LinearLayout.LayoutParams(edge.measuredWidth, height)
-
             //non valid hour would result in empty columns (like zero lessons)
             val validHours = week.trimFreeMorning()
-            if (validHours.isEmpty() || !week.hasValidDays()) {
-
-                edge.findViewById<TextView>(R.id.cycle).text = ""
-
-                root.findViewById<TextView>(R.id.empty_timetable)
-                    .visibility = View.VISIBLE
-                root.findViewById<TableLayout>(R.id.table)
-                    .visibility = View.GONE
-
-                return
-            } else {
-
-                //init cycle name
-                edge.findViewById<TextView>(R.id.cycle).text =
-                    cycle?.name ?: ""
-
-                root.findViewById<TextView>(R.id.empty_timetable)
-                    .visibility = View.GONE
-                root.findViewById<TableLayout>(R.id.table)
-                    .visibility = View.VISIBLE
-            }
-
-            yield()
 
             //sets up first row
             setupHours(
@@ -197,7 +180,7 @@ class TimetableCreator {
         }
 
         /**Sets up first column Mo-Fr except first edge cell*/
-        private fun setupDayNames(daysTable: LinearLayout, week: Week, height: Int) {
+        private fun setupDayNames(daysTable: LinearLayout, week: Week) {
 
             //changes day's days and shortcuts in first day column
             val dayArray =
@@ -210,15 +193,15 @@ class TimetableCreator {
                 R.string.friday_shortcut
             )
 
-            val mondayDate = week.loadedForDate
+            val mondayDate = week.monday
 
             //goes through
+            var viewIndex = 1//edge skipping
             for (i in 0 until 5) {
-                val view = daysTable.findViewById<ViewGroup>(dayArray[i])
 
-                //sets tows height to mach the oder ones
-                view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-                view.layoutParams = LinearLayout.LayoutParams(view.measuredWidth, height)
+                if (week.getDayOfWeek(i + 1) == null) continue
+
+                val view = daysTable.getChildAt(viewIndex++)
 
                 val dayTV = view.findViewById<TextView>(R.id.day)
                 val dateTV = view.findViewById<TextView>(R.id.date)
@@ -226,11 +209,8 @@ class TimetableCreator {
                 dayTV.text = App.getString(dayShortcutsArray[i])
                 //permanent timetable doesn't show date
                 if (!week.isPermanent())
-                    dateTV.text = TimeTools.format(
-                        mondayDate.plusDays(i.toLong()),
-                        "d.M.",
-                        ZoneId.systemDefault()
-                    )
+                    dateTV.text =
+                        mondayDate.plusDays(i.toLong()).format(DateTimeFormatter.ofPattern("d.M."))
                 else
                 //For permanent timetable
                     dateTV.text = ""
@@ -315,19 +295,14 @@ class TimetableCreator {
 
                     //updates texts
                     holiday.findViewById<TextView>(R.id.holiday).text =
-                        day.getHolidayDescription()
-                    holiday.findViewById<TextView>(R.id.holiday).textAlignment =
-                        TextView.TEXT_ALIGNMENT_VIEW_START
+                        day.getHolidayDescription(true)
 
                     row.visibility = View.GONE
                     holiday.visibility = View.VISIBLE
                 }
-
-                yield()
             }
+
+            yield()
         }
-
-
     }
-
 }

@@ -20,12 +20,13 @@
 
 package cz.lastaapps.bakalariextension.api.user.data
 
-import cz.lastaapps.bakalariextension.api.DataId
+import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
+import java.time.ZonedDateTime
 
 @Parcelize
-class Semester(
-    override var id: Int,
-    val from: String,
-    val to: String
-) : DataId<Int>(id)
+data class Semester(
+    val id: Int,
+    val from: ZonedDateTime,
+    val to: ZonedDateTime
+) : Parcelable

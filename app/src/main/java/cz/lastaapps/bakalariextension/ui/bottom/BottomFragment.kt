@@ -37,6 +37,7 @@ import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 import java.lang.Integer.min
 
+
 /**Manages the bottom navigation*/
 class BottomFragment : Fragment() {
 
@@ -115,6 +116,24 @@ class BottomFragment : Fragment() {
             setState(if (state != MINIMIZED) MINIMIZED else EXPANDED)
         }
 
+        //TODO wait for listeners
+        /*
+        if (Build.VERSION.SDK_INT >= 20) {
+
+            ViewCompat.setOnApplyWindowInsetsListener(root) { v: View, insets: WindowInsetsCompat ->
+                val params = v.layoutParams as MarginLayoutParams
+                params.topMargin = insets.systemWindowInsetTop
+                insets.consumeSystemWindowInsets()
+            }
+
+            val v = WindowInsetsCompat.toWindowInsetsCompat(
+                requireActivity().windowManager.,
+                root
+            )
+            v.isVisible(WindowInsetsCompat.Type.ime())
+
+        } else { }*/
+
         KeyboardVisibilityEvent.setEventListener(
             requireActivity(),
             LifecycleOwner { lifecycle },
@@ -131,13 +150,18 @@ class BottomFragment : Fragment() {
 
     /**shows appropriate state for fragment given*/
     private fun autoManageDestinations(id: Int) {
-        val hidden = arrayOf(R.id.nav_loading, R.id.nav_login)
-        val expanded = arrayOf(R.id.nav_home)
-        val doNothing = arrayOf(
+        //no option to expand
+        val hidden = arrayOf(
+            R.id.nav_loading, R.id.nav_login,
             R.id.nav_about, R.id.nav_license,
             R.id.nav_attachment, R.id.nav_attachment_downloaded, R.id.nav_attachment_file_exists,
             R.id.nav_teacher_info
         )
+        //always expanded
+        val expanded = arrayOf(R.id.nav_home)
+        //retains last state
+        val doNothing = arrayOf(0)
+        //animalized with the option to expand and minimize again
         val minimized = arrayOf(0) //all the others
 
         when {

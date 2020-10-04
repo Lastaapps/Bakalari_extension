@@ -46,7 +46,7 @@
         <receiver
             android:name=".widgets.WidgetUpdater"
             android:enabled="true"
-            android:exported="true" /> <!-- TODO disable receiver before user is logged in -->
+            android:exported="true" /> <!-- TODO disable a receiver before user is logged in -->
         <receiver
             android:name=".widgets.smalltimetable.SmallTimetableWidget"
             android:enabled="true">
@@ -57,6 +57,10 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/small_timetable_widget_info" />
+            <!-- One UI option to change widget settings later -->
+            <meta-data
+                android:name="android.appwidget.provider.semConfigureActivity"
+                android:value="cz.lastaapps.bakalariextension.widgets.smalltimetable.SmallTimetableWidgetConfig" />
         </receiver>
         <receiver
             android:name=".receivers.TimeChangeReceiver"
@@ -64,6 +68,8 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.intent.action.DATE_CHANGED" />
             </intent-filter>
         </receiver>
         <receiver
@@ -84,7 +90,7 @@
             android:name=".services.timetablenotification.TTNotifyService"
             android:enabled="true" />
         <service
-            android:name=".widgets.smalltimetable.SmallTimetableRemoteAdapterService"
+            android:name=".widgets.smalltimetable.SmallTimetableRemoteService"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
@@ -104,10 +110,12 @@
         </activity>
         <activity
             android:name=".send.SendIdeaActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".send.ReportIssueActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".widgets.smalltimetable.SmallTimetableWidgetConfig"
             android:exported="true"

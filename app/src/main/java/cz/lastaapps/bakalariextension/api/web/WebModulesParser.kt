@@ -21,7 +21,9 @@
 package cz.lastaapps.bakalariextension.api.web
 
 import android.util.Log
-import cz.lastaapps.bakalariextension.api.web.data.Dashboard
+import cz.lastaapps.bakalariextension.api.web.data.WebModule
+import cz.lastaapps.bakalariextension.tools.getOrNull
+import org.json.JSONArray
 import org.json.JSONObject
 
 class WebModulesParser {
@@ -35,13 +37,28 @@ class WebModulesParser {
             Log.i(TAG, "Parsing web modules")
 
             return WebRoot(
-                listOf(),
-                Dashboard(
-                    null,
-                    null,
-                    jsonObject.getJSONObject("Dashboard").getString("Url"),
-                    null,
-                )
+                parseWebModules(jsonObject.getJSONArray("WebModules")),
+                parseWebModule(jsonObject.getJSONObject("Dashboard"))
+            )
+        }
+
+        private fun parseWebModules(array: JSONArray): List<WebModule> {
+            val list = ArrayList<WebModule>()
+
+            for (i in 0 until array.length()) {
+                val json = array.getJSONObject(i)
+                list.add(parseWebModule(json))
+            }
+
+            return list
+        }
+
+        private fun parseWebModule(json: JSONObject): WebModule {
+            return WebModule(
+                json.getOrNull("IconId"),
+                null,//unknown json.getOrNull("SubMenu")
+                json.getOrNull("Url"),
+                json.getOrNull("Name"),
             )
         }
     }

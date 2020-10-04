@@ -30,12 +30,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.events.EventsLoader
+import cz.lastaapps.bakalariextension.api.events.EventsRepository
 import cz.lastaapps.bakalariextension.databinding.TemplateOverviewBinding
 import cz.lastaapps.bakalariextension.tools.MySettings
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.tools.TimeTools.Companion.toCzechDate
 import cz.lastaapps.bakalariextension.tools.validDate
-import cz.lastaapps.bakalariextension.ui.timetable.small.STViewModel
+import cz.lastaapps.bakalariextension.ui.timetable.TimetableMainViewModel
+import cz.lastaapps.bakalariextension.ui.timetable.TimetableViewModel
 import java.time.ZonedDateTime
 
 /**Shows upcoming event for today or tomorrow based on settings*/
@@ -47,7 +49,8 @@ class EventsUpcomingFragment : Fragment() {
 
     private lateinit var binding: TemplateOverviewBinding
     private val viewModel: EventsViewModel by activityViewModels()
-    private val smallTimetableViewModel: STViewModel by activityViewModels() //to obtain timetable
+    private val mainTimetableViewModel: TimetableMainViewModel by activityViewModels()
+    private lateinit var currentTimetableViewModel: TimetableViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,7 +68,7 @@ class EventsUpcomingFragment : Fragment() {
                 false
             )
         binding.setLifecycleOwner { lifecycle }
-        binding.viewmodel = viewModel
+        binding.viewModel = viewModel
         binding.drawable = R.drawable.module_events
         //TODO contentDescription
         binding.contentDescription = ""
@@ -76,18 +79,22 @@ class EventsUpcomingFragment : Fragment() {
         }
 
         //starts loading if data aren't loaded yet
-        viewModel.executeOrRefresh(lifecycle) { dataChanged() }
-        smallTimetableViewModel.executeOrRefresh(lifecycle) { dataChanged() }
+        viewModel.runOrRefresh(lifecycle) { dataChanged() }
+
+        currentTimetableViewModel =
+            mainTimetableViewModel.getTimetableViewModel(TimeTools.today.toCzechDate())
+        currentTimetableViewModel.runOrRefresh(lifecycle) { dataChanged() }
 
         return binding.root
     }
 
     /**sets actual content of the fragment*/
     private fun dataChanged() {
-        Log.i(TAG, "Data changed, updating")
 
         val events = viewModel.data.value ?: return
-        val week = smallTimetableViewModel.data.value
+        val week = currentTimetableViewModel.data.value
+
+        Log.i(TAG, "Data changed, updating")
 
         val sett = MySettings(requireContext())
         val date = validDate(week, sett.EVENTS_SHOW_FOR_DAY, R.array.sett_events_show_for_day)
@@ -100,36 +107,36 @@ class EventsUpcomingFragment : Fragment() {
             if (event.eventStart.toLocalDate() <= date.toLocalDate()
                 && date.toLocalDate() <= event.eventEnd.toLocalDate()
             ) {
-                if (event.group and EventsLoader.EventType.MY.group > 0)
+                if (event.group and EventsRepository.EventType.MY.group > 0)
                     myEvents++
                 if (event.eventStart < date && date < event.eventEnd) {
                     publicEvents++
                 }
             }
-
-            val text = if (myEvents > 0 || publicEvents > 0) {
-                val myEventsText =
-                    resources.getQuantityString(R.plurals.events_upcoming_any, myEvents)
-                val publicEventsText =
-                    resources.getQuantityString(R.plurals.events_upcoming_any, publicEvents)
-
-                //x your events and y public events for today
-                val template = getString(R.string.events_upcoming_placeholder)
-
-                String.format(
-                    template,
-                    myEvents,
-                    myEventsText,
-                    publicEvents,
-                    publicEventsText,
-                    getDayText(date)
-                )
-            } else {
-                getString(R.string.events_upcoming_no)
-            }
-
-            binding.text.text = text
         }
+
+        val text = if (myEvents > 0 || publicEvents > 0) {
+            val myEventsText =
+                resources.getQuantityString(R.plurals.events_upcoming_any, myEvents)
+            val publicEventsText =
+                resources.getQuantityString(R.plurals.events_upcoming_any, publicEvents)
+
+            //x your events and y public events for today
+            val template = getString(R.string.events_upcoming_placeholder)
+
+            String.format(
+                template,
+                myEvents,
+                myEventsText,
+                publicEvents,
+                publicEventsText,
+                getDayText(date)
+            )
+        } else {
+            getString(R.string.events_upcoming_no)
+        }
+
+        binding.text.text = text
     }
 
     private fun getDayText(date: ZonedDateTime): String {

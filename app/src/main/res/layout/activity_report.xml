@@ -179,7 +179,9 @@
                 android:paddingStart="@dimen/report_warning_margin"
                 android:paddingEnd="@dimen/report_warning_margin" />
 
-
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/bottom_sheet_bottom_margin" />
         </LinearLayout>
 
     </ScrollView>

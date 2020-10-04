@@ -58,7 +58,7 @@ class TeacherListFragment : Fragment() {
         //views setup
         binding =
             DataBindingUtil.inflate(inflater, R.layout.template_loading_list, container, false)
-        binding.viewmodel = viewModel
+        binding.viewModel = viewModel
         binding.setLifecycleOwner { lifecycle }
 
         //teacher list setup
@@ -70,14 +70,7 @@ class TeacherListFragment : Fragment() {
         }
 
         //loads data
-        viewModel.teachers.observe({ lifecycle }) {
-            showTeachers()
-        }
-        if (viewModel.teachers.value != null) {
-            showTeachers()
-        } else {
-            viewModel.onRefresh()
-        }
+        viewModel.executeTeachersOrRefresh(lifecycle) { showTeachers() }
 
         return binding.root
     }

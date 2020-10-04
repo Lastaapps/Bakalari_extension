@@ -27,7 +27,7 @@
         <import type="android.view.View" />
 
         <variable
-            name="viewmodel"
+            name="viewModel"
             type="cz.lastaapps.bakalariextension.ui.events.EventsViewModel" />
     </data>
 
@@ -39,16 +39,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@{viewmodel.failedText(context)}"
-            android:visibility="@{viewmodel.failed ? View.VISIBLE : View.GONE}"
+            android:text="@{viewModel.failedText(context)}"
+            android:visibility="@{!viewModel.hasData &amp;&amp; !viewModel.isLoading() ? View.VISIBLE : View.GONE}"
             tools:text="Data don\'t want to come to us" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@{viewmodel.emptyText(context)}"
-            android:visibility="@{viewmodel.isEmpty() ? View.VISIBLE : View.GONE}"
+            android:text="@{viewModel.emptyText(context)}"
+            android:visibility="@{viewModel.isEmpty() ? View.VISIBLE : View.GONE}"
             tools:text="Data have went for a walk" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -60,95 +60,133 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:onRefreshListener="@{() -> viewmodel.onRefresh(true)}"
-            app:refreshing="@{viewmodel.isRefreshing()}">
+            app:onRefreshListener="@{() -> viewModel.loadData()}"
+            app:refreshing="@{viewModel.isLoading()}">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="@{viewmodel.isEmpty() ? View.GONE : View.VISIBLE}">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/radio_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_basic"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <RadioGroup
-                        android:id="@+id/filter_type"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:checkedButton="@={viewmodel.filterId}"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/advanced"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <RadioButton
-                            android:id="@+id/filter_all"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/margin_basic"
-                            android:text="@string/events_filter_all" />
-
-                        <RadioButton
-                            android:id="@+id/filter_my"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/margin_basic"
-                            android:text="@string/events_filter_my" />
-
-                        <RadioButton
-                            android:id="@+id/filter_public"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/margin_basic"
-                            android:text="@string/events_filter_public" />
-                    </RadioGroup>
-
-                    <ImageButton
-                        style="@style/AppTheme.SmallImageButton"
-                        android:id="@+id/advanced"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/filter_type"
-                        app:srcCompat="@drawable/nav_whats_new" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/advanced_filter"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/margin_basic"
-                    android:visibility="@{viewmodel.advancedFilterVisible ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/radio_layout" />
+                android:visibility="@{viewModel.isEmpty() ? View.GONE : View.VISIBLE}">
 
                 <cz.lastaapps.bakalariextension.ui.views.BetterRecyclerView
                     android:id="@+id/list"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_margin="@dimen/margin_basic"
-                    android:visibility="@{viewmodel.isEmpty() ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{viewModel.isEmpty() ? View.GONE : View.VISIBLE}"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_constraintBottom_toTopOf="@+id/last_updated"
+                    app:layout_constraintBottom_toTopOf="@+id/advanced_filter"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/advanced_filter" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/advanced_filter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_basic"
+                    android:visibility="@{viewModel.advancedFilterVisible ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintBottom_toTopOf="@+id/filter_type"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <RadioGroup
+                    android:id="@+id/filter_type"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:checkedButton="@={viewModel.filterId}"
+                    android:layout_margin="@dimen/margin_basic"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toTopOf="@id/text_search_barrier"
+                    app:layout_constraintEnd_toStartOf="@id/icons_barrier"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/filter_barrier">
+
+                    <RadioButton
+                        android:id="@+id/filter_all"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_basic"
+                        android:text="@string/events_filter_all" />
+
+                    <RadioButton
+                        android:id="@+id/filter_my"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_basic"
+                        android:text="@string/events_filter_my" />
+
+                    <RadioButton
+                        android:id="@+id/filter_public"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_basic"
+                        android:text="@string/events_filter_public" />
+
+                </RadioGroup>
+
+                <ImageButton
+                    android:id="@+id/advanced"
+                    style="@style/AppTheme.SmallImageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_basic"
+                    app:layout_constraintBottom_toTopOf="@id/text_search_barrier"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/filter_barrier"
+                    app:srcCompat="@drawable/nav_whats_new" />
+
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/filter_barrier"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:barrierDirection="top"
+                    app:constraint_referenced_ids="advanced,filter_type"
+                    tools:layout_editor_absoluteY="731dp" />
+
+                <EditText
+                    android:id="@+id/filter_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_basic"
+                    android:hint="@string/homework_search_hint"
+                    android:inputType="textAutoComplete"
+                    android:maxLines="1"
+                    android:text="@={viewModel.filterText}"
+                    app:layout_constraintBottom_toTopOf="@+id/last_updated"
+                    app:layout_constraintEnd_toStartOf="@id/icons_barrier"
+                    app:layout_constraintTop_toBottomOf="@id/text_search_barrier"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <ImageButton
+                    android:id="@+id/clear"
+                    style="@style/AppTheme.SmallImageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_basic"
+                    android:onClick="@{(view) -> filterText.setText(``)}"
+                    app:layout_constraintBottom_toTopOf="@+id/last_updated"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/text_search_barrier"
+                    app:srcCompat="@drawable/clear" />
+
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/icons_barrier"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:barrierDirection="left"
+                    app:constraint_referenced_ids="clear,advanced" />
+
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/text_search_barrier"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:barrierDirection="top"
+                    app:constraint_referenced_ids="clear,filter_text" />
 
                 <TextView
-                    style="@style/AppTheme.LastUpdate"
                     android:id="@+id/last_updated"
+                    style="@style/AppTheme.LastUpdate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="parent"

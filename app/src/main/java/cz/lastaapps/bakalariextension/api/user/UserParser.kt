@@ -22,9 +22,12 @@ package cz.lastaapps.bakalariextension.api.user
 
 import android.util.Log
 import cz.lastaapps.bakalariextension.api.SimpleData
-import cz.lastaapps.bakalariextension.api.user.data.ModuleMap
+import cz.lastaapps.bakalariextension.api.user.data.ModuleFeature
+import cz.lastaapps.bakalariextension.api.user.data.ModuleList
 import cz.lastaapps.bakalariextension.api.user.data.Semester
 import cz.lastaapps.bakalariextension.api.user.data.User
+import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.tools.TimeTools.Companion.toCommon
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -43,8 +46,10 @@ class UserParser {
         }
 
         private fun parseUser(json: JSONObject): User {
+            val userId = safeJson(json, "UserUID")
+
             return User(
-                safeJson(json, "UserUID"),
+                userId,
                 parseSimple(json.getJSONObject("Class")),
                 safeJson(json, "FullName"),
                 safeJson(json, "SchoolOrganizationName"),
@@ -52,29 +57,27 @@ class UserParser {
                 safeJson(json, "UserType"),
                 safeJson(json, "UserTypeText"),
                 json.getInt("StudyYear"),
-                parseModules(json.getJSONArray("EnabledModules")),
+                parseModules(userId, json.getJSONArray("EnabledModules")),
                 parseSemester(json.getJSONObject("SettingModules").getJSONObject("Common"))
             )
         }
 
         /**parses all modules and rights*/
-        private fun parseModules(array: JSONArray): ModuleMap {
-            val map = ModuleMap()
+        private fun parseModules(uid: String, array: JSONArray): ModuleList {
+            val list = ModuleList()
 
             for (i in 0 until array.length()) {
                 val json = array.getJSONObject(i)
 
-                val rights = ArrayList<String>()
+                val moduleName = json.getString("Module")
                 val rightsArray = json.getJSONArray("Rights")
 
                 for (j in 0 until rightsArray.length()) {
-                    rights.add(rightsArray.getString(j))
+                    list.add(ModuleFeature(uid, moduleName, rightsArray.getString(j)))
                 }
-
-                map[json.getString("Module")] = rights
             }
 
-            return map
+            return list
         }
 
         /**parses semester*/
@@ -84,8 +87,8 @@ class UserParser {
                 json.getJSONObject("ActualSemester").apply {
                     return Semester(
                         getInt("SemesterId"),
-                        getString("From"),
-                        getString("To")
+                        parseDate(getString("From")),
+                        parseDate(getString("To"))
                     )
                 }
 
@@ -105,6 +108,9 @@ class UserParser {
                 json.getString("Name")
             )
         }
+
+        private fun parseDate(date: String) =
+            TimeTools.parse(date, TimeTools.COMPLETE_FORMAT).toCommon()
 
         /**try to get String for the key given, protection again JSONException
          * and replacing null object with ""*/

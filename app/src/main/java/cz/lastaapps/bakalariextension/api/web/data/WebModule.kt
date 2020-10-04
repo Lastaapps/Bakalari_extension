@@ -20,4 +20,9 @@
 
 package cz.lastaapps.bakalariextension.api.web.data
 
-class WebModule //unknown parameters
+data class WebModule(
+    var iconId: Any?,  //unknown type
+    var submenu: Any?, //unknown type
+    var url: String?,
+    var name: String?,
+)

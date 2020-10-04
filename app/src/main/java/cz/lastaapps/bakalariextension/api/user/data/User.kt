@@ -24,26 +24,30 @@ import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.DataId
 import cz.lastaapps.bakalariextension.api.SimpleData
+import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.tools.TimeTools.Companion.toCzechDate
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
-
-typealias ModuleMap = HashMap<String, ArrayList<String>>
+import java.time.LocalDate
+import java.time.Month
 
 @Parcelize
-class User(
-    private val uid: String,
-    val classInfo: SimpleData,
-    val fullName: String,
-    val schoolName: String,
-    val schoolType: String,
-    val userType: String,
-    val userTypeText: String,
-    val studyYear: Int,
-    val modules: ModuleMap,
-    val semester: Semester?
+//constructor for database
+data class User(
+    var uid: String,
+    var classInfo: SimpleData,
+    var fullName: String,
+    var schoolName: String,
+    var schoolType: String,
+    var userType: String,
+    var userTypeText: String,
+    var studyYear: Int,
+    var modulesFeatures: ModuleList,
+    var semester: Semester?
 ) : DataId<String>(uid) {
 
     companion object {
-        private val TAG = User::class.java
+        private val TAG = User::class.java.simpleName
 
         const val ROLE_PARENT = "parents"
         const val ROLE_STUDENT = "student"
@@ -95,13 +99,51 @@ class User(
 
     }
 
-    /**full name in first name last name format*/
-    val normalFunName: String
-        get() {
-            val temp = fullName.substring(0, fullName.lastIndexOf(','))
-            val spaceIndex = temp.indexOf(' ')
-            return "${temp.substring(spaceIndex + 1)} ${temp.substring(0, spaceIndex)}"
+    init {
+        //must be sorted because of equals method
+        modulesFeatures.sort()
+    }
+
+    /**The first September of this school year*/
+    @IgnoredOnParcel
+    val firstSeptember: LocalDate by lazy {
+        val semester = semester
+
+        when (semester?.id) {
+            1 -> {
+                LocalDate.of(semester.from.year, Month.SEPTEMBER, 1)
+            }
+            2 -> {
+                LocalDate.of(semester.from.year - 1, Month.SEPTEMBER, 1)
+            }
+            //computes based on current date
+            else -> {
+                val today = TimeTools.today.toCzechDate()
+                var firstSeptemberThisYear = today
+                    .withDayOfMonth(1)
+                    .withMonth(9)
+
+                //start giving new first september from August
+                while (firstSeptemberThisYear > today.minusMonths(1))
+                    firstSeptemberThisYear = firstSeptemberThisYear.minusYears(1)
+                firstSeptemberThisYear
+            }
         }
+    }
+
+    /**The last day of the school year*/
+    @IgnoredOnParcel
+    val lastJune: LocalDate by lazy {
+        LocalDate.of(firstSeptember.year + 1, Month.JUNE, 30)
+    }
+
+    /**full name in first name last name format*/
+    @IgnoredOnParcel
+    val normalFunName: String by lazy {
+        val temp = fullName.substring(0, fullName.lastIndexOf(','))
+        val spaceIndex = temp.indexOf(' ')
+        "${temp.substring(spaceIndex + 1)} ${temp.substring(0, spaceIndex)}"
+    }
 
     /**
      * translates school role to current language
@@ -124,30 +166,28 @@ class User(
         return "${classInfo.shortcut} - ${translateUserType()}"
     }
 
+
+    //modules and features
+    @IgnoredOnParcel
+    private val modules = modulesFeatures.map { it.moduleName }.toHashSet()
+
     /**if whole module is enabled, for example komens, timetable, ...*/
     fun isModuleEnabled(moduleName: String): Boolean {
-        return modules.keys.contains(moduleName)
+        return modules.contains(moduleName)
     }
 
     /** runs given code if module is enabled
      * @return data returned from code given or null if nothing was executed*/
-    fun <E> runIfModuleEnabled(moduleName: String, todo: (() -> E)): E? {
+    inline fun <E> runIfModuleEnabled(moduleName: String, todo: (() -> E)): E? {
         if (isModuleEnabled(moduleName))
             return todo()
         return null
     }
 
     /** holds list of all features*/
-    private lateinit var _allFeatures: ArrayList<String>
-    fun getAllFeatures(): ArrayList<String> {
-        if (!this::_allFeatures.isInitialized) {
-            _allFeatures = ArrayList()
-            for (key in modules.keys) {
-                _allFeatures.addAll(modules[key]!!)
-            }
-        }
-        return _allFeatures
-    }
+    @IgnoredOnParcel
+    private val allFeatures = modulesFeatures.map { it.featureName }
+    fun getAllFeatures(): List<String> = allFeatures
 
 
     /**@return in exact feature is available, for example showMarks, showFinalMarks, ...*/
@@ -157,7 +197,7 @@ class User(
 
     /** runs given code if feature is enabled
      * @return data returned from code given or null if nothing was executed*/
-    fun <E> runIfFeatureEnabled(moduleName: String, todo: (() -> E)): E? {
+    inline fun <E> runIfFeatureEnabled(moduleName: String, todo: (() -> E)): E? {
         if (isFeatureEnabled(moduleName))
             return todo()
         return null

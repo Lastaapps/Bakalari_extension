@@ -24,26 +24,44 @@ import android.content.Context
 import android.content.res.ColorStateList
 import androidx.lifecycle.MutableLiveData
 import cz.lastaapps.bakalariextension.App
+import cz.lastaapps.bakalariextension.CurrentUser
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.DataIdList
-import cz.lastaapps.bakalariextension.api.marks.MarksLoader
+import cz.lastaapps.bakalariextension.api.marks.MarksRepository
 import cz.lastaapps.bakalariextension.api.marks.data.Mark
-import cz.lastaapps.bakalariextension.api.marks.data.MarksRoot
-import cz.lastaapps.bakalariextension.api.marks.data.SubjectMarks
-import cz.lastaapps.bakalariextension.ui.RefreshableViewModel
+import cz.lastaapps.bakalariextension.api.marks.data.MarksPair
+import cz.lastaapps.bakalariextension.api.marks.data.MarksPairList
+import cz.lastaapps.bakalariextension.ui.RefreshableListViewModel
 
 /**ViewModel common for all mark fragments
  * holds loaded marks and some data for each fragment*/
-class MarksViewModel : RefreshableViewModel<MarksRoot>(TAG) {
+class MarksViewModel : RefreshableListViewModel<MarksPairList, MarksRepository>(
+    TAG,
+    CurrentUser.requireDatabase().marksRepository
+) {
     companion object {
         private val TAG = MarksViewModel::class.java.simpleName
     }
 
-    /**Loaded subjects and their marks*/
-    val marks = data
+    val pairs by lazy { repo.getAllPairs().asLiveData() }
 
-    // ---- Predictor section -----
+    val marks by lazy { repo.getAllMarks().asLiveData() }
 
+    val newMarks by lazy { repo.getNewMarks().asLiveData() }
+
+    val subjects by lazy { repo.getSubjects().asLiveData() }
+
+    fun getSubjectMarks(subjectId: String) = repo.getMarks(subjectId).asLiveData()
+
+    override val data by lazy { pairs }
+
+    fun getPair(subjectId: String) = repo.getPair(subjectId).asLiveData()
+
+    init {
+        addEmptyObserver()
+    }
+
+    // ------ Predictor section -------
     //default average
     val average = MutableLiveData("")
 
@@ -57,31 +75,7 @@ class MarksViewModel : RefreshableViewModel<MarksRoot>(TAG) {
     /**Which subject was selected in predictor*/
     val predictorSelected = MutableLiveData(0)
 
-    val selectedSubject: SubjectMarks
-        get() {
-            //if there is no subject, index is -1
-            val index = predictorSelected.value!!
-            return if (index >= 0) {
-                //gets subject for selected index
-                marks.value!!.subjects[index]
-            } else {
-                SubjectMarks.default
-            }
-        }
-
-    /**marks for subject selected right now in predictor*/
-    val subjectMarks: DataIdList<Mark>
-        get() {
-            //if there is no subject, index is -1
-            val index = predictorSelected.value!!
-            return if (index >= 0) {
-                //gets subject for selected index
-                val subject = marks.value!!.subjects[index]
-                subject.marks
-            } else {
-                DataIdList()
-            }
-        }
+    val pairSelected = MutableLiveData<MarksPair>()
 
     /**Contains predicted marks for all subjects, key is index of subject*/
     private val _predictorMarks = HashMap<Int, DataIdList<Mark>>()
@@ -104,22 +98,6 @@ class MarksViewModel : RefreshableViewModel<MarksRoot>(TAG) {
             return _predictorMarks[index]!!
         }
 
-    override suspend fun loadServer(): MarksRoot? {
-        return MarksLoader.loadFromServer()
-    }
-
-    override suspend fun loadStorage(): MarksRoot? {
-        return MarksLoader.loadFromStorage()
-    }
-
-    override fun shouldReload(): Boolean {
-        return MarksLoader.shouldReload()
-    }
-
-    override fun isEmpty(data: MarksRoot): Boolean {
-        return data.getAllMarks().isEmpty()
-    }
-
     override fun emptyText(context: Context): String {
         return context.getString(R.string.marks_no_marks)
     }
@@ -127,5 +105,4 @@ class MarksViewModel : RefreshableViewModel<MarksRoot>(TAG) {
     override fun failedText(context: Context): String {
         return context.getString(R.string.marks_failed_to_load)
     }
-
 }

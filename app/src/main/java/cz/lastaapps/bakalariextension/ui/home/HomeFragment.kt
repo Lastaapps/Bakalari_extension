@@ -72,7 +72,7 @@ class HomeFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
 
 
-        userViewModel.executeOrRefresh(lifecycle) {
+        userViewModel.runOrRefresh(lifecycle) {
             binding.apply {
 
                 //shows up info about user in the top

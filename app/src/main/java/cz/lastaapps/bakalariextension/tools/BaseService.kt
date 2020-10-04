@@ -20,12 +20,12 @@
 
 package cz.lastaapps.bakalariextension.tools
 
-import android.app.Service
 import android.content.Context
+import androidx.lifecycle.LifecycleService
 
 /**The parent of all services
  * Uses context with changed language*/
-abstract class BaseService: Service() {
+abstract class BaseService : LifecycleService() {
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(LocaleManager.updateLocale(newBase))
     }

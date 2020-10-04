@@ -20,12 +20,17 @@
 
 package cz.lastaapps.bakalariextension.api.timetable.data
 
+import androidx.room.Entity
+import androidx.room.Ignore
 import cz.lastaapps.bakalariextension.api.DataId
+import cz.lastaapps.bakalariextension.api.database.APIBase
 import kotlinx.android.parcel.Parcelize
 
 /**Stores lesson start and end times + id which is used to find lessons in day*/
 @Parcelize
-class Hour(
+@Entity(tableName = APIBase.TIMETABLE_HOUR)
+data class Hour(
+    @Ignore
     override var id: Int,
     var caption: String,
     var begin: String,

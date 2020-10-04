@@ -35,6 +35,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.R
+import cz.lastaapps.bakalariextension.tools.TimeTools.Companion.toMidnight
 import java.time.DayOfWeek
 import java.time.Duration
 import java.time.ZonedDateTime
@@ -206,14 +207,14 @@ class MySettings(val context: Context) {
         val invalidDuration = when (getArray(arrayId).indexOf(
             getSP().getString(settKey, "")
         )) {
-            0 -> Duration.between(lessonsEnd, TimeTools.toMidnight(lessonsEnd.plusDays(1)))
+            0 -> Duration.between(lessonsEnd, lessonsEnd.plusDays(1).toMidnight())
             1 -> Duration.ZERO
             2 -> Duration.ofHours(1)
             3 -> Duration.ofHours(2)
             4 -> Duration.ofHours(3)
-            5 -> Duration.between(now, TimeTools.toMidnight(lessonsEnd).withHour(17))
-            6 -> Duration.between(now, TimeTools.toMidnight(lessonsEnd).withHour(18))
-            7 -> Duration.between(now, TimeTools.toMidnight(lessonsEnd).withHour(19))
+            5 -> Duration.between(now, lessonsEnd.toMidnight().withHour(17))
+            6 -> Duration.between(now, lessonsEnd.toMidnight().withHour(18))
+            7 -> Duration.between(now, lessonsEnd.toMidnight().withHour(19))
             else -> return now
         }
         val currentDuration = Duration.between(lessonsEnd, now)

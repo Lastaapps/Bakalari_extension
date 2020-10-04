@@ -30,6 +30,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import cz.lastaapps.bakalariextension.R
+import cz.lastaapps.bakalariextension.api.marks.data.MarksPairList
 import cz.lastaapps.bakalariextension.databinding.TemplateLoadingListBinding
 
 /**Shows subjects and their marks
@@ -57,14 +58,14 @@ class BySubjectFragment : Fragment() {
 
             binding =
                 DataBindingUtil.inflate(inflater, R.layout.template_loading_list, container, false)
-            binding.apply {
-                viewmodel = viewModel
-                lifecycleOwner = LifecycleOwner { lifecycle }
+            binding.also {
+                it.viewModel = viewModel
+                it.lifecycleOwner = LifecycleOwner { lifecycle }
 
-                list.adapter = SubjectAdapter()
+                it.list.adapter = SubjectAdapter()
             }
 
-            viewModel.executeOrRefresh(lifecycle) { showSubjects() }
+            viewModel.runOrRefresh(viewModel.pairs, lifecycle) { showSubjects(it) }
 
         } else {
             Log.i(TAG, "View already created")
@@ -74,10 +75,10 @@ class BySubjectFragment : Fragment() {
     }
 
     /**fills up list with subjects*/
-    private fun showSubjects() {
+    private fun showSubjects(pairs: MarksPairList) {
         Log.i(TAG, "Updating based on new marks")
 
         (binding.list.adapter as SubjectAdapter)
-            .update(viewModel.marks.value!!)
+            .update(pairs)
     }
 }

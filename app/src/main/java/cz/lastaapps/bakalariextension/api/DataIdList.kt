@@ -29,6 +29,19 @@ class DataIdList<T : DataId<*>> : ArrayList<T> {
 
     constructor(array: Array<T>) : super(array.toList())
 
+    constructor(set: HashSet<T>) : super(set)
+
+    override fun equals(other: Any?): Boolean {
+        if (other === this) return true
+        if (other !is List<*>) return false
+
+        return HashSet(this) == HashSet(other)
+    }
+
+    override fun hashCode(): Int {
+        return HashSet(this).hashCode()
+    }
+
     fun getById(id: Any?): T? {
         for (it in this) {
             if (it.id == id)

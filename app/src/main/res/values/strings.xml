@@ -22,10 +22,12 @@
     <string name="app_name">Bakalari mobile</string>
     <string name="bakalari">Bakalari</string>
     <string name="author">Lasta apps</string>
+    <string name="author_template">Lasta apps %s</string>
 
     <string name="beta">beta</string>
 
     <string name="bottom_fragment_tag" translatable="false">bakalari.bottom_navigation</string>
+    <string name="thanks_review">Thanks you for your feedback</string>
 
     <!-- Global -->
     <plurals name="attachment">
@@ -76,6 +78,7 @@
     <string name="menu_api">Bakalari API doc</string>
     <string name="menu_license">License notices</string>
     <string name="menu_open_web">Open web</string>
+    <string name="menu_timetable_old">Old timetable</string>
 
 
     <!-- Loading -->
@@ -102,6 +105,8 @@
     <string name="login_search_nothing_found">Nothing found</string>
     <string name="login_search_select_town">Select town</string>
     <string name="login_search_select_school">Select school</string>
+    <string name="login_search_select_town_hint">Town</string>
+    <string name="login_search_select_school_hint">School</string>
     <!-- Login errors -->
     <string name="login_error_server_unavailable">Cannot connect to school server</string>
     <string name="login_error_no_internet">No internet available of bad url was entered</string>
@@ -133,13 +138,13 @@
     <string name="report_data_collected">App will send some data to diagnose the issue, namely school\'s url, name, town and Bakalari version, account type(parent, pupil, teacher), android version, phone type, app version and phone\'s id</string>
     <string name="report_go_back">Close</string>
     <string name="report_include_timetable">Include timetables</string>
-    <string name="report_include_timetable_warning">Contains your timetable, classes names, teachers names…</string>
+    <string name="report_include_timetable_warning">Contains your timetable with names removed</string>
     <string name="report_include_marks">Include marks</string>
-    <string name="report_include_marks_warning">Contains marks, subjects and test themes</string>
+    <string name="report_include_marks_warning">Contains marks and subjects info</string>
     <string name="report_include_homework">Include homework list</string>
-    <string name="report_include_homework_warning">Contains homework\'s info and teachers names</string>
+    <string name="report_include_homework_warning">Contains homework\'s tasks, states and dates</string>
     <string name="report_include_subject">Include subject list</string>
-    <string name="report_include_subject_warning">Contains subjects and teachers info</string>
+    <string name="report_include_subject_warning">Contains subjects and teachers info without names</string>
 
 
     <!-- About -->
@@ -352,6 +357,7 @@
     <string name="widget_small_timetable_light">Light</string>
     <string name="widget_small_timetable_dark">Dark</string>
     <string name="widget_small_timetable_submit">Update widget</string>
+    <string name="widget_small_timetable_loading">Loading…</string>
 
 
     <!-- Teacher list -->
@@ -414,8 +420,9 @@
     <!-- Invalid refresh token dialog data -->
     <string name="invalid_token_understand_title">A problem…</string>
     <string name="invalid_token_understand_message">
-        I seems that your login is not valid anymore,
-        you will be still able to use offline data, but
+        I seems that schools server is down or your login has expired
+        (probably if you have not use the app for a month).
+        I this case you will still be able to use offline data, but
         to use current ones you need to log out
         and in again. There\'s nothing we can do about it :(
     </string>
@@ -437,10 +444,10 @@
     <string name="teacher_warning_button">OK</string>
 
     <!--Notification channels-->
-    <string name="chanel_timetable_name">Current lesson</string>
-    <string name="chanel_timetable_description">The notification showing current and next lesson
+    <string name="channel_timetable_name">Current lesson</string>
+    <string name="channel_timetable_description">The notification showing current and next lesson
         - it\'s class, teacher, etc.</string>
-    <string name="chanel_attachment_downloading_name">Attachment downloads</string>
-    <string name="chanel_attachment_downloading_description">Shows downloaded attachments to open them fast</string>
+    <string name="channel_attachment_downloading_name">Attachment downloads</string>
+    <string name="channel_attachment_downloading_description">Shows downloaded attachments to open them fast</string>
 
 </resources>

@@ -31,6 +31,7 @@ import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.homework.data.Homework
 import cz.lastaapps.bakalariextension.databinding.EntryHomeworkBinding
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.tools.TimeTools.Companion.toMidnight
 import java.time.Duration
 
 /**sets up binding view with homework*/
@@ -163,25 +164,25 @@ class HmwEntryManager(
 
     /**@return how many pretences of time between start day 00:00 and end day 23:59 has left*/
     fun getProgress(): Int {
-        val total = Duration.between(homework.dateStartDate, homework.dateEndDate.plusDays(1))
-        val gone = Duration.between(homework.dateStartDate, TimeTools.now)
+        val total = Duration.between(homework.dateStart, homework.dateEnd.plusDays(1))
+        val gone = Duration.between(homework.dateStart, TimeTools.now)
 
         return (gone.seconds.toDouble() / total.seconds.toDouble() * 100.0).toInt()
     }
 
     /**formats start date*/
     fun formattedStart(): String {
-        return TimeTools.format(homework.dateStartDate, "d.M.")
+        return TimeTools.format(homework.dateStart, "d.M.")
     }
 
     /**formats end date*/
     fun formattedEnd(): String {
-        return TimeTools.format(homework.dateEndDate, "d.M.")
+        return TimeTools.format(homework.dateEnd, "d.M.")
     }
 
     /**@return how many days are left until homework end*/
     fun daysLeftText(): String {
-        val diff = Duration.between(TimeTools.today, TimeTools.toMidnight(homework.dateEndDate))
+        val diff = Duration.between(TimeTools.today, homework.dateEnd.toMidnight())
         return "${diff.toDays()} ${activity.resources.getQuantityString(
             R.plurals.last_updated_days,
             diff.toDays().toInt()

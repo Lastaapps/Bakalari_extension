@@ -31,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
+        <androidx.emoji.widget.EmojiTextView
             android:id="@+id/holiday"
             style="@style/Timetable.Main"
             android:layout_width="match_parent"

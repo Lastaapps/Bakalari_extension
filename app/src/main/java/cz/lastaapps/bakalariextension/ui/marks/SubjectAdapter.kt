@@ -26,10 +26,10 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.marks.data.MarksRoot
+import cz.lastaapps.bakalariextension.api.marks.data.MarksPairList
 import cz.lastaapps.bakalariextension.databinding.MarksSubjectBinding
 
-class SubjectAdapter(private var marks: MarksRoot = MarksRoot(ArrayList())) :
+class SubjectAdapter(private var pairs: MarksPairList = MarksPairList()) :
     RecyclerView.Adapter<SubjectAdapter.DataBindingHolder>() {
 
     init {
@@ -60,15 +60,17 @@ class SubjectAdapter(private var marks: MarksRoot = MarksRoot(ArrayList())) :
     override fun onBindViewHolder(holder: DataBindingHolder, position: Int) {
 
         //gets subject data object
-        val subject = marks.subjects[position]
+        val pair = pairs[position]
 
         //puts valid data in views
         val binding = holder.binding
-        binding.subjectData = subject
+        binding.pair = pair
 
         //inits list with subjects
         val list = binding.list
-        (list.adapter as MarksAdapter).updateMarks(subject.marks)
+        (list.adapter as MarksAdapter).updateMarks(pair.marks)
+
+        list.visibility = View.GONE
 
         //shows/hides subject's marks
         binding.root.setOnClickListener {
@@ -80,15 +82,15 @@ class SubjectAdapter(private var marks: MarksRoot = MarksRoot(ArrayList())) :
         }
     }
 
-    fun update(marks: MarksRoot) {
-        this.marks = marks
+    fun update(marks: MarksPairList) {
+        this.pairs = marks
         notifyDataSetChanged()
     }
 
     /**@return The number of subjects*/
-    override fun getItemCount() = marks.subjects.size
+    override fun getItemCount() = pairs.size
 
     override fun getItemId(position: Int): Long {
-        return marks.subjects[position].subject.id.hashCode().toLong()
+        return pairs[position].subject.subject.id.hashCode().toLong()
     }
 }

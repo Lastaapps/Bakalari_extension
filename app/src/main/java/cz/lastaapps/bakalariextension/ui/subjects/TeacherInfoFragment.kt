@@ -27,17 +27,25 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import cz.lastaapps.bakalariextension.MobileNavigationDirections
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.subjects.SubjectList
+import cz.lastaapps.bakalariextension.api.SimpleData
+import cz.lastaapps.bakalariextension.api.subjects.data.SubjectList
 import cz.lastaapps.bakalariextension.api.subjects.data.Teacher
+import cz.lastaapps.bakalariextension.api.timetable.TimetableMainRepository
 import cz.lastaapps.bakalariextension.databinding.FragmentTeacherInfoBinding
+import cz.lastaapps.bakalariextension.ui.timetable.TimetableMainViewModel
+import kotlinx.coroutines.*
+
 
 /**shows info about teacher given*/
 class TeacherInfoFragment : BottomSheetDialogFragment() {
@@ -49,9 +57,11 @@ class TeacherInfoFragment : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentTeacherInfoBinding
     private val viewModel: SubjectViewModel by activityViewModels()
     private val args: TeacherInfoFragmentArgs by navArgs()
+    private val timetableViewModel: TimetableMainViewModel by activityViewModels()
 
     private lateinit var teacherId: String
-    private lateinit var teacher: Teacher
+    private lateinit var simpleTeacher: SimpleData
+    private var fullTeacher: Teacher? = null
     private lateinit var teacherSubjects: SubjectList
 
     override fun onCreateView(
@@ -66,12 +76,83 @@ class TeacherInfoFragment : BottomSheetDialogFragment() {
             DataBindingUtil.inflate(inflater, R.layout.fragment_teacher_info, container, false)
         binding.setLifecycleOwner { lifecycle }
 
-        //gets teacher's id from input data
-        teacherId = args.teacherId
+        if (!loadTeacher()) return null
 
-        viewModel.executeOrRefresh(lifecycle) { showData() }
+        viewModel.waitAsync(lifecycleScope, { viewModel.getTeachersSubjects(simpleTeacher.id) }) {
+            teacherSubjects = it
+            showData()
+            yield()
+
+            //forces the dialog to fully expand with the new layout
+            val bottomSheet: FrameLayout =
+                dialog?.findViewById(com.google.android.material.R.id.design_bottom_sheet)
+                    ?: return@waitAsync
+            val behavior: BottomSheetBehavior<*> = BottomSheetBehavior.from(bottomSheet)
+            behavior.skipCollapsed = true
+            behavior.setState(BottomSheetBehavior.STATE_EXPANDED)
+        }
+
+        binding.simpleTeacher = simpleTeacher
+
+        fullTeacher?.let {
+            binding.fullTeacher = it
+
+            binding.addContact.setOnClickListener {
+                addContact()
+            }
+        }
+
+        binding.komens.setOnClickListener {
+            //TODO link to komens
+        }
+
+        lifecycleScope.launch(Dispatchers.Default) {
+            val available = timetableViewModel.isWebTimetableAvailable()
+            if (available)
+                withContext(Dispatchers.Main) {
+                    binding.openTimetable.visibility = View.VISIBLE
+                    binding.openTimetable.setOnClickListener {
+                        timetableViewModel.openWebTimetable(
+                            requireContext(),
+                            TimetableMainRepository.DATE_ACTUAL,
+                            TimetableMainRepository.TYPE_TEACHER,
+                            simpleTeacher.id
+                        )
+                    }
+                }
+        }
 
         return binding.root
+    }
+
+    /**Loads simple and tries also to load full teacher
+     * @return if loading had succeed*/
+    private fun loadTeacher(): Boolean {
+        //gets teacher's id from input data
+        teacherId = args.teacherId
+        val tempTeacher = runBlocking(Dispatchers.IO) { viewModel.getTeacher(teacherId) }
+
+        if (tempTeacher != null) {
+            fullTeacher = tempTeacher
+            simpleTeacher = tempTeacher.toSimpleData()
+
+            return true
+
+        } else {
+            val tempSimple = runBlocking(Dispatchers.IO) { viewModel.getSimpleTeacher(teacherId) }
+
+            return if (tempSimple != null) {
+                simpleTeacher = tempSimple
+                true
+
+            } else {
+
+                Toast.makeText(requireContext(), R.string.teacher_not_found, Toast.LENGTH_LONG)
+                    .show()
+                dismiss()
+                false
+            }
+        }
     }
 
     private fun showData() {
@@ -79,20 +160,6 @@ class TeacherInfoFragment : BottomSheetDialogFragment() {
         Log.i(TAG, "setting up with teacher data")
 
         //tries to get teacher object for id given
-        val subjects = viewModel.subjects.value!!
-
-        val teacher = Teacher.subjectsToTeachers(subjects).getById(teacherId)
-        if (teacher == null) {
-            Toast.makeText(requireContext(), R.string.teacher_not_found, Toast.LENGTH_LONG).show()
-            dismiss()
-            return
-        }
-
-        //gets teacher's subjects
-        teacherSubjects = Teacher.getTeachersSubjects(subjects, teacher)
-
-        this.teacher = teacher
-        binding.teacher = teacher
 
         //sets up the list showing teacher's subjects
         binding.subjectList.apply {
@@ -110,22 +177,15 @@ class TeacherInfoFragment : BottomSheetDialogFragment() {
             }
         }
 
-        binding.addContact.setOnClickListener {
-            addContact()
-        }
-
-        binding.komens.setOnClickListener {
-            //TODO link to komens
-        }
-
     }
 
     /**adds this teachers info into contacts - opens settings activity*/
     private fun addContact() {
         val intent = Intent(Intent.ACTION_INSERT)
+        val fullTeacher = fullTeacher!!
 
         intent.type = ContactsContract.Contacts.CONTENT_TYPE
-        intent.putExtra(ContactsContract.Intents.Insert.NAME, teacher.name.let {
+        intent.putExtra(ContactsContract.Intents.Insert.NAME, fullTeacher.name.let {
 
             //changes the order of names from last name first name to first name last name
             val array = it.split(" ").reversed()
@@ -138,19 +198,19 @@ class TeacherInfoFragment : BottomSheetDialogFragment() {
 
             builder.toString()
         })
-        intent.putExtra(ContactsContract.Intents.Insert.EMAIL, teacher.email)
-        intent.putExtra(ContactsContract.Intents.Insert.NOTES, teacher.web)
-        intent.putExtra(ContactsContract.Intents.Insert.PHONE, teacher.phoneSchool)
+        intent.putExtra(ContactsContract.Intents.Insert.EMAIL, fullTeacher.email)
+        intent.putExtra(ContactsContract.Intents.Insert.NOTES, fullTeacher.web)
+        intent.putExtra(ContactsContract.Intents.Insert.PHONE, fullTeacher.phoneSchool)
         intent.putExtra(
             ContactsContract.Intents.Insert.PHONE_TYPE,
             ContactsContract.CommonDataKinds.Phone.TYPE_WORK
         )
-        intent.putExtra(ContactsContract.Intents.Insert.SECONDARY_PHONE, teacher.phoneHome)
+        intent.putExtra(ContactsContract.Intents.Insert.SECONDARY_PHONE, fullTeacher.phoneHome)
         intent.putExtra(
             ContactsContract.Intents.Insert.SECONDARY_PHONE_TYPE,
             ContactsContract.CommonDataKinds.Phone.TYPE_HOME
         )
-        intent.putExtra(ContactsContract.Intents.Insert.TERTIARY_PHONE, teacher.phoneMobile)
+        intent.putExtra(ContactsContract.Intents.Insert.TERTIARY_PHONE, fullTeacher.phoneMobile)
         intent.putExtra(
             ContactsContract.Intents.Insert.TERTIARY_PHONE_TYPE,
             ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE

@@ -50,15 +50,15 @@ class LoadingFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        userViewModel.data.observe({ lifecycle }) {
-            (requireActivity() as MainActivity).loginCheckDone()
-        }
+        Log.i(TAG, "Activity created")
 
         mainViewModel.apply {
             val doWork = { state: Int ->
                 when (state) {
                     MainViewModel.LOGGED_IN -> {
-                        userViewModel.onRefresh()
+                        userViewModel.runOrRefresh(lifecycle) {
+                            (requireActivity() as MainActivity).loginCheckDone()
+                        }
                     }
                     MainViewModel.SHOW_LICENSE -> {
                         //shows license dialog

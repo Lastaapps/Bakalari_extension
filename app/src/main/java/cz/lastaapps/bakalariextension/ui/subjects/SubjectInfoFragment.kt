@@ -31,6 +31,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
@@ -38,8 +39,10 @@ import androidx.navigation.fragment.navArgs
 import cz.lastaapps.bakalariextension.MobileNavigationDirections
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.absence.data.AbsenceSubject
-import cz.lastaapps.bakalariextension.api.homework.data.Homework
+import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
+import cz.lastaapps.bakalariextension.api.marks.data.MarksPair
 import cz.lastaapps.bakalariextension.api.subjects.data.Subject
+import cz.lastaapps.bakalariextension.api.subjects.data.Teacher
 import cz.lastaapps.bakalariextension.api.user.data.User
 import cz.lastaapps.bakalariextension.databinding.FragmentSubjectInfoBinding
 import cz.lastaapps.bakalariextension.ui.UserViewModel
@@ -48,6 +51,10 @@ import cz.lastaapps.bakalariextension.ui.homework.HmwAdapter
 import cz.lastaapps.bakalariextension.ui.homework.HmwViewModel
 import cz.lastaapps.bakalariextension.ui.marks.MarksAdapter
 import cz.lastaapps.bakalariextension.ui.marks.MarksViewModel
+import cz.lastaapps.bakalariextension.ui.themes.ThemeAdapter
+import cz.lastaapps.bakalariextension.ui.themes.ThemeViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 
 /**shows info about subject - marks, homework list, theme, absence*/
 class SubjectInfoFragment : Fragment() {
@@ -85,6 +92,8 @@ class SubjectInfoFragment : Fragment() {
     private lateinit var subject: Subject
     private lateinit var subjectId: String
 
+    private lateinit var teacher: Teacher
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -92,54 +101,13 @@ class SubjectInfoFragment : Fragment() {
     ): View? {
         Log.i(TAG, "Creating view")
 
-        //views setup
-        binding =
-            DataBindingUtil.inflate(inflater, R.layout.fragment_subject_info, container, false)
-        binding.setLifecycleOwner { lifecycle }
-
-        binding.subjectViewModel = subjectViewModel
-
-        //RecyclerView adapter setup
-        binding.themeLayout.list.adapter = ThemeAdapter()
-
         //loads arguments
         subjectId = args.subjectId
-
-        //loads subjects
-        subjectViewModel.executeOrRefresh(lifecycle) { showData() }
-
-        //used to filter modules when they are disabled
-        val user = userViewModel.requireData()
-
-        user.runIfFeatureEnabled(User.HOMEWORK_SHOW) {
-            //loads homework list
-            homeworkViewModel.executeOrRefresh(lifecycle) { showHomeworkList() }
+        val tempSubject = runBlocking(Dispatchers.IO) {
+            subjectViewModel.getSubject(subjectId)
         }
 
-        user.runIfFeatureEnabled(User.MARKS_SHOW) {
-            //loads marks
-            marksViewModel.executeOrRefresh(lifecycle) { showMarks() }
-        }
-
-        user.runIfFeatureEnabled(User.SUBJECTS_SHOW_THEMES) {
-            themeViewModel = subjectViewModel.getThemeViewModelForSubject(subjectId)
-
-            binding.themeLayout.viewmodel = themeViewModel
-
-            //loads themes
-            themeViewModel.executeOrRefresh(lifecycle) { showThemes() }
-        }
-
-        return binding.root
-    }
-
-    /**shows basic data - subject name, teacher*/
-    private fun showData() {
-        Log.i(TAG, "Showing data")
-
-        val subject = subjectViewModel.subjects.value!!.getById(subjectId)
-
-        if (subject == null) {
+        if (tempSubject == null) {
 
             Log.e(TAG, "Subject $subjectId not found!")
             Toast.makeText(requireContext(), R.string.subject_not_found, Toast.LENGTH_LONG).show()
@@ -149,76 +117,125 @@ class SubjectInfoFragment : Fragment() {
                 }
             }
 
-            return
+            return null
+        } else {
+            subject = tempSubject
         }
 
-        this.subject = subject
-        binding.subject = subject
+        //views setup
+        binding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_subject_info, container, false)
+        binding.setLifecycleOwner { lifecycle }
 
-        binding.teacher.setOnClickListener {
-            requireActivity().findNavController(R.id.nav_host_fragment).navigate(
-                MobileNavigationDirections.actionTeacherInfo(subject.teacher.id)
+        binding.subject = subject
+        binding.subjectViewModel = subjectViewModel
+
+
+        subjectViewModel.waitAsync(
+            lifecycleScope,
+            { subjectViewModel.getTeacher(subject.teacherId) }) {
+            it?.let {
+                teacher = it
+                binding.teacher = it
+
+                binding.teacherName.setOnClickListener {
+                    requireActivity().findNavController(R.id.nav_host_fragment).apply {
+                        if (currentDestination?.id == R.id.nav_subject_info) {
+                            navigateUp()
+                        }
+                        navigate(
+                            MobileNavigationDirections.actionTeacherInfo(teacher.id)
+                        )
+                    }
+                }
+            }
+        }
+
+        //used to filter modules when they are disabled
+        val user = userViewModel.requireData()
+
+        user.runIfFeatureEnabled(User.ABSENCE_SHOW) {
+            //shows absence for subject given
+            absenceViewModel.runOrRefresh(
+                absenceViewModel.thresholdHolder,
+                lifecycle
+            ) { threshold ->
+                threshold?.let {
+                    absenceViewModel.waitAsync(
+                        lifecycleScope,
+                        { absenceViewModel.getSubject(subject.name) },
+                        { subject -> subject?.let { showAbsence(subject, threshold) } })
+                }
+            }
+        }
+
+        user.runIfFeatureEnabled(User.HOMEWORK_SHOW) {
+            //loads homework list
+            homeworkViewModel.waitAsync(
+                lifecycleScope,
+                { homeworkViewModel.getHomeworkListForSubject(subjectId) }) { showHomeworkList(it) }
+        }
+
+        user.runIfFeatureEnabled(User.MARKS_SHOW) {
+            //loads marks
+            marksViewModel.runOrRefresh(marksViewModel.getPair(subjectId), lifecycle) {
+                it?.let { showMarks(it) }
+            }
+        }
+
+        user.runIfFeatureEnabled(User.SUBJECTS_SHOW_THEMES) {
+            themeViewModel = subjectViewModel.getThemeViewModelForSubject(subjectId)
+
+            //RecyclerView adapter setup
+            binding.themeLayout.list.adapter = ThemeAdapter()
+            binding.themeLayout.viewModel = themeViewModel
+
+            //loads themes
+            themeViewModel.runOrRefresh(lifecycle) { showThemes() }
+        }
+
+        return binding.root
+    }
+
+    private fun showAbsence(subject: AbsenceSubject, threshold: Double) {
+        Log.i(TAG, "Showing absence")
+
+        //replaces normally shown subject name with label Absence:
+        val fakeSubject = subject.run {
+            AbsenceSubject(
+                getString(R.string.absence_subject_info_label),
+                lessonCount, base, late, soon, school
             )
         }
 
-        //shows absence for subject given
-        absenceViewModel.executeOrRefresh(lifecycle) { showAbsence() }
-    }
+        binding.absence.root.visibility = View.VISIBLE
 
-    private fun showAbsence() {
-        Log.i(TAG, "Showing absence")
+        binding.absence.subject = fakeSubject
+        binding.absence.threshold = threshold
 
-        val data = absenceViewModel.requireData()
-        for (sbj in data.subjects) {
-
-            if (sbj.name == subject.name) {
-
-                binding.absence.apply {
-                    root.visibility = View.VISIBLE
-
-                    //replaces normally shown subject name with label Absence:
-                    val fakeSubject = sbj.run {
-                        AbsenceSubject(
-                            getString(R.string.absence_subject_info_label),
-                            lessonCount, base, late, soon, school
-                        )
-                    }
-
-                    subject = fakeSubject
-                    threshold = data.percentageThreshold
-                }
-
-                break
-            }
-        }
     }
 
     /**shows homework list*/
-    private fun showHomeworkList() {
+    private fun showHomeworkList(list: HomeworkList) {
         Log.i(TAG, "Showing homework list")
 
-        val homeworkList = Homework.getBySubject(homeworkViewModel.homework.value!!, subjectId)
-
-        if (homeworkList.isNotEmpty()) {
+        if (list.isNotEmpty()) {
             binding.homeworkBox.visibility = View.VISIBLE
-            binding.homeworkList.adapter =
-                HmwAdapter(requireActivity() as AppCompatActivity, homeworkList)
+            binding.homeworkList.adapter = HmwAdapter(requireActivity() as AppCompatActivity, list)
         }
     }
 
     /**shows marks*/
-    private fun showMarks() {
+    private fun showMarks(pair: MarksPair) {
         Log.i(TAG, "Showing marks")
 
-        val subjectMarks = marksViewModel.marks.value!!.getMarksForSubject(subjectId) ?: return
-
-        if (subjectMarks.marks.isNotEmpty()) {
-            val average = subjectMarks.averageText
+        if (pair.marks.isNotEmpty()) {
+            val average = pair.subject.averageText
             val text = getString(R.string.marks_average) + ": " + average
 
             binding.marksBox.visibility = View.VISIBLE
             binding.marksAverage.text = text
-            binding.list.adapter = MarksAdapter(subjectMarks.marks)
+            binding.list.adapter = MarksAdapter(pair.marks)
         }
     }
 

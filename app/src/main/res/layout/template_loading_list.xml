@@ -27,7 +27,7 @@
         <import type="android.view.View" />
 
         <variable
-            name="viewmodel"
+            name="viewModel"
             type="cz.lastaapps.bakalariextension.ui.RefreshableViewModel" />
     </data>
 
@@ -40,16 +40,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@{viewmodel.failedText(context)}"
-            android:visibility="@{viewmodel.failed ? View.VISIBLE : View.GONE}"
+            android:text="@{viewModel.failedText(context)}"
+            android:visibility="@{!viewModel.hasData &amp;&amp; !viewModel.isLoading() ? View.VISIBLE : View.GONE}"
             tools:text="Data don\'t want to come to us" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@{viewmodel.emptyText(context)}"
-            android:visibility="@{viewmodel.isEmpty() ? View.VISIBLE : View.GONE}"
+            android:text="@{viewModel.emptyText(context)}"
+            android:visibility="@{viewModel.isEmpty() ? View.VISIBLE : View.GONE}"
             tools:text="Data have went for a walk" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -61,15 +61,15 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:onRefreshListener="@{() -> viewmodel.onRefresh(true)}"
-            app:refreshing="@{viewmodel.isRefreshing()}">
+            app:onRefreshListener="@{() -> viewModel.loadData()}"
+            app:refreshing="@{viewModel.isLoading()}">
 
             <cz.lastaapps.bakalariextension.ui.views.BetterRecyclerView
                 android:id="@+id/list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                android:visibility="@{viewmodel.isEmpty() ? View.GONE : View.VISIBLE}" />
+                android:visibility="@{viewModel.isEmpty() ? View.GONE : View.VISIBLE}" />
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

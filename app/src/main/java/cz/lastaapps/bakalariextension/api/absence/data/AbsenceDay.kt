@@ -20,42 +20,30 @@
 
 package cz.lastaapps.bakalariextension.api.absence.data
 
+import androidx.room.Entity
+import cz.lastaapps.bakalariextension.api.database.APIBase
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import kotlinx.android.parcel.Parcelize
 import java.time.ZonedDateTime
 
 @Parcelize
-class AbsenceDay(
-    val date: String,
+@Entity(tableName = APIBase.ABSENCE_DAY, inheritSuperIndices = true)
+data class AbsenceDay(
+    val date: ZonedDateTime,
     override val unsolved: Int,
     override val ok: Int,
     override val missed: Int,
     override val late: Int,
     override val soon: Int,
     override val school: Int
-) : AbsenceDataHolder(date.hashCode(), unsolved, ok, missed, late, soon, school),
+) : AbsenceDataHolder(date.toInstant().epochSecond, unsolved, ok, missed, late, soon, school),
     Comparable<AbsenceDay> {
 
     override fun compareTo(other: AbsenceDay): Int {
-        return toDate().compareTo(other.toDate())
-    }
-
-    /**caches parsed date*/
-    private var _toDate: ZonedDateTime? = null
-
-    /**parses current date*/
-    fun toDate(): ZonedDateTime {
-        if (_toDate == null) {
-            _toDate = if (date == "") {
-                TimeTools.PERMANENT
-            } else {
-                TimeTools.parse(date, TimeTools.COMPLETE_FORMAT)
-            }
-        }
-        return _toDate!!
+        return date.compareTo(other.date)
     }
 
     override fun getLabel(): String {
-        return TimeTools.format(toDate(), "d.M.")
+        return TimeTools.format(date, "d.M.")
     }
 }

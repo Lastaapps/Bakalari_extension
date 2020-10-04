@@ -24,7 +24,9 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.widget.RemoteViews
 import cz.lastaapps.bakalariextension.R
+import cz.lastaapps.bakalariextension.api.timetable.TimetableMainRepository
 import cz.lastaapps.bakalariextension.widgets.WidgetConfigure
+import java.time.LocalDate
 
 
 /**The configuration activity or small timetable widget*/
@@ -37,14 +39,21 @@ class SmallTimetableWidgetConfig : WidgetConfigure(smallTimetableWidgetConfig) {
             override fun updateRemoteViews(
                 remoteViews: RemoteViews,
                 widgetId: Int,
-                context: Context
+                context: Context,
+                appWidgetManager: AppWidgetManager,
             ) {
+                val week = TimetableMainRepository.loadDefault(context)
+                val date = LocalDate.now()
+                val day = week.days[0]
+
                 //updates styles of the remote views
                 SmallTimetableWidget.setupWidget(
                     remoteViews,
                     widgetId,
                     context,
-                    true
+                    week,
+                    date,
+                    day
                 )
             }
 
@@ -54,7 +63,7 @@ class SmallTimetableWidgetConfig : WidgetConfigure(smallTimetableWidgetConfig) {
                 widgetId: Int
             ) {
                 //updates widget
-                SmallTimetableWidget.updateAppWidget(
+                SmallTimetableWidget.updateWidget(
                     context,
                     manager,
                     widgetId

@@ -27,7 +27,11 @@
         <import type="android.view.View" />
 
         <variable
-            name="teacher"
+            name="simpleTeacher"
+            type="cz.lastaapps.bakalariextension.api.SimpleData" />
+
+        <variable
+            name="fullTeacher"
             type="cz.lastaapps.bakalariextension.api.subjects.data.Teacher" />
     </data>
 
@@ -39,13 +43,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:visibility="@{teacher == null ? View.VISIBLE : View.GONE}" />
+            android:visibility="@{simpleTeacher == null ? View.VISIBLE : View.GONE}" />
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="@{teacher != null ? View.VISIBLE : View.INVISIBLE}">
+            android:layout_gravity="center">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -63,12 +66,25 @@
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="@{teacher.name}"
+                        android:layout_marginEnd="8dp"
+                        android:text="@{simpleTeacher.name}"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/add_contact"
+                        app:layout_constraintEnd_toStartOf="@+id/open_timetable"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:text="Mr. Herbert J Garrison" />
+
+                    <ImageButton
+                        android:id="@+id/open_timetable"
+                        style="@style/AppTheme.SmallImageButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/teacher_add_contact"
+                        android:visibility="@{fullTeacher != null ? View.VISIBLE : View.GONE}"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/add_contact"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/teacher_timetable_web" />
 
                     <ImageButton
                         android:id="@+id/add_contact"
@@ -76,10 +92,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:contentDescription="@string/teacher_add_contact"
+                        android:visibility="@{fullTeacher != null ? View.VISIBLE : View.GONE}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/komens"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/add_contact" />
+                        app:srcCompat="@drawable/teacher_add_contact" />
 
                     <ImageButton
                         android:id="@+id/komens"
@@ -90,18 +107,19 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/komens" />
+                        app:srcCompat="@drawable/teacher_komens" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TableLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:visibility="@{fullTeacher != null ? View.VISIBLE : View.GONE}">
 
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/margin_basic"
-                        android:visibility="@{teacher.email.equals(``) ? View.GONE : View.VISIBLE}">
+                        android:visibility="@{fullTeacher.email.equals(``) ? View.GONE : View.VISIBLE}">
 
                         <TextView
                             style="@style/AppTheme.Text"
@@ -122,7 +140,7 @@
                             android:ellipsize="end"
                             android:maxLines="5"
                             android:scrollHorizontally="false"
-                            android:text="@{teacher.email}" />
+                            android:text="@{fullTeacher.email}" />
                     </TableRow>
 
                     <!-- equals used instead of == because of some bug -> "" != "" -->
@@ -130,7 +148,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/margin_basic"
-                        android:visibility="@{teacher.web.equals(``) ? View.GONE : View.VISIBLE}">
+                        android:visibility="@{fullTeacher.web.equals(``) ? View.GONE : View.VISIBLE}">
 
                         <TextView
                             style="@style/AppTheme.Text"
@@ -151,14 +169,14 @@
                             android:ellipsize="end"
                             android:maxLines="5"
                             android:scrollHorizontally="false"
-                            android:text="@{teacher.web}" />
+                            android:text="@{fullTeacher.web}" />
                     </TableRow>
 
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/margin_basic"
-                        android:visibility="@{teacher.phoneSchool.equals(``) ? View.GONE : View.VISIBLE}">
+                        android:visibility="@{fullTeacher.phoneSchool.equals(``) ? View.GONE : View.VISIBLE}">
 
                         <TextView
                             style="@style/AppTheme.Text"
@@ -179,14 +197,14 @@
                             android:ellipsize="end"
                             android:maxLines="5"
                             android:scrollHorizontally="false"
-                            android:text="@{teacher.phoneSchool}" />
+                            android:text="@{fullTeacher.phoneSchool}" />
                     </TableRow>
 
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/margin_basic"
-                        android:visibility="@{teacher.phoneHome.equals(``) ? View.GONE : View.VISIBLE}">
+                        android:visibility="@{fullTeacher.phoneHome.equals(``) ? View.GONE : View.VISIBLE}">
 
                         <TextView
                             style="@style/AppTheme.Text"
@@ -207,14 +225,14 @@
                             android:ellipsize="end"
                             android:maxLines="5"
                             android:scrollHorizontally="false"
-                            android:text="@{teacher.phoneHome}" />
+                            android:text="@{fullTeacher.phoneHome}" />
                     </TableRow>
 
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/margin_basic"
-                        android:visibility="@{teacher.phoneMobile.equals(``) ? View.GONE : View.VISIBLE}">
+                        android:visibility="@{fullTeacher.phoneMobile.equals(``) ? View.GONE : View.VISIBLE}">
 
                         <TextView
                             style="@style/AppTheme.Text"
@@ -235,7 +253,7 @@
                             android:ellipsize="end"
                             android:maxLines="5"
                             android:scrollHorizontally="false"
-                            android:text="@{teacher.phoneMobile}" />
+                            android:text="@{fullTeacher.phoneMobile}" />
                     </TableRow>
 
                 </TableLayout>
@@ -244,7 +262,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/margin_basic"
-                    android:text="@string/teacher_subjects" />
+                    android:text="@string/teacher_subjects"
+                    android:visibility="@{fullTeacher != null ? View.VISIBLE : View.GONE}" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/subject_list"
@@ -252,11 +271,12 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/margin_basic"
                     android:scrollbars="none"
+                    android:visibility="@{fullTeacher != null ? View.VISIBLE : View.GONE}"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
                 <View
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/bottom_fragment_bottom_margin" />
+                    android:layout_height="@dimen/bottom_sheet_bottom_margin" />
             </LinearLayout>
         </ScrollView>
     </FrameLayout>

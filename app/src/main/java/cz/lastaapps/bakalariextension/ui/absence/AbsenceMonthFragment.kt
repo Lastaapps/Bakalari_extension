@@ -29,9 +29,10 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import cz.lastaapps.bakalariextension.R
+import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.absence.data.AbsenceMonth
-import cz.lastaapps.bakalariextension.api.absence.data.AbsenceRoot
 import cz.lastaapps.bakalariextension.databinding.FragmentAbsenceDayBinding
+import cz.lastaapps.bakalariextension.ui.UserViewModel
 
 class AbsenceMonthFragment : Fragment() {
 
@@ -40,6 +41,7 @@ class AbsenceMonthFragment : Fragment() {
     }
 
     val viewModel: AbsenceViewModel by activityViewModels()
+    val userViewModel: UserViewModel by activityViewModels()
     lateinit var binding: FragmentAbsenceDayBinding
 
     override fun onCreateView(
@@ -52,26 +54,24 @@ class AbsenceMonthFragment : Fragment() {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_absence_day, container, false)
         binding.setLifecycleOwner { lifecycle }
-        binding.viewmodel = viewModel
+        binding.viewModel = viewModel
         binding.legendTypeString = getString(R.string.absence_date)
 
         binding.list.adapter = AbsenceDayAdapter()
         binding.legend.setOnClickListener { showLegend() }
 
-        viewModel.executeOrRefresh(lifecycle) { updateData(it) }
+        viewModel.runOrRefresh(
+            viewModel.getMonths(userViewModel.requireData().firstSeptember),
+            lifecycle
+        ) { updateData(it) }
 
         return binding.root
     }
 
-    private fun updateData(data: AbsenceRoot) {
+    private fun updateData(months: DataIdList<AbsenceMonth>) {
         Log.i(TAG, "Updating data")
 
-        (binding.list.adapter as AbsenceDayAdapter).update(
-            AbsenceMonth.daysToMonths(
-                requireContext(),
-                data.days
-            )
-        )
+        (binding.list.adapter as AbsenceDayAdapter).update(months)
     }
 
     private fun showLegend() {

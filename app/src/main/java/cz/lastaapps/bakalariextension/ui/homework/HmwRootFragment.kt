@@ -29,11 +29,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.tabs.TabLayoutMediator
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.homework.HomeworkStorage
-import cz.lastaapps.bakalariextension.api.homework.data.Homework
 import cz.lastaapps.bakalariextension.databinding.TemplateLoadingRootBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**Contains all oder homework related homework*/
 class HmwRootFragment : Fragment() {
@@ -56,7 +57,7 @@ class HmwRootFragment : Fragment() {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.template_loading_root, container, false)
         binding.lifecycleOwner = LifecycleOwner { lifecycle }
-        binding.viewmodel = viewModel
+        binding.viewModel = viewModel
 
         //add adapter to pager and sets up the connection with the TabLayout
         HmwPager(this@HmwRootFragment).also {
@@ -70,7 +71,15 @@ class HmwRootFragment : Fragment() {
         binding.pager.offscreenPageLimit = 2
 
         //updates if the homework list is loaded or starts loading
-        viewModel.executeOrRefresh(lifecycle) { dataChanged() }
+        if (viewModel.hasData.value == true) {
+            lifecycleScope.launch(Dispatchers.Default) {
+                presetHomeworkCheck()
+            }
+        }
+
+        viewModel.onDataUpdate(lifecycle) {
+            dataChanged()
+        }
 
         return binding.root
     }
@@ -79,13 +88,11 @@ class HmwRootFragment : Fragment() {
     private fun dataChanged() {
         Log.i(TAG, "Updating based on new data")
 
-        onHomeworkValid()
-        //setupViewPager()
         lastUpdated()
     }
 
     /**executed when homework list is loaded*/
-    private fun onHomeworkValid() {
+    private suspend fun presetHomeworkCheck() {
 
         //if there is request to show specific homework, shows it
         arguments?.let {
@@ -95,33 +102,16 @@ class HmwRootFragment : Fragment() {
         }
     }
 
-    /**sets up pager with fragments*/
-    private fun setupViewPager() {
-        binding.apply {
-            //sets up ViewPager for oder fragments
-            if (pager.adapter == null) {
-                HmwPager(this@HmwRootFragment).also {
-                    pager.adapter = it
-
-                    TabLayoutMediator(binding.tabs, pager) { tab, position ->
-
-                        tab.text = it.getPageTitle(position)
-                    }.attach()
-                }
-            }
-        }
-    }
-
     /**shows homework with id given*/
-    private fun selectHomework(id: String) {
+    private suspend fun selectHomework(id: String) {
 
         viewModel.selectedHomeworkId.value = id
 
-        val currentHomework = Homework.getCurrent(viewModel.homework.value!!)
+        val isCurrentHomework = viewModel.isCurrent(id)
 
         //determinants in which fragment homework is show
         binding.pager.setCurrentItem(
-            if (currentHomework.getById(id) != null) {
+            if (isCurrentHomework) {
                 0
             } else {
                 1
@@ -133,8 +123,7 @@ class HmwRootFragment : Fragment() {
     private fun lastUpdated() {
 
         var text = getString(R.string.homework_failed_to_load)
-        val lastUpdated = HomeworkStorage.lastUpdated()
-        lastUpdated?.let {
+        viewModel.lastUpdated()?.let {
             text = cz.lastaapps.bakalariextension.tools.lastUpdated(requireContext(), it)
         }
 

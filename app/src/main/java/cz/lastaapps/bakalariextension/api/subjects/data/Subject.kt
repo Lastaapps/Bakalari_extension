@@ -20,18 +20,28 @@
 
 package cz.lastaapps.bakalariextension.api.subjects.data
 
+import androidx.room.Entity
+import androidx.room.Ignore
 import cz.lastaapps.bakalariextension.api.DataId
+import cz.lastaapps.bakalariextension.api.DataIdList
+import cz.lastaapps.bakalariextension.api.database.APIBase
 import kotlinx.android.parcel.Parcelize
 import java.text.Collator
 import java.util.*
 
+typealias SubjectList = DataIdList<Subject>
+typealias TeacherList = DataIdList<Teacher>
+typealias SubjectTeacherLists = Pair<SubjectList, TeacherList>
+
 @Parcelize
-class Subject(
-    override var id: String,
+@Entity(tableName = APIBase.SUBJECTS, inheritSuperIndices = true)
+data class Subject(
+    @Ignore override var id: String,
     val name: String,
     val shortcut: String,
-    val teacher: Teacher
+    val teacherId: String,
 ) : DataId<String>(id), Comparable<Subject> {
+
     override fun compareTo(other: Subject): Int {
         val collator = Collator.getInstance(Locale.getDefault())
 

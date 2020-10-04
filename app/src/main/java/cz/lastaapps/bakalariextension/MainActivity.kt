@@ -27,13 +27,12 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
@@ -45,19 +44,21 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
+import com.google.android.play.core.review.ReviewManagerFactory
 import cz.lastaapps.bakalariextension.api.user.data.User
 import cz.lastaapps.bakalariextension.send.ReportIssueActivity
 import cz.lastaapps.bakalariextension.send.SendIdeaActivity
 import cz.lastaapps.bakalariextension.tools.BaseActivity
-import cz.lastaapps.bakalariextension.ui.TeacherWarning
 import cz.lastaapps.bakalariextension.ui.UserViewModel
-import cz.lastaapps.bakalariextension.ui.WhatsNew
 import cz.lastaapps.bakalariextension.ui.bottom.BottomFragment
 import cz.lastaapps.bakalariextension.ui.bottom.BottomItem
 import cz.lastaapps.bakalariextension.ui.login.ActionsLogout
+import cz.lastaapps.bakalariextension.ui.others.TeacherWarning
+import cz.lastaapps.bakalariextension.ui.others.WhatsNew
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**Activity containing all the content fragments and navigation*/
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -92,14 +93,12 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         //goes fullscreen in landscape mode
         val orientation = resources.configuration.orientation
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            //TODO target 30
-            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
-            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 window.insetsController?.hide(WindowInsets.Type.statusBars())
             } else {
                 window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-            }*/
+            }
         }
 
         setContentView(R.layout.activity_main)
@@ -151,10 +150,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         //shows popup when attachment downloaded with the opinion to open it
         registerReceiver(attachmentDownloaded, IntentFilter(ATTACHMENT_DOWNLOADED))
-
-        navController.addOnDestinationChangedListener { controller, destination, arguments ->
-            println("Current: ${destination.label}")
-        }
     }
 
     override fun onDestroy() {
@@ -184,6 +179,16 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         } else {
             super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onBackPressed() {
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START)
+            return
+        }
+
+        super.onBackPressed()
     }
 
     fun loginCheckDone() {
@@ -420,9 +425,13 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 findNavController(R.id.nav_host_fragment).navigate(R.id.nav_settings)
             }
             R.id.nav_logout -> {
-                ActionsLogout.logout()
-                startActivity(Intent(this, MainActivity::class.java))
-                finish()
+                CoroutineScope(Dispatchers.Default).launch {
+                    ActionsLogout.logout()
+                    withContext(Dispatchers.Main) {
+                        startActivity(Intent(this@MainActivity, MainActivity::class.java))
+                        finish()
+                    }
+                }
             }
             R.id.nav_share -> {
                 val sendIntent: Intent = Intent().apply {
@@ -437,10 +446,42 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 startActivity(shareIntent)
             }
             R.id.nav_rate -> {
-                val url =
-                    "https://play.google.com/store/apps/details?id=cz.lastaapps.bakalariextension"
-                val uri = Uri.parse(url)
-                startActivity(Intent(Intent.ACTION_VIEW, uri))
+
+                val manager = ReviewManagerFactory.create(this@MainActivity)
+
+                //redirects to the play store, required under LOLLIPOP 5.0 and when Google play
+                //API fails
+                val oldRequest = {
+                    val url =
+                        "https://play.google.com/store/apps/details?id=cz.lastaapps.bakalariextension"
+                    val uri = Uri.parse(url)
+                    startActivity(Intent(Intent.ACTION_VIEW, uri))
+                }
+
+                //version check
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                    oldRequest()
+                    return true
+                }
+
+                //Google play in app review
+                val request = manager.requestReviewFlow()
+                request.addOnCompleteListener { request ->
+                    if (request.isSuccessful) {
+
+                        val reviewInfo = request.result
+                        val flow = manager.launchReviewFlow(this@MainActivity, reviewInfo)
+                        flow.addOnCompleteListener { _ ->
+                            Toast.makeText(
+                                this@MainActivity,
+                                R.string.thanks_review,
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    } else {
+                        oldRequest()
+                    }
+                }
             }
             R.id.nav_idea -> {
                 val intent = Intent(this, SendIdeaActivity::class.java)

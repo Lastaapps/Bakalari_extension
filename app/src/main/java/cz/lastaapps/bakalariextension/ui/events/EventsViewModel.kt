@@ -22,20 +22,32 @@ package cz.lastaapps.bakalariextension.ui.events
 
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
+import cz.lastaapps.bakalariextension.CurrentUser
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.SimpleData
-import cz.lastaapps.bakalariextension.api.events.EventsLoader
+import cz.lastaapps.bakalariextension.api.events.EventsRepository
 import cz.lastaapps.bakalariextension.api.events.data.EventList
-import cz.lastaapps.bakalariextension.ui.RefreshableViewModel
+import cz.lastaapps.bakalariextension.ui.RefreshableListViewModel
 
-class EventsViewModel : RefreshableViewModel<EventList>(TAG) {
+class EventsViewModel : RefreshableListViewModel<EventList, EventsRepository>(
+    TAG,
+    CurrentUser.requireDatabase().eventsRepository
+) {
 
     companion object {
         private val TAG = EventsViewModel::class.java.simpleName
     }
 
+    override val data by lazy { repo.getEvents().asLiveData() }
+
+    suspend fun getEvent(id: String) = repo.getEvent(id)
+
+    init {
+        addEmptyObserver()
+    }
+
     /** Current main filter id - all, my, public*/
-    val filterId = MutableLiveData<Int>(R.id.filter_all)
+    val filterId = MutableLiveData(R.id.filter_all)
 
     /** If advanced filter is shown*/
     val advancedFilterVisible = MutableLiveData(false)
@@ -45,6 +57,9 @@ class EventsViewModel : RefreshableViewModel<EventList>(TAG) {
 
     /** Contains LiveData containing states for all the advanced types filters*/
     private val advancedFiltersMap = HashMap<SimpleData, MutableLiveData<Boolean>>()
+
+    /**Text to filter events*/
+    val filterText = MutableLiveData("")
 
     /** If select all is checked right now*/
     val selectAllChecked = MutableLiveData(true).also {
@@ -129,22 +144,6 @@ class EventsViewModel : RefreshableViewModel<EventList>(TAG) {
         }
 
         return list
-    }
-
-    override suspend fun loadServer(): EventList? {
-        return EventsLoader.loadFromServer()
-    }
-
-    override suspend fun loadStorage(): EventList? {
-        return EventsLoader.loadFromStorage()
-    }
-
-    override fun shouldReload(): Boolean {
-        return EventsLoader.shouldReload()
-    }
-
-    override fun isEmpty(data: EventList): Boolean {
-        return data.isEmpty()
     }
 
     override fun failedText(context: Context): String {

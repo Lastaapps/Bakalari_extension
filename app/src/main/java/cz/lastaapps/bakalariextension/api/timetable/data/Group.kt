@@ -20,14 +20,18 @@
 
 package cz.lastaapps.bakalariextension.api.timetable.data
 
+import androidx.room.Ignore
 import cz.lastaapps.bakalariextension.api.SimpleData
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-class Group(
+data class Group(
     var classId: String,
+    @Ignore
     override var id: String,
+    @Ignore
     override var shortcut: String,
+    @Ignore
     override var name: String
 ) : SimpleData(id, shortcut, name)
 

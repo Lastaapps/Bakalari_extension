@@ -21,32 +21,50 @@
 package cz.lastaapps.bakalariextension.ui.subjects
 
 import android.content.Context
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.viewModelScope
+import cz.lastaapps.bakalariextension.CurrentUser
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.subjects.SubjectList
-import cz.lastaapps.bakalariextension.api.subjects.SubjectLoader
-import cz.lastaapps.bakalariextension.api.subjects.TeacherList
-import cz.lastaapps.bakalariextension.api.subjects.data.Teacher
+import cz.lastaapps.bakalariextension.api.subjects.SubjectRepository
+import cz.lastaapps.bakalariextension.api.subjects.data.SubjectList
+import cz.lastaapps.bakalariextension.api.subjects.data.TeacherList
 import cz.lastaapps.bakalariextension.ui.RefreshableViewModel
+import cz.lastaapps.bakalariextension.ui.themes.ThemeViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlin.collections.HashMap
+import kotlin.collections.set
 
-/**Holds data for teacher and subject modules and ViewModels for themes*/
-class SubjectViewModel : RefreshableViewModel<SubjectList>(TAG) {
+class SubjectViewModel : RefreshableViewModel<SubjectRepository>(
+    TAG,
+    CurrentUser.requireDatabase().subjectTeacherRepository
+) {
 
     companion object {
         private val TAG = SubjectViewModel::class.java.simpleName
     }
 
+    val subjects by lazy { repo.getSubjects().asLiveData() }
+
+    val teachers by lazy { repo.getTeachers().asLiveData() }
+
+    suspend fun getSubject(id: String) = repo.getSubject(id)
+
+    suspend fun getTeacher(id: String) = repo.getTeacher(id)
+
+    suspend fun getSimpleTeacher(id: String) = repo.getSimpleTeacher(id)
+
+    suspend fun getTeachersSubjects(id: String) = repo.getTeachersSubjects(id)
+
     init {
-        data.observeForever {
-            teachers.value = Teacher.subjectsToTeachers(it)
+        viewModelScope.launch(Dispatchers.Main) {
+            subjects.observeForever {
+                it?.let {
+                    isEmpty.value = it.isEmpty()
+                }
+            }
         }
     }
-
-    /**List of subjects*/
-    val subjects = data
-
-    /**List of teachers*/
-    val teachers = MutableLiveData<TeacherList>()
 
     /**holds ViewModels for themes*/
     private val themeMap = HashMap<String, ThemeViewModel>()
@@ -62,20 +80,18 @@ class SubjectViewModel : RefreshableViewModel<SubjectList>(TAG) {
         }
     }
 
-    override suspend fun loadServer(): SubjectList? {
-        return SubjectLoader.loadFromServer()
+    fun requireSubjects(): SubjectList {
+        return subjects.value!!
     }
 
-    override suspend fun loadStorage(): SubjectList? {
-        return SubjectLoader.loadFromStorage()
+    fun requireTeachers(): TeacherList {
+        return teachers.value!!
     }
 
-    override fun shouldReload(): Boolean {
-        return SubjectLoader.shouldReload()
-    }
-
-    override fun isEmpty(data: SubjectList): Boolean {
-        return data.isEmpty()
+    fun executeTeachersOrRefresh(lifecycle: Lifecycle, todo: ((TeacherList) -> Unit)) {
+        teachers.observe({ lifecycle }) { todo(it) }
+        if (hasData.value != true || repo.shouldReload()/*runs auto update once only*/)
+            loadData()
     }
 
     override fun emptyText(context: Context): String {

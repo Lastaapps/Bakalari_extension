@@ -26,9 +26,12 @@ import cz.lastaapps.bakalariextension.api.SimpleData
 import cz.lastaapps.bakalariextension.api.events.data.Event
 import cz.lastaapps.bakalariextension.api.events.data.EventList
 import cz.lastaapps.bakalariextension.api.events.data.EventTime
+import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.tools.TimeTools.Companion.toCommon
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.time.ZonedDateTime
 
 class EventsParser {
     companion object {
@@ -50,22 +53,28 @@ class EventsParser {
             for (i in 0 until jsonArray.length()) {
                 val json = jsonArray.getJSONObject(i)
 
+                val id = safeJson(json, "Id")
+                val times = parseTimes(id, json.getJSONArray("Times"))
+
                 val item = Event(
-                    safeJson(json, "Id"),
+                    id,
                     0,
                     safeJson(json, "Title"),
                     safeJson(json, "Description"),
-                    parseTimes(json.getJSONArray("Times")),
+                    times,
+                    Event.getStartTime(times),
+                    Event.getEndTime(times),
                     parseSimple(json.getJSONObject("EventType")),
                     parseSimpleArray(json.getJSONArray("Classes")),
-                    json.getJSONArray("ClassSets"),
+                    //json.getJSONArray("ClassSets"),
                     parseSimpleArray(json.getJSONArray("Teachers")),
-                    json.getJSONArray("TeacherSets"),
+                    //json.getJSONArray("TeacherSets"),
                     parseSimpleArray(json.getJSONArray("Rooms")),
-                    json.getJSONArray("RoomSets"),
+                    //json.getJSONArray("RoomSets"),
                     parseSimpleArray(json.getJSONArray("Students")),
                     safeJson(json, "Note"),
-                    json.getString("DateChanged")
+                    TimeTools.parse(json.getString("DateChanged"), TimeTools.COMPLETE_FORMAT)
+                        .toCommon()
                 )
 
                 list.add(item)
@@ -77,7 +86,7 @@ class EventsParser {
         }
 
         /**parses event start and ent times*/
-        private fun parseTimes(array: JSONArray): ArrayList<EventTime> {
+        private fun parseTimes(id: String, array: JSONArray): ArrayList<EventTime> {
             val list = ArrayList<EventTime>()
 
             for (i in 0 until array.length()) {
@@ -85,14 +94,24 @@ class EventsParser {
 
                 list.add(
                     EventTime(
+                        id,
                         json.getBoolean("WholeDay"),
-                        json.getString("StartTime"),
-                        json.getString("EndTime")
+                        parseTime(json.getString("StartTime")),
+                        parseTime(json.getString("EndTime"))
                     )
                 )
             }
 
             return list
+        }
+
+        //time formats differ not sure why and when, to try catch is used
+        private fun parseTime(time: String): ZonedDateTime {
+            return try {
+                TimeTools.parse(time, TimeTools.COMPLETE_FORMAT)
+            } catch (e: Exception) {
+                TimeTools.parse(time, TimeTools.COMPLETE_SHORTER)
+            }.toCommon()
         }
 
         /**parses array of objects*/
@@ -129,76 +148,6 @@ class EventsParser {
                     ""
             } catch (e: JSONException) {
                 ""
-            }
-        }
-
-
-        /**Encodes data list back to JSON*/
-        fun encodeJson(list: List<Event>): JSONObject {
-
-            return JSONObject().apply {
-                put("Events", encodeEvents(EventList(list)))
-            }
-        }
-
-        /**encodes array in /Events */
-        private fun encodeEvents(list: EventList): JSONArray {
-            val array = JSONArray()
-
-            for (event in list) {
-                array.put(JSONObject().apply {
-                    put("Id", event.id)
-                    put("Title", event.title)
-                    put("Description", event.description)
-                    put("Times", encodeTimes(event.times))
-                    put("EventType", encodeSimple(event.type))
-                    put("Classes", encodeSimpleArray(event.classes))
-                    put("ClassSets", event.classSets)
-                    put("Teachers", encodeSimpleArray(event.teachers))
-                    put("TeacherSets", event.teacherSets)
-                    put("Rooms", encodeSimpleArray(event.rooms))
-                    put("RoomSets", event.roomSet)
-                    put("Students", encodeSimpleArray(event.students))
-                    put("Note", event.note)
-                    put("DateChanged", event.dateChanged)
-                })
-            }
-
-            return array
-        }
-
-        /**encodes event start and ent times*/
-        private fun encodeTimes(list: ArrayList<EventTime>): JSONArray {
-            val array = JSONArray()
-
-            for (time in list) {
-                array.put(JSONObject().apply {
-                    put("WholeDay", time.wholeDay)
-                    put("StartTime", time.dateStart)
-                    put("EndTime", time.dateEnd)
-                })
-            }
-
-            return array
-        }
-
-        /**encodes array of objects*/
-        private fun encodeSimpleArray(list: DataIdList<SimpleData>): JSONArray {
-            val array = JSONArray()
-
-            for (data in list) {
-                array.put(encodeSimple(data))
-            }
-
-            return array
-        }
-
-        /**encodes group, class, subject and teacher back to JSON*/
-        private fun encodeSimple(data: SimpleData): JSONObject {
-            return JSONObject().apply {
-                put("Id", data.id)
-                put("Abbrev", data.shortcut)
-                put("Name", data.name)
             }
         }
     }

@@ -21,6 +21,9 @@
 package cz.lastaapps.bakalariextension.api
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
 import kotlinx.android.parcel.RawValue
 import java.io.Serializable
@@ -29,7 +32,8 @@ import java.util.*
 
 /**Parent of the most of the items, the can be then used in DataIDList*/
 @Parcelize
-open class DataId<T>(open var id: @RawValue T) : Serializable, Parcelable {
+open class DataId<T : Any>(@PrimaryKey @ColumnInfo(index = true) open var id: @RawValue T) :
+    Serializable, Parcelable {
 
     override fun equals(other: Any?): Boolean {
         return if (other is DataId<*>)
@@ -38,14 +42,13 @@ open class DataId<T>(open var id: @RawValue T) : Serializable, Parcelable {
             false
     }
 
-    override fun hashCode(): Int {
-        return id.hashCode()
-    }
+    override fun hashCode(): Int = id.hashCode()
 }
 
 /**Parent for classes containing just id, name and shortcut*/
 @Parcelize
 open class SimpleData(
+    @Ignore
     override var id: String,
     open var shortcut: String,
     open var name: String
@@ -60,4 +63,25 @@ open class SimpleData(
 
         return collator.compare(this.toString(), other.toString())
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is SimpleData) return false
+        if (!super.equals(other)) return false
+
+        if (id != other.id) return false
+        if (shortcut != other.shortcut) return false
+        if (name != other.name) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + id.hashCode()
+        result = 31 * result + shortcut.hashCode()
+        result = 31 * result + name.hashCode()
+        return result
+    }
+
 }

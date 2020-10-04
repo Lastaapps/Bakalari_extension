@@ -44,7 +44,7 @@ class UserChangedRefresher : BroadcastReceiver() {
             Log.i(TAG, "Refreshing data based on the user object change")
 
             val pending = goAsync()
-            CoroutineScope(Dispatchers.IO).launch {
+            CoroutineScope(Dispatchers.Default).launch {
                 try {
                     ActionsLogout.deleteAPIData()
                 } catch (e: Exception) {

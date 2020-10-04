@@ -42,6 +42,21 @@
             android:padding="@dimen/activity_horizontal_margin"
             tools:context=".ui.login.LoginFragment">
 
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/town_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="town_label,town_selected"
+
+                android:visibility="@{viewmodel.selectedTown != null ? View.VISIBLE : View.GONE}" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/school_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="school_label,school_selected"
+                android:visibility="@{viewmodel.selectedSchool != null ? View.VISIBLE : View.GONE}" />
+
             <TextView
                 android:id="@+id/label"
                 style="@style/AppTheme.Heading"
@@ -63,16 +78,66 @@
                 android:id="@+id/loading_towns"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/login_margin_sides"
+                android:layout_marginTop="@dimen/login_margin_between"
+
+                android:layout_marginEnd="@dimen/login_margin_sides"
                 android:text="@string/login_loading_towns"
                 android:visibility="@{viewmodel.selectedTown == null ? View.VISIBLE : View.GONE}"
-
-                android:layout_marginStart="@dimen/login_margin_sides"
-                android:layout_marginEnd="@dimen/login_margin_sides"
-                android:layout_marginTop="@dimen/login_margin_between"
 
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/label" />
+
+            <TextView
+                android:id="@+id/town_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/login_margin_sides"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="@dimen/login_margin_sides"
+                android:text="@string/login_choose_town"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/loading_towns" />
+
+            <TextView
+                android:id="@+id/town_selected"
+                style="@style/AppTheme.Text.Bigger"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/login_margin_sides"
+                android:layout_marginEnd="@dimen/login_margin_sides"
+                android:text="@{viewmodel.selectedTown.name ?? @string/login_no_town_selected}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/town_label"
+                tools:text="Town" />
+
+            <TextView
+                android:id="@+id/school_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/login_margin_sides"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="@dimen/login_margin_sides"
+                android:text="@string/login_choose_school"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/town_selected" />
+
+            <TextView
+                android:id="@+id/school_selected"
+                style="@style/AppTheme.Text.Bigger"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/login_margin_sides"
+                android:layout_marginEnd="@dimen/login_margin_sides"
+                android:text="@{viewmodel.selectedSchool.name ?? @string/login_no_school_selected}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/school_label"
+                tools:text="School" />
 
             <LinearLayout
                 android:id="@+id/town_container"
@@ -87,22 +152,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/loading_towns"
+                tools:visibility="gone">
 
-                android:visibility="@{viewmodel.selectedTown != null ? View.VISIBLE : View.GONE}">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/login_choose_town" />
-
-                <TextView
-                    style="@style/AppTheme.Text.Bigger"
-                    android:id="@+id/town_selected"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@{viewmodel.selectedTown != null ? viewmodel.selectedTown.name : @string/login_no_town_selected}"
-                    tools:text="Town" />
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/school_container"
                 android:layout_width="match_parent"
@@ -116,21 +169,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/town_container"
+                tools:visibility="gone">
 
-                android:visibility="@{viewmodel.selectedSchool != null ? View.VISIBLE : View.GONE}">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/login_choose_school" />
-
-                <TextView
-                    style="@style/AppTheme.Text.Bigger"
-                    android:id="@+id/school_selected"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@{viewmodel.selectedSchool.name ?? @string/login_no_school_selected}"
-                    tools:text="School" />
             </LinearLayout>
 
             <EditText
@@ -138,16 +178,16 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/login_margin_sides"
-                android:layout_marginTop="@dimen/login_margin_between"
-                android:layout_marginEnd="@dimen/login_margin_sides"
+                android:layout_marginTop="16dp"
 
+                android:layout_marginEnd="@dimen/login_margin_sides"
                 android:hint="@string/login_prompt_url"
                 android:inputType="textUri"
                 android:selectAllOnFocus="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/school_container"
 
+                app:layout_constraintTop_toBottomOf="@+id/school_selected"
                 tools:text="https://bakalari.skola.cz/" />
 
             <EditText
@@ -165,7 +205,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/url"
 
-                tools:text="jara660916" />
+                tools:text="jaracim660916" />
 
             <EditText
                 android:id="@+id/password"

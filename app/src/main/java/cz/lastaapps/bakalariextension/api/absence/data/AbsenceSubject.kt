@@ -20,13 +20,16 @@
 
 package cz.lastaapps.bakalariextension.api.absence.data
 
+import androidx.room.Entity
 import cz.lastaapps.bakalariextension.api.DataId
+import cz.lastaapps.bakalariextension.api.database.APIBase
 import kotlinx.android.parcel.Parcelize
 import java.text.Collator
 import java.util.*
 
 @Parcelize
-class AbsenceSubject(
+@Entity(tableName = APIBase.ABSENCE_SUBJECT, inheritSuperIndices = true)
+data class AbsenceSubject(
     val name: String,
     val lessonCount: Int,
     val base: Int,

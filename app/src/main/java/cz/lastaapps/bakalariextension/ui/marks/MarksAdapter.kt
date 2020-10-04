@@ -25,9 +25,9 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.DataIdList
-import cz.lastaapps.bakalariextension.api.marks.data.Mark
-import cz.lastaapps.bakalariextension.api.marks.data.MarksRoot
+import cz.lastaapps.bakalariextension.api.marks.data.MarksList
+import cz.lastaapps.bakalariextension.api.marks.data.MarksPairList
+import cz.lastaapps.bakalariextension.api.marks.data.findSubject
 import cz.lastaapps.bakalariextension.databinding.MarksRowBinding
 
 /**Adapter for RecycleView containing marks*/
@@ -38,22 +38,22 @@ class MarksAdapter : RecyclerView.Adapter<MarksAdapter.DataBindingHolder> {
     }
 
     /**all subjects*/
-    private var marksRoot: MarksRoot? = null
+    private var pairs: MarksPairList? = null
 
     /**marks to show*/
-    private var marks: DataIdList<Mark>
+    private var marks: MarksList
 
     /**Shows selected marks only*/
-    constructor(marks: DataIdList<Mark> = DataIdList()) : super() {
+    constructor(marks: MarksList = MarksList()) : super() {
         this.marks = marks
     }
 
     /**Shows selected marks and subject*/
     constructor(
-        marksRoot: MarksRoot,
-        marks: DataIdList<Mark> = marksRoot.getAllMarks()
+        pairs: MarksPairList,
+        marks: MarksList
     ) {
-        this.marksRoot = marksRoot
+        this.pairs = pairs
         this.marks = marks
     }
 
@@ -85,19 +85,21 @@ class MarksAdapter : RecyclerView.Adapter<MarksAdapter.DataBindingHolder> {
         val mark = marks[position]
         binding.markData = mark
 
-        //shows subject if available
-        if (marksRoot != null)
-            binding.subjectData = marksRoot!!.getSubjectForMark(mark)
+        binding.subjectData = null
 
+        //shows subject if available
+        pairs?.let {
+            binding.subjectData = it.findSubject(mark.subjectId)?.subject
+        }
     }
 
-    fun updateMarks(marks: DataIdList<Mark>) {
+    fun updateMarks(marks: MarksList) {
         this.marks = marks
         notifyDataSetChanged()
     }
 
-    fun updateMarksRoot(marksRoot: MarksRoot, marks: DataIdList<Mark> = marksRoot.getAllMarks()) {
-        this.marksRoot = marksRoot
+    fun updatePairs(pairs: MarksPairList?, marks: MarksList) {
+        this.pairs = pairs
         this.marks = marks
         notifyDataSetChanged()
     }

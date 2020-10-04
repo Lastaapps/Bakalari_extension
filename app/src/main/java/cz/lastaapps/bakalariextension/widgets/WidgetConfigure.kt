@@ -174,7 +174,7 @@ open class WidgetConfigure(private val config: WidgetConfigurePreferences) : App
         )
 
         //updates remote views
-        config.updateRemoteViews(remoteViews, appWidgetId, this)
+        config.updateRemoteViews(remoteViews, appWidgetId, this, mAppWidgetManager)
 
         //apply remote views to widgetHost
         hostView.updateAppWidget(null)
@@ -214,12 +214,21 @@ open class WidgetConfigure(private val config: WidgetConfigurePreferences) : App
     interface WidgetConfigurePreferences {
         /**the key for SharedPreferences for widget type*/
         fun getSPKey(): String
+
         /**just for sure, the beginning of each entry in SP*/
         fun getPrefix(): String
+
         /**Remote views are inflated from that*/
         fun getLayoutId(): Int
+
         /**update is required, theme or alpha changed*/
-        fun updateRemoteViews(remoteViews: RemoteViews, widgetId: Int, context: Context)
+        fun updateRemoteViews(
+            remoteViews: RemoteViews,
+            widgetId: Int,
+            context: Context,
+            appWidgetManager: AppWidgetManager,
+        )
+
         /**widget should be placed, updates it through appWidgetManager*/
         fun updateAppWidget(context: Context, manager: AppWidgetManager, widgetId: Int)
     }

@@ -31,6 +31,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.findNavController
 import cz.lastaapps.bakalariextension.R
+import cz.lastaapps.bakalariextension.api.DataIdList
+import cz.lastaapps.bakalariextension.api.absence.data.AbsenceDay
 import cz.lastaapps.bakalariextension.databinding.TemplateOverviewBinding
 
 /**shows how many lesson has user unexcused or ok text when everything is ok*/
@@ -59,7 +61,7 @@ class AbsenceOverviewFragment : Fragment() {
                 false
             )
         binding.lifecycleOwner = LifecycleOwner { lifecycle }
-        binding.viewmodel = viewModel
+        binding.viewModel = viewModel
         binding.drawable = R.drawable.module_absence
         //TODO contentDescription
         binding.contentDescription = ""
@@ -70,16 +72,15 @@ class AbsenceOverviewFragment : Fragment() {
         }
 
         //starts marks loading if they aren't yet
-        viewModel.executeOrRefresh(lifecycle) { dataChanged() }
+        viewModel.runOrRefresh(viewModel.days, lifecycle) { dataChanged(it) }
 
         return binding.root
     }
 
     /**sets actual content of the fragment*/
-    private fun dataChanged() {
+    private fun dataChanged(days: DataIdList<AbsenceDay>) {
         Log.i(TAG, "Data changed, updating")
 
-        val days = viewModel.requireData().days
         var unsolved = 0
 
         for (day in days) {

@@ -23,15 +23,16 @@ package cz.lastaapps.bakalariextension.api.absence.data
 import android.content.Context
 import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.tools.LocaleManager
-import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.tools.TimeTools.Companion.toCzechDate
 import kotlinx.android.parcel.Parcelize
+import java.time.LocalDate
 import java.time.Month
 import java.time.Month.*
 import java.time.format.TextStyle
 
 /** Generated in code, holds data for all days with absence data from one month*/
 @Parcelize
-class AbsenceMonth(
+data class AbsenceMonth(
     val monthName: String,
     val monthIndex: Int,
     override val unsolved: Int,
@@ -40,11 +41,19 @@ class AbsenceMonth(
     override val late: Int,
     override val soon: Int,
     override val school: Int
-) : AbsenceDataHolder(monthIndex, unsolved, ok, missed, late, soon, school),
+) : AbsenceDataHolder(monthIndex.toLong(), unsolved, ok, missed, late, soon, school),
     Comparable<AbsenceMonth> {
 
     override fun compareTo(other: AbsenceMonth): Int {
-        return monthIndex.compareTo(other.monthIndex)
+        val firstSemester =
+            arrayOf(SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER, JANUARY).map { it.value }
+
+        return if (monthIndex in firstSemester && other !in firstSemester) {
+            1
+        } else if (monthIndex !in firstSemester && other in firstSemester) {
+            -1
+        } else
+            monthIndex.compareTo(other.monthIndex)
     }
 
     override fun getLabel(): String {
@@ -53,17 +62,17 @@ class AbsenceMonth(
 
     companion object {
 
-        fun daysToMonths(context: Context, list: List<AbsenceDay>): DataIdList<AbsenceMonth> {
+        fun daysToMonths(
+            context: Context,
+            firstSeptember: LocalDate,
+            list: List<AbsenceDay>
+        ): DataIdList<AbsenceMonth> {
             if (list.isEmpty())
                 return DataIdList()
 
-            val someDate = list[0].toDate()
-            val firstJanuary =
-                TimeTools.firstSeptember
-                    .withDayOfMonth(1)
-                    .withMonth(FEBRUARY.value)
-                    .plusYears(1)
-            val firstSemester = someDate < firstJanuary
+            val someDate = list[0].date
+            val firstJanuary = LocalDate.of(firstSeptember.year + 1, FEBRUARY, 1)
+            val firstSemester = someDate.toCzechDate() < firstJanuary
 
             val months = if (firstSemester) {
                 arrayOf(SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER, JANUARY)
@@ -93,7 +102,7 @@ class AbsenceMonth(
             var school = 0
 
             for (day in days) {
-                val date = day.toDate()
+                val date = day.date
 
                 if (date.month == month) {
                     unsolved += day.unsolved

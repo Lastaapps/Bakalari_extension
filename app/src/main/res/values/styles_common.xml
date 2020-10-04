@@ -126,7 +126,7 @@
     </style>
 
     <!-- License activity styles-->
-    <style name="License.Activity" parent="AppTheme"></style>
+    <style name="License.Activity" parent="AppTheme" />
 
     <style name="License.Label" parent="AppTheme.Text">
         <item name="android:textSize">@dimen/heading_text_size</item>

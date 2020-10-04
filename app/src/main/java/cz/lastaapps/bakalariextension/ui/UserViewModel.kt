@@ -20,25 +20,26 @@
 
 package cz.lastaapps.bakalariextension.ui
 
-import cz.lastaapps.bakalariextension.api.user.UserLoader
+import android.content.Context
+import cz.lastaapps.bakalariextension.CurrentUser
+import cz.lastaapps.bakalariextension.R
+import cz.lastaapps.bakalariextension.api.user.UserRepository
 import cz.lastaapps.bakalariextension.api.user.data.User
+import kotlinx.coroutines.flow.filterNotNull
 
 /**Holds adn loads data about the user*/
-class UserViewModel : RefreshableViewModel<User>(TAG) {
+class UserViewModel : RefreshableDataViewModel<User, UserRepository>(
+    TAG,
+    CurrentUser.requireDatabase().userRepository
+) {
 
     companion object {
         private val TAG = UserViewModel::class.java.simpleName
     }
 
-    override suspend fun loadServer(): User? {
-        return UserLoader.loadFromServer()
-    }
+    override val data = repo.getUser().filterNotNull().asLiveData()
 
-    override suspend fun loadStorage(): User? {
-        return UserLoader.loadFromStorage()
-    }
+    override fun failedText(context: Context): String =
+        context.getString(R.string.user_failed_to_load)
 
-    override fun shouldReload(): Boolean {
-        return UserLoader.shouldReload()
-    }
 }

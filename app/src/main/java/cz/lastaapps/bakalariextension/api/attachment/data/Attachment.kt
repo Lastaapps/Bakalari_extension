@@ -20,12 +20,19 @@
 
 package cz.lastaapps.bakalariextension.api.attachment.data
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import cz.lastaapps.bakalariextension.api.DataId
+import cz.lastaapps.bakalariextension.api.database.APIBase
 import kotlinx.android.parcel.Parcelize
 
 /**Represent attachment - contains all necessary info*/
 @Parcelize
-class Attachment(
+@Entity(tableName = APIBase.ATTACHMENT)
+data class Attachment(
+    @PrimaryKey
+    @ColumnInfo(name = "data_id", index = true)
     override var id: String,
     var fileName: String,
     var type: String,

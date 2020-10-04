@@ -45,6 +45,8 @@ import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import cz.lastaapps.bakalariextension.api.user.data.User
 import cz.lastaapps.bakalariextension.databinding.TimetableLessonInfoBinding
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.tools.TimeTools.Companion.toCzechDate
+import cz.lastaapps.bakalariextension.tools.TimeTools.Companion.toDaySeconds
 import cz.lastaapps.bakalariextension.ui.BasicRecyclerAdapter
 import cz.lastaapps.bakalariextension.ui.homework.HmwRootFragment
 import kotlin.math.max
@@ -144,19 +146,18 @@ class CellSetup {
             if (highlight) {
                 //highlight current lesson
                 if (day.isNormal(hour, cycle)) {
-                    val now = TimeTools.timeToSeconds(
-                        TimeTools.now.toLocalTime()
-                    )
-                    val begin = TimeTools.timeToSeconds(
-                        TimeTools.parseTime(hour.begin, TimeTools.TIME_FORMAT, TimeTools.CET)
-                    )
-                    val end = TimeTools.timeToSeconds(
-                        TimeTools.parseTime(hour.end, TimeTools.TIME_FORMAT, TimeTools.CET)
-                    )
-                    val dayDate = day.toDate()
+                    val now = TimeTools.now.toLocalTime().toDaySeconds()
 
-                    if (TimeTools.toDate(dayDate, dayDate.zone)
-                        == TimeTools.toDate(TimeTools.now, dayDate.zone)
+                    val begin =
+                        TimeTools.parseTime(hour.begin, TimeTools.TIME_FORMAT, TimeTools.CET)
+                            .toDaySeconds()
+
+                    val end = TimeTools.parseTime(hour.end, TimeTools.TIME_FORMAT, TimeTools.CET)
+                        .toDaySeconds()
+
+                    val dayDate = day.date
+
+                    if (dayDate == TimeTools.now.toCzechDate()
                         && now in begin..end
                     ) {
                         color = App.getColor(R.color.timetable_current)

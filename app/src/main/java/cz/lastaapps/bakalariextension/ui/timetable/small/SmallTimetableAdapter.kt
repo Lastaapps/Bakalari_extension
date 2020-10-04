@@ -116,7 +116,7 @@ class SmallTimetableAdapter(
 
     override fun getItemId(position: Int): Long {
         val lesson = getItem(position) ?: return 0
-        return (lesson as Lesson).id.toLong()
+        return (lesson as Lesson).hourId.toLong()
     }
 
     override fun getCount(): Int {

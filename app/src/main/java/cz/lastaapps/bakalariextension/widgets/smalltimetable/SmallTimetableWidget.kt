@@ -20,7 +20,6 @@
 
 package cz.lastaapps.bakalariextension.widgets.smalltimetable
 
-import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
@@ -31,16 +30,12 @@ import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
 import cz.lastaapps.bakalariextension.App
-import cz.lastaapps.bakalariextension.MainActivity
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
 import cz.lastaapps.bakalariextension.api.timetable.data.Day
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
-import cz.lastaapps.bakalariextension.tools.TimeTools
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.time.ZonedDateTime
+import cz.lastaapps.bakalariextension.tools.toBytes
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 
 /**
@@ -55,14 +50,22 @@ class SmallTimetableWidget : AppWidgetProvider() {
     ) {
         Log.i(TAG, "Updating widgets")
 
+        WidgetData.getAll().values.forEach {
+            it.updateDate()
+        }
+
         // There may be multiple widgets active, so update all of them
         for (appWidgetId in appWidgetIds) {
-            updateAppWidget(
+            updateWidget(
                 context,
                 appWidgetManager,
                 appWidgetId
             )
         }
+    }
+
+    override fun onDeleted(context: Context, ids: IntArray) {
+        WidgetData.getWidgetData("").removeObservers(ids.toList())//TODO user id
     }
 
     override fun onEnabled(context: Context) {}
@@ -75,33 +78,65 @@ class SmallTimetableWidget : AppWidgetProvider() {
 
         /**Updates SmallTimetable widgets*/
         fun update(context: Context) {
+            val ids: IntArray = AppWidgetManager.getInstance(App.app)
+                .getAppWidgetIds(ComponentName(context, SmallTimetableWidget::class.java))
+
+            updateIds(context, ids)
+        }
+
+        /**Updates SmallTimetable widgets*/
+        fun updateIds(context: Context, ids: IntArray) {
             val intent = Intent(context, SmallTimetableWidget::class.java)
             intent.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
 
-            val ids: IntArray = AppWidgetManager.getInstance(App.app)
-                .getAppWidgetIds(
-                    ComponentName(context, SmallTimetableWidget::class.java)
-                )
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
             context.sendBroadcast(intent)
         }
 
-        fun updateAppWidget(
+        fun updateWidget(
             context: Context,
             appWidgetManager: AppWidgetManager,
             widgetId: Int
         ) {
-            // Construct the RemoteViews object
-            val views = RemoteViews(context.packageName, R.layout.widget_small_timetable)
 
-            setupWidget(
-                views,
-                widgetId,
-                context
-            )
+            val widgetData = WidgetData.getWidgetData("")//TODO user id
+            widgetData.registerObserver(widgetId)
+            val week = widgetData.getWeek()
+            val date = LocalDate.now()
+            val day = week?.getDay(date)
+
+            val views =
+                if (!widgetData.hasData()) {
+
+                    setUpLoading(widgetId, context)
+
+                } else {
+
+                    setupWidget(
+                        RemoteViews(context.packageName, R.layout.widget_small_timetable),
+                        widgetId,
+                        context,
+                        week,
+                        date,
+                        day,
+                    )
+                }
 
             // Instruct the widget manager to update the widget
             appWidgetManager.updateAppWidget(widgetId, views)
+        }
+
+        fun setUpLoading(
+            widgetId: Int,
+            context: Context,
+        ): RemoteViews {
+
+            val views = RemoteViews(context.packageName, R.layout.widget_small_timetable_loading)
+            val widget = WidgetLoading(context, widgetId, views)
+
+            widget.setTheme(SmallTimetableWidgetConfig.updater)
+
+            return views
         }
 
         /**sets up remote view*/
@@ -109,128 +144,77 @@ class SmallTimetableWidget : AppWidgetProvider() {
             views: RemoteViews,
             widgetId: Int,
             context: Context,
-            useDefault: Boolean = false
-        ) {
+            week: Week?,
+            date: LocalDate = LocalDate.now(),
+            day: Day? = week?.getDay(date),
+        ): RemoteViews {
 
-            val config = SmallTimetableWidgetConfig.updater
+            val widget = Widget(context, widgetId, views)
+            val updater = SmallTimetableWidgetConfig.updater
 
-            //changes background
-            val background = config.applyAlpha(
-                widgetId, if (config.isLight(widgetId))
-                    R.color.widget_background
-                else
-                    R.color.widget_background_dark
+            //sets widget theme
+            widget.setTheme(updater)
+
+            widget.addIntents()
+
+            //updates date text
+            views.setTextViewText(
+                R.id.date_label,
+                date.format(DateTimeFormatter.ofPattern("E, d. MMMM"))
             )
-            val foreground = App.getColor(
-                if (config.isLight(widgetId))
-                    R.color.widget_foreground
-                else
-                    R.color.widget_foreground_dark
-            )
-            views.setInt(R.id.widget_root, "setBackgroundColor", background)
 
-            //changes text color
-            views.setTextColor(R.id.error_message, foreground)
-            views.setTextColor(R.id.date_label, foreground)
-            views.setTextColor(R.id.holiday, foreground)
 
-            views.setViewVisibility(R.id.error_message, View.GONE)
-            views.setViewVisibility(R.id.holiday, View.GONE)
-            views.setViewVisibility(R.id.grid_view, View.GONE)
-
-            //opens full timetable
-            val intent = Intent(context, MainActivity::class.java)
-            intent.putExtra(MainActivity.NAVIGATE, R.id.nav_timetable)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK and Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            val pendingIntent = PendingIntent.getActivity(
-                context,
-                1,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-            )
-            views.setPendingIntentTemplate(R.id.grid_view, pendingIntent)
-
-            views.setOnClickPendingIntent(R.id.widget_root, pendingIntent)
-
-            //loads week
-            val date = TimeTools.today
-            val week: Week?
-            val day: Day?
-
-            views.setTextViewText(R.id.date_label, TimeTools.format(date, "E, d. MMMM"))
-
-            if (!useDefault) {
-                //week is not downloaded yet
-                week = loadTimetable(date)
-                if (week == null) {
-                    views.setViewVisibility(R.id.error_message, View.VISIBLE)
-                    return
-                }
-                day = week.getDay(date)
-                //on weekend is null
-                if (day == null) {
-                    views.setViewVisibility(R.id.error_message, View.VISIBLE)
-                    return
-                }
-            } else {
-                week = null
-                day = null
+            if (week == null) {
+                views.setViewVisibility(R.id.error_message, View.VISIBLE)
+                return views
             }
 
-            //views.setEmptyView(R.id.grid_view, R.id.error_message)
+            //on weekend is null
+            if (day == null) {
+                views.setViewVisibility(R.id.error_message, View.VISIBLE)
+                return views
+            }
+
 
             //differs for holiday and workday
-            if (useDefault || (day != null && !day.isHoliday())) {
+            if (!day.isHoliday()) {
 
                 //intent to start service providing data for widget
-                val gridViewsServiceIntent =
-                    Intent(context, SmallTimetableRemoteAdapterService::class.java)
+                val intent =
+                    Intent(context, SmallTimetableRemoteService::class.java)
+
                 //puts in widget id
-                gridViewsServiceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
 
                 //puts in today's date
-                gridViewsServiceIntent.putExtra(
-                    SmallTimetableRemoteAdapterService.DATE_EXTRA,
-                    date.toInstant().toEpochMilli()
+                intent.putExtra(
+                    SmallTimetableRemoteService.WEEK_EXTRA,
+                    week.toBytes()
                 )
 
                 //if universal timetable should be loaded
-                gridViewsServiceIntent.putExtra(
-                    SmallTimetableRemoteAdapterService.LOAD_DEFAULT_EXTRA,
-                    useDefault
+                intent.putExtra(
+                    SmallTimetableRemoteService.DAY_EXTRA,
+                    day.toBytes()
                 )
 
-                gridViewsServiceIntent.data = Uri.parse(
-                    gridViewsServiceIntent.toUri(Intent.URI_INTENT_SCHEME)
+                intent.data = Uri.parse(
+                    intent.toUri(Intent.URI_INTENT_SCHEME)
                 )
+
 
                 //adds remote adapter service
                 views.setViewVisibility(R.id.grid_view, View.VISIBLE)
-                views.setRemoteAdapter(R.id.grid_view, gridViewsServiceIntent)
+                views.setRemoteAdapter(R.id.grid_view, intent)
 
             } else {
 
                 //sets up holiday view
-                views.setTextViewText(R.id.holiday, day!!.getHolidayDescription())
+                views.setTextViewText(R.id.holiday, day.getHolidayDescription())
                 views.setViewVisibility(R.id.holiday, View.VISIBLE)
             }
-        }
 
-        /**loads timetable using coroutines*/
-        private fun loadTimetable(date: ZonedDateTime): Week? {
-            var coroutineRunning = true
-
-            var week: Week? = null
-            CoroutineScope(Dispatchers.Default).launch {
-                week = TimetableLoader.loadFromStorage(TimeTools.toMonday(date))
-
-                coroutineRunning = false
-            }
-
-            while (coroutineRunning)
-                Thread.sleep(1)
-
-            return week
+            return widget.views
         }
     }
 }

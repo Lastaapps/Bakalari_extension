@@ -25,6 +25,8 @@ import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.absence.data.AbsenceDay
 import cz.lastaapps.bakalariextension.api.absence.data.AbsenceRoot
 import cz.lastaapps.bakalariextension.api.absence.data.AbsenceSubject
+import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.tools.TimeTools.Companion.toCommon
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -55,7 +57,8 @@ class AbsenceParser {
                 val json = jsonArray.getJSONObject(i)
                 list.add(
                     AbsenceDay(
-                        json.getString("Date"),
+                        TimeTools.parse(json.getString("Date"), TimeTools.COMPLETE_FORMAT)
+                            .toCommon(),
                         json.getInt("Unsolved"),
                         json.getInt("Ok"),
                         json.getInt("Missed"),

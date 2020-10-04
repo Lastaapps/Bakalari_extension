@@ -21,14 +21,22 @@
 package cz.lastaapps.bakalariextension.api.timetable.data
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import cz.lastaapps.bakalariextension.api.database.APIBase
 import kotlinx.android.parcel.Parcelize
 import java.io.Serializable
+import java.time.LocalDate
 
 /**Represents change in timetable*/
 @Parcelize
+@Entity(tableName = APIBase.TIMETABLE_CHANGE, primaryKeys = ["date", "hourId"])
 data class Change(
     var subject: String,
-    var day: String,
+    @ColumnInfo(index = true)
+    var date: LocalDate,
+    @ColumnInfo(index = true)
+    var hourId: Int,
     var hours: String,
     var changeType: String,
     var description: String,
@@ -36,9 +44,15 @@ data class Change(
     var typeShortcut: String,
     var typeName: String
 ) : Serializable, Parcelable {
-    /**Absence, normal lesson is canceled because of this*/
+
+    /**Canceled lesson, not moved ones*/
     fun isCanceled(): Boolean {
-        return changeType == CANCELED
+        return changeType == CANCELED && typeName == ""
+    }
+
+    /**Absence lessons, marked as canceled*/
+    fun isAbsence(): Boolean {
+        return changeType == CANCELED && typeName != ""
     }
 
     /**New lesson in timetable*/
@@ -46,7 +60,7 @@ data class Change(
         return changeType == ADDED
     }
 
-    /**Empty spot in timetable*/
+    /**Empty spot in timetable, moved lesson*/
     fun isRemoved(): Boolean {
         return changeType == REMOVED
     }

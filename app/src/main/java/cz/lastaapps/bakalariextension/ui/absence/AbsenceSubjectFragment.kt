@@ -45,11 +45,11 @@ class AbsenceSubjectFragment : Fragment() {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_absence_subject, container, false)
         binding.setLifecycleOwner { lifecycle }
-        binding.viewmodel = viewModel
+        binding.viewModel = viewModel
 
         binding.list.adapter = AbsenceSubjectAdapter()
 
-        viewModel.executeOrRefresh(lifecycle) { updateData(it) }
+        viewModel.runOrRefresh(viewModel.root, lifecycle) { updateData(it) }
 
         return binding.root
     }

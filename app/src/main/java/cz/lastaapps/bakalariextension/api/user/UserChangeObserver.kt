@@ -23,19 +23,14 @@ package cz.lastaapps.bakalariextension.api.user
 import android.content.Intent
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.MainActivity
-import org.json.JSONObject
 
 /** Notifies main activity and the others that user object has changed on server and the data should be reloaded*/
 class UserChangeObserver {
 
     companion object {
-        fun onNew(new: JSONObject) {
-            val old = UserStorage.load() ?: return
-
-            if (new.toString() != old.toString()) {
-                val intent = Intent(MainActivity.USER_CHANGED)
-                App.context.sendBroadcast(intent)
-            }
+        fun onNew() {
+            val intent = Intent(MainActivity.USER_CHANGED)
+            App.context.sendBroadcast(intent)
         }
     }
 }

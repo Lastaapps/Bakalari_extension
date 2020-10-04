@@ -42,9 +42,9 @@
             app:destination="@id/nav_license" />
     </fragment>
 
-    <fragment
+    <dialog
         android:id="@+id/nav_about"
-        android:name="cz.lastaapps.bakalariextension.ui.about.AboutFragment"
+        android:name="cz.lastaapps.bakalariextension.ui.others.AboutFragment"
         android:label="@string/menu_about"
         tools:layout="@layout/fragment_about" />
 
@@ -108,7 +108,7 @@
         android:id="@+id/nav_settings"
         android:name="cz.lastaapps.bakalariextension.ui.settings.SettingsFragment"
         android:label="@string/menu_settings" />
-    <fragment
+    <dialog
         android:id="@+id/nav_license"
         android:name="cz.lastaapps.bakalariextension.ui.license.LicenseFragment"
         android:label="@string/menu_license"
@@ -121,6 +121,9 @@
         <action
             android:id="@+id/action_nav_login_to_nav_home"
             app:destination="@id/nav_home" />
+        <action
+            android:id="@+id/action_login_search"
+            app:destination="@id/nav_login_search" />
     </fragment>
     <fragment
         android:id="@+id/nav_events"
@@ -181,5 +184,13 @@
     <action
         android:id="@+id/action_attachment_downloaded"
         app:destination="@id/nav_attachment_downloaded" />
+    <dialog
+        android:id="@+id/nav_login_search"
+        android:name="cz.lastaapps.bakalariextension.ui.login.SearchFragment"
+        tools:layout="@layout/fragment_login_search">
+        <argument
+            android:name="isTown"
+            app:argType="boolean" />
+    </dialog>
 
 </navigation>

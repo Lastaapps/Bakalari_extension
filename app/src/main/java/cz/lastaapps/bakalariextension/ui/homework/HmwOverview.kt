@@ -31,7 +31,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.findNavController
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.homework.data.Homework
+import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
 import cz.lastaapps.bakalariextension.databinding.TemplateOverviewBinding
 
 /**placed inside HomeFragment, shows how many current homework are there*/
@@ -60,7 +60,7 @@ class HmwOverview : Fragment() {
                 false
             )
         binding.lifecycleOwner = LifecycleOwner { lifecycle }
-        binding.viewmodel = viewModel
+        binding.viewModel = viewModel
         binding.drawable = R.drawable.module_homework
         //TODO contentDescription
         binding.contentDescription = ""
@@ -70,18 +70,17 @@ class HmwOverview : Fragment() {
             it.findNavController().navigate(R.id.nav_homework)
         }
 
-        //starts marks loading if they aren't yet
-        viewModel.executeOrRefresh(lifecycle) { dataChanged() }
+        //updates when data available
+        viewModel.runOrRefresh(viewModel.current, lifecycle) { dataChanged(it) }
 
         return binding.root
     }
 
     /**sets actual content of the fragment*/
-    private fun dataChanged() {
+    private fun dataChanged(list: HomeworkList) {
         Log.i(TAG, "Updating data")
 
-        val currentHomework = Homework.getCurrent(viewModel.homework.value!!)
-        val size = currentHomework.size
+        val size = list.size
         val text = if (size > 0) {
             resources.getQuantityString(R.plurals.homework_current_homework_template, size, size)
         } else {

@@ -22,19 +22,39 @@ package cz.lastaapps.bakalariextension.ui.homework
 
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.map
+import cz.lastaapps.bakalariextension.CurrentUser
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.homework.HomeworkLoader
-import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
+import cz.lastaapps.bakalariextension.api.homework.HomeworkRepository
 import cz.lastaapps.bakalariextension.ui.RefreshableViewModel
 
-class HmwViewModel : RefreshableViewModel<HomeworkList>(TAG) {
+class HmwViewModel() : RefreshableViewModel<HomeworkRepository>(
+    TAG,
+    CurrentUser.requireDatabase().homeworkRepository
+) {
 
     companion object {
         private val TAG = HmwViewModel::class.java.simpleName
     }
 
     /**Hold loaded homework*/
-    val homework = data
+    val homework by lazy { repo.getAllHomeworkList().asLiveData() }
+
+    val current by lazy { repo.getCurrentHomeworkList().asLiveData() }
+
+    val old by lazy { repo.getOldHomeworkList().asLiveData() }
+
+    suspend fun getHomeworkListForSubject(id: String) = repo.getHomeworkListForSubject(id)
+
+    suspend fun getHomework(id: String) = repo.getHomework(id)
+
+    suspend fun isCurrent(id: String) = repo.isCurrent(id)
+
+
+    init {
+        addEmptyObserver(homework.map { it })
+    }
+
 
     /**The id of the homework to scroll to*/
     val selectedHomeworkId = MutableLiveData<String>()
@@ -48,22 +68,6 @@ class HmwViewModel : RefreshableViewModel<HomeworkList>(TAG) {
 
     /**If subjects spinner is currently used to filter data*/
     val searchingUsingSpinner = MutableLiveData(true)
-
-    override suspend fun loadServer(): HomeworkList? {
-        return HomeworkLoader.loadFromServer()
-    }
-
-    override suspend fun loadStorage(): HomeworkList? {
-        return HomeworkLoader.loadFromStorage()
-    }
-
-    override fun shouldReload(): Boolean {
-        return HomeworkLoader.shouldReload()
-    }
-
-    override fun isEmpty(data: HomeworkList): Boolean {
-        return data.isEmpty()
-    }
 
     override fun emptyText(context: Context): String {
         return context.getString(R.string.homework_no_homework)

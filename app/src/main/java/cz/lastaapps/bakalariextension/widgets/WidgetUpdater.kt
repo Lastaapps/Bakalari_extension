@@ -26,7 +26,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.os.PowerManager
 import android.util.Log
 import cz.lastaapps.bakalariextension.tools.TimeTools
 import cz.lastaapps.bakalariextension.widgets.smalltimetable.SmallTimetableWidget
@@ -43,35 +42,21 @@ class WidgetUpdater : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
 
-        Log.i(TAG, "Requesting widget update")
+        Log.i(TAG, "Updating widgets")
 
         // This method is called when the BroadcastReceiver is receiving an Intent broadcast.
         SmallTimetableWidget.update(context)
-
         //locks wakelock to give enough time to finish widget update
-        val pm =
-            context.getSystemService(Context.POWER_SERVICE) as PowerManager
-        val wl =
-            pm.newWakeLock(
-                PowerManager.PARTIAL_WAKE_LOCK,
-                WidgetUpdater::class.java.name
-            )
+        val wait = goAsync()
 
         val timeout = 1000L
-
-        //starts wakelock
-        wl.acquire(timeout)
 
         //makes sure wakelock is released
         CoroutineScope(Dispatchers.Default).launch {
 
-            delay(timeout + 1)
-
-            if (wl != null && wl.isHeld) {
-                wl.release()
-            }
+            delay(timeout)
+            wait.finish()
         }
-
     }
 
     companion object {

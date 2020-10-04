@@ -20,16 +20,19 @@
 
 package cz.lastaapps.bakalariextension.api.subjects.data
 
+import androidx.room.Entity
+import androidx.room.Ignore
 import cz.lastaapps.bakalariextension.api.DataId
-import cz.lastaapps.bakalariextension.api.subjects.SubjectList
-import cz.lastaapps.bakalariextension.api.subjects.TeacherList
+import cz.lastaapps.bakalariextension.api.SimpleData
+import cz.lastaapps.bakalariextension.api.database.APIBase
 import kotlinx.android.parcel.Parcelize
 import java.text.Collator
 import java.util.*
-import kotlin.collections.HashSet
 
 @Parcelize
-class Teacher(
+@Entity(tableName = APIBase.TEACHERS, inheritSuperIndices = true)
+data class Teacher(
+    @Ignore
     override var id: String,
     val name: String,
     val shortcut: String,
@@ -37,7 +40,7 @@ class Teacher(
     val web: String,
     val phoneSchool: String,
     val phoneHome: String,
-    val phoneMobile: String
+    val phoneMobile: String,
 ) : DataId<String>(id), Comparable<Teacher> {
 
     override fun compareTo(other: Teacher): Int {
@@ -46,26 +49,5 @@ class Teacher(
         return collator.compare(name, other.name)
     }
 
-    companion object {
-
-        /**Gets teacher list from subjects*/
-        fun subjectsToTeachers(subjectList: SubjectList): TeacherList {
-            return TeacherList(HashSet<Teacher>().apply {
-                subjectList.forEach {
-                    add(it.teacher)
-                }
-            }.toList().sorted())
-        }
-
-        /**@return only subjects thought by this teacher*/
-        fun getTeachersSubjects(subjectList: SubjectList, teacher: Teacher): SubjectList {
-            return SubjectList().apply {
-                for (subject in subjectList) {
-                    if (subject.teacher == teacher) {
-                        add(subject)
-                    }
-                }
-            }
-        }
-    }
+    fun toSimpleData() = SimpleData(id, shortcut, name)
 }

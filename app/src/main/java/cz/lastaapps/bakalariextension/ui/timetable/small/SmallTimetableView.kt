@@ -36,8 +36,8 @@ import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
 import cz.lastaapps.bakalariextension.api.timetable.data.Day
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import cz.lastaapps.bakalariextension.api.user.data.User
-import cz.lastaapps.bakalariextension.tools.TimeTools
-import java.time.ZonedDateTime
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class SmallTimetableView : RelativeLayout {
 
@@ -97,8 +97,8 @@ class SmallTimetableView : RelativeLayout {
         errorMessage.text = message
     }
 
-    fun setDate(dateTime: ZonedDateTime) {
-        date.text = TimeTools.format(dateTime, "E, d. MMMM")
+    fun setDate(dateTime: LocalDate) {
+        date.text = dateTime.format(DateTimeFormatter.ofPattern("E, d. MMMM"))
     }
 
     fun updateTimetable(week: Week, day: Day, user: User, homework: HomeworkList?) {
@@ -117,7 +117,7 @@ class SmallTimetableView : RelativeLayout {
             table.visibility = View.GONE
             holiday.visibility = View.VISIBLE
 
-            holiday.findViewById<TextView>(R.id.holiday).text = day.getHolidayDescription()
+            holiday.findViewById<TextView>(R.id.holiday).text = day.getHolidayDescription(true)
         }
     }
 

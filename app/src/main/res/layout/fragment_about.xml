@@ -20,169 +20,226 @@
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_basic">
+        android:layout_margin="@dimen/margin_basic">
 
-        <include
-            android:id="@+id/label"
-            layout="@layout/logo_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="@dimen/margin_basic" />
 
         <TextView
-            android:id="@+id/author"
+            android:id="@+id/thanks"
             style="@style/AppTheme.Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/label"
 
-            android:layout_centerHorizontal="true"
-            android:layout_margin="@dimen/margin_basic"
-            android:layout_marginStart="@dimen/margin_basic"
-            android:layout_marginTop="@dimen/margin_basic"
-            android:layout_marginEnd="@dimen/margin_basic"
-            android:layout_marginBottom="@dimen/margin_basic"
-            tools:text="Lasta apps YYYY" />
+            android:text="@string/about_thanks"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:id="@+id/thanks_box"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/author"
-            android:layout_centerHorizontal="true"
 
-            android:gravity="center"
-            android:orientation="vertical">
+        <ImageButton
+            android:id="@+id/api"
+            style="@style/AppTheme.SmallImageButton"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/thanks"
+            app:srcCompat="@drawable/nav_api" />
 
-            <TextView
-                android:id="@+id/thanks"
-                style="@style/AppTheme.Text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_basic"
-                android:text="@string/about_thanks"
-
-                android:textAlignment="center" />
-
-            <ImageButton
-                android:id="@+id/api"
-                style="@style/AppTheme.SmallImageButton"
-                android:layout_margin="@dimen/margin_basic"
-
-                app:srcCompat="@drawable/nav_api" />
-        </LinearLayout>
 
         <TextView
             android:id="@+id/follow"
             style="@style/AppTheme.Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/thanks_box"
 
-            android:layout_centerHorizontal="true"
-            android:layout_margin="@dimen/margin_basic"
-            android:text="@string/about_follow" />
+            android:layout_marginTop="16dp"
+            android:text="@string/about_follow"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/api" />
 
-        <LinearLayout
-            android:id="@+id/button_box"
+        <androidx.constraintlayout.helper.widget.Flow
+            android:id="@+id/flow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/follow"
+            android:layout_marginTop="8dp"
+            app:constraint_referenced_ids="facebook,share,rate,google_play,github"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/follow" />
 
-            android:layout_centerHorizontal="true"
-            android:orientation="horizontal">
+        <ImageButton
+            android:id="@+id/facebook"
+            style="@style/AppTheme.SmallImageButton"
+            app:srcCompat="@drawable/nav_facebook" />
 
-            <ImageButton
-                android:id="@+id/facebook"
-                style="@style/AppTheme.SmallImageButton"
-                app:srcCompat="@drawable/nav_facebook" />
+        <ImageButton
+            android:id="@+id/share"
+            style="@style/AppTheme.SmallImageButton"
+            app:srcCompat="@drawable/nav_share" />
 
-            <ImageButton
-                android:id="@+id/share"
-                style="@style/AppTheme.SmallImageButton"
-                app:srcCompat="@drawable/nav_share" />
+        <ImageButton
+            android:id="@+id/rate"
+            style="@style/AppTheme.SmallImageButton"
+            app:srcCompat="@drawable/nav_rate" />
 
-            <ImageButton
-                android:id="@+id/rate"
-                style="@style/AppTheme.SmallImageButton"
-                app:srcCompat="@drawable/nav_rate" />
+        <ImageButton
+            android:id="@+id/google_play"
+            style="@style/AppTheme.SmallImageButton"
+            app:srcCompat="@drawable/nav_google_play" />
 
-            <ImageButton
-                android:id="@+id/google_play"
-                style="@style/AppTheme.SmallImageButton"
-                app:srcCompat="@drawable/nav_google_play" />
+        <ImageButton
+            android:id="@+id/github"
+            style="@style/AppTheme.SmallImageButton"
+            app:srcCompat="@drawable/nav_github" />
 
-            <ImageButton
-                android:id="@+id/github"
-                style="@style/AppTheme.SmallImageButton"
-                app:srcCompat="@drawable/nav_github" />
-        </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/other_box"
+        <ImageButton
+            android:id="@+id/whats_new"
+            style="@style/AppTheme.SmallImageButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/button_box"
-            android:layout_centerHorizontal="true"
-            android:orientation="horizontal">
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/license_barrier_start"
+            app:layout_constraintStart_toEndOf="@id/whats_new_barrier_start"
+            app:layout_constraintTop_toBottomOf="@+id/flow"
+            app:srcCompat="@drawable/nav_whats_new" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_basic"
-                android:gravity="center"
-                android:orientation="vertical">
+        <TextView
+            android:id="@+id/whats_new_label"
+            style="@android:style/TextAppearance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/whats_new_title"
+            app:layout_constraintEnd_toStartOf="@+id/license_barrier_start"
+            app:layout_constraintStart_toEndOf="@id/whats_new_barrier_start"
+            app:layout_constraintTop_toBottomOf="@+id/whats_new" />
+
+        <View
+            android:id="@+id/whats_new_position"
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            app:layout_constraintEnd_toStartOf="@id/license_position"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/flow" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/whats_new_barrier_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="start"
+            app:constraint_referenced_ids="whats_new_label,whats_new"
+            tools:layout_editor_absoluteX="125dp" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/whats_new_barrier_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="end"
+            app:constraint_referenced_ids="whats_new_label,whats_new,whats_new_position"
+            tools:layout_editor_absoluteX="206dp" />
+
+        <ImageButton
+            android:id="@+id/license"
+            style="@style/AppTheme.SmallImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@id/license_barrier_end"
+            app:layout_constraintStart_toEndOf="@+id/whats_new_barrier_end"
+            app:layout_constraintTop_toBottomOf="@+id/flow"
+            app:srcCompat="@drawable/nav_license" />
+
+        <TextView
+            android:id="@+id/license_label"
+            style="@android:style/TextAppearance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/license"
+            app:layout_constraintEnd_toStartOf="@id/license_barrier_end"
+            app:layout_constraintStart_toEndOf="@+id/whats_new_barrier_end"
+            app:layout_constraintTop_toBottomOf="@+id/license" />
+
+        <View
+            android:id="@+id/license_position"
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/whats_new_position"
+            app:layout_constraintTop_toBottomOf="@id/flow" />
 
 
-                <ImageButton
-                    android:id="@+id/whats_new"
-                    style="@style/AppTheme.SmallImageButton"
-                    app:srcCompat="@drawable/nav_whats_new" />
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/license_barrier_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="start"
+            app:constraint_referenced_ids="license,license_label,license_position"
+            tools:layout_editor_absoluteX="411dp" />
 
-                <TextView
-                    style="@android:style/TextAppearance"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/whats_new_title" />
-            </LinearLayout>
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/license_barrier_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="end"
+            app:constraint_referenced_ids="license,license_label"
+            tools:layout_editor_absoluteX="261dp" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_basic"
-                android:gravity="center"
-                android:orientation="vertical">
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/buttons_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="license_label,whats_new_label"
+            tools:layout_editor_absoluteY="181dp" />
 
+        <TextView
+            android:id="@+id/author"
+            style="@style/AppTheme.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
 
-                <ImageButton
-                    android:id="@+id/license"
-                    style="@style/AppTheme.SmallImageButton"
-                    app:srcCompat="@drawable/nav_license" />
-
-                <TextView
-                    style="@android:style/TextAppearance"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/license" />
-            </LinearLayout>
-        </LinearLayout>
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/buttons_bottom"
+            tools:text="Lasta apps YYYY" />
 
         <TextView
             android:id="@+id/version"
             style="@style/AppTheme.Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/other_box"
 
-            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/author"
             tools:text="1.0.0 180010000" />
 
-    </RelativeLayout>
+        <View
+            android:layout_width="2dp"
+            android:layout_height="@dimen/bottom_sheet_bottom_margin"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/version" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

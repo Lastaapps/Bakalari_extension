@@ -28,6 +28,8 @@ import cz.lastaapps.bakalariextension.api.timetable.data.Hour
 import cz.lastaapps.bakalariextension.api.timetable.data.Lesson
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.tools.TimeTools.Companion.toCzechDate
+import cz.lastaapps.bakalariextension.tools.TimeTools.Companion.toDaySeconds
 
 /**Generates text to timetable notification*/
 class NotificationContent(val context: Context) {
@@ -55,7 +57,7 @@ class NotificationContent(val context: Context) {
         //will be returned
         val actions = HashMap<Int, Array<String>?>()
 
-        val day = week.getDay(TimeTools.today)
+        val day = week.getDay(TimeTools.today.toCzechDate())
         val hours = week.hours
         if (day == null)
             return null
@@ -79,12 +81,12 @@ class NotificationContent(val context: Context) {
             val nextHour = if (index != lastLesson) hours[index + 1] else null
             val nextLesson = if (nextHour != null) day.getLesson(nextHour) else null
 
-            val begin = TimeTools.timeToSeconds(
-                TimeTools.parseTime(hour.begin, TimeTools.TIME_FORMAT, TimeTools.CET)
-            )
-            val end = TimeTools.timeToSeconds(
-                TimeTools.parseTime(hour.end, TimeTools.TIME_FORMAT, TimeTools.CET)
-            )
+            val begin =
+                TimeTools.parseTime(hour.begin, TimeTools.TIME_FORMAT, TimeTools.CET).toDaySeconds()
+
+            val end =
+                TimeTools.parseTime(hour.end, TimeTools.TIME_FORMAT, TimeTools.CET).toDaySeconds()
+
 
             //silent zone before start
             if (index == firstLesson) {
@@ -218,7 +220,7 @@ class NotificationContent(val context: Context) {
 
         //last 10 minutes of the lesson
         actions[end] = arrayOf(
-            "$nextStr: ${week.rooms.getById(nextLesson.roomId)?.shortcut} - ${week.subjects.getById(nextLesson.subjectId)?.name}",
+            "$nextStr: <b>${week.rooms.getById(nextLesson.roomId)?.shortcut}</b> - ${week.subjects.getById(nextLesson.subjectId)?.name}",
             "$breakStr ${pattern.end} - ${nextPattern.begin}"
         )
     }
@@ -315,7 +317,7 @@ class NotificationContent(val context: Context) {
 
         //last 10 minutes of the lesson
         actions[end] = arrayOf(
-            "$nextStr: ${week.rooms.getById(nextLesson.roomId)?.shortcut} - ${week.subjects.getById(nextLesson.subjectId)?.name}",
+            "$nextStr: <b>${week.rooms.getById(nextLesson.roomId)?.shortcut}</b> - ${week.subjects.getById(nextLesson.subjectId)?.name}",
             "$breakStr ${pattern.end} - ${nextPattern.begin}"
         )
     }
@@ -408,7 +410,7 @@ class NotificationContent(val context: Context) {
 
         //last 10 minutes of the lesson
         actions[end] = arrayOf(
-            "$nextStr: ${week.rooms.getById(nextLesson.roomId)?.shortcut} - ${week.subjects.getById(nextLesson.subjectId)?.name}",
+            "$nextStr: <b>${week.rooms.getById(nextLesson.roomId)?.shortcut}</b> - ${week.subjects.getById(nextLesson.subjectId)?.name}",
             "$breakStr ${pattern.end} - ${nextPattern.begin}"
         )
     }

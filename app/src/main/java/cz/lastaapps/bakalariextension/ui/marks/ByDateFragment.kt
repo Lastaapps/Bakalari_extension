@@ -55,13 +55,18 @@ class ByDateFragment : Fragment() {
             Log.i(TAG, "Creating view")
             binding =
                 DataBindingUtil.inflate(inflater, R.layout.template_loading_list, container, false)
-            binding.apply {
-                viewmodel = viewModel
-                setLifecycleOwner { lifecycle }
-                list.adapter = MarksAdapter()
+            binding.also {
+                it.viewModel = viewModel
+                it.setLifecycleOwner { lifecycle }
+                it.list.adapter = MarksAdapter()
             }
 
-            viewModel.executeOrRefresh(lifecycle) { showMarks() }
+            viewModel.runOrRefresh(viewModel.pairs, lifecycle) {
+                showMarks()
+            }
+            viewModel.runOrRefresh(viewModel.marks, lifecycle) {
+                showMarks()
+            }
         } else {
             Log.i(TAG, "Already created")
         }
@@ -71,10 +76,14 @@ class ByDateFragment : Fragment() {
 
     /**puts marks into view*/
     private fun showMarks() {
+
+        val pairs = viewModel.pairs.value ?: return
+        val marks = viewModel.marks.value ?: return
+
         Log.i(TAG, "Updating based on new marks")
 
         (binding.list.adapter as MarksAdapter)
-            .updateMarksRoot(viewModel.marks.value!!)
+            .updatePairs(pairs, marks)
     }
 }
 

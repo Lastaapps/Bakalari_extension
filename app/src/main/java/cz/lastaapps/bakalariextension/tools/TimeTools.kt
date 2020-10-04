@@ -22,6 +22,7 @@ package cz.lastaapps.bakalariextension.tools
 
 import java.time.*
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 /**Tool with presets times, parsing and formatting methods and templates*/
 class TimeTools {
@@ -35,15 +36,9 @@ class TimeTools {
         val CET: ZoneId = ZoneId.of("Europe/Prague")
 
         //used to request permanent timetable
-        val PERMANENT: ZonedDateTime =
-            toMonday(
-                toMidnight(
-                    ZonedDateTime.of(
-                        2001, Month.SEPTEMBER.value, 11,
-                        0, 0, 0, 0, UTC
-                    )
-                )
-            )
+        val PERMANENT: LocalDate =
+            LocalDate.of(2001, Month.SEPTEMBER.value, 11).toMonday()
+
 
         /**Parses date and time
          * @return parsed ZoneDateTime at selected timezone*/
@@ -82,9 +77,7 @@ class TimeTools {
         /**Today's midnight in UTC*/
         val today: ZonedDateTime
             get() {
-                return toMidnight(
-                    ZonedDateTime.now(UTC)
-                )
+                return ZonedDateTime.now(UTC).toMidnight()
             }
 
         /**Now in UTC*/
@@ -96,78 +89,62 @@ class TimeTools {
         /**First monday going backward since now in UTC*/
         val monday: ZonedDateTime
             get() {
-                return toMonday(today)
+                return today.toMonday()
             }
 
-        /**The first September of this school year*/
-        val firstSeptember: ZonedDateTime
-            get() {
-                var firstSeptemberThisYear = today
-                    .withDayOfMonth(1)
-                    .withMonth(9)
-                while (firstSeptemberThisYear > today)
-                    firstSeptemberThisYear = firstSeptemberThisYear.minusYears(1)
-                return firstSeptemberThisYear
-            }
-
-        /**The last day of the school year*/
-        val lastJune: ZonedDateTime
-            get() = firstSeptember
-                .plusYears(1)
-                .withMonth(Month.JUNE.value)
-                .withDayOfMonth(30)
+        /**Converts to one zone ID common to the whole app for equals method to work properly*/
+        fun ZonedDateTime.toCommon(): ZonedDateTime = this.withZoneSameInstant(CET)
 
         /**Trims dateTimes time to midnight
          * @return previous midnight*/
-        fun toMidnight(dateTime: ZonedDateTime): ZonedDateTime {
-            return dateTime
+        fun ZonedDateTime.toMidnight(): ZonedDateTime {
+            return this
                 .toLocalDate()
-                .atStartOfDay(dateTime.zone)
+                .atStartOfDay(this.zone)
         }
 
         /**First monday going backward since now in UTC
          * @return monday*/
-        fun toMonday(dateTime: ZonedDateTime): ZonedDateTime {
-            var diff = DayOfWeek.MONDAY.value - dateTime.dayOfWeek.value
+        fun ZonedDateTime.toMonday(): ZonedDateTime {
+            var diff = DayOfWeek.MONDAY.value - this.dayOfWeek.value
             if (diff == 0)
-                return dateTime
+                return this
             while (diff > 0)
                 diff -= 7
 
-            return dateTime.plusDays(diff.toLong())
+            return this.plusDays(diff.toLong())
+        }
+
+        /**First monday going backward since now in UTC
+         * @return monday*/
+        fun LocalDate.toMonday(): LocalDate {
+            var diff = DayOfWeek.MONDAY.value - this.dayOfWeek.value
+            if (diff == 0)
+                return this
+            while (diff > 0)
+                diff -= 7
+
+            return this.plusDays(diff.toLong())
         }
 
         /**@return LocalDateTime at timezone given*/
-        fun toDateTime(dateTime: ZonedDateTime, timezone: ZoneId = UTC): LocalDateTime {
-            return dateTime.withZoneSameInstant(timezone).toLocalDateTime()
-        }
+        fun ZonedDateTime.toDateTime(timezone: ZoneId = UTC): LocalDateTime =
+            this.withZoneSameInstant(timezone).toLocalDateTime()
 
         /**@return LocalDate at timezone given*/
-        fun toDate(date: ZonedDateTime, timezone: ZoneId = UTC): LocalDate {
-            return date.withZoneSameInstant(timezone).toLocalDate()
-        }
+        fun ZonedDateTime.toDate(timezone: ZoneId = UTC): LocalDate =
+            this.withZoneSameInstant(timezone).toLocalDate()
 
         /**@return LocalTime at timezone given*/
-        fun toTime(time: ZonedDateTime, timezone: ZoneId = UTC): LocalTime {
-            return time.withZoneSameInstant(timezone).toLocalTime()
-        }
+        fun ZonedDateTime.toTime(timezone: ZoneId = UTC): LocalTime =
+            this.withZoneSameInstant(timezone).toLocalTime()
 
-        /**@returns seconds till midnight*/
-        fun timeToSeconds(time: LocalTime): Int {
-            return (time.hour * 3600
-                    + time.minute * 60
-                    + time.second)
-        }
+        fun ZonedDateTime.toCzechDate(): LocalDate = this.toDate(CET)
 
-        /**Adds 7 days to the date*/
-        fun nextWeek(dateTime: ZonedDateTime): ZonedDateTime {
-            return dateTime.plusDays(7)
-        }
+        fun LocalDate.toCzechZoned(): ZonedDateTime =
+            ZonedDateTime.of(this, LocalTime.MIDNIGHT, CET)
 
-        /**Subtracts 7 days from the date*/
-        fun previousWeek(dateTime: ZonedDateTime): ZonedDateTime {
-            return dateTime.minusDays(7)
-        }
+        fun LocalTime.toDaySeconds(): Int = (this.hour * 3600 + this.minute * 60 + this.second)
 
         /**returns duration in days between these two dates*/
         fun betweenMidnights(date1: ZonedDateTime, date2: ZonedDateTime): Duration {
@@ -176,5 +153,16 @@ class TimeTools {
                 LocalDateTime.of(date2.toLocalDate(), LocalTime.MIDNIGHT)
             )
         }
+
+        fun ZonedDateTime.toCalendar(): Calendar =
+            Calendar.getInstance().also {
+                it.time = Date(toInstant().toEpochMilli())
+            }
+
+        fun LocalDate.toCalendar(): Calendar =
+            ZonedDateTime.of(this, LocalTime.MIDNIGHT, ZoneId.systemDefault()).toCalendar()
+
+        fun Calendar.toZonedDateTime(): ZonedDateTime =
+            ZonedDateTime.ofInstant(Instant.ofEpochMilli(this.time.time), UTC)
     }
 }

@@ -21,31 +21,87 @@
 package cz.lastaapps.bakalariextension.ui.absence
 
 import android.content.Context
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.distinctUntilChanged
+import androidx.lifecycle.viewModelScope
+import cz.lastaapps.bakalariextension.App
+import cz.lastaapps.bakalariextension.CurrentUser
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.absence.AbsenceLoader
+import cz.lastaapps.bakalariextension.api.DataIdList
+import cz.lastaapps.bakalariextension.api.absence.AbsenceRepository
+import cz.lastaapps.bakalariextension.api.absence.data.AbsenceDay
+import cz.lastaapps.bakalariextension.api.absence.data.AbsenceMonth
 import cz.lastaapps.bakalariextension.api.absence.data.AbsenceRoot
+import cz.lastaapps.bakalariextension.api.absence.data.AbsenceSubject
 import cz.lastaapps.bakalariextension.ui.RefreshableViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.ZonedDateTime
 
-class AbsenceViewModel : RefreshableViewModel<AbsenceRoot>(TAG) {
+private typealias MonthData = MutableLiveData<DataIdList<AbsenceMonth>>
+
+class AbsenceViewModel : RefreshableViewModel<AbsenceRepository>(
+    TAG,
+    CurrentUser.requireDatabase().absenceRepository
+) {
 
     companion object {
         private val TAG = AbsenceViewModel::class.java.simpleName
     }
 
-    override suspend fun loadServer(): AbsenceRoot? {
-        return AbsenceLoader.loadFromServer()
+    private lateinit var months: MonthData
+    fun getMonths(firstSeptember: LocalDate): MonthData = synchronized(this) {
+        if (!this::months.isInitialized) {
+            months = MonthData()
+            days.updateMonths(firstSeptember)
+        }
+        return months
     }
 
-    override suspend fun loadStorage(): AbsenceRoot? {
-        return AbsenceLoader.loadFromStorage()
+    private val mRoot = MutableLiveData<AbsenceRoot>()
+    val root = mRoot.distinctUntilChanged()
+
+    val thresholdHolder = repo.getThreshold().asLiveData().updateRoot()
+
+    val days = repo.getDays().asLiveData().updateRoot()
+
+    val subjects = repo.getSubjects().asLiveData().updateRoot()
+
+    suspend fun getDay(date: ZonedDateTime): AbsenceDay? = repo.getDay(date)
+
+    suspend fun getSubject(name: String): AbsenceSubject? = repo.getSubject(name)
+
+    private fun <E> LiveData<E>.updateRoot(): LiveData<E> {
+        viewModelScope.launch(Dispatchers.Main) {
+            this@updateRoot.distinctUntilChanged().observeForever {
+
+                try {
+                    //constructor is called on worker thread, so this block can be called
+                    //on the main thread before the items are initialized
+                    val thr = thresholdHolder.value ?: return@observeForever
+                    val days = days.value ?: return@observeForever
+                    val subjects = subjects.value ?: return@observeForever
+
+                    mRoot.value = AbsenceRoot(thr, days, subjects)
+
+                } catch (e: Exception) {
+                    return@observeForever
+                }
+            }
+        }
+        return this
     }
 
-    override fun shouldReload(): Boolean {
-        return AbsenceLoader.shouldReload()
-    }
+    private fun LiveData<DataIdList<AbsenceDay>>.updateMonths(firstSeptember: LocalDate): LiveData<DataIdList<AbsenceDay>> {
 
-    override fun isEmpty(data: AbsenceRoot): Boolean {
-        return data.days.isEmpty()
+        viewModelScope.launch(Dispatchers.Main) {
+            this@updateMonths.distinctUntilChanged().observeForever {
+                months.value = AbsenceMonth.daysToMonths(App.context, firstSeptember, it)
+            }
+        }
+        return this
     }
 
     override fun emptyText(context: Context): String {

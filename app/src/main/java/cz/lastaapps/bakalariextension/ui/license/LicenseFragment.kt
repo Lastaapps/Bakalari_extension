@@ -32,9 +32,9 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.findNavController
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.MainActivity
 import cz.lastaapps.bakalariextension.R
@@ -45,7 +45,7 @@ import java.io.InputStreamReader
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-class LicenseFragment : Fragment() {
+class LicenseFragment : BottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentLicenseBinding
     private var wasAppBarShown = true

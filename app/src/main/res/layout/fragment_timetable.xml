@@ -24,241 +24,316 @@
 
     <data>
 
+        <import type="android.view.View" />
+
+        <variable
+            name="isProcessing"
+            type="Boolean" />
+
+        <variable
+            name="isHome"
+            type="Boolean" />
+
+        <variable
+            name="isPrevious"
+            type="Boolean" />
+
+        <variable
+            name="isNext"
+            type="Boolean" />
+
+        <variable
+            name="viewModel"
+            type="cz.lastaapps.bakalariextension.ui.timetable.TimetableViewModel" />
+
+        <variable
+            name="mainViewModel"
+            type="cz.lastaapps.bakalariextension.ui.timetable.TimetableMainViewModel" />
     </data>
 
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:keepScreenOn="true">
 
         <androidx.core.widget.ContentLoadingProgressBar
             android:id="@+id/progress_bar"
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true" />
+            android:visibility="@{(!viewModel.hasData &amp;&amp; viewModel.isLoading()) || isProcessing ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toTopOf="@+id/last_updated"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/error_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:visibility="gone" />
+            android:text="@{viewModel.failedText(context)}"
+            android:visibility="@{!viewModel.hasData &amp;&amp; !isProcessing &amp;&amp; !viewModel.isLoading() ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toTopOf="@+id/last_updated"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Failed to load timetable" />
 
-        <RelativeLayout
-            android:id="@+id/table_box"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/bottom_box"
+        <TextView
+            android:id="@+id/empty_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{viewModel.emptyText(context)}"
+            android:visibility="@{viewModel.isEmpty() &amp;&amp; viewModel.hasData &amp;&amp; !isProcessing &amp;&amp; !viewModel.isLoading() ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toTopOf="@+id/last_updated"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Empty timetable" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/table_layout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
 
             android:background="@drawable/border"
 
-            android:visibility="visible">
+            app:layout_constraintBottom_toTopOf="@+id/last_updated"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            android:visibility="@{!viewModel.isEmpty() &amp;&amp; !isProcessing &amp;&amp; viewModel.hasData ? View.VISIBLE : View.INVISIBLE}">
 
             <LinearLayout
                 android:id="@+id/table_days"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <include
                     android:id="@+id/edge"
                     layout="@layout/timetable_edge"
                     android:layout_width="@dimen/timetable_column_size_first"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
+                    android:layout_height="wrap_content" />
 
                 <include
                     android:id="@+id/monday"
                     layout="@layout/timetable_day"
                     android:layout_width="@dimen/timetable_column_size_first"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
+                    android:layout_height="wrap_content" />
 
                 <include
                     android:id="@+id/tuesday"
                     layout="@layout/timetable_day"
                     android:layout_width="@dimen/timetable_column_size_first"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
+                    android:layout_height="wrap_content" />
 
                 <include
                     android:id="@+id/wednesday"
                     layout="@layout/timetable_day"
                     android:layout_width="@dimen/timetable_column_size_first"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
+                    android:layout_height="wrap_content" />
 
                 <include
                     android:id="@+id/thursday"
                     layout="@layout/timetable_day"
                     android:layout_width="@dimen/timetable_column_size_first"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
+                    android:layout_height="wrap_content" />
 
                 <include
                     android:id="@+id/friday"
                     layout="@layout/timetable_day"
                     android:layout_width="@dimen/timetable_column_size_first"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
 
 
-            <RelativeLayout
-                android:layout_width="match_parent"
+            <HorizontalScrollView
+                android:id="@+id/horizontalScrollView"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_toEndOf="@+id/table_days">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/table_days">
 
-                <HorizontalScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TableLayout
-                        android:id="@+id/table"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent">
-
-                        <TableRow android:layout_gravity="center_horizontal" />
-
-                        <TableRow android:layout_gravity="center_horizontal" />
-
-                        <include
-                            layout="@layout/timetable_holiday"
-                            android:visibility="gone" />
-
-                        <TableRow android:layout_gravity="center_horizontal" />
-
-                        <include
-                            layout="@layout/timetable_holiday"
-                            android:visibility="gone" />
-
-                        <TableRow android:layout_gravity="center_horizontal" />
-
-                        <include
-                            layout="@layout/timetable_holiday"
-                            android:visibility="gone" />
-
-                        <TableRow android:layout_gravity="center_horizontal" />
-
-                        <include
-                            layout="@layout/timetable_holiday"
-                            android:visibility="gone" />
-
-                        <TableRow android:layout_gravity="center_horizontal" />
-
-                        <include
-                            layout="@layout/timetable_holiday"
-                            android:visibility="gone" />
-
-                    </TableLayout>
-
-                </HorizontalScrollView>
-
-                <TextView
-                    android:id="@+id/empty_timetable"
-                    style="@style/Timetable.Secondary"
+                <TableLayout
+                    android:id="@+id/table"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text="@string/timetable_empty"
-                    android:visibility="gone" />
+                    android:layout_height="wrap_content">
 
-            </RelativeLayout>
+                    <TableRow android:layout_gravity="center_horizontal">
 
-        </RelativeLayout>
+                        <include
+                            layout="@layout/timetable_hour"
+                            android:layout_width="@dimen/timetable_column_size_first"
+                            android:layout_height="wrap_content" />
 
-        <LinearLayout
-            android:id="@+id/bottom_box"
-            android:layout_width="match_parent"
+                        <include
+                            layout="@layout/timetable_hour"
+                            android:layout_width="@dimen/timetable_column_size_first"
+                            android:layout_height="wrap_content" />
+
+                        <include
+                            layout="@layout/timetable_hour"
+                            android:layout_width="@dimen/timetable_column_size_first"
+                            android:layout_height="wrap_content" />
+
+                        <include
+                            layout="@layout/timetable_hour"
+                            android:layout_width="@dimen/timetable_column_size_first"
+                            android:layout_height="wrap_content" />
+
+                        <include
+                            layout="@layout/timetable_hour"
+                            android:layout_width="@dimen/timetable_column_size_first"
+                            android:layout_height="wrap_content" />
+
+                        <include
+                            layout="@layout/timetable_hour"
+                            android:layout_width="@dimen/timetable_column_size_first"
+                            android:layout_height="wrap_content" />
+
+                        <include
+                            layout="@layout/timetable_hour"
+                            android:layout_width="@dimen/timetable_column_size_first"
+                            android:layout_height="wrap_content" />
+
+                        <include
+                            layout="@layout/timetable_hour"
+                            android:layout_width="@dimen/timetable_column_size_first"
+                            android:layout_height="wrap_content" />
+
+                        <include
+                            layout="@layout/timetable_hour"
+                            android:layout_width="@dimen/timetable_column_size_first"
+                            android:layout_height="wrap_content" />
+
+                        <include
+                            layout="@layout/timetable_hour"
+                            android:layout_width="@dimen/timetable_column_size_first"
+                            android:layout_height="wrap_content" />
+
+                        <include
+                            layout="@layout/timetable_hour"
+                            android:layout_width="@dimen/timetable_column_size_first"
+                            android:layout_height="wrap_content" />
+                    </TableRow>
+
+                    <include layout="@layout/fragment_timetable_data_row" />
+
+                    <include layout="@layout/timetable_holiday" />
+
+                    <include layout="@layout/fragment_timetable_data_row" />
+
+                    <include layout="@layout/timetable_holiday" />
+
+                    <include layout="@layout/fragment_timetable_data_row" />
+
+                    <include layout="@layout/timetable_holiday" />
+
+                    <include layout="@layout/fragment_timetable_data_row" />
+
+                    <include layout="@layout/timetable_holiday" />
+
+                    <include layout="@layout/fragment_timetable_data_row" />
+
+                    <include layout="@layout/timetable_holiday" />
+
+                </TableLayout>
+
+            </HorizontalScrollView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <TextView
+            android:id="@+id/last_updated"
+            style="@style/AppTheme.LastUpdate"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
 
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/last_updated"
-                style="@style/AppTheme.LastUpdate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-
-                android:textAlignment="center"
-                tools:text="Last updated on 31.2." />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/timetable_bottom_row"
-                android:layout_marginStart="@dimen/timetable_bottom_sides"
-                android:layout_marginEnd="@dimen/timetable_bottom_sides">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:gravity="center"
-
-                    android:orientation="horizontal">
-
-                    <ImageButton
-                        android:id="@+id/calendar"
-                        style="@style/Timetable.ImageButton"
-                        android:layout_width="@dimen/timetable_bottom_button"
-                        android:layout_height="@dimen/timetable_bottom_button"
-                        app:srcCompat="@drawable/calendar" />
-
-                    <ImageButton
-                        android:id="@+id/permanent_switch"
-                        style="@style/Timetable.ImageButton"
-                        android:layout_width="@dimen/timetable_bottom_button"
-                        android:layout_height="@dimen/timetable_bottom_button"
-
-                        app:srcCompat="@drawable/permanent" />
-
-                    <ImageButton
-                        android:id="@+id/home"
-                        style="@style/Timetable.ImageButton"
-                        android:layout_width="@dimen/timetable_bottom_button"
-                        android:layout_height="@dimen/timetable_bottom_button"
-
-                        android:visibility="gone"
-
-                        app:srcCompat="@drawable/home" />
-
-                    <ImageButton
-                        android:id="@+id/reload"
-                        style="@style/Timetable.ImageButton"
-                        android:layout_width="@dimen/timetable_bottom_button"
-                        android:layout_height="@dimen/timetable_bottom_button"
-
-                        app:srcCompat="@drawable/reload" />
-
-                </LinearLayout>
-
-                <ImageButton
-                    android:id="@+id/previous_week"
-                    style="@style/Timetable.ImageButton"
-                    android:layout_width="@dimen/timetable_bottom_button"
-                    android:layout_height="@dimen/timetable_bottom_button"
-
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentBottom="true"
-                    app:srcCompat="@drawable/arrow_left" />
-
-                <ImageButton
-                    android:id="@+id/next_week"
-                    style="@style/Timetable.ImageButton"
-                    android:layout_width="@dimen/timetable_bottom_button"
-                    android:layout_height="@dimen/timetable_bottom_button"
-
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentBottom="true"
-                    app:srcCompat="@drawable/arrow_right" />
+            android:textAlignment="center"
+            app:layout_constraintBottom_toTopOf="@+id/nav"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Last updated on 31.2." />
 
 
-            </RelativeLayout>
-        </LinearLayout>
+        <androidx.constraintlayout.helper.widget.Flow
+            android:id="@+id/nav"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:flow_wrapMode="chain"
+            app:flow_horizontalGap="@dimen/margin_basic"
+            android:layout_margin="@dimen/margin_basic"
+            app:constraint_referenced_ids="previous_week,permanent_switch,calendar,home,reload,next_week" />
 
-    </RelativeLayout>
+        <ImageButton
+            android:id="@+id/previous_week"
+            style="@style/Timetable.ImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{isPrevious ? View.VISIBLE : View.INVISIBLE}"
+            app:srcCompat="@drawable/arrow_left" />
+
+        <ImageButton
+            android:id="@+id/permanent_switch"
+            style="@style/Timetable.ImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@{mainViewModel.permanent ? @drawable/actual : @drawable/permanent}"
+            tools:src="@drawable/permanent" />
+
+        <ImageButton
+            android:id="@+id/calendar"
+            style="@style/Timetable.ImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{mainViewModel.permanent || isHome ? View.GONE : View.VISIBLE}"
+            app:srcCompat="@drawable/calendar" />
+
+        <ImageButton
+            android:id="@+id/home"
+            style="@style/Timetable.ImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{mainViewModel.permanent || !isHome ? View.GONE : View.VISIBLE}"
+            app:srcCompat="@drawable/home" />
+
+        <ImageButton
+            android:id="@+id/reload"
+            style="@style/Timetable.ImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{!viewModel.isLoading() ? View.VISIBLE : View.INVISIBLE}"
+            app:srcCompat="@drawable/reload" />
+
+        <ImageButton
+            android:id="@+id/next_week"
+            style="@style/Timetable.ImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{isNext ? View.VISIBLE : View.INVISIBLE}"
+            app:srcCompat="@drawable/arrow_right" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="@{viewModel.isLoading() ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@+id/reload"
+            app:layout_constraintEnd_toEndOf="@+id/reload"
+            app:layout_constraintStart_toStartOf="@+id/reload"
+            app:layout_constraintTop_toTopOf="@+id/reload" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

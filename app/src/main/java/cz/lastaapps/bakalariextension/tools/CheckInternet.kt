@@ -27,6 +27,7 @@ import android.os.Build
 import android.util.Log
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.api.ConnMgr
+import cz.lastaapps.bakalariextension.ui.login.LoginData
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -39,7 +40,7 @@ class CheckInternet {
         /**
          * Checks connection to school server, if there is no URL available, to www.google.com
          * */
-        fun check(canBeGoogle: Boolean = true): Boolean {
+        fun check(canBeGoogle: Boolean = true, mustBeGoogle: Boolean = false): Boolean {
             val cm = App.context
                 .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
@@ -49,31 +50,33 @@ class CheckInternet {
 
                 try {
                     //at first tries school's url, then google.com
-                    var stringUrl = ConnMgr.getAPIUrl()
-                    if (stringUrl == "") {
-                        if (canBeGoogle) {
+                    val stringUrl = if (LoginData.url == "" || mustBeGoogle) {
+                        if (canBeGoogle || mustBeGoogle) {
                             Log.i(TAG, "No school url set, checking at least google")
-                            stringUrl = "https://www.google.com"
+                            "https://www.google.com"
                         } else return false
+                    } else {
+                        ConnMgr.getAPIUrl()
                     }
 
                     Log.i(TAG, "Checking connection to $stringUrl")
 
                     //connects to server
                     val url = URL(stringUrl)
-                    val urlc: HttpURLConnection = url.openConnection() as HttpURLConnection
-                    urlc.setRequestProperty("User-Agent", "test")
-                    urlc.setRequestProperty("Connection", "Keep-Alive")
-                    urlc.connectTimeout = 5000
-                    urlc.readTimeout = 5000
-                    urlc.connect()
+                    val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
+                    connection.requestMethod = "HEAD"
+                    connection.setRequestProperty("Connection", "Keep-Alive")
+                    connection.connectTimeout = 7000
+                    connection.readTimeout = 3000
+                    connection.connect()
 
-                    //connection succeed
-                    (urlc.responseCode == 200).also {
-                        Log.i(TAG, "Connection state: $it")
-                    }
+                    Log.i(TAG, "Connection state: ${connection.responseCode}")
+
+                    connection.disconnect()
+
+                    true
                 } catch (e: IOException) {
-                    Log.i(TAG, "Error checking internet connection", e)
+                    Log.e(TAG, "Error checking internet connection", e)
                     false
                 }
             } else false

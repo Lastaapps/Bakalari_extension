@@ -36,12 +36,8 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.IgnoreExtraProperties
 import cz.lastaapps.bakalariextension.BuildConfig
+import cz.lastaapps.bakalariextension.CurrentUser
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.homework.HomeworkStorage
-import cz.lastaapps.bakalariextension.api.marks.MarksStorage
-import cz.lastaapps.bakalariextension.api.subjects.SubjectStorage
-import cz.lastaapps.bakalariextension.api.timetable.TimetableStorage
-import cz.lastaapps.bakalariextension.api.user.UserLoader
 import cz.lastaapps.bakalariextension.databinding.ActivityReportBinding
 import cz.lastaapps.bakalariextension.tools.BaseActivity
 import cz.lastaapps.bakalariextension.tools.MySettings
@@ -85,15 +81,17 @@ class ReportIssueActivity : BaseActivity() {
 
             //sends data to Firebase
             binding.reportFab.setOnClickListener {
-                getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
-                    .edit()
-                    .putLong(
-                        SP_DATE_KEY,
-                        ZonedDateTime.now(ZoneId.of("UTC")).toInstant().toEpochMilli()
-                    )
-                    .apply()
+
                 lifecycleScope.launch(Dispatchers.Default) {
                     send()
+
+                    getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
+                        .edit()
+                        .putLong(
+                            SP_DATE_KEY,
+                            ZonedDateTime.now(ZoneId.of("UTC")).toInstant().toEpochMilli()
+                        )
+                        .apply()
                 }
             }
 
@@ -129,13 +127,13 @@ class ReportIssueActivity : BaseActivity() {
         val lastSent = getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
             .getLong(SP_DATE_KEY, 0)
 
-        val cal = ZonedDateTime.ofInstant(Instant.ofEpochMilli(lastSent), TimeTools.UTC)
+        val date = ZonedDateTime.ofInstant(Instant.ofEpochMilli(lastSent), TimeTools.UTC)
         val now = TimeTools.now
 
-        if (cal.isAfter(now))
+        if (date.isAfter(now))
             return false
 
-        return cal.toLocalDate() != now.toLocalDate()
+        return date.toLocalDate() != now.toLocalDate()
     }
 
     /**
@@ -174,25 +172,10 @@ class ReportIssueActivity : BaseActivity() {
                     school = if (canSendSchool) LoginData.school else "disabled",
                     town = if (canSendSchool) LoginData.town else "disabled",
                     url = LoginData.url,
-                    bakalariVersion = LoginData.apiVersion,
-                    accountType = UserLoader.loadFromStorage()?.userType
+                    bakalariVersion = LoginData.apiVersion
                 )
 
-                UserLoader.loadFromStorage()?.let {
-                    data.modules = it.getAllFeatures()
-                }
-
-                if (binding.includeTimetable.isChecked)
-                    data.timetables = getTimetables()
-
-                if (binding.includeMarks.isChecked)
-                    data.marks = String.format("%s", MarksStorage.load()) //null safety
-
-                if (binding.includeHomework.isChecked)
-                    data.homeworkList = String.format("%s", HomeworkStorage.load()) //null safety
-
-                if (binding.includeSubject.isChecked)
-                    data.subjects = String.format("%s", SubjectStorage.load()) //null safety
+                addJSONs(data)
 
                 //sends data
                 database.child("report").child(id).setValue(data)
@@ -227,17 +210,56 @@ class ReportIssueActivity : BaseActivity() {
         }
     }
 
-    /**Loads all timetables from storage*/
-    private fun getTimetables(): ArrayList<String>? {
-        val dates = TimetableStorage.getAll()
-        val toReturn = ArrayList<String>()
+    private suspend fun addJSONs(data: Message) {
 
-        //parses all timetable available
-        for (date in dates) {
-            toReturn.add(TimetableStorage.load(date).toString())
+        CurrentUser.database?.jsonStorageRepository?.let { repo ->
+
+            if (binding.includeTimetable.isChecked)
+                data.timetables = repo.getAllTimetables().map { it.toString().removeNames() }
+
+            if (binding.includeHomework.isChecked)
+                data.user = String.format("%s", repo.getUser()) //null safety
+                    .removeNames()
+                    .removeJsonValue("FullName", "full name")
+                    .removeJsonValue("SchoolOrganizationName", "school name")
+
+            if (binding.includeHomework.isChecked)
+                data.homeworkList =
+                    String.format("%s", repo.getHomework()).removeNames() //null safety
+
+            if (binding.includeMarks.isChecked)
+                data.marks = String.format("%s", repo.getMarks()).removeNames() //null safety
+
+            if (binding.includeSubject.isChecked)
+                data.subjects = String.format("%s", repo.getSubjects()).removeNames() //null safety
+
+        }
+    }
+
+    private fun String.removeNames() = removeJsonValue("Name")
+
+    private fun String.removeJsonValue(key: String, toReplace: String = "Jára Cimrman"): String {
+        val toSearch = "\"$key\":\""
+        val temp = "G|M?c1y-"
+        var index = 0
+        var edited = this
+
+        while (true) {
+            index = edited.indexOf(toSearch)
+            if (index < 0) break
+
+            val valueIndex = index + toSearch.length
+            val lastIndex = edited.indexOf('"', valueIndex)
+
+            edited = edited.substring(0, index) + temp + toReplace + edited.substring(
+                lastIndex,
+                edited.length
+            )
         }
 
-        return toReturn
+        edited = edited.replace(temp, toSearch)
+
+        return edited
     }
 
     /**Data structure of the data to be send*/
@@ -255,10 +277,9 @@ class ReportIssueActivity : BaseActivity() {
         var school: String? = "",
         var town: String? = "",
         var url: String? = "",
-        var modules: ArrayList<String>? = null,
         var bakalariVersion: String? = "",
-        var accountType: String? = "",
-        var timetables: ArrayList<String>? = null,
+        var user: String? = null,
+        var timetables: List<String>? = null,
         var marks: String? = null,
         var homeworkList: String? = null,
         var subjects: String? = null

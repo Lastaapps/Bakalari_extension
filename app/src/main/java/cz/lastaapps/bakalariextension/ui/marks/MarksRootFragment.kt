@@ -31,7 +31,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import com.google.android.material.tabs.TabLayoutMediator
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.marks.MarksStorage
 import cz.lastaapps.bakalariextension.databinding.TemplateLoadingRootBinding
 import cz.lastaapps.bakalariextension.tools.lastUpdated
 
@@ -58,11 +57,11 @@ class MarksRootFragment : Fragment() {
         //inflates views
         binding =
             DataBindingUtil.inflate(inflater, R.layout.template_loading_root, container, false)
-        binding.viewmodel = viewModel
+        binding.viewModel = viewModel
         binding.lifecycleOwner = LifecycleOwner { lifecycle }
 
         //sets up ViewPager for oder fragments
-        MarksPager(this@MarksRootFragment).also {
+        MarksPager(this).also {
             binding.pager.adapter = it
 
             TabLayoutMediator(binding.tabs, binding.pager) { tab, position ->
@@ -72,7 +71,7 @@ class MarksRootFragment : Fragment() {
         }
         binding.pager.offscreenPageLimit = 2
 
-        viewModel.executeOrRefresh(lifecycle) { marksUpdated() }
+        viewModel.onDataUpdate(lifecycle) { marksUpdated() }
 
         return binding.root
     }
@@ -86,8 +85,8 @@ class MarksRootFragment : Fragment() {
 
     private fun updateLastUpdated() {
 
-        var text = getString(R.string.marks_failed_to_load)
-        val lastUpdated = MarksStorage.lastUpdated()
+        var text = viewModel.failedText(requireContext())
+        val lastUpdated = viewModel.lastUpdated()
         lastUpdated?.let {
             text = lastUpdated(requireContext(), it)
         }

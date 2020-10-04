@@ -29,10 +29,15 @@ import android.graphics.drawable.Drawable
 import android.util.Log
 import androidx.annotation.*
 import androidx.core.content.ContextCompat
+import androidx.emoji.bundled.BundledEmojiCompatConfig
+import androidx.emoji.text.EmojiCompat
 import com.google.firebase.analytics.FirebaseAnalytics
 import cz.lastaapps.bakalariextension.receivers.UserChangedRefresher
 import cz.lastaapps.bakalariextension.tools.LocaleManager
 import cz.lastaapps.bakalariextension.tools.MySettings
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /**
  * Stores static context
@@ -90,6 +95,8 @@ class App : Application() {
         }
     }
 
+    val coroutineScope = CoroutineScope(Dispatchers.Default)
+
     private val firebaseAnalytics: FirebaseAnalytics
         //firebase init
         get() = FirebaseAnalytics.getInstance(this)
@@ -110,6 +117,12 @@ class App : Application() {
 
         //deleted user data when new user object is loaded
         registerReceiver(UserChangedRefresher(), IntentFilter(MainActivity.USER_CHANGED))
+
+        coroutineScope.launch(Dispatchers.Default) {
+            val config = BundledEmojiCompatConfig(this@App)
+                .setReplaceAll(true)
+            EmojiCompat.init(config)
+        }
     }
 
     override fun attachBaseContext(base: Context) {

@@ -28,16 +28,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.marks.data.Mark
+import cz.lastaapps.bakalariextension.api.marks.data.MarksList
+import cz.lastaapps.bakalariextension.api.marks.data.MarksPair
+import cz.lastaapps.bakalariextension.api.marks.data.subjects
 import cz.lastaapps.bakalariextension.databinding.FragmentMarksPredictorBinding
 import cz.lastaapps.bakalariextension.ui.marks.MarksAdapter
 import cz.lastaapps.bakalariextension.ui.marks.MarksViewModel
 
+private typealias PairAdapter = ArrayAdapter<PairHolder>
 
 class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnClickListener {
     companion object {
@@ -45,10 +51,10 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
     }
 
     //layout
-    lateinit var binding: FragmentMarksPredictorBinding
+    private lateinit var binding: FragmentMarksPredictorBinding
 
     //ViewModel with marks data
-    val viewModel: MarksViewModel by activityViewModels()
+    private val viewModel: MarksViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,7 +67,7 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_marks_predictor, container, false
         )
-        binding.viewmodel = viewModel
+        binding.viewModel = viewModel
         binding.setLifecycleOwner { lifecycle }
 
         binding.list.adapter = MarksAdapter()
@@ -69,35 +75,41 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
         //sets add mark button functionality
         binding.addMark.setOnClickListener(this)
 
-        viewModel.executeOrRefresh(lifecycle) {
+        viewModel.runOrRefresh(lifecycle) {
             Log.i(TAG, "updating based on new marks")
 
+            if (viewModel.pairSelected.value == null && it.isNotEmpty())
+                viewModel.pairSelected.value = it[0]
+
             loadSubjects()
-            checkValidity()
-            loadMarks()
-            loadAddedMarks()
-            updateNewAverage()
+        }
+
+        viewModel.runOrRefresh(viewModel.pairSelected, lifecycle) {
+            //updates fragment views
+            checkValidity(it)
+            loadMarks(it)
+            predictorMarksUpdated()
         }
 
         return binding.root
     }
 
     /**called when predicted marks was changed*/
-    private fun marksUpdated() {
-        loadAddedMarks()
+    private fun predictorMarksUpdated() {
+        loadPredictorMarks()
         updateNewAverage()
     }
 
     /**updates views based on if subject has valid marks*/
-    private fun checkValidity() {
+    private fun checkValidity(pair: MarksPair) {
         //problem message
         val text = when {
             //nor marks for subject given
-            viewModel.subjectMarks.isEmpty() -> {
+            pair.marks.isEmpty() -> {
                 getString(R.string.marks_no_marks)
             }
             //Averages only normal or only point marks together
-            Mark.isMixed(viewModel.subjectMarks) -> {
+            Mark.isMixed(pair.marks) -> {
                 getString(R.string.marks_mixed)
             }
             //everything fine
@@ -124,15 +136,13 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
         val marks = viewModel.requireData()
 
         //subject names or "No marks"
-        val subjectNames = ArrayList<String>()
+        val subjectNames = ArrayList<PairHolder>()
 
         //to stop
-        if (marks.subjects.isNotEmpty()) {
+        if (marks.subjects().isNotEmpty()) {
 
             //converts subjects to subjects names
-            for (subject in marks.subjects) {
-                subjectNames.add(subject.subject.name)
-            }
+            subjectNames.addAll(marks.map { PairHolder(it) })
 
             //enables selection
             binding.subjectSpinner.onItemSelectedListener = this
@@ -142,7 +152,7 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
             //special value - viewModel will return empty lists
             viewModel.predictorSelected.value = -1
 
-            subjectNames.add(getString(R.string.marks_no_marks))
+            subjectNames.add(PairHolder(getString(R.string.marks_no_marks)))
 
             //disables selection
             binding.subjectSpinner.onItemSelectedListener = null
@@ -150,7 +160,7 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
         }
 
         //creates adapter with subject names
-        val adapter = ArrayAdapter(
+        val adapter = PairAdapter(
             binding.subjectSpinner.context,
             android.R.layout.simple_dropdown_item_1line,
             subjectNames
@@ -161,15 +171,13 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
     }
 
     /**loads not predicted marks*/
-    private fun loadMarks() {
-        val marks = viewModel.subjectMarks
-
-        viewModel.average.value = viewModel.selectedSubject.averageText
-        (binding.list.adapter as MarksAdapter).updateMarks(marks)
+    private fun loadMarks(pair: MarksPair) {
+        viewModel.average.value = pair.subject.averageText
+        (binding.list.adapter as MarksAdapter).updateMarks(pair.marks)
     }
 
     /**Loads predicted marks for subject given*/
-    private fun loadAddedMarks() {
+    private fun loadPredictorMarks() {
         val marks = viewModel.predictorMarks
 
         //action done on mark click - edit
@@ -179,7 +187,7 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
                 //replaces marks
                 viewModel.predictorMarks.remove(mark)
                 viewModel.predictorMarks.add(editedMark)
-                marksUpdated()
+                predictorMarksUpdated()
 
             }, mark)
             dialog.show()
@@ -188,7 +196,7 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
         //action performed on delete action
         val onDelete: ((mark: Mark) -> Unit) = {
             viewModel.predictorMarks.remove(it)
-            marksUpdated()
+            predictorMarksUpdated()
         }
 
         //creates new adapter with predictor marks
@@ -199,37 +207,49 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
     private fun updateNewAverage() {
         val list = DataIdList<Mark>()
 
+        val marks = viewModel.pairSelected.value?.marks ?: MarksList()
+
         list.addAll(viewModel.predictorMarks)
-        list.addAll(viewModel.subjectMarks)
+        list.addAll(marks)
 
         //calculates real average
         val newAverage = Mark.calculateAverage(list)
         viewModel.newAverage.value = newAverage
 
-        val marks = viewModel.subjectMarks
         val comparison = viewModel.average.value!!.trim().compareTo(newAverage)
         viewModel.newAverageColor.value =
             when {
                 comparison == 0 || marks.isEmpty() || Mark.isMixed(marks) -> {
-                    ColorStateList.valueOf(resources.getColor(R.color.primary_text_light))
+                    ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.primary_text_light
+                        )
+                    )
                 }
                 (comparison > 0) == Mark.isAllNormal(marks) -> {
-                    ColorStateList.valueOf(resources.getColor(android.R.color.holo_green_light))
+                    ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            android.R.color.holo_green_light
+                        )
+                    )
                 }
                 else -> {
-                    ColorStateList.valueOf(resources.getColor(android.R.color.holo_red_light))
+                    ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            android.R.color.holo_red_light
+                        )
+                    )
                 }
             }
     }
 
     /**On subject selected*/
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+    override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
         viewModel.predictorSelected.value = position
-
-        //updates fragment views
-        checkValidity()
-        loadMarks()
-        marksUpdated()
+        viewModel.pairSelected.value = (parent.adapter as PairAdapter).getItem(position)!!.pair
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {}
@@ -237,7 +257,15 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
     /**on add button clicked*/
     override fun onClick(v: View) {
 
-        val marks = viewModel.subjectMarks
+        val pair = viewModel.pairSelected.value
+
+        if (pair == null) {
+            Toast.makeText(requireContext(), R.string.marks_no_marks, Toast.LENGTH_SHORT).show()
+
+            return
+        }
+
+        val marks = pair.marks
 
         //creates new mark
         val points = Mark.isAllPoints(marks)
@@ -253,9 +281,30 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
 
             //called when valid data inputted into dialog and
             viewModel.predictorMarks.add(it)
-            marksUpdated()
+            predictorMarksUpdated()
 
         }, mark)
         dialog.show()
     }
+}
+
+/** Used in ArrayAdapter - implements custom #toString() method to show the right labels*/
+private class PairHolder {
+
+    val pair: MarksPair?
+    private val customMessage: String
+
+    constructor(pair: MarksPair) {
+        this.pair = pair
+        this.customMessage = ""
+    }
+
+    constructor(message: String) {
+        this.pair = null
+        this.customMessage = message
+    }
+
+    fun hasData() = pair != null
+
+    override fun toString(): String = pair?.subject?.subject?.name ?: customMessage
 }

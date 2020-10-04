@@ -38,9 +38,8 @@ import cz.lastaapps.bakalariextension.api.user.data.User
 import cz.lastaapps.bakalariextension.services.timetablenotification.TTNotifyService
 import cz.lastaapps.bakalariextension.tools.MySettings
 import cz.lastaapps.bakalariextension.ui.UserViewModel
-import cz.lastaapps.bakalariextension.ui.WhatsNew
 import cz.lastaapps.bakalariextension.ui.license.LicenseFragment
-import cz.lastaapps.bakalariextension.ui.login.ActionsLogout
+import cz.lastaapps.bakalariextension.ui.others.WhatsNew
 
 
 /**
@@ -321,7 +320,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     /**restarts activity*/
     private fun restartActivity() {
-        ActionsLogout.logout()
         requireActivity().finish()
         startActivity(Intent(requireActivity(), MainActivity::class.java))
     }

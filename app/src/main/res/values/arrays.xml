@@ -30,6 +30,7 @@
         <item>androidx.appcompat:appcompat</item>
         <item>androidx.constraintlayout:constraintlayout</item>
         <item>androidx.core:core-ktx</item>
+        <item>androidx.emoji:emoji-bundled</item>
         <item>androidx.lifecycle:lifecycle-extensions</item>
         <item>androidx.navigation:navigation-fragment-ktx</item>
         <item>androidx.navigation:navigation-fragment</item>
@@ -39,22 +40,30 @@
         <item>androidx.swiperefreshlayout:swiperefreshlayout</item>
         <item>androidx.vectordrawable:vectordrawable</item>
         <item>androidx.work:work-runtime-ktx</item>
+        <item>androidx.lifecycle:lifecycle-livedata-ktx</item>
         <item>com.google.android.material</item>
-        <item></item>
+        <item />
         <item>com.crashlytics.sdk.android:crashlytics</item>
         <item>com.google.firebase:firebase-analytics</item>
         <item>com.google.firebase:firebase-core</item>
         <item>com.google.firebase:firebase-database</item>
-        <item></item>
+        <item />
+        <item>"androidx.room:room-runtime"</item>
+        <item>"androidx.room:room-compiler"</item>
+        <item>"androidx.room:room-ktx"</item>
+        <item>"androidx.room:room-testing"</item>
+        <item />
         <item>org.jetbrains.kotlinx:kotlinx-coroutines-android</item>
         <item>org.jetbrains.kotlinx:kotlinx-coroutines-core</item>
         <item>org.jetbrains.kotlin:kotlin-stdlib-jdk7</item>
         <item></item>
         <item>com.android.support:multidex</item>
         <item>XmlToJson github.com/smart-fun/XmlToJson</item>
+        <item>Material Date Time Picker com.wdullaer:materialdatetimepicker</item>
         <item>FlexboxLayout github.com/google/flexbox-layout</item>
         <item>Flextools github.com/mrHerintsoaHasina/flextools</item>
         <item>KeyboardVisibilityEvent github.com/yshrsmz/KeyboardVisibilityEvent</item>
+
     </array>
 
     <array name="license_mit">

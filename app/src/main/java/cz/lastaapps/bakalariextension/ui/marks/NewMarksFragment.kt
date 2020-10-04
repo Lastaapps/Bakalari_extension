@@ -31,6 +31,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.findNavController
 import cz.lastaapps.bakalariextension.R
+import cz.lastaapps.bakalariextension.api.marks.data.MarksList
+import cz.lastaapps.bakalariextension.api.marks.data.MarksPairList
 import cz.lastaapps.bakalariextension.databinding.FragmentMarksNewBinding
 
 /**Fragment shown in HomeFragment
@@ -55,7 +57,7 @@ class NewMarksFragment : Fragment() {
 
         //creates view
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_marks_new, container, false)
-        binding.viewmodel = viewModel
+        binding.viewModel = viewModel
         binding.lifecycleOwner = LifecycleOwner { lifecycle }
 
         binding.drawable = R.drawable.module_marks
@@ -75,17 +77,18 @@ class NewMarksFragment : Fragment() {
         }
 
         //starts marks loading if they aren't yet
-        viewModel.executeOrRefresh(lifecycle) { dataChanged() }
+        viewModel.runOrRefresh(viewModel.newMarks, lifecycle) { newMarks ->
+            viewModel.runOrRefresh(viewModel.pairs, lifecycle) { pairs ->
+                dataChanged(pairs, newMarks)
+            }
+        }
 
         return binding.root
     }
 
     /**sets actual content of the fragment*/
-    private fun dataChanged() {
+    private fun dataChanged(pairs: MarksPairList, newMarks: MarksList) {
         Log.i(TAG, "Data changed, updating")
-
-        val marks = viewModel.requireData()
-        val newMarks = marks.getNewMarks()
 
         val text = if (newMarks.isNotEmpty()) {
             binding.showMore.visibility = View.VISIBLE
@@ -105,6 +108,6 @@ class NewMarksFragment : Fragment() {
         binding.text.text = text
 
         //puts views in
-        (binding.list.adapter as MarksAdapter).updateMarksRoot(marks, newMarks)
+        (binding.list.adapter as MarksAdapter).updatePairs(pairs, newMarks)
     }
 }

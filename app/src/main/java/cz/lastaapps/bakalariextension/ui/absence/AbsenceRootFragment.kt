@@ -30,7 +30,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.tabs.TabLayoutMediator
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.absence.AbsenceStorage
 import cz.lastaapps.bakalariextension.api.user.data.User
 import cz.lastaapps.bakalariextension.databinding.TemplateLoadingRootBinding
 import cz.lastaapps.bakalariextension.ui.UserViewModel
@@ -56,17 +55,17 @@ class AbsenceRootFragment : Fragment() {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.template_loading_root, container, false)
         binding.setLifecycleOwner { lifecycle }
-        binding.viewmodel = viewModel
+        binding.viewModel = viewModel
 
         //clears any other old adapter to prevent adapter not 'fresh' exception
         binding.pager.adapter = null
         binding.pager.offscreenPageLimit = 2
 
         //updates data based on user object
-        userViewModel.executeOrRefresh(lifecycle) { setupPager() }
+        userViewModel.runOrRefresh(lifecycle) { setupPager() }
 
         //updates last updated text
-        viewModel.executeOrRefresh(lifecycle) { showLastUpdated() }
+        viewModel.onDataUpdate(lifecycle) { showLastUpdated() }
 
         return binding.root
     }
@@ -92,7 +91,7 @@ class AbsenceRootFragment : Fragment() {
         Log.i(TAG, "Updating last updated")
 
         var text = getString(R.string.absence_failed_to_load)
-        val lastUpdated = AbsenceStorage.lastUpdated()
+        val lastUpdated = viewModel.lastUpdated()
         lastUpdated?.let {
             text = cz.lastaapps.bakalariextension.tools.lastUpdated(requireContext(), it)
         }

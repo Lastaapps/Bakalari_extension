@@ -25,14 +25,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.util.Log
 import cz.lastaapps.bakalariextension.App
-import cz.lastaapps.bakalariextension.api.absence.AbsenceStorage
-import cz.lastaapps.bakalariextension.api.events.EventsLoader
-import cz.lastaapps.bakalariextension.api.events.EventsStorage
-import cz.lastaapps.bakalariextension.api.homework.HomeworkStorage
-import cz.lastaapps.bakalariextension.api.marks.MarksStorage
-import cz.lastaapps.bakalariextension.api.subjects.SubjectStorage
-import cz.lastaapps.bakalariextension.api.timetable.TimetableStorage
-import cz.lastaapps.bakalariextension.api.user.UserStorage
+import cz.lastaapps.bakalariextension.CurrentUser
 import cz.lastaapps.bakalariextension.receivers.BootReceiver
 import cz.lastaapps.bakalariextension.receivers.TimeChangeReceiver
 import cz.lastaapps.bakalariextension.services.timetablenotification.TTNotifyService
@@ -45,7 +38,7 @@ class ActionsLogout {
     companion object {
         private val TAG = ActionsLogout::class.java.simpleName
 
-        fun logout() {
+        suspend fun logout() {
             Log.i(TAG, "Login out")
 
             //stops services
@@ -78,29 +71,10 @@ class ActionsLogout {
             Log.i(TAG, "Logged out")
         }
 
-        fun deleteAPIData() {
-
-            //deletes user data
-            UserStorage.delete()
-
-            //deletes timetables
-            TimetableStorage.deleteAll()
-
-            //deletes marks
-            MarksStorage.delete()
-
-            //deletes homework
-            HomeworkStorage.delete()
-
-            //deletes subjects
-            SubjectStorage.delete()
-
-            //deletes absence
-            AbsenceStorage.delete()
-
-            //deletes events
-            for (type in EventsLoader.EventType.values())
-                EventsStorage.delete(type.url)
+        suspend fun deleteAPIData() {
+            CurrentUser.database?.deleteAll()
+            CurrentUser.releaseDatabase()
+            CurrentUser.deleteDatabase(App.context)
         }
     }
 }

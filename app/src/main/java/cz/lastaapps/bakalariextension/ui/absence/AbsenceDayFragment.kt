@@ -29,7 +29,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.absence.data.AbsenceRoot
+import cz.lastaapps.bakalariextension.api.DataIdList
+import cz.lastaapps.bakalariextension.api.absence.data.AbsenceDay
 import cz.lastaapps.bakalariextension.databinding.FragmentAbsenceDayBinding
 
 class AbsenceDayFragment : Fragment() {
@@ -51,21 +52,21 @@ class AbsenceDayFragment : Fragment() {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_absence_day, container, false)
         binding.setLifecycleOwner { lifecycle }
-        binding.viewmodel = viewModel
+        binding.viewModel = viewModel
         binding.legendTypeString = getString(R.string.absence_date)
 
         binding.list.adapter = AbsenceDayAdapter()
         binding.legend.setOnClickListener { showLegend() }
 
-        viewModel.executeOrRefresh(lifecycle) { updateData(it) }
+        viewModel.runOrRefresh(viewModel.days, lifecycle) { updateData(it) }
 
         return binding.root
     }
 
-    private fun updateData(data: AbsenceRoot) {
+    private fun updateData(days: DataIdList<AbsenceDay>) {
         Log.i(TAG, "Updating data")
 
-        (binding.list.adapter as AbsenceDayAdapter).update(data)
+        (binding.list.adapter as AbsenceDayAdapter).update(days)
     }
 
     private fun showLegend() {

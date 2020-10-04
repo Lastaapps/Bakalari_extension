@@ -30,21 +30,24 @@ import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDeepLinkBuilder
 import cz.lastaapps.bakalariextension.App
 import cz.lastaapps.bakalariextension.MainActivity
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.timetable.TimetableLoader
+import cz.lastaapps.bakalariextension.api.database.APIBase
+import cz.lastaapps.bakalariextension.api.database.APIRepo
 import cz.lastaapps.bakalariextension.api.timetable.data.Week
 import cz.lastaapps.bakalariextension.tools.BaseService
-import cz.lastaapps.bakalariextension.tools.CheckInternet
 import cz.lastaapps.bakalariextension.tools.MySettings
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.tools.TimeTools.Companion.toCzechDate
+import cz.lastaapps.bakalariextension.tools.TimeTools.Companion.toDaySeconds
 import cz.lastaapps.bakalariextension.ui.login.LoginData
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZonedDateTime
@@ -65,7 +68,7 @@ class TTNotifyService : BaseService() {
 
             val intent = Intent(context, TTNotifyService::class.java)
 
-            return if (LoginData.isLoggedIn()
+            return if (LoginData.isLoggedIn()//TODO userID
                 && MySettings(context).isTimetableNotificationEnabled()
             ) {
                 Log.i(TAG, "Starting service")
@@ -97,13 +100,31 @@ class TTNotifyService : BaseService() {
      * into infinite cycle with out this protection*/
     private var startAble = true
 
+    private lateinit var database: APIBase
+
+    private lateinit var weekStateFlow: MutableStateFlow<Week>
+    private val repo by lazy {
+        val date = TimeTools.today.toCzechDate()
+
+        if (!this::database.isInitialized) {
+            database = APIBase.getDatabase("")//TODO user id
+        }
+        database.timetableRepository.getRepositoryForDate(date)
+    }
+    private val weekCollector by lazy { repo.getWeek() }
+
     override fun onCreate() {
         super.onCreate()
         //sets up with default notification
         startForeground(NOTIFICATION_ID, waitingNotificationContent())
+
+        lifecycleScope.launch(Dispatchers.Default) {
+            observeForTimetableUpdate()
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
 
         //sets up with default notification
         startForeground(NOTIFICATION_ID, waitingNotificationContent())
@@ -113,19 +134,22 @@ class TTNotifyService : BaseService() {
 
         //prevents more instances
         if (startAble) {
+
             Log.i(TAG, "Updating notification with data")
-            val scope = CoroutineScope(Dispatchers.Default)
-            scope.launch {
+
+            lifecycleScope.launch(Dispatchers.Default) {
                 startAble = false
                 try {
-                    todo()
+                    if (this@TTNotifyService::weekStateFlow.isInitialized)
+                        update()
+
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
                 startAble = true
             }
         } else {
-            Log.i(TAG, "Already started and generating data")
+            Log.i(TAG, "Already started and processing data")
         }
 
         setEverydaySetup()
@@ -133,41 +157,54 @@ class TTNotifyService : BaseService() {
         return START_NOT_STICKY
     }
 
-    private suspend fun todo() {
-        //today
-        val date = TimeTools.today
-        var week: Week? = null
+    /**Calls other methods when timetable is updated*/
+    private suspend fun observeForTimetableUpdate() {
 
-        withContext(Dispatchers.IO) {
-            Log.i(TAG, "Loading from storage")
-            week = TimetableLoader.loadFromStorage(date)
-        }
+        var nullSeen = false
 
-        //tries to load week from server
-        if (week == null) {
-            if (CheckInternet.canUseInternet() && CheckInternet.check()) {
+        weekCollector.collect {
+            if (it == null && !nullSeen) {
+                nullSeen = true
 
-                withContext(Dispatchers.IO) {
-                    Log.i(TAG, "Local storage failed, loading from server")
-                    week = TimetableLoader.loadFromServer(date)
+                val channel = repo.refreshData().openSubscription()
+                while (true) {
+                    when (channel.receive()) {
+                        APIRepo.LOADING -> continue
+                        APIRepo.FAILED -> {
+                            onDownloadFailed()
+                            break
+                        }
+                        APIRepo.SUCCEEDED -> break
+                    }
                 }
+                channel.cancel()
 
-                if (week == null) {
-                    onDownloadFailed()
-                    return
-                }
-            } else {
+            } else if (it == null && nullSeen) {
                 onDownloadFailed()
-                return
+
+            } else {
+
+                if (!this@TTNotifyService::weekStateFlow.isInitialized)
+                    weekStateFlow = MutableStateFlow(it!!)
+                else
+                    weekStateFlow.value = it!!
+
+                update()
             }
         }
+    }
+
+    /** Called when not null week object was obtained*/
+    private suspend fun update() {
+        val week = weekStateFlow.value
+
         Log.i(TAG, "Week loaded")
 
-        val today = week!!.today()
+        val today = week.today()
         if ((today != null) && !today.isEmpty()) {
 
             //gets selected notification texts
-            val messages = generateNotificationContent(week!!)
+            val messages = generateNotificationContent(week)
             if (messages != null) {
                 val title = messages[0]
                 val subtitle = messages[1]
@@ -189,23 +226,25 @@ class TTNotifyService : BaseService() {
     /**Called when all attempts to download timetable failed*/
     private fun onDownloadFailed() {
 
-        /*MyToast.makeText(
-            this@TTNotifyService,
-            R.string.timetable_failed_to_load,
-            Toast.LENGTH_LONG
-        ).show()*/
-
         Log.i(TAG, "Cannot download timetable")
-        //error messages
-        replaceNotification(
-            generateNotification(
-                "Cannot download timetable",
-                "Please connect to internet"
-            )
-        )
 
-        //stops foreground service
-        stopForeground(false)
+        //during school year shows notification with the problem, during holiday there can be
+        //no timetable to download, so the message would show every day
+        if (ZonedDateTime.now().monthValue !in 7..8) {
+            //error messages
+            replaceNotification(
+                generateNotification(
+                    "Cannot download timetable",
+                    "Please connect to internet"
+                )
+            )
+
+            //stops foreground service
+            stopForeground(false)
+        } else {
+            stopForeground(true) //removes notification
+        }
+
         isServiceRunningInForeground = false
     }
 
@@ -257,7 +296,7 @@ class TTNotifyService : BaseService() {
     private fun generateNotificationContent(week: Week): Array<CharSequence>? {
 
         //now in seconds since midnight
-        val now = TimeTools.timeToSeconds(TimeTools.now.toLocalTime())
+        val now = TimeTools.now.toLocalTime().toDaySeconds()
 
         //strings generated in NotificationContent
         val actions = NotificationContent(
@@ -400,6 +439,6 @@ class TTNotifyService : BaseService() {
     }
 
     override fun onBind(intent: Intent): IBinder? {
-        return null
+        return super.onBind(intent)
     }
 }

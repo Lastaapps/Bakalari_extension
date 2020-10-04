@@ -167,7 +167,7 @@
 
         <View
             android:layout_width="0dp"
-            android:layout_height="@dimen/bottom_fragment_bottom_margin" />
+            android:layout_height="@dimen/bottom_sheet_bottom_margin" />
 
     </LinearLayout>
 </FrameLayout>

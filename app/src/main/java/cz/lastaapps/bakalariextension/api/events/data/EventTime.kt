@@ -21,26 +21,21 @@
 package cz.lastaapps.bakalariextension.api.events.data
 
 import android.os.Parcelable
-import cz.lastaapps.bakalariextension.tools.TimeTools
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import cz.lastaapps.bakalariextension.api.database.APIBase
 import kotlinx.android.parcel.Parcelize
 import java.time.ZonedDateTime
 
 @Parcelize
-class EventTime(
+@Entity(tableName = APIBase.EVENTS_TIMES)
+data class EventTime(
+    @ColumnInfo(name = "data_id", index = true)
+    var eventId: String,
     var wholeDay: Boolean,
-    var startTime: String,
-    var endTime: String
-) : Parcelable {
-
-    val dateStart: ZonedDateTime = parseTime(startTime)
-    val dateEnd: ZonedDateTime = parseTime(endTime)
-
-    //time formats differ not sure why and when, to try catch is used
-    private fun parseTime(time: String): ZonedDateTime {
-        return try {
-            TimeTools.parse(time, TimeTools.COMPLETE_FORMAT)
-        } catch (e: Exception) {
-            TimeTools.parse(time, TimeTools.COMPLETE_SHORTER)
-        }
-    }
-}
+    var start: ZonedDateTime,
+    var end: ZonedDateTime,
+    @PrimaryKey(autoGenerate = true)
+    var autokey: Int? = null
+) : Parcelable

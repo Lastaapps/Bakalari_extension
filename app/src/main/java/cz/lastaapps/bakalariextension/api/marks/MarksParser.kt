@@ -24,8 +24,11 @@ import android.util.Log
 import cz.lastaapps.bakalariextension.api.DataIdList
 import cz.lastaapps.bakalariextension.api.SimpleData
 import cz.lastaapps.bakalariextension.api.marks.data.Mark
-import cz.lastaapps.bakalariextension.api.marks.data.MarksRoot
-import cz.lastaapps.bakalariextension.api.marks.data.SubjectMarks
+import cz.lastaapps.bakalariextension.api.marks.data.MarksList
+import cz.lastaapps.bakalariextension.api.marks.data.MarksSubject
+import cz.lastaapps.bakalariextension.api.marks.data.MarksSubjectMarksLists
+import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.tools.TimeTools.Companion.toCommon
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -35,40 +38,33 @@ class MarksParser {
         private val TAG = MarksParser::class.java.simpleName
 
         /**Parses marks from json, scheme on https://github.com/bakalari-api/bakalari-api-v3*/
-        fun parseJson(root: JSONObject): MarksRoot {
+        fun parseJson(root: JSONObject): MarksSubjectMarksLists {
 
             Log.i(TAG, "Parsing marks json")
 
-            //parses whole json
-            return MarksRoot(
-                ArrayList(
-                    parseAllSubjects(root.getJSONArray("Subjects")).sorted()
-                )
-            )
-        }
+            val subjects = ArrayList<MarksSubject>()
+            val marks = MarksList()
 
-        /**parse array in /Subjects */
-        private fun parseAllSubjects(jsonArray: JSONArray): ArrayList<SubjectMarks> {
-            val list = ArrayList<SubjectMarks>()
+            val jsonArray = root.getJSONArray("Subjects")
 
             for (i in 0 until jsonArray.length()) {
                 val json = jsonArray.getJSONObject(i)
 
-                val item = SubjectMarks(
-                    parseMarks(json.getJSONArray("Marks")),
+                val item = MarksSubject(
                     parseSubject(json.getJSONObject("Subject")),
                     json.getString("AverageText"),
                     json.getString("TemporaryMark"),
                     json.getString("SubjectNote"),
                     json.getString("TemporaryMarkNote"),
                     json.getBoolean("PointsOnly"),
-                    json.getBoolean("MarkPredictionEnabled")
+                    json.getBoolean("MarkPredictionEnabled"),
                 )
+                subjects.add(item)
 
-                list.add(item)
+                marks.addAll(parseMarks(json.getJSONArray("Marks")))
             }
 
-            return list
+            return MarksSubjectMarksLists(subjects, marks)
         }
 
         /**parse array in /Subjects/Marks */
@@ -79,8 +75,10 @@ class MarksParser {
                 val json = jsonArray.getJSONObject(i)
 
                 val item = Mark(
-                    safeJson(json, "MarkDate"),
-                    safeJson(json, "EditDate"),
+                    TimeTools.parse(safeJson(json, "MarkDate"), TimeTools.COMPLETE_FORMAT)
+                        .toCommon(),
+                    TimeTools.parse(safeJson(json, "EditDate"), TimeTools.COMPLETE_FORMAT)
+                        .toCommon(),
                     safeJson(json, "Caption"),
                     safeJson(json, "Theme"),
                     safeJson(json, "MarkText"),

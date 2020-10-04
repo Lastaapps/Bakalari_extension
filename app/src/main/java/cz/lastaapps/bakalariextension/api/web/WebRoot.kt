@@ -20,10 +20,9 @@
 
 package cz.lastaapps.bakalariextension.api.web
 
-import cz.lastaapps.bakalariextension.api.web.data.Dashboard
 import cz.lastaapps.bakalariextension.api.web.data.WebModule
 
 class WebRoot(
     var webModules: List<WebModule>,
-    var dashboard: Dashboard,
+    var dashboard: WebModule,
 )

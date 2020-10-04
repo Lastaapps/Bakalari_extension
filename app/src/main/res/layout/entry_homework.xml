@@ -56,7 +56,6 @@
             android:layout_margin="@dimen/margin_basic"
             android:max="100"
             android:progress="@{mgr.progress}"
-            app:layout_constraintBottom_toTopOf="@id/barrier_progress_bottom"
             app:layout_constraintEnd_toStartOf="@+id/days_left"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/subject" />
@@ -68,7 +67,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{mgr.daysLeftText()}"
-            app:layout_constraintBottom_toTopOf="@id/barrier_progress_bottom"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/subject"
             tools:text="69 days" />

@@ -26,9 +26,12 @@ import cz.lastaapps.bakalariextension.api.SimpleData
 import cz.lastaapps.bakalariextension.api.attachment.data.Attachment
 import cz.lastaapps.bakalariextension.api.homework.data.Homework
 import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
+import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.tools.TimeTools.Companion.toCommon
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import java.time.ZonedDateTime
 
 class HomeworkParser {
     companion object {
@@ -52,11 +55,11 @@ class HomeworkParser {
 
                 val item = Homework(
                     safeJson(json, "ID"),
-                    safeJson(json, "DateAward"),
-                    safeJson(json, "DateControl"),
-                    safeJson(json, "DateDone"),
-                    safeJson(json, "DateStart"),
-                    safeJson(json, "DateEnd"),
+                    parseDate(safeJson(json, "DateAward"))!!,
+                    parseDate(safeJson(json, "DateControl")),
+                    parseDate(safeJson(json, "DateDone"))!!,
+                    parseDate(safeJson(json, "DateStart"))!!,
+                    parseDate(safeJson(json, "DateEnd"))!!,
                     safeJson(json, "Content"),
                     safeJson(json, "Notice"),
                     json.getBoolean("Done"),
@@ -75,6 +78,12 @@ class HomeworkParser {
 
             return list
         }
+
+        private fun parseDate(date: String): ZonedDateTime? {
+            if (date == "") return null
+            return TimeTools.parse(date, TimeTools.COMPLETE_FORMAT).toCommon()
+        }
+
 
         /**parse data in /Homework/(Class, Group, Subject, Teacher) */
         private fun parseSimple(json: JSONObject): SimpleData {

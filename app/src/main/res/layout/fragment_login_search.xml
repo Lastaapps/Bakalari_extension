@@ -45,11 +45,11 @@
             android:id="@+id/search"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="@string/login_choose_town"
             android:layout_margin="@dimen/margin_basic"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/label" />
+            app:layout_constraintTop_toBottomOf="@+id/label"
+            tools:hint="@string/login_search_select_town_hint" />
 
         <cz.lastaapps.bakalariextension.ui.views.BetterRecyclerView
             android:id="@+id/list"

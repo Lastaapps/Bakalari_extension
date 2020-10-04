@@ -22,9 +22,8 @@ package cz.lastaapps.bakalariextension.api.absence.data
 
 import cz.lastaapps.bakalariextension.api.DataIdList
 
-class AbsenceRoot(
+data class AbsenceRoot(
     val percentageThreshold: Double,
     val days: DataIdList<AbsenceDay>,
     val subjects: DataIdList<AbsenceSubject>
-) {
-}
+)

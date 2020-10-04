@@ -22,15 +22,18 @@ package cz.lastaapps.bakalariextension.ui.login
 
 import android.app.Dialog
 import android.os.Bundle
+import android.os.SystemClock
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.navArgs
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.databinding.FragmentLoginSearchBinding
 import cz.lastaapps.bakalariextension.tools.searchNeutralText
@@ -38,26 +41,17 @@ import cz.lastaapps.bakalariextension.ui.BasicRecyclerAdapter
 import cz.lastaapps.bakalariextension.ui.login.LoginFragment.School
 import cz.lastaapps.bakalariextension.ui.login.LoginFragment.Town
 
+
 /**Searches through the town or school list*/
 class SearchFragment : DialogFragment() {
 
     companion object {
         private val TAG = SearchFragment::class.java.simpleName
-        private const val IS_TOWN_EXTRA = "IS_TOWN"
-
-        fun initialize(isTown: Boolean): SearchFragment {
-            val args = Bundle().apply {
-                putBoolean(IS_TOWN_EXTRA, isTown)
-            }
-
-            return SearchFragment().also {
-                it.arguments = args
-            }
-        }
     }
 
     private val viewModel: LoginViewModel by activityViewModels()
     private lateinit var binding: FragmentLoginSearchBinding
+    private val args: SearchFragmentArgs by navArgs()
 
     /**If towns or schools should be shown*/
     private var isTown: Boolean = false
@@ -74,13 +68,21 @@ class SearchFragment : DialogFragment() {
         )
         binding.setLifecycleOwner { lifecycle }
 
-        isTown = requireArguments().getBoolean(IS_TOWN_EXTRA)
+        isTown = args.isTown
 
         binding.label.text = getString(
             if (isTown) {
                 R.string.login_search_select_town
             } else {
                 R.string.login_search_select_school
+            }
+        )
+
+        binding.search.completionHint = getString(
+            if (isTown) {
+                R.string.login_search_select_town_hint
+            } else {
+                R.string.login_search_select_school_hint
             }
         )
 
@@ -107,6 +109,33 @@ class SearchFragment : DialogFragment() {
 
         updateData()
 
+        //shows keyboard without clicking the EditText by simulating user click
+        binding.search.also {
+            it.requestFocus()
+            it.postDelayed({
+                it.dispatchTouchEvent(
+                    MotionEvent.obtain(
+                        SystemClock.uptimeMillis(),
+                        SystemClock.uptimeMillis(),
+                        MotionEvent.ACTION_DOWN,
+                        0f,
+                        0f,
+                        0
+                    )
+                );
+                it.dispatchTouchEvent(
+                    MotionEvent.obtain(
+                        SystemClock.uptimeMillis(),
+                        SystemClock.uptimeMillis(),
+                        MotionEvent.ACTION_UP,
+                        0f,
+                        0f,
+                        0
+                    )
+                )
+            }, 200)
+        }
+
         return AlertDialog.Builder(requireContext())
             .setCancelable(true)
             .setView(binding.root)
@@ -131,7 +160,7 @@ class SearchFragment : DialogFragment() {
         //filters data
         for (any in dataList) {
             val name = any.toString()
-            if (searchNeutralText(name).contains(searchNeutralText(filter)))
+            if (name.searchNeutralText().contains(filter.searchNeutralText()))
                 stringList.add(any)
         }
 

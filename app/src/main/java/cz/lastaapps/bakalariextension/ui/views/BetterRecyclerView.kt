@@ -21,6 +21,7 @@
 package cz.lastaapps.bakalariextension.ui.views
 
 import android.content.Context
+import android.os.Build
 import android.util.AttributeSet
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
@@ -45,10 +46,9 @@ class BetterRecyclerView : RecyclerView {
 
     private fun setup() {
         setItemViewCacheSize(20)
-        //TODO target 30
-        //if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-        isDrawingCacheEnabled = true
-        drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
-        //}
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            isDrawingCacheEnabled = true
+            drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
+        }
     }
 }

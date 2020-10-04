@@ -393,7 +393,7 @@ class ConnMgr {
         }
 
         /**@return url in format example www.example.com */
-        private fun getRawUrl(url: String = LoginData.url): String {
+        fun getRawUrl(url: String = LoginData.url): String {
             return url
                 .replace("/next/login.aspx", "")
                 .replace("/login.aspx", "")

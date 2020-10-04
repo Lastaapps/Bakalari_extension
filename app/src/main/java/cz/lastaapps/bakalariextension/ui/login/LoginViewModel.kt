@@ -148,8 +148,6 @@ class LoginViewModel : ViewModel() {
                         .toJson()!!
                     val list = ArrayList<School>()
 
-                    //println(root)
-
                     val array = root
                         .getJSONObject("municipality")
                         .getJSONObject("schools")

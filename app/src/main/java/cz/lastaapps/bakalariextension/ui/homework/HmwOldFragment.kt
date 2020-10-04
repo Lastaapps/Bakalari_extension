@@ -30,9 +30,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import cz.lastaapps.bakalariextension.R
-import cz.lastaapps.bakalariextension.api.homework.data.Homework
 import cz.lastaapps.bakalariextension.api.homework.data.HomeworkList
 import cz.lastaapps.bakalariextension.databinding.TemplateLoadingListBinding
+import cz.lastaapps.bakalariextension.ui.EmptyAdapter
 
 /**shows old homework list - done and outdated homework*/
 class HmwOldFragment : Fragment() {
@@ -43,71 +43,46 @@ class HmwOldFragment : Fragment() {
     lateinit var binding: TemplateLoadingListBinding
     val viewModel: HmwViewModel by activityViewModels()
 
-    /**observes for marks update*/
-    private var homeworkObserver = { _: HomeworkList ->
-        Log.i(TAG, "Homework list updated")
-        updateHomework()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        //observers for homework list update
-        viewModel.homework.observe({ lifecycle }, homeworkObserver)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
-        //inflates only layout once
-        if (!this::binding.isInitialized) {
-            Log.i(TAG, "Creating view")
+        Log.i(TAG, "Creating view")
 
-            binding = DataBindingUtil.inflate(
-                inflater,
-                R.layout.template_loading_list,
-                container,
-                false
-            )
-            binding.apply {
-                setLifecycleOwner { lifecycle }
-                viewmodel = viewModel
+        binding = DataBindingUtil.inflate(
+            inflater,
+            R.layout.template_loading_list,
+            container,
+            false
+        )
+        binding.setLifecycleOwner { lifecycle }
+        binding.viewModel = viewModel
 
-                list.adapter = HmwAdapter(requireActivity() as AppCompatActivity)
-            }
+        binding.list.adapter = EmptyAdapter(HmwAdapter(requireActivity() as AppCompatActivity))
 
-            //shows homework list
-            updateHomework()
-        } else {
-            Log.i(TAG, "Already created")
-        }
+        //shows homework list
+        viewModel.runOrRefresh(viewModel.old, lifecycle) { updateHomework(it) }
 
         return binding.root
     }
 
     /**shows homework list*/
-    private fun updateHomework() {
+    private fun updateHomework(data: HomeworkList) {
+        EmptyAdapter.getAdapter<HmwAdapter>(binding.list).update(data)
 
-        val oldHomework = Homework.getOld(viewModel.homework.value!!)
-
-        binding.apply {
-            (list.adapter as HmwAdapter).update(oldHomework)
-
-            scrollToHomework(oldHomework)
-        }
+        scrollToHomework(data)
     }
 
     /**If there was request to show specific homework, scrolls there*/
-    private fun scrollToHomework(homeworkList: HomeworkList) {
+    private fun scrollToHomework(list: HomeworkList) {
 
         viewModel.selectedHomeworkId.value?.let {
 
             Log.i(TAG, "Scrolling to specific homework")
 
-            val index = homeworkList.getIndexById(it)
+            val index = list.getIndexById(it)
             if (index >= 0) {
                 viewModel.selectedHomeworkId.value = null
                 binding.list.scrollToPosition(index)

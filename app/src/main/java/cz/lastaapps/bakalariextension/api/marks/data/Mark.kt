@@ -21,21 +21,34 @@
 package cz.lastaapps.bakalariextension.api.marks.data
 
 import android.util.Log
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Ignore
 import cz.lastaapps.bakalariextension.api.DataId
 import cz.lastaapps.bakalariextension.api.DataIdList
+import cz.lastaapps.bakalariextension.api.database.APIBase
 import cz.lastaapps.bakalariextension.tools.MySettings
 import cz.lastaapps.bakalariextension.tools.TimeTools
+import cz.lastaapps.bakalariextension.tools.TimeTools.Companion.toMidnight
 import kotlinx.android.parcel.Parcelize
 import java.time.Duration
 import java.time.ZonedDateTime
 import java.util.*
 import kotlin.math.roundToInt
 
+typealias MarksList = DataIdList<Mark>
+typealias MarksSubjectList = ArrayList<MarksSubject>
+typealias MarksSubjectMarksLists = Pair<MarksSubjectList, MarksList>
+typealias MarksPairList = ArrayList<MarksPair>
+
 /**Represents mark, contains all mark info*/
 @Parcelize
-class Mark(
-    var markDate: String,
-    var editDate: String,
+@Entity(tableName = APIBase.MARKS, inheritSuperIndices = true)
+data class Mark(
+    @ColumnInfo(index = true)
+    var date: ZonedDateTime,
+    @ColumnInfo(index = true)
+    var editDate: ZonedDateTime,
     /**What was test about*/
     var caption: String,
     var theme: String,
@@ -52,6 +65,7 @@ class Mark(
     var isPoints: Boolean,
     var calculatedMarkText: String,
     var classRankText: String,
+    @Ignore
     override var id: String,
     /**Does not contain number of points*/
     var pointsText: String,
@@ -63,39 +77,19 @@ class Mark(
         if (isNew != other.isNew) {
             return if (isNew) 1 else -1
         }
-        return -1 * toDate().compareTo(other.toDate())
-    }
-
-    /**Cashes parsed date*/
-    private var _toDate: ZonedDateTime? = null
-
-    /**@return parsed date of mark*/
-    fun toDate(): ZonedDateTime {
-        if (_toDate == null)
-            _toDate = TimeTools.parse(markDate, TimeTools.COMPLETE_FORMAT)
-        return _toDate!!
+        return -1 * date.compareTo(other.date)
     }
 
     /**@return marks date in format dd.MM.yyyy*/
     fun simpleDate(): String {
-        return TimeTools.format(toDate(), "dd.MM.yyyy")
-    }
-
-    /**Cashes parsed edited date*/
-    private var _toEditDate: ZonedDateTime? = null
-
-    /**@return parsed date of mark*/
-    fun toEditDate(): ZonedDateTime {
-        if (_toEditDate == null)
-            _toEditDate = TimeTools.parse(editDate, TimeTools.COMPLETE_FORMAT)
-        return _toEditDate!!
+        return TimeTools.format(date, "d.M.yyyy")
     }
 
     /**@return If mark should be shown as new*/
     fun showAsNew(): Boolean {
         val duration = Duration.between(
-            TimeTools.toMidnight(toEditDate()),
-            TimeTools.toMidnight(TimeTools.now)
+            editDate.toMidnight(),
+            TimeTools.now.toMidnight()
         )
         return duration.toDays() < MySettings.withAppContext().getNewMarkDuration()
     }
@@ -107,8 +101,8 @@ class Mark(
         /**generates mark with some default data*/
         val default: Mark
             get() = Mark(
-                TimeTools.format(TimeTools.now, TimeTools.COMPLETE_FORMAT),
-                TimeTools.format(TimeTools.now.minusYears(10), TimeTools.COMPLETE_FORMAT),
+                TimeTools.now,
+                TimeTools.now.minusYears(10),
                 "Really hard test",
                 "Super hard theme",
                 "1",

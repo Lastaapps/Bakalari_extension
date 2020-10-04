@@ -24,16 +24,16 @@
     <data>
 
         <variable
-            name="viewmodel"
+            name="viewModel"
             type="cz.lastaapps.bakalariextension.ui.marks.MarksViewModel" />
     </data>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:onRefreshListener="@{() -> viewmodel.onRefresh(true)}"
-        app:refreshing="@{viewmodel.isRefreshing()}">
+        android:layout_height="match_parent"
+        app:onRefreshListener="@{() -> viewModel.loadData()}"
+        app:refreshing="@{viewModel.isLoading()}">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -68,7 +68,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
-                        android:selectedItemPosition="@={viewmodel.predictorSelected}"
+                        android:selectedItemPosition="@={viewModel.predictorSelected}"
                         app:layout_constraintEnd_toStartOf="@+id/add_mark"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -79,7 +79,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
-                        android:text="@{@string/marks_average + `: ` + viewmodel.average + ` → `}"
+                        android:text="@{@string/marks_average + `: ` + viewModel.average + ` → `}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/subject_spinner" />
@@ -90,8 +90,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
-                        android:text="@{viewmodel.newAverage}"
-                        android:textColor="@{viewmodel.newAverageColor}"
+                        android:text="@{viewModel.newAverage}"
+                        android:textColor="@{viewModel.newAverageColor}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/average"
                         app:layout_constraintTop_toBottomOf="@+id/subject_spinner" />

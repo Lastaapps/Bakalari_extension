@@ -26,9 +26,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cz.lastaapps.bakalariextension.tools.CheckInternet
 import cz.lastaapps.bakalariextension.tools.MySettings
-import cz.lastaapps.bakalariextension.ui.WhatsNew
 import cz.lastaapps.bakalariextension.ui.license.LicenseFragment
 import cz.lastaapps.bakalariextension.ui.login.LoginData
+import cz.lastaapps.bakalariextension.ui.others.WhatsNew
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -107,7 +107,7 @@ class MainViewModel : ViewModel() {
             Log.i(TAG, "Not logged in yet")
 
             //check if there is internet connection, so if user can log in
-            if (!CheckInternet.check()) {
+            if (!CheckInternet.check(mustBeGoogle = true)) {
 
                 Log.i(TAG, "Cannot connect to internet")
 

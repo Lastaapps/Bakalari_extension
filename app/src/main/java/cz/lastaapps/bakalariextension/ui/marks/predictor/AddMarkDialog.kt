@@ -77,7 +77,7 @@ class AddMarkDialog {
 
 
                     val newMark = Mark(
-                        mark.markDate,
+                        mark.date,
                         mark.editDate,
                         mark.caption,
                         mark.theme,

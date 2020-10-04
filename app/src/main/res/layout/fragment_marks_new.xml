@@ -28,7 +28,7 @@
         <import type="android.view.View" />
 
         <variable
-            name="viewmodel"
+            name="viewModel"
             type="cz.lastaapps.bakalariextension.ui.RefreshableViewModel" />
 
         <variable
@@ -50,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:visibility="@{viewmodel.data == null ? View.VISIBLE : View.GONE}"
+            android:visibility="@{!viewModel.hasData ? View.VISIBLE : View.GONE}"
             tools:visibility="visible" />
 
         <TextView
@@ -59,8 +59,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@{viewmodel.failedText(context)}"
-            android:visibility="@{viewmodel.failed ? View.VISIBLE : View.GONE}"
+            android:text="@{viewModel.failedText(context)}"
+            android:visibility="@{!viewModel.hasData &amp;&amp; !viewModel.isLoading() ? View.VISIBLE : View.GONE}"
             tools:visibility="visible" />
 
 
@@ -69,7 +69,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:visibility="@{viewmodel.data != null ? View.VISIBLE : View.GONE}"
+            android:visibility="@{viewModel.hasData ? View.VISIBLE : View.GONE}"
             tools:visibility="visible">
 
             <ImageView
@@ -81,7 +81,7 @@
                 android:src="@{context.getDrawable(drawable)}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:srcCompat="@drawable/module_homework" />
+                tools:srcCompat="@drawable/module_marks" />
 
             <TextView
                 android:id="@+id/text"
@@ -116,8 +116,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/icon"
                 app:srcCompat="@drawable/reload"
-                android:onClick="@{() -> viewmodel.onRefresh(true)}"
-                android:visibility="@{!viewmodel.isRefreshing() ? View.VISIBLE : View.INVISIBLE}" />
+                android:onClick="@{() -> viewModel.loadData()}"
+                android:visibility="@{!viewModel.isLoading() ? View.VISIBLE : View.INVISIBLE}" />
 
             <ProgressBar
                 android:layout_width="0dp"
@@ -126,7 +126,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/refresh"
                 app:layout_constraintEnd_toEndOf="@+id/refresh"
                 app:layout_constraintTop_toTopOf="@+id/refresh"
-                android:visibility="@{viewmodel.isRefreshing() ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{viewModel.isLoading() ? View.VISIBLE : View.GONE}" />
 
             <cz.lastaapps.bakalariextension.ui.views.BetterRecyclerView
                 android:id="@+id/list"

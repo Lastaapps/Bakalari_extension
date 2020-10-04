@@ -21,142 +21,196 @@
 package cz.lastaapps.bakalariextension.ui
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.annotation.MainThread
+import androidx.annotation.UiThread
+import androidx.annotation.WorkerThread
+import androidx.lifecycle.*
 import cz.lastaapps.bakalariextension.App
+import cz.lastaapps.bakalariextension.api.database.APIRepo
+import cz.lastaapps.bakalariextension.api.subjects.SubjectRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/**Parent for ViewModels with loading and update of data from API*/
-abstract class RefreshableViewModel<E>(val TAG: String) : ViewModel() {
-
-    /**holds main data set*/
-    val data = MutableLiveData<E>()
+abstract class RefreshableViewModel<R : APIRepo<*>>(val TAG: String, protected val repo: R) :
+    ViewModel() {
 
     /**if data loading failed*/
-    val failed = MutableLiveData(false)
+    val hasData: LiveData<Boolean> = repo.hasData.asLiveData()
 
     /**if data are refreshing right now*/
-    val isRefreshing = MutableLiveData(false)
+    val isLoading = repo.isLoading.asLiveData()
+
+    /**if loading failed or if there is no data and no attempt to get them is in process*/
+    val isFailed = {
+        val liveData = MutableLiveData(false)
+        val observer = Observer<Boolean>() {
+            liveData.value = hasData.value == false && isLoading.value == false
+        }
+
+        viewModelScope.launch(Dispatchers.Main) {
+            hasData.observeForever(observer)
+            isLoading.observeForever(observer)
+        }
+
+        liveData
+    }.invoke()
+
+    /**Updates when data updated - meant for components not requiring data change,
+     * update is enough, like lastUpdatedText texts*/
+    val dataUpdated = repo.dataUpdated.asFlow().asLiveData()
 
     /**if there is no data*/
     val isEmpty = MutableLiveData(false)
 
-    /**reloads data*/
-    fun onRefresh(force: Boolean = false) {
-
-        if (isRefreshing.value == true)
-            return
-
-        isRefreshing.value = true
-
+    fun loadData() {
         viewModelScope.launch(Dispatchers.Default) {
 
-            Log.i(TAG, "Refreshing")
+            val channel = repo.refreshData()
 
-            var loaded: E?
-            if (force) {
-                loaded = loadServer().also {
-                    if (it == null) Log.e(TAG, "Forced server loading failed!")
-                }
+            channel.consumeEach {
+                withContext(Dispatchers.Main) {
 
-            } else {
-
-                loaded = loadStorage().also {
-                    if (it == null) Log.i(TAG, "Storage loading failed!")
-                }
-
-                if (shouldReload() || loaded == null) {
-                    loaded?.let {
-                        withContext(Dispatchers.Main) {
-                            updateData(it)
+                    when (it) {
+                        SubjectRepository.LOADING -> {
+                        }
+                        SubjectRepository.FAILED -> {
+                            showToast()
+                        }
+                        SubjectRepository.SUCCEEDED -> {
                         }
                     }
-
-                    loaded = loadServer().also {
-                        if (it == null) Log.i(TAG, "Server loading failed!")
-                    }
                 }
             }
-
-            withContext(Dispatchers.Main) {
-
-                updateData(loaded)
-
-                //hides refreshing icon
-                isRefreshing.value = false
-
-                //shows Toast if there is no data to show on if user requested server update and it failed
-                if (data.value == null || (force && loaded == null))
-                    showToast()
-            }
         }
     }
 
-    /** updates views with data given*/
-    private fun updateData(newData: E?) {
+    fun lastUpdated() = repo.lastUpdated()
 
-        Log.i(TAG, "Updating data to show in UI")
-
-        failed.value = false
-
-        //when download failed
-        if (newData == null) {
-
-            if (data.value == null) {
-                failed.value = true
-                isEmpty.value = false
+    /**Observes the list in the LiveData given and updates #isEmpty() field based on List.isEmpty()*/
+    protected fun addEmptyObserver(data: LiveData<List<*>>) {
+        data.observeForever {
+            it?.let {
+                isEmpty.value = it.isEmpty()
             }
-        } else {
-            isEmpty.value = isEmpty(newData)
-
-            //updates marks with new value
-            data.value = newData
         }
     }
-
-    /**@return data loaded from server*/
-    protected abstract suspend fun loadServer(): E?
-
-    /**@return data loaded from local storage*/
-    protected abstract suspend fun loadStorage(): E?
-
-    /**@return if data should be reloaded from server*/
-    protected abstract fun shouldReload(): Boolean
-
-    /**@return if data set is empty*/
-    protected open fun isEmpty(data: E): Boolean = false
 
     /**Shows Toast with text from #failedText()*/
+    @UiThread
     protected open fun showToast() {
         val context = App.context
         Toast.makeText(context, failedText(context), Toast.LENGTH_SHORT).show()
-    }
-
-    /**removes need to use !! in code all the time*/
-    fun requireData(): E {
-        return data.value!!
     }
 
     /**
      * Observes for data change and executes action on data update
      * if data != null executes right now
      * if data == null calls onRefresh(false)
+     * then filters null values
      */
-    fun executeOrRefresh(lifecycle: Lifecycle, todo: ((E) -> Unit)) {
-        data.observe({ lifecycle }) { todo(it) }
-        if (data.value == null && !failed.value!!/*runs auto update once only*/)
-            onRefresh()
+    fun <T> runOrRefresh(liveData: LiveData<T>, lifecycle: Lifecycle, todo: ((T) -> Unit)) {
+        liveData.observe({ lifecycle }) { todo(it) }
+        if (hasData.value != true || repo.shouldReload()/*runs auto update once only*/)
+            loadData()
     }
 
-    /**@return text to be shown in UI when data set is empty*/
-    open fun emptyText(context: Context): String = ""
+    /**Called when new data was inserted into database,
+     * they don't have to be updated yet in viewmodel's LiveData
+     * @see #runOnRefresh(liveData, lifecycle, (T) -> Unit*/
+    fun onDataUpdate(lifecycle: Lifecycle, todo: ((Boolean) -> Unit)) =
+        runOrRefresh(dataUpdated, lifecycle, todo)
 
-    /**@return text to be shown in UI when no data can be obtained*/
-    open fun failedText(context: Context): String = ""
+    /**Called when new data was inserted into database,
+     * they don't have to be updated yet in viewmodel's LiveData
+     * @see #runOnRefresh(liveData, lifecycle, (T) -> Unit
+     * runs the code block using coroutines on the main thread*/
+    fun onDataUpdate(
+        lifecycle: Lifecycle,
+        scope: CoroutineScope,
+        todo: suspend ((Boolean) -> Unit)
+    ) = runOrRefresh(dataUpdated, lifecycle, scope, todo)
+
+
+    /**@see #runOnRefresh(liveData, lifecycle, (T) -> Unit
+     * runs the code block using coroutines on the main thread*/
+    fun <T> runOrRefresh(
+        liveData: LiveData<T>,
+        lifecycle: Lifecycle,
+        scope: CoroutineScope,
+        todo: suspend ((T) -> Unit)
+    ) = runOrRefresh(liveData, lifecycle) { scope.launch(Dispatchers.Main) { todo(it) } }
+
+    fun <E> waitAsync(
+        scope: CoroutineScope,
+        @WorkerThread getData: suspend () -> E,
+        @MainThread todo: suspend (E) -> Unit,
+    ) {
+        scope.launch(Dispatchers.Default) {
+            val data: E = getData()
+            withContext(Dispatchers.Main) { todo(data) }
+        }
+    }
+
+    protected fun <E> Flow<E>.asLiveData(): LiveData<E> =
+        this.asLiveData(viewModelScope.coroutineContext)
+
+    protected fun <T> ConflatedBroadcastChannel<T>.asLiveData(): LiveData<T> {
+        val liveData = MutableLiveData(value)
+
+        viewModelScope.launch(Dispatchers.Default) {
+            this@asLiveData.consumeEach {
+                liveData.postValue(it)
+            }
+        }
+
+        return liveData
+    }
+
+    open fun emptyText(context: Context) = ""
+
+    open fun failedText(context: Context) = ""
+}
+
+abstract class RefreshableDataViewModel<E, R : APIRepo<*>>(TAG: String, repo: R) :
+    RefreshableViewModel<R>(TAG, repo) {
+
+    abstract val data: LiveData<E>
+
+    /**removes need to use !! in code all the time*/
+    fun requireData(): E = data.value!!
+
+    /**@see #runOnRefresh(LiveData, Lifecycle, (T) -> Unit
+     * uses data as LiveData argument*/
+    fun runOrRefresh(lifecycle: Lifecycle, todo: ((E) -> Unit)) =
+        runOrRefresh(data, lifecycle, todo)
+
+    /**@see #runOnRefresh(LiveData, Lifecycle, (T) -> Unit
+     * uses data as LiveData argument
+     * runs the code block using coroutines on the main thread*/
+    fun runOrRefresh(
+        lifecycle: Lifecycle,
+        scope: CoroutineScope,
+        todo: suspend ((E) -> Unit)
+    ) = runOrRefresh(data, lifecycle, scope, todo)
+}
+
+abstract class RefreshableListViewModel<E : List<*>, R : APIRepo<*>>(TAG: String, repo: R) :
+    RefreshableDataViewModel<E, R>(TAG, repo) {
+
+    protected fun addEmptyObserver() {
+        viewModelScope.launch(Dispatchers.Main) {
+            data.observeForever {
+                it?.let {
+                    isEmpty.value = it.isEmpty()
+                }
+            }
+        }
+    }
 }

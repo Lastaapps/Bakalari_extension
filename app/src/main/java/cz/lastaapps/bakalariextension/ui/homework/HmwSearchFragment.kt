@@ -26,6 +26,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -46,6 +47,13 @@ class HmwSearchFragment : Fragment() {
     lateinit var binding: FragmentHomeworkSearchBinding
     val viewModel: HmwViewModel by activityViewModels()
 
+    /**clears search text on back press*/
+    private val clearText: OnBackPressedCallback = object : OnBackPressedCallback(false) {
+        override fun handleOnBackPressed() {
+            clearText()
+        }
+    }
+
     //subject objects list
     private lateinit var subjectList: ArrayList<SimpleData>
 
@@ -65,7 +73,7 @@ class HmwSearchFragment : Fragment() {
             false
         )
         //init
-        binding.viewmodel = viewModel
+        binding.viewModel = viewModel
         binding.setLifecycleOwner { lifecycle }
 
         binding.subjectSpinner.adapter = ArrayAdapter(
@@ -102,11 +110,22 @@ class HmwSearchFragment : Fragment() {
             }
         }
 
+        viewModel.onDataUpdate(lifecycle) { dataUpdated() }
+
         //shows list if there is any data
-        viewModel.executeOrRefresh(lifecycle) { dataUpdated() }
+        viewModel.runOrRefresh(viewModel.homework, lifecycle) { dataChanged() }
 
         viewModel.searchText.observe({ lifecycle }) { updateList() }
         viewModel.subjectIndex.observe({ lifecycle }) { updateList() }
+
+        //clears filters on bck press
+        requireActivity().onBackPressedDispatcher.addCallback({ lifecycle }, clearText)
+        val changeListener = { _: Any ->
+            clearText.isEnabled =
+                viewModel.searchText.value != "" && viewModel.searchingUsingSpinner.value == false
+        }
+        viewModel.searchText.observe({ lifecycle }, changeListener)
+        viewModel.searchingUsingSpinner.observe({ lifecycle }, changeListener)
 
         return binding.root
     }
@@ -145,13 +164,21 @@ class HmwSearchFragment : Fragment() {
         }
     }
 
+    /**clears search text on back press*/
+    fun clearText() {
+        viewModel.searchText.value = ""
+    }
+
     /**On homework list updated*/
     private fun dataUpdated() {
+        updateList()
+    }
+
+    private fun dataChanged() {
         Log.i(TAG, "Updating with new homework list")
 
         initSubjects()
         spinnerAdapterSetup()
-        updateList()
     }
 
     /**updates view with filtered homework list*/
@@ -160,13 +187,13 @@ class HmwSearchFragment : Fragment() {
 
         //filters by subject
         getSubjectId()?.let {
-            filtered = Homework.getBySubject(filtered, it)
+            filtered = Homework.filterBySubject(filtered, it)
         }
 
         //filters by text
         val text = viewModel.searchText.value
         if (text != null && text != "") {
-            filtered = Homework.getByText(filtered, text)
+            filtered = Homework.filterByText(filtered, text)
         }
 
         //sets up view with adapter or updates current adapter

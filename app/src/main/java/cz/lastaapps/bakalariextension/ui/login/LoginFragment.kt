@@ -24,24 +24,28 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import cz.lastaapps.bakalariextension.MainActivity
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.databinding.FragmentLoginBinding
 import cz.lastaapps.bakalariextension.send.ReportIssueActivity
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.Collator
 import java.util.*
+
 
 /**
  * User interface for login to server
@@ -102,9 +106,17 @@ class LoginFragment : Fragment() {
         binding.username.setText(LoginData.username)
 
         //when enter pressed in password field
-        binding.password.setOnEditorActionListener { _, _, _ ->
-            login()
-            true
+        binding.password.setOnEditorActionListener { _, actionId, event ->
+
+            //ACTION_DOWN needs to be consumed for ACTION_UP to occur
+            if (actionId == EditorInfo.IME_NULL && event.action == KeyEvent.ACTION_DOWN) return@setOnEditorActionListener true
+
+            if (actionId == EditorInfo.IME_ACTION_DONE || (actionId == EditorInfo.IME_NULL && event.action == KeyEvent.ACTION_UP)) {
+                login()
+                return@setOnEditorActionListener true
+            }
+
+            false
         }
 
         binding.login.setOnClickListener {
@@ -117,10 +129,10 @@ class LoginFragment : Fragment() {
         }
 
         binding.townSelected.setOnClickListener {
-            SearchFragment.initialize(true).show(childFragmentManager, TAG + "_town")
+            findNavController().navigate(LoginFragmentDirections.actionLoginSearch(true))
         }
         binding.schoolSelected.setOnClickListener {
-            SearchFragment.initialize(false).show(childFragmentManager, TAG + "_school")
+            findNavController().navigate(LoginFragmentDirections.actionLoginSearch(false))
         }
 
         //opens bug report
@@ -186,6 +198,7 @@ class LoginFragment : Fragment() {
         }
     }
 
+    /**executed when school selection changes*/
     private fun onSchoolSelected(school: School) {
         binding.url.setText(school.url)
     }
@@ -198,8 +211,7 @@ class LoginFragment : Fragment() {
             .setMessage(R.string.login_connecting)
             .create()
 
-        val scope = CoroutineScope(Dispatchers.Default)
-        scope.launch {
+        lifecycleScope.launch(Dispatchers.Default) {
 
             val loginToServer = binding.run {
                 LoginToServer(

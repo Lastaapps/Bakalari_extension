@@ -27,7 +27,7 @@
         <import type="android.view.View" />
 
         <variable
-            name="viewmodel"
+            name="viewModel"
             type="cz.lastaapps.bakalariextension.ui.RefreshableViewModel" />
 
         <variable
@@ -49,7 +49,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_gravity="center"
-            android:visibility="@{viewmodel.data == null &amp;&amp; viewmodel.isRefreshing() ? View.VISIBLE : View.INVISIBLE}"
+            android:visibility="@{!viewModel.hasData &amp;&amp; viewModel.isLoading() ? View.VISIBLE : View.INVISIBLE}"
             app:layout_constraintBottom_toBottomOf="@+id/content_layout"
             app:layout_constraintEnd_toEndOf="@+id/content_layout"
             app:layout_constraintStart_toStartOf="@+id/content_layout"
@@ -62,7 +62,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:visibility="@{!(viewmodel.data == null &amp;&amp; viewmodel.isRefreshing()) ? View.VISIBLE : View.INVISIBLE}"
+            android:visibility="@{!(!viewModel.hasData &amp;&amp; viewModel.isLoading()) ? View.VISIBLE : View.INVISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -87,7 +87,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_basic"
-                android:visibility="@{viewmodel.data != null ? View.VISIBLE : View.GONE}"
+                android:visibility="@{viewModel.hasData ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/refresh"
                 app:layout_constraintStart_toEndOf="@+id/icon"
@@ -101,8 +101,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/margin_basic"
-                android:text="@{viewmodel.failedText(context)}"
-                android:visibility="@{viewmodel.failed &amp;&amp; !viewmodel.isRefreshing() ? View.VISIBLE : View.GONE}"
+                android:text="@{viewModel.failedText(context)}"
+                android:visibility="@{!viewModel.hasData &amp;&amp; !viewModel.isLoading() ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/refresh"
                 app:layout_constraintStart_toEndOf="@+id/icon"
@@ -114,8 +114,8 @@
                 style="@style/AppTheme.SmallImageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="@{() -> viewmodel.onRefresh(true)}"
-                android:visibility="@{!viewmodel.isRefreshing() ? View.VISIBLE : View.INVISIBLE}"
+                android:onClick="@{() -> viewModel.loadData()}"
+                android:visibility="@{!viewModel.isLoading() ? View.VISIBLE : View.INVISIBLE}"
                 app:layout_constraintBottom_toBottomOf="@+id/icon"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/icon"
@@ -124,7 +124,7 @@
             <ProgressBar
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:visibility="@{viewmodel.isRefreshing() ? View.VISIBLE : View.GONE}"
+                android:visibility="@{viewModel.isLoading() ? View.VISIBLE : View.GONE}"
                 app:layout_constraintBottom_toBottomOf="@+id/refresh"
                 app:layout_constraintEnd_toEndOf="@+id/refresh"
                 app:layout_constraintStart_toStartOf="@id/refresh"

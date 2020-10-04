@@ -32,6 +32,7 @@ import androidx.navigation.findNavController
 import cz.lastaapps.bakalariextension.MobileNavigationDirections
 import cz.lastaapps.bakalariextension.R
 import cz.lastaapps.bakalariextension.api.subjects.data.Subject
+import cz.lastaapps.bakalariextension.api.subjects.data.SubjectList
 import cz.lastaapps.bakalariextension.databinding.TemplateLoadingListBinding
 import cz.lastaapps.bakalariextension.ui.BasicRecyclerAdapter
 
@@ -57,7 +58,7 @@ class SubjectListFragment : Fragment() {
         //views setup
         binding =
             DataBindingUtil.inflate(inflater, R.layout.template_loading_list, container, false)
-        binding.viewmodel = viewModel
+        binding.viewModel = viewModel
         binding.setLifecycleOwner { lifecycle }
 
         //sets up RecycleView
@@ -69,24 +70,16 @@ class SubjectListFragment : Fragment() {
         }
 
         //loads data
-        viewModel.subjects.observe({ lifecycle }) {
-            showSubjects()
-        }
-        if (viewModel.subjects.value != null) {
-            showSubjects()
-        } else {
-            viewModel.onRefresh()
-        }
+        viewModel.runOrRefresh(viewModel.subjects, lifecycle) { showSubjects(it) }
 
         return binding.root
     }
 
     /**updates adapter with new teacher data*/
-    private fun showSubjects() {
+    private fun showSubjects(subjects: SubjectList) {
         Log.i(TAG, "Data updated")
 
-        (binding.list.adapter as SubjectAdapter)
-            .update(viewModel.subjects.value!!)
+        (binding.list.adapter as SubjectAdapter).update(subjects)
     }
 
     /**shows subject info*/
