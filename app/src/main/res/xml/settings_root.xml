@@ -1,0 +1,64 @@
+<!--
+  ~    Copyright 2021, Petr Laštovička as Lasta apps, All rights reserved
+  ~
+  ~     This file is part of Bakalari extension.
+  ~
+  ~     Bakalari extension is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Bakalari extension is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory>
+        <Preference
+            app:key="@string/sett_key_general_settings"
+            app:title="@string/sett_general" />
+
+        <Preference
+            app:key="@string/sett_key_user_settings"
+            app:title="@string/sett_user" />
+
+        <Preference
+            app:key="@string/sett_key_data_collection_settings"
+            app:title="@string/sett_data_collection" />
+    </PreferenceCategory>
+
+    <PreferenceCategory>
+        <cz.lastaapps.bakalari.app.ui.settings.preferences.UserPreference
+            app:key="@string/sett_key_timetable_notification"
+            app:title="@string/sett_timetable_notification_title" />
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/sett_others">
+        <Preference
+            app:icon="@drawable/sett_reset"
+            app:key="@string/sett_key_reset"
+            app:summary="@string/sett_reset_summary"
+            app:title="@string/sett_reset" />
+        <Preference
+            app:icon="@drawable/sett_whats_new"
+            app:key="@string/sett_key_show_whats_new"
+            app:title="@string/sett_show_whats_new" />
+        <Preference
+            app:icon="@drawable/sett_about"
+            app:key="@string/sett_key_about"
+            app:title="@string/sett_about" />
+        <Preference
+            app:icon="@drawable/sett_license"
+            app:key="@string/sett_key_license"
+            app:title="@string/sett_license" />
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

@@ -1,5 +1,5 @@
 /*
- *    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+ *    Copyright 2021, Petr Laštovička as Lasta apps, All rights reserved
  *
  *     This file is part of Bakalari extension.
  *
@@ -21,25 +21,79 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.4.10'
+    ext {
+        //TODO test parcelize
+        kotlin_version = '1.4.10'
+        //kotlin_version = '1.4.30'
+
+        desugar_jdk_libs_version = '1.1.5'
+
+        firebase_bom_version = '26.7.0'
+
+        andoridx_startup_runtime_version = '1.0.0'
+        andoridx_annotation_version = '1.1.0'
+        andoridx_appcompat_version = '1.2.0'
+        andoridx_constraintlayout_version = '2.0.4'
+        andoridx_core_version = '1.5.0-beta03'
+        andoridx_datastore_version = '1.0.0-alpha08'
+        andoridx_emoji_version = '1.1.0'
+        andoridx_fragment_version = '1.3.0'
+        andoridx_lifecycle_version = '2.3.0'
+        andoridx_navigation_version = '2.3.4'
+        andoridx_preference_version = '1.1.1'
+        andoridx_swiperefreshlayout_version = '1.1.0'
+        andoridx_tracing_version = '1.0.0'
+        androidx_vector_version = '1.1.0'
+        andoridx_work_version = '2.5.0'
+        //androidx_room_version = '2.3.0-beta02'
+        andoridx_room_version = '2.3.0-alpha04'
+
+        google_material_version = '1.3.0'
+        google_core_version = '1.8.1'
+
+        kotlinx_coroutines_version = '1.4.3-native-mt'
+
+        flexbox_version = '2.0.1'
+        flextools_version = '1.0.1'
+        keyboardvisibilityevent_version = '3.0.0-RC3'
+        materialdatetimepicker_version = '4.2.3'
+
+
+        //testing
+        junit_version = '4.13.2'
+        arch_testing_version = '2.1.0'
+        androidx_test_core_version = '1.3.0'
+        androidx_junit_version = '1.1.2'
+        espresso_core_version = '3.3.0'
+        robolectric_version = '4.5.1'
+        google_truth_version = '1.1.2'
+
+        //root class paths
+        gradle_version = '7.0.0-alpha09'
+        google_services_version = '4.3.4'
+        firebase_gradle_crashlytics_version = '2.4.1'
+        oss_license_plugin_version = '0.10.2'
+    }
     repositories {
         google()
+        mavenCentral()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0-rc03'
+        classpath "com.android.tools.build:gradle:$gradle_version"
+        classpath "com.google.gms:google-services:$google_services_version"
+        classpath "com.google.firebase:firebase-crashlytics-gradle:$firebase_gradle_crashlytics_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.google.gms:google-services:4.3.3'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.3.0'
-        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.3.0"
+        classpath "com.google.android.gms:oss-licenses-plugin:$oss_license_plugin_version"
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$andoridx_navigation_version"
     }
 }
 
 allprojects {
     repositories {
         google()
+        mavenCentral()
         jcenter()
-        maven { url "https://jitpack.io" }
     }
 
     gradle.projectsEvaluated {

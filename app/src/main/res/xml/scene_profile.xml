@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~    Copyright 2021, Petr Laštovička as Lasta apps, All rights reserved
+  ~
+  ~     This file is part of Bakalari extension.
+  ~
+  ~     Bakalari extension is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Bakalari extension is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <Transition
+        motion:constraintSetEnd="@+id/end"
+        motion:constraintSetStart="@id/start"
+        motion:duration="1000">
+        <KeyFrameSet>
+            <KeyAttribute
+                motion:motionTarget="@+id/add"
+                motion:framePosition="50"
+                android:rotation="180" />
+            <KeyAttribute
+                motion:motionTarget="@+id/add"
+                motion:framePosition="25"
+                android:rotation="90" />
+            <KeyAttribute
+                motion:motionTarget="@+id/add"
+                motion:framePosition="75"
+                android:rotation="270" />
+        </KeyFrameSet>
+    </Transition>
+
+    <ConstraintSet android:id="@+id/start"></ConstraintSet>
+
+    <ConstraintSet android:id="@+id/end">
+        <Constraint
+            android:layout_height="32dp"
+            android:layout_marginBottom="16dp"
+            motion:layout_constraintBottom_toBottomOf="@+id/edit"
+            android:layout_width="32dp"
+            motion:layout_constraintEnd_toStartOf="@+id/edit"
+            android:id="@+id/add"
+            android:layout_marginEnd="16dp"
+            android:rotation="360" />
+    </ConstraintSet>
+</MotionScene>

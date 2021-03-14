@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~    Copyright 2021, Petr Laštovička as Lasta apps, All rights reserved
+  ~
+  ~     This file is part of Bakalari extension.
+  ~
+  ~     Bakalari extension is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Bakalari extension is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_root"
+    app:startDestination="@id/nav_loading">
+
+    <dialog
+        android:id="@+id/nav_attachment_downloaded"
+        android:name="cz.lastaapps.bakalari.app.ui.user.attachment.AttachmentDownloadedDialog">
+        <argument
+            android:name="fileName"
+            app:argType="string" />
+        <argument
+            android:name="intent"
+            app:argType="android.content.Intent" />
+        <argument
+            android:name="uri"
+            app:argType="android.net.Uri" />
+    </dialog>
+    <dialog
+        android:id="@+id/nav_license"
+        android:name="cz.lastaapps.bakalari.app.ui.others.LicenseDialog"
+        android:label="@string/menu_license"
+        tools:layout="@layout/fragment_license" />
+    <dialog
+        android:id="@+id/nav_about"
+        android:name="cz.lastaapps.bakalari.app.ui.others.AboutDialog"
+        android:label="@string/menu_about"
+        tools:layout="@layout/fragment_about" />
+    <fragment
+        android:id="@+id/nav_loading"
+        android:name="cz.lastaapps.bakalari.app.ui.start.loading.LoadingFragment"
+        android:label=""
+        tools:layout="@layout/fragment_loading">
+        <action
+            android:id="@+id/action_loading_to_profiles"
+            app:destination="@id/nav_graph_profiles" />
+        <action
+            android:id="@+id/action_loading_to_user"
+            app:destination="@id/nav_graph_user" />
+        <action
+            android:id="@+id/action_loading_failed"
+            app:destination="@id/nav_loading_failed" />
+        <action
+            android:id="@+id/action_loading_to_version_update"
+            app:destination="@id/versionUpdatedFragment" />
+        <argument
+            android:name="uuid"
+            app:argType="java.util.UUID"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_nav_loading_to_nav_graph_settings"
+            app:destination="@id/nav_graph_settings" />
+        <argument
+            android:name="autoLaunch"
+            app:argType="boolean"
+            android:defaultValue="true" />
+    </fragment>
+    <dialog
+        android:id="@+id/nav_loading_failed"
+        android:name="cz.lastaapps.bakalari.app.ui.start.loading.LoadingFailedDialog" />
+
+
+    <action
+        android:id="@+id/action_attachment_downloaded"
+        app:destination="@id/nav_attachment_downloaded" />
+    <action
+        android:id="@+id/action_show_license"
+        app:destination="@id/nav_license" />
+    <action
+        android:id="@+id/action_show_about"
+        app:destination="@id/nav_about" />
+    <action
+        android:id="@+id/action_open_settings"
+        app:destination="@id/nav_settings" />
+
+
+    <navigation
+        android:id="@+id/nav_graph_user"
+        app:startDestination="@id/nav_home">
+        <argument
+            android:name="uuid"
+            app:argType="java.util.UUID"
+            app:nullable="true" />
+        <fragment
+            android:id="@+id/nav_home"
+            android:name="cz.lastaapps.bakalari.app.ui.user.home.HomeFragment"
+            android:label="@string/menu_home"
+            tools:layout="@layout/fragment_home">
+            <argument
+                android:name="uuid"
+                app:argType="java.util.UUID"
+                app:nullable="true" />
+        </fragment>
+        <dialog
+            android:id="@+id/nav_attachment_file_exists"
+            android:name="cz.lastaapps.bakalari.app.ui.user.attachment.AttachmentFileExistsDialog">
+            <argument
+                android:name="attachment"
+                app:argType="cz.lastaapps.bakalari.app.api.attachment.data.Attachment" />
+            <argument
+                android:name="fileName"
+                app:argType="string" />
+        </dialog>
+        <dialog
+            android:id="@+id/nav_attachment"
+            android:name="cz.lastaapps.bakalari.app.ui.user.attachment.AttachmentDialog">
+            <action
+                android:id="@+id/action_nav_attachment_to_attachmentFileExistsDialog"
+                app:destination="@id/nav_attachment_file_exists" />
+            <argument
+                android:name="attachments"
+                app:argType="cz.lastaapps.bakalari.app.api.attachment.data.Attachment[]" />
+        </dialog>
+        <dialog
+            android:id="@+id/nav_teacher_info"
+            android:name="cz.lastaapps.bakalari.app.ui.user.subjects.TeacherInfoDialog"
+            tools:layout="@layout/fragment_teacher_info">
+            <argument
+                android:name="teacher_id"
+                app:argType="string" />
+        </dialog>
+        <fragment
+            android:id="@+id/nav_subject_info"
+            android:name="cz.lastaapps.bakalari.app.ui.user.subjects.SubjectInfoFragment"
+            android:label="@string/menu_subject_info"
+            tools:layout="@layout/fragment_subject_info">
+            <argument
+                android:name="subject_id"
+                app:argType="string" />
+        </fragment>
+        <fragment
+            android:id="@+id/nav_subject_list"
+            android:name="cz.lastaapps.bakalari.app.ui.user.subjects.SubjectListFragment"
+            android:label="@string/menu_subject_list"
+            tools:layout="@layout/template_loading_list" />
+        <fragment
+            android:id="@+id/nav_teacher_list"
+            android:name="cz.lastaapps.bakalari.app.ui.user.subjects.TeacherListFragment"
+            android:label="@string/menu_teacher_list"
+            tools:layout="@layout/template_loading_list" />
+        <fragment
+            android:id="@+id/nav_events"
+            android:name="cz.lastaapps.bakalari.app.ui.user.events.EventsRootFragment"
+            android:label="@string/menu_events"
+            tools:layout="@layout/fragment_events" />
+        <fragment
+            android:id="@+id/nav_absence"
+            android:name="cz.lastaapps.bakalari.app.ui.user.absence.AbsenceRootFragment"
+            android:label="@string/menu_absence"
+            tools:layout="@layout/template_loading_root" />
+        <fragment
+            android:id="@+id/nav_homework"
+            android:name="cz.lastaapps.bakalari.app.ui.user.homework.HmwRootFragment"
+            android:label="@string/menu_homework"
+            tools:layout="@layout/template_loading_root" />
+        <fragment
+            android:id="@+id/nav_marks"
+            android:name="cz.lastaapps.bakalari.app.ui.user.marks.MarksRootFragment"
+            android:label="@string/menu_marks"
+            tools:layout="@layout/template_loading_root" />
+        <fragment
+            android:id="@+id/nav_timetable"
+            android:name="cz.lastaapps.bakalari.app.ui.user.timetable.normal.TimetableFragment"
+            android:label="@string/menu_timetable"
+            tools:layout="@layout/fragment_timetable" />
+
+
+        <action
+            android:id="@+id/action_teacher_info"
+            app:destination="@id/nav_teacher_info" />
+        <action
+            android:id="@+id/action_subject_info"
+            app:destination="@id/nav_subject_info" />
+        <action
+            android:id="@+id/action_attachment"
+            app:destination="@id/nav_attachment" />
+        <action
+            android:id="@+id/action_global_nav_graph_settings"
+            app:destination="@id/nav_graph_settings" />
+
+    </navigation>
+
+
+    <navigation
+        android:id="@+id/nav_graph_settings"
+        app:startDestination="@id/nav_settings_root">
+        <fragment
+            android:id="@+id/nav_settings_root"
+            android:name="cz.lastaapps.bakalari.app.ui.settings.SettingsRootFragment"
+            android:label="@string/menu_settings">
+            <action
+                android:id="@+id/action_nav_settings_root_to_settingsUserFragment"
+                app:destination="@id/nav_settings_user" />
+            <action
+                android:id="@+id/action_nav_settings_root_to_settingsDataCollectionFragment"
+                app:destination="@id/nav_settings_data_collection" />
+            <action
+                android:id="@+id/action_nav_settings_root_to_nav_settings_general"
+                app:destination="@id/nav_settings_general" />
+        </fragment>
+        <fragment
+            android:id="@+id/nav_settings_general"
+            android:name="cz.lastaapps.bakalari.app.ui.settings.SettingsGeneralFragment"
+            android:label="@string/sett_general" />
+        <fragment
+            android:id="@+id/nav_settings_user"
+            android:name="cz.lastaapps.bakalari.app.ui.settings.SettingsUserFragment"
+            android:label="@string/sett_user">
+            <argument
+                android:name="uuid"
+                app:argType="java.util.UUID"
+                app:nullable="true"
+                android:defaultValue="@null" />
+        </fragment>
+        <fragment
+            android:id="@+id/nav_settings_data_collection"
+            android:name="cz.lastaapps.bakalari.app.ui.settings.SettingsDataCollectionFragment"
+            android:label="@string/sett_data_collection" />
+    </navigation>
+    <navigation
+        android:id="@+id/nav_graph_profiles"
+        app:startDestination="@id/nav_profiles">
+
+        <fragment
+            android:id="@+id/nav_profiles"
+            android:name="cz.lastaapps.bakalari.app.ui.start.profiles.ProfilesFragment"
+            android:label="ProfilesFragment"
+            tools:layout="@layout/fragment_profile">
+            <action
+                android:id="@+id/action_login"
+                app:destination="@id/nav_graph_login">
+                <argument
+                    android:name="account"
+                    app:argType="cz.lastaapps.bakalari.authentication.data.BakalariAccount"
+                    app:nullable="true" />
+            </action>
+            <action
+                android:id="@+id/action_confirm_delete_account"
+                app:destination="@id/nav_confirm_delete_account" />
+            <action
+                android:id="@+id/action_profiles_to_launch_help"
+                app:destination="@id/nav_launch_default_help" />
+        </fragment>
+        <dialog
+            android:id="@+id/nav_confirm_delete_account"
+            android:name="cz.lastaapps.bakalari.app.ui.start.profiles.ConfirmDeleteDialog">
+            <argument
+                android:name="account"
+                app:argType="cz.lastaapps.bakalari.authentication.data.BakalariAccount" />
+        </dialog>
+
+        <include app:graph="@navigation/login_navigation" />
+
+        <dialog
+            android:id="@+id/nav_launch_default_help"
+            android:name="cz.lastaapps.bakalari.app.ui.start.profiles.LaunchDefaultHelpDialog" />
+        <action
+            android:id="@+id/action_global_nav_graph_settings2"
+            app:destination="@id/nav_graph_settings" />
+    </navigation>
+    <action
+        android:id="@+id/action_graph_settings"
+        app:destination="@id/nav_graph_settings" />
+    <fragment
+        android:id="@+id/versionUpdatedFragment"
+        android:name="cz.lastaapps.bakalari.app.ui.start.version.VersionUpdatedFragment"
+        android:label="VersionUpdatedFragment" />
+    <action
+        android:id="@+id/action_loading"
+        app:destination="@id/nav_loading"
+        app:launchSingleTop="true"
+        app:popUpTo="@id/nav_loading" />
+
+</navigation>

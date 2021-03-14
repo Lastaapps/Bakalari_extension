@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~    Copyright 2021, Petr Laštovička as Lasta apps, All rights reserved
+  ~
+  ~     This file is part of Bakalari extension.
+  ~
+  ~     Bakalari extension is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Bakalari extension is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory
+        app:title="@string/sett_timetable"
+        app:key="@string/sett_key_timetable_category">
+
+        <ListPreference
+            app:key="@string/sett_key_timetable_day"
+            app:title="@string/sett_timetable_day_title"
+            app:entries="@array/sett_timetable_day_entries"
+            app:entryValues="@array/sett_timetable_day"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:key="@string/sett_key_timetable_preview"
+            app:title="@string/sett_timetable_preview"
+            app:entries="@array/sett_timetable_preview_entries"
+            app:entryValues="@array/sett_timetable_preview"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/sett_marks"
+        app:key="@string/sett_key_marks_category">
+
+        <ListPreference
+            app:title="@string/sett_marks_new_mark"
+            app:key="@string/sett_key_marks_new_mark"
+            app:defaultValue="@string/sett_marks_new_mark_default"
+            app:entries="@array/sett_marks_new_mark_entries"
+            app:entryValues="@array/sett_marks_new_mark"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/sett_events_category"
+        app:key="@string/sett_key_events_category">
+
+        <ListPreference
+            app:key="@string/sett_key_events_show_for_day"
+            app:title="@string/sett_events_show_for_day"
+            app:entries="@array/sett_events_show_for_day_entries"
+            app:entryValues="@array/sett_events_show_for_day"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+</PreferenceScreen>

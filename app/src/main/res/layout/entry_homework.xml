@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~    Copyright 2021, Petr Laštovička as Lasta apps, All rights reserved
   ~
   ~     This file is part of Bakalari extension.
   ~
@@ -29,7 +29,7 @@
 
         <variable
             name="mgr"
-            type="cz.lastaapps.bakalariextension.ui.homework.HmwEntryManager" />
+            type="cz.lastaapps.bakalari.app.ui.user.homework.HmwEntryManager" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

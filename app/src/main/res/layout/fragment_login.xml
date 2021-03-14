@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~    Copyright 2021, Petr Laštovička as Lasta apps, All rights reserved
   ~
   ~     This file is part of Bakalari extension.
   ~
@@ -27,35 +27,39 @@
         <import type="android.view.View" />
 
         <variable
-            name="viewmodel"
-            type="cz.lastaapps.bakalariextension.ui.login.LoginViewModel" />
+            name="vm"
+            type="cz.lastaapps.bakalari.app.ui.start.login.LoginFragmentViewModel" />
     </data>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:context=".app.ui.start.login.LoginFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/activity_horizontal_margin"
-            tools:context=".ui.login.LoginFragment">
+            android:padding="@dimen/activity_horizontal_margin">
 
-            <androidx.constraintlayout.widget.Group
-                android:id="@+id/town_group"
+            <ImageButton
+                android:id="@+id/open_settings"
+                style="@style/AppTheme.SmallImageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:constraint_referenced_ids="town_label,town_selected"
+                android:layout_marginEnd="@dimen/login_margin_sides"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/nav_settings" />
 
-                android:visibility="@{viewmodel.selectedTown != null ? View.VISIBLE : View.GONE}" />
-
-            <androidx.constraintlayout.widget.Group
-                android:id="@+id/school_group"
+            <ImageButton
+                android:id="@+id/report_issue"
+                style="@style/AppTheme.SmallImageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:constraint_referenced_ids="school_label,school_selected"
-                android:visibility="@{viewmodel.selectedSchool != null ? View.VISIBLE : View.GONE}" />
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/open_settings"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/bug_report" />
 
             <TextView
                 android:id="@+id/label"
@@ -64,11 +68,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/login_margin_sides"
 
-                android:layout_marginTop="@dimen/login_margin_top"
+                android:layout_marginTop="64dp"
                 android:layout_marginEnd="@dimen/login_margin_sides"
 
                 android:fontFamily="sans-serif-light"
-                android:text="@string/login_activity_title"
+                android:text="@string/login_title"
                 android:textAlignment="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -79,27 +83,46 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/login_margin_sides"
-                android:layout_marginTop="@dimen/login_margin_between"
+                android:layout_marginTop="16dp"
 
                 android:layout_marginEnd="@dimen/login_margin_sides"
                 android:text="@string/login_loading_towns"
-                android:visibility="@{viewmodel.selectedTown == null ? View.VISIBLE : View.GONE}"
+                android:visibility="@{vm.selectedTown == null ? View.VISIBLE : View.GONE}"
 
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/label" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/town_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="@{vm.selectedTown != null ? View.VISIBLE : View.GONE}"
+
+                app:constraint_referenced_ids="town_label,town_selected"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="16dp" />
 
             <TextView
                 android:id="@+id/town_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/login_margin_sides"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="@dimen/login_margin_sides"
                 android:text="@string/login_choose_town"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/loading_towns" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/school_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="@{vm.selectedSchool != null ? View.VISIBLE : View.GONE}"
+                app:constraint_referenced_ids="school_label,school_selected"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="16dp" />
 
             <TextView
                 android:id="@+id/town_selected"
@@ -108,7 +131,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/login_margin_sides"
                 android:layout_marginEnd="@dimen/login_margin_sides"
-                android:text="@{viewmodel.selectedTown.name ?? @string/login_no_town_selected}"
+                android:text="@{vm.selectedTown.name ?? @string/login_no_town_selected}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/town_label"
@@ -133,130 +156,222 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/login_margin_sides"
                 android:layout_marginEnd="@dimen/login_margin_sides"
-                android:text="@{viewmodel.selectedSchool.name ?? @string/login_no_school_selected}"
+                android:text="@{vm.selectedSchool.name ?? @string/login_no_school_selected}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/school_label"
                 tools:text="School" />
 
-            <LinearLayout
-                android:id="@+id/town_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="@{vm.profilePictureUri == null ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toBottomOf="@id/profile_picture"
+                app:layout_constraintEnd_toEndOf="@id/profile_picture"
+                app:layout_constraintStart_toStartOf="@id/profile_picture"
+                app:layout_constraintTop_toTopOf="@id/profile_picture"
+                app:srcCompat="@drawable/none_profile_picture" />
+
+            <ImageButton
+                android:id="@+id/profile_picture"
+                android:layout_width="48dp"
+                android:layout_height="0dp"
                 android:layout_marginStart="@dimen/login_margin_sides"
-
-                android:layout_marginTop="@dimen/login_margin_between"
-                android:layout_marginEnd="@dimen/login_margin_sides"
-
-                android:orientation="vertical"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:visibility="@{vm.profilePictureUri != null ? View.VISIBLE : View.VISIBLE}"
+                app:imageUri="@{vm.profilePictureUri}"
+                app:layout_constraintBottom_toBottomOf="@+id/profile_name_layout"
+                app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/loading_towns"
-                tools:visibility="gone">
+                app:layout_constraintTop_toTopOf="@+id/profile_name_layout"
+                tools:srcCompat="@tools:sample/avatars" />
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/school_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/login_margin_sides"
-
-                android:layout_marginTop="@dimen/login_margin_between"
-                android:layout_marginEnd="@dimen/login_margin_sides"
-
-                android:orientation="vertical"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/town_container"
-                tools:visibility="gone">
-
-            </LinearLayout>
-
-            <EditText
-                android:id="@+id/url"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/profile_name_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/login_margin_sides"
-                android:layout_marginTop="16dp"
+                app:errorEnabled="true"
+                app:errorText="@{vm.errorProfileName}"
 
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="@dimen/login_margin_sides"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/profile_picture"
+                app:layout_constraintTop_toBottomOf="@+id/school_selected">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/profile_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@={vm.textProfileName}"
+
+                    android:hint="@string/login_prompt_profile"
+                    android:inputType="textPersonName" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/url_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:errorEnabled="true"
+                app:errorText="@{vm.errorUrl}"
+
+                android:layout_marginStart="@dimen/login_margin_sides"
                 android:layout_marginEnd="@dimen/login_margin_sides"
                 android:hint="@string/login_prompt_url"
-                android:inputType="textUri"
-                android:selectAllOnFocus="true"
                 app:layout_constraintEnd_toEndOf="parent"
+
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/profile_name_layout">
 
-                app:layout_constraintTop_toBottomOf="@+id/school_selected"
-                tools:text="https://bakalari.skola.cz/" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/url"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@={vm.textUrl}"
 
-            <EditText
-                android:id="@+id/username"
+                    android:hint="@string/login_prompt_url"
+                    android:inputType="textUri"
+                    android:selectAllOnFocus="true" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/username_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/login_margin_sides"
-                android:layout_marginTop="@dimen/login_margin_between"
-                android:layout_marginEnd="@dimen/login_margin_sides"
+                app:errorEnabled="true"
+                app:errorText="@{vm.errorUsername}"
 
-                android:hint="@string/login_prompt_username"
-                android:inputType="text"
-                android:selectAllOnFocus="true"
+                android:layout_marginStart="@dimen/login_margin_sides"
+                android:layout_marginEnd="@dimen/login_margin_sides"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/url"
+                app:layout_constraintTop_toBottomOf="@+id/url_layout">
 
-                tools:text="jaracim660916" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@={vm.textUsername}"
 
-            <EditText
-                android:id="@+id/password"
+                    android:hint="@string/login_prompt_username"
+                    android:inputType="text"
+                    android:selectAllOnFocus="true" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/password_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/login_margin_sides"
-                android:layout_marginTop="@dimen/login_margin_between"
-                android:layout_marginEnd="@dimen/login_margin_sides"
+                app:errorEnabled="true"
+                app:errorText="@{vm.errorPassword}"
 
-                android:hint="@string/login_prompt_password"
-                android:imeOptions="actionDone"
-                android:inputType="textPassword"
-                android:selectAllOnFocus="true"
+                android:layout_marginStart="@dimen/login_margin_sides"
+                android:layout_marginEnd="@dimen/login_margin_sides"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/username"
+                app:layout_constraintTop_toBottomOf="@+id/username_layout"
+                app:passwordToggleEnabled="true">
 
-                tools:text="Strong password" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@={vm.textPassword}"
+
+                    android:hint="@string/login_prompt_password"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPassword"
+                    android:selectAllOnFocus="true" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <CheckBox
+                android:id="@+id/save_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/login_margin_sides"
+                android:layout_marginTop="8dp"
+                android:text="@string/login_save_password"
+                android:textSize="12sp"
+                android:checked="@={vm.savePassword}"
+                android:enabled="@{vm.savePasswordEnabled}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/password_layout" />
+
+            <ImageView
+                android:id="@+id/save_password_help"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:srcCompat="@drawable/help"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                app:layout_constraintBottom_toBottomOf="@+id/save_password"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintStart_toEndOf="@+id/save_password"
+                app:layout_constraintTop_toTopOf="@+id/save_password" />
+
+            <TextView
+                android:id="@+id/forgotten_password"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="@dimen/login_margin_sides"
+                android:text="@string/login_forgotten_password"
+                android:textAlignment="viewEnd"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/save_password_help"
+                app:layout_constraintTop_toBottomOf="@+id/password_layout" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/password_barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="save_password,forgotten_password" />
+
+            <Button
+                android:id="@+id/cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/login_margin_sides_button"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/login_button_cancel"
+                android:visibility="@{vm.cancelEnabled ? View.VISIBLE : View.GONE}"
+                app:layout_constraintEnd_toStartOf="@+id/login"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/password_barrier" />
 
             <Button
                 android:id="@+id/login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginStart="@dimen/login_margin_sides_button"
-                android:layout_marginTop="@dimen/login_margin_between_button"
+                android:layout_marginTop="24dp"
                 android:layout_marginEnd="@dimen/login_margin_sides_button"
-                android:text="@string/login_login"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="8dp"
+                android:text="@{vm.editingMode ? @string/login_button_update : @string/login_button_login}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/cancel"
+                app:layout_constraintTop_toBottomOf="@id/password_barrier"
+                tools:text="@string/login_button_login" />
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/bottom_sheet_bottom_margin"
+                android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/password"
-                app:layout_constraintVertical_bias="0.2" />
-
-            <ImageButton
-                android:id="@+id/open_settings"
-                style="@style/AppTheme.SmallImageButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/nav_settings" />
-
-            <ImageButton
-                android:id="@+id/report_issue"
-                style="@style/AppTheme.SmallImageButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toStartOf="@+id/open_settings"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/bug_report" />
+                app:layout_constraintTop_toBottomOf="@+id/login" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

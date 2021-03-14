@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~    Copyright 2021, Petr Laštovička as Lasta apps, All rights reserved
   ~
   ~     This file is part of Bakalari extension.
   ~
@@ -30,7 +30,7 @@
 
         <variable
             name="subject"
-            type="cz.lastaapps.bakalariextension.api.absence.data.AbsenceSubject" />
+            type="cz.lastaapps.bakalari.app.api.absence.data.AbsenceSubject" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

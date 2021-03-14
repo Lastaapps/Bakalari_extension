@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~    Copyright 2021, Petr Laštovička as Lasta apps, All rights reserved
   ~
   ~     This file is part of Bakalari extension.
   ~
@@ -27,7 +27,7 @@
 
         <variable
             name="pair"
-            type="cz.lastaapps.bakalariextension.api.marks.data.MarksPair" />
+            type="cz.lastaapps.bakalari.app.api.marks.data.MarksPair" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -78,7 +78,7 @@
             app:barrierDirection="bottom"
             app:constraint_referenced_ids="marksCount,average" />
 
-        <cz.lastaapps.bakalariextension.ui.views.BetterRecyclerView
+        <cz.lastaapps.bakalari.app.ui.views.BetterRecyclerView
             android:id="@+id/list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

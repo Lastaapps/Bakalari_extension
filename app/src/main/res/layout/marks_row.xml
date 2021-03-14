@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~    Copyright 2021, Petr Laštovička as Lasta apps, All rights reserved
   ~
   ~     This file is part of Bakalari extension.
   ~
@@ -24,17 +24,17 @@
 
     <data>
 
-        <import type="cz.lastaapps.bakalariextension.App" />
+        <import type="cz.lastaapps.bakalari.platform.App" />
 
         <import type="android.view.View" />
 
         <variable
             name="markData"
-            type="cz.lastaapps.bakalariextension.api.marks.data.Mark" />
+            type="cz.lastaapps.bakalari.app.api.marks.data.Mark" />
 
         <variable
             name="subjectData"
-            type="cz.lastaapps.bakalariextension.api.SimpleData" />
+            type="cz.lastaapps.bakalari.app.api.SimpleData" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

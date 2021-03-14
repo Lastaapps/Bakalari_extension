@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~    Copyright 2021, Petr Laštovička as Lasta apps, All rights reserved
+  ~
+  ~     This file is part of Bakalari extension.
+  ~
+  ~     Bakalari extension is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Bakalari extension is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_login"
+    app:startDestination="@id/nav_login">
+    <argument
+        android:name="account"
+        app:argType="cz.lastaapps.bakalari.authentication.data.BakalariAccount"
+        app:nullable="true" />
+
+    <fragment
+        android:id="@+id/nav_login"
+        android:name="cz.lastaapps.bakalari.app.ui.start.login.LoginFragment"
+        tools:layout="@layout/fragment_login"
+        android:label="@string/menu_login">
+        <argument
+            android:name="account"
+            app:argType="cz.lastaapps.bakalari.authentication.data.BakalariAccount"
+            app:nullable="true" />
+        <action
+            android:id="@+id/action_login_search"
+            app:destination="@id/nav_login_search" />
+        <action
+            android:id="@+id/action_forgotten_password"
+            app:destination="@id/nav_forgotten_password" />
+        <action
+            android:id="@+id/action_login_to_save_password_help"
+            app:destination="@id/nav_save_password_help" />
+        <action
+            android:id="@+id/action_do_login"
+            app:destination="@id/nav_do_login" />
+    </fragment>
+    <dialog
+        android:id="@+id/nav_download_default"
+        android:name="cz.lastaapps.bakalari.app.ui.start.login.DownloadDefaultDataDialog">
+        <argument
+            android:name="uuid"
+            app:argType="java.util.UUID" />
+    </dialog>
+    <dialog
+        android:id="@+id/nav_login_search"
+        android:name="cz.lastaapps.bakalari.app.ui.start.login.SearchFragmentDialog"
+        tools:layout="@layout/fragment_login_search">
+        <argument
+            android:name="isTown"
+            app:argType="boolean" />
+    </dialog>
+    <dialog
+        android:id="@+id/nav_forgotten_password"
+        android:name="cz.lastaapps.bakalari.app.ui.start.login.help.ForgottenPasswordDialog">
+        <argument
+            android:name="url"
+            app:argType="string" />
+    </dialog>
+    <dialog
+        android:id="@+id/nav_save_password_help"
+        android:name="cz.lastaapps.bakalari.app.ui.start.login.help.SavePasswordHelpDialog" />
+    <dialog
+        android:id="@+id/nav_do_login"
+        android:name="cz.lastaapps.bakalari.app.ui.start.login.DoLoginDialog">
+        <action
+            android:id="@+id/action_do_login_to_download_default"
+            app:destination="@id/nav_download_default" />
+        <argument
+            android:name="loginInfo"
+            app:argType="cz.lastaapps.bakalari.authentication.data.LoginInfo" />
+        <argument
+            android:name="profile"
+            app:argType="cz.lastaapps.bakalari.authentication.data.Profile" />
+        <argument
+            android:name="editedAccount"
+            app:argType="cz.lastaapps.bakalari.authentication.data.BakalariAccount"
+            app:nullable="true" />
+    </dialog>
+</navigation>

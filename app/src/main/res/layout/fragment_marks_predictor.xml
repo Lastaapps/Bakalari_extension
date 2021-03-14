@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~    Copyright 2021, Petr Laštovička as Lasta apps, All rights reserved
   ~
   ~     This file is part of Bakalari extension.
   ~
@@ -25,7 +25,7 @@
 
         <variable
             name="viewModel"
-            type="cz.lastaapps.bakalariextension.ui.marks.MarksViewModel" />
+            type="cz.lastaapps.bakalari.app.ui.user.marks.MarksViewModel" />
     </data>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -129,7 +129,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/content">
 
-                    <cz.lastaapps.bakalariextension.ui.views.BetterRecyclerView
+                    <cz.lastaapps.bakalari.app.ui.views.BetterRecyclerView
                         android:id="@+id/added_marks_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -140,7 +140,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
 
-                    </cz.lastaapps.bakalariextension.ui.views.BetterRecyclerView>
+                    </cz.lastaapps.bakalari.app.ui.views.BetterRecyclerView>
 
                     <View
                         android:id="@+id/divider"
@@ -152,7 +152,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/added_marks_list" />
 
-                    <cz.lastaapps.bakalariextension.ui.views.BetterRecyclerView
+                    <cz.lastaapps.bakalari.app.ui.views.BetterRecyclerView
                         android:id="@+id/list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

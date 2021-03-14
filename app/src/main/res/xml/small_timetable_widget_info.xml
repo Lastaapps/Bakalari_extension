@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~    Copyright 2021, Petr Laštovička as Lasta apps, All rights reserved
   ~
   ~     This file is part of Bakalari extension.
   ~
@@ -20,7 +20,7 @@
   -->
 
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:configure="cz.lastaapps.bakalariextension.widgets.smalltimetable.SmallTimetableWidgetConfig"
+    android:configure="cz.lastaapps.bakalari.app.widgets.smalltimetable.SmallTimetableWidgetConfig"
     android:initialKeyguardLayout="@layout/widget_small_timetable"
     android:initialLayout="@layout/widget_small_timetable"
     android:minWidth="180dp"

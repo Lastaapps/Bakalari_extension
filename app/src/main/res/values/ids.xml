@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~    Copyright 2021, Petr Laštovička as Lasta apps, All rights reserved
   ~
   ~     This file is part of Bakalari extension.
   ~
@@ -20,5 +20,18 @@
   -->
 
 <resources>
-    <item name="APPWIDGET_HOST_ID" type="id"/>
+    <item name="appwidget_host_id" type="id" />
+
+    <item name="notification_id_timetable_notification_service" type="id" />
+
+    <item name="notification_id_login_service" type="id" />
+    <item name="notification_id_logout_service" type="id" />
+    <item name="notification_id_version_update" type="id" />
+
+    <item name="request_code_login_image" type="id" />
+    <item name="request_code_small_timetable_widget" type="id" />
+    <item name="request_code_tt_timetable_open_pending_intent" type="id" />
+    <item name="request_code_tt_receiver_normal" type="id" />
+    <item name="request_code_tt_receiver_daily" type="id" />
+
 </resources>

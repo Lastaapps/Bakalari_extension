@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~    Copyright 2021, Petr Laštovička as Lasta apps, All rights reserved
   ~
   ~     This file is part of Bakalari extension.
   ~
@@ -38,7 +38,7 @@
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/label_logo_fragment"
-                android:name="cz.lastaapps.bakalariextension.ui.logo.LogoFragment"
+                android:name="cz.lastaapps.bakalari.app.ui.others.LogoFragment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"

@@ -1,5 +1,5 @@
 <!--
-  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~    Copyright 2021, Petr Laštovička as Lasta apps, All rights reserved
   ~
   ~     This file is part of Bakalari extension.
   ~
@@ -22,9 +22,16 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="nav_header_vertical_spacing">8dp</dimen>
-    <dimen name="nav_header_height">176dp</dimen>
-    <dimen name="nav_bottom_view">40dp</dimen>
+
+
+    <dimen name="nav_header_min_height">192dp</dimen>
+    <dimen name="nav_header_image_expanded">48dp</dimen>
+    <dimen name="nav_header_image_minimized">24dp</dimen>
+    <dimen name="nav_header_start_margin">16dp</dimen>
+    <dimen name="nav_header_top_margin">16dp</dimen>
+    <dimen name="nav_header_bottom_margin">16dp</dimen>
+    <dimen name="nav_header_end_margin">8dp</dimen>
+    <dimen name="nav_header_components_margin">8dp</dimen>
 
     <dimen name="icon_size">64sp</dimen>
     <dimen name="padding_basic">10dp</dimen>

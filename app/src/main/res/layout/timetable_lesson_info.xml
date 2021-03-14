@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~    Copyright 2021, Petr Laštovička as Lasta apps, All rights reserved
   ~
   ~     This file is part of Bakalari extension.
   ~
@@ -58,7 +58,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <cz.lastaapps.bakalariextension.ui.views.BetterRecyclerView
+            <cz.lastaapps.bakalari.app.ui.views.BetterRecyclerView
                 android:id="@+id/homework_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

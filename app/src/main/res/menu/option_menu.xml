@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~    Copyright 2021, Petr Laštovička as Lasta apps, All rights reserved
   ~
   ~     This file is part of Bakalari extension.
   ~
@@ -26,7 +26,7 @@
         android:title="@string/menu_settings"
         app:showAsAction="never" />
     <item
-        android:id="@+id/nav_logout"
-        android:title="@string/menu_logout"
-        android:checkable="false" />
+        android:id="@+id/nav_profiles_list"
+        android:title="@string/menu_profiles_list"
+        app:showAsAction="never" />
 </menu>

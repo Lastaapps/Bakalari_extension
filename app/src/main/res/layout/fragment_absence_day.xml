@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~    Copyright 2021, Petr Laštovička as Lasta apps, All rights reserved
   ~
   ~     This file is part of Bakalari extension.
   ~
@@ -28,7 +28,7 @@
 
         <variable
             name="viewModel"
-            type="cz.lastaapps.bakalariextension.ui.RefreshableViewModel" />
+            type="cz.lastaapps.bakalari.app.ui.uitools.RefreshableViewModel" />
 
         <variable
             name="legendTypeString"
@@ -150,7 +150,7 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <cz.lastaapps.bakalariextension.ui.views.BetterRecyclerView
+                <cz.lastaapps.bakalari.app.ui.views.BetterRecyclerView
                     android:id="@+id/list"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~    Copyright 2021, Petr Laštovička as Lasta apps, All rights reserved
   ~
   ~     This file is part of Bakalari extension.
   ~
@@ -26,7 +26,7 @@
 
         <variable
             name="theme"
-            type="cz.lastaapps.bakalariextension.api.themes.data.Theme" />
+            type="cz.lastaapps.bakalari.app.api.themes.data.Theme" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -67,7 +67,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Lesson's theme" />
 
-            <cz.lastaapps.bakalariextension.ui.views.ClickableTextView
+            <cz.lastaapps.bakalari.app.ui.views.ClickableTextView
                 android:id="@+id/note"
                 style="@style/AppTheme.Text"
                 android:layout_width="0dp"

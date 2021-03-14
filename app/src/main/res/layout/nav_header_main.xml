@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~    Copyright 2021, Petr Laštovička as Lasta apps, All rights reserved
   ~
   ~     This file is part of Bakalari extension.
   ~
@@ -19,33 +19,133 @@
   ~
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/nav_header_height"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/side_nav_bar"
-    android:gravity="bottom"
-    android:orientation="vertical"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:id="@+id/nav_name"
-        style="@style/AppTheme.Text"
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="account"
+            type="cz.lastaapps.bakalari.authentication.data.BakalariAccount" />
+
+        <variable
+            name="user"
+            type="cz.lastaapps.bakalari.app.api.user.data.User" />
+
+        <variable
+            name="moreProfiles"
+            type="Boolean" />
+
+        <variable
+            name="isStart"
+            type="Boolean" />
+
+    </data>
+
+    <androidx.constraintlayout.motion.widget.MotionLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textSize="18sp"
-        tools:text="Jára Cimrman" />
+        android:background="@drawable/side_nav_bar"
+        android:minHeight="@dimen/nav_header_min_height"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        app:layoutDescription="@xml/scene_nav_header_main"
+        android:visibility="@{user != null &amp;&amp; account != null ? View.VISIBLE : View.GONE}"
+        app:motionStateStartEnd="@{isStart}">
 
-    <TextView
-        android:id="@+id/nav_type"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="1.A - parent" />
+        <ImageView
+            android:id="@+id/user_image"
+            imageUri="@{account.imageUri}"
+            android:layout_width="@dimen/nav_header_image_expanded"
+            android:layout_height="0dp"
+            android:layout_marginBottom="@dimen/nav_header_components_margin"
+            android:visibility="@{account.imageUri != null ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toTopOf="@+id/text_flow"
+            app:layout_constraintDimensionRatio="w,1:1"
+            app:layout_constraintStart_toStartOf="@+id/name"
+            tools:srcCompat="@tools:sample/avatars" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/name"
+            style="@style/AppTheme.Text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{user.normalFullName}"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="18sp"
+            app:layout_constraintTag="text_group"
+            tools:text="Jára Cimrman" />
+
+        <TextView
+            android:id="@+id/account_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{account.profileName}"
+            app:layout_constraintTag="text_group"
+            tools:layout_editor_absoluteX="48dp"
+            tools:layout_editor_absoluteY="40dp"
+            tools:text="Zora - nejchytřejší slepice" />
+
+        <TextView
+            android:id="@+id/more_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{user.classAndRole}"
+            app:layout_constraintTag="text_group"
+            tools:text="1.A - parent" />
+
+        <TextView
+            android:id="@+id/school"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{user.schoolName}"
+            app:layout_constraintTag="text_group"
+            tools:text="ZŠ Liptákov" />
+
+        <androidx.constraintlayout.helper.widget.Flow
+            android:id="@+id/text_flow"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/nav_header_start_margin"
+            android:layout_marginEnd="@dimen/nav_header_components_margin"
+            android:orientation="vertical"
+            app:constraint_referenced_ids="name,account_name,more_info,school"
+            app:layout_constraintBottom_toBottomOf="@+id/state_switch"
+            app:layout_constraintEnd_toStartOf="@+id/state_switch"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/more_info"
+            app:layout_constraintStart_toStartOf="@+id/user_image"
+            app:layout_constraintTop_toBottomOf="@+id/more_info" />
+
+        <ImageView
+            android:id="@+id/show_all"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/nav_header_components_margin"
+            app:layout_constraintBottom_toTopOf="@+id/state_switch"
+            app:layout_constraintEnd_toEndOf="@+id/state_switch"
+            app:layout_constraintStart_toStartOf="@+id/state_switch"
+            app:srcCompat="@drawable/sett_license" />
+
+        <ImageView
+            android:id="@+id/state_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/nav_header_end_margin"
+            android:layout_marginBottom="@dimen/nav_header_bottom_margin"
+            android:visibility="@{moreProfiles ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/nav_whats_new" />
+
+    </androidx.constraintlayout.motion.widget.MotionLayout>
+</layout>
