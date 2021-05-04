@@ -25,7 +25,7 @@ import cz.lastaapps.bakalari.app.api.DataId
 import cz.lastaapps.bakalari.app.api.DataIdList
 import cz.lastaapps.bakalari.app.api.database.APIBase
 import cz.lastaapps.bakalari.tools.TimeTools
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.time.ZonedDateTime
 
 typealias ThemeList = DataIdList<Theme>

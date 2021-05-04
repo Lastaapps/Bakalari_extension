@@ -25,7 +25,7 @@ import cz.lastaapps.bakalari.app.api.DataIdList
 import cz.lastaapps.bakalari.app.api.SimpleData
 import cz.lastaapps.bakalari.app.ui.uitools.searchNeutralText
 import cz.lastaapps.bakalari.tools.TimeTools
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.time.Duration
 import java.time.Instant
 import java.time.ZonedDateTime

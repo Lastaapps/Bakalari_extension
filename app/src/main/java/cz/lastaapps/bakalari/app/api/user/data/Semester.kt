@@ -21,7 +21,7 @@
 package cz.lastaapps.bakalari.app.api.user.data
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.time.ZonedDateTime
 
 @Parcelize

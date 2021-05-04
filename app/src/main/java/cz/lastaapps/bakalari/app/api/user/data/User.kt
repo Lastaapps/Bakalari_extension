@@ -27,8 +27,8 @@ import cz.lastaapps.bakalari.app.api.SimpleData
 import cz.lastaapps.bakalari.platform.App
 import cz.lastaapps.bakalari.tools.TimeTools
 import cz.lastaapps.bakalari.tools.TimeTools.toCzechDate
-import kotlinx.android.parcel.IgnoredOnParcel
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 import org.json.JSONObject
 import java.time.LocalDate
 import java.time.Month

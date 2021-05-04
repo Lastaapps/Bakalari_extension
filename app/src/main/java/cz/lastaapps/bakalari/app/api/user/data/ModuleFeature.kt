@@ -23,7 +23,7 @@ package cz.lastaapps.bakalari.app.api.user.data
 import android.os.Parcelable
 import androidx.room.Entity
 import cz.lastaapps.bakalari.app.api.database.APIBase
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 typealias ModuleList = ArrayList<ModuleFeature>
 

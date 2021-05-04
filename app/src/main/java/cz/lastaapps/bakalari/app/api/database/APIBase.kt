@@ -96,8 +96,7 @@ import kotlin.collections.HashMap
         SubjectData::class, GroupData::class, ClassGroupData::class, CycleData::class
     ],
     version = 19,
-    //TODO after database is ready, set to true, maybe...
-    exportSchema = false
+    exportSchema = true,
 )
 @TypeConverters(APIBase.Converter::class)
 abstract class APIBase : RoomDatabase() {

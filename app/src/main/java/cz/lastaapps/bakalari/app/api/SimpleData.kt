@@ -20,16 +20,17 @@
 
 package cz.lastaapps.bakalari.app.api
 
-import androidx.room.Ignore
-//import kotlinx.parcelize.Parcelize
-import kotlinx.android.parcel.Parcelize
+import androidx.room.ColumnInfo
+import androidx.room.PrimaryKey
+import kotlinx.parcelize.Parcelize
 import java.text.Collator
 import java.util.*
 
 /**Parent for classes containing just id, name and shortcut*/
 @Parcelize
 open class SimpleData(
-    @Ignore
+    @PrimaryKey
+    @ColumnInfo(index = true)
     override var id: String,
     open val shortcut: String,
     open val name: String

@@ -20,12 +20,13 @@
 
 package cz.lastaapps.bakalari.app.api.subjects.data
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Ignore
+import androidx.room.PrimaryKey
 import cz.lastaapps.bakalari.app.api.DataId
 import cz.lastaapps.bakalari.app.api.DataIdList
 import cz.lastaapps.bakalari.app.api.database.APIBase
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.text.Collator
 import java.util.*
 
@@ -36,7 +37,9 @@ typealias SubjectTeacherLists = Pair<SubjectList, TeacherList>
 @Parcelize
 @Entity(tableName = APIBase.SUBJECTS, inheritSuperIndices = true)
 data class Subject(
-    @Ignore override var id: String,
+    @PrimaryKey
+    @ColumnInfo(index = true)
+    override var id: String,
     val name: String,
     val shortcut: String,
     val teacherId: String,

@@ -39,7 +39,7 @@ import java.util.*
 @Database(
     entities = [BakalariAccount::class],
     version = 2,
-    exportSchema = false
+    exportSchema = true
 )
 @TypeConverters(AccountsDatabase.Converter::class)
 abstract class AccountsDatabase : RoomDatabase() {

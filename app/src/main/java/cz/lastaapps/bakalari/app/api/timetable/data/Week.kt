@@ -25,7 +25,7 @@ import cz.lastaapps.bakalari.app.api.DataIdList
 import cz.lastaapps.bakalari.app.api.SimpleData
 import cz.lastaapps.bakalari.tools.TimeTools
 import cz.lastaapps.bakalari.tools.TimeTools.toDate
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.io.Serializable
 import java.time.LocalDate
 import kotlin.math.min

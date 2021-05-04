@@ -23,8 +23,7 @@ package cz.lastaapps.bakalari.app.api
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.PrimaryKey
-//import kotlinx.parcelize.Parcelize
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.io.Serializable
 
 

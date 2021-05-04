@@ -25,7 +25,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import cz.lastaapps.bakalari.app.api.DataId
 import cz.lastaapps.bakalari.app.api.database.APIBase
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**Represent attachment - contains all necessary info*/
 @Parcelize

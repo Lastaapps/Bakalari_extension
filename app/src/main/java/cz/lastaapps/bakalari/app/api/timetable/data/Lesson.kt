@@ -25,7 +25,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import cz.lastaapps.bakalari.app.api.DataId
 import cz.lastaapps.bakalari.app.api.database.APIBase
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.time.LocalDate
 
 /**Stores info about lesson and the change of the lesson*/

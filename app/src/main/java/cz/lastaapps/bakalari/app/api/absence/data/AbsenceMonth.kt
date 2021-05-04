@@ -26,7 +26,7 @@ import cz.lastaapps.bakalari.platform.withAppContext
 import cz.lastaapps.bakalari.settings.LocaleManager
 import cz.lastaapps.bakalari.settings.MySettings
 import cz.lastaapps.bakalari.tools.TimeTools.toCzechDate
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.time.LocalDate
 import java.time.Month
 import java.time.Month.*
@@ -50,9 +50,9 @@ data class AbsenceMonth(
         val firstSemester =
             arrayOf(SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER, JANUARY).map { it.value }
 
-        return if (monthIndex in firstSemester && other !in firstSemester) {
+        return if (monthIndex in firstSemester && other.monthIndex !in firstSemester) {
             1
-        } else if (monthIndex !in firstSemester && other in firstSemester) {
+        } else if (monthIndex !in firstSemester && other.monthIndex in firstSemester) {
             -1
         } else
             monthIndex.compareTo(other.monthIndex)

@@ -30,8 +30,8 @@ import androidx.room.PrimaryKey
 import cz.lastaapps.bakalari.authentication.R
 import cz.lastaapps.bakalari.authentication.data.BakalariAccount.Companion.validateUrl
 import cz.lastaapps.bakalari.authentication.database.AccountsDatabase
-import kotlinx.android.parcel.IgnoredOnParcel
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 import java.time.Instant
 import java.time.ZonedDateTime
 import java.util.*

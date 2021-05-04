@@ -20,19 +20,21 @@
 
 package cz.lastaapps.bakalari.app.api.subjects.data
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Ignore
+import androidx.room.PrimaryKey
 import cz.lastaapps.bakalari.app.api.DataId
 import cz.lastaapps.bakalari.app.api.SimpleData
 import cz.lastaapps.bakalari.app.api.database.APIBase
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.text.Collator
 import java.util.*
 
 @Parcelize
 @Entity(tableName = APIBase.TEACHERS, inheritSuperIndices = true)
 data class Teacher(
-    @Ignore
+    @PrimaryKey
+    @ColumnInfo(index = true)
     override var id: String,
     val name: String,
     val shortcut: String,

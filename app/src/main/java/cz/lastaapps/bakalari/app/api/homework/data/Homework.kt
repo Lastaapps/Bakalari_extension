@@ -25,7 +25,7 @@ import cz.lastaapps.bakalari.app.api.DataIdList
 import cz.lastaapps.bakalari.app.api.SimpleData
 import cz.lastaapps.bakalari.app.api.attachment.data.Attachment
 import cz.lastaapps.bakalari.app.ui.uitools.searchNeutralText
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.time.ZonedDateTime
 
 /**defines Homework list to make code simpler to read*/

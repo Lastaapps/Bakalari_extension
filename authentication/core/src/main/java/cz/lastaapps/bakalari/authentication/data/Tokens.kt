@@ -22,8 +22,8 @@ package cz.lastaapps.bakalari.authentication.data
 
 import android.os.Parcelable
 import cz.lastaapps.bakalari.tools.getStringOrEmpty
-import kotlinx.android.parcel.IgnoredOnParcel
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 import org.json.JSONObject
 import java.time.Instant
 import java.util.*

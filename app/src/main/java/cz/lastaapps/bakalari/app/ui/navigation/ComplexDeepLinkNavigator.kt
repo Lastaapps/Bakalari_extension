@@ -30,7 +30,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import cz.lastaapps.bakalari.tools.marshall
 import cz.lastaapps.bakalari.tools.unmarshall
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.io.Serializable
 
 class ComplexDeepLinkNavigator(private val navController: NavController) {

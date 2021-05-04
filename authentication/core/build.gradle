@@ -22,9 +22,9 @@ plugins {
     id 'com.android.library'
     id 'kotlin-android'
 
+    id 'com.google.devtools.ksp'
     id 'kotlin-kapt'
-    //id 'kotlin-parcelize'
-    id 'kotlin-android-extensions'
+    id 'kotlin-parcelize'
 
     id 'androidx.navigation.safeargs.kotlin'
 }
@@ -43,6 +43,16 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
+
+        //TODO remove after a migration to ksp
+        kapt {
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas")
+            }
+        }
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
+        }
     }
 
     buildTypes {
@@ -86,6 +96,7 @@ dependencies {
 
     implementation "androidx.room:room-runtime:$andoridx_room_version"
     kapt "androidx.room:room-compiler:$andoridx_room_version"
+    //ksp "androidx.room:room-compiler:$andoridx_room_version"
     implementation "androidx.room:room-ktx:$andoridx_room_version"
     androidTestImplementation "androidx.room:room-testing:$andoridx_room_version"
 

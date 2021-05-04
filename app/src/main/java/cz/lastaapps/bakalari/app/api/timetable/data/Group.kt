@@ -20,18 +20,18 @@
 
 package cz.lastaapps.bakalari.app.api.timetable.data
 
-import androidx.room.Ignore
+import androidx.room.ColumnInfo
+import androidx.room.PrimaryKey
 import cz.lastaapps.bakalari.app.api.SimpleData
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Group(
     val classId: String,
-    @Ignore
+    @PrimaryKey
+    @ColumnInfo(index = true)
     override var id: String,
-    @Ignore
     override val shortcut: String,
-    @Ignore
     override val name: String
 ) : SimpleData(id, shortcut, name)
 

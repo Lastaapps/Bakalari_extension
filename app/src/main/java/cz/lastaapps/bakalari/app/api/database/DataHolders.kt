@@ -26,7 +26,7 @@ import androidx.room.Entity
 import androidx.room.Index
 import cz.lastaapps.bakalari.app.api.SimpleData
 import cz.lastaapps.bakalari.app.api.timetable.data.Group
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 
 @Parcelize

@@ -23,7 +23,7 @@ package cz.lastaapps.bakalari.app.api.marks.data
 import android.util.Log
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Ignore
+import androidx.room.PrimaryKey
 import cz.lastaapps.bakalari.app.api.DataId
 import cz.lastaapps.bakalari.app.api.DataIdList
 import cz.lastaapps.bakalari.app.api.database.APIBase
@@ -31,7 +31,7 @@ import cz.lastaapps.bakalari.platform.withAppContext
 import cz.lastaapps.bakalari.settings.MySettings
 import cz.lastaapps.bakalari.tools.TimeTools
 import cz.lastaapps.bakalari.tools.TimeTools.toMidnight
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.time.Duration
 import java.time.ZonedDateTime
 import java.util.*
@@ -66,7 +66,8 @@ data class Mark(
     val isPoints: Boolean,
     val calculatedMarkText: String,
     val classRankText: String,
-    @Ignore
+    @PrimaryKey
+    @ColumnInfo(index = true)
     override var id: String,
     /**Does not contain number of points*/
     val pointsText: String,

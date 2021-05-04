@@ -21,9 +21,11 @@
 package cz.lastaapps.bakalari.app.api.absence.data
 
 import androidx.room.Entity
+import androidx.room.Ignore
 import cz.lastaapps.bakalari.app.api.DataId
 import cz.lastaapps.bakalari.app.api.database.APIBase
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 import java.text.Collator
 import java.util.*
 
@@ -44,11 +46,12 @@ data class AbsenceSubject(
         return collator.compare(name, other.name)
     }
 
-    val percents: String
-        get() {
-            val percents = 100.0 * base / lessonCount
-            return String.format(Locale.UK, "%.2f", percents) + "%"
-        }
+    @delegate:Ignore
+    @IgnoredOnParcel
+    val percents: String by lazy {
+        val percents = 100.0 * base / lessonCount
+        String.format(Locale.UK, "%.2f", percents) + "%"
+    }
 
     fun thresholdReached(threshold: Double): Boolean {
         return threshold <= (1.0 * base / lessonCount)

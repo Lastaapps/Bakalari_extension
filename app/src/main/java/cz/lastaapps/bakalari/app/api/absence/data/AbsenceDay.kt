@@ -23,7 +23,7 @@ package cz.lastaapps.bakalari.app.api.absence.data
 import androidx.room.Entity
 import cz.lastaapps.bakalari.app.api.database.APIBase
 import cz.lastaapps.bakalari.tools.TimeTools
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.time.ZonedDateTime
 
 @Parcelize

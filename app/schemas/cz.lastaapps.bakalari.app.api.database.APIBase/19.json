@@ -1,0 +1,2078 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 19,
+    "identityHash": "84feb73477080c9c85cc6f42db30a86a",
+    "entities": [
+      {
+        "tableName": "absence_day",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`date` INTEGER NOT NULL, `unsolved` INTEGER NOT NULL, `ok` INTEGER NOT NULL, `missed` INTEGER NOT NULL, `late` INTEGER NOT NULL, `soon` INTEGER NOT NULL, `school` INTEGER NOT NULL, `id` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "unsolved",
+            "columnName": "unsolved",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ok",
+            "columnName": "ok",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "missed",
+            "columnName": "missed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "late",
+            "columnName": "late",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "soon",
+            "columnName": "soon",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "school",
+            "columnName": "school",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_absence_day_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_absence_day_id` ON `${TABLE_NAME}` (`id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "absence_subject",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `lessonCount` INTEGER NOT NULL, `base` INTEGER NOT NULL, `late` INTEGER NOT NULL, `soon` INTEGER NOT NULL, `school` INTEGER NOT NULL, `id` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lessonCount",
+            "columnName": "lessonCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "base",
+            "columnName": "base",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "late",
+            "columnName": "late",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "soon",
+            "columnName": "soon",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "school",
+            "columnName": "school",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_absence_subject_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_absence_subject_id` ON `${TABLE_NAME}` (`id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "absence_threshold",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`threshold` REAL NOT NULL, PRIMARY KEY(`threshold`))",
+        "fields": [
+          {
+            "fieldPath": "threshold",
+            "columnName": "threshold",
+            "affinity": "REAL",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "threshold"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "attachments",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`data_id` TEXT NOT NULL, `fileName` TEXT NOT NULL, `type` TEXT NOT NULL, `size` INTEGER NOT NULL, PRIMARY KEY(`data_id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "data_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fileName",
+            "columnName": "fileName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "size",
+            "columnName": "size",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "data_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_attachments_data_id",
+            "unique": false,
+            "columnNames": [
+              "data_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_attachments_data_id` ON `${TABLE_NAME}` (`data_id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "events",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `group` INTEGER NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `eventStart` INTEGER NOT NULL, `eventEnd` INTEGER NOT NULL, `note` TEXT, `dateChanged` INTEGER NOT NULL, `type_id` TEXT NOT NULL, `type_shortcut` TEXT NOT NULL, `type_name` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "group",
+            "columnName": "group",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "title",
+            "columnName": "title",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "eventStart",
+            "columnName": "eventStart",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "eventEnd",
+            "columnName": "eventEnd",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "note",
+            "columnName": "note",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "dateChanged",
+            "columnName": "dateChanged",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type.id",
+            "columnName": "type_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type.shortcut",
+            "columnName": "type_shortcut",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type.name",
+            "columnName": "type_name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_events_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_events_id` ON `${TABLE_NAME}` (`id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "events_times",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`data_id` TEXT NOT NULL, `wholeDay` INTEGER NOT NULL, `start` INTEGER NOT NULL, `end` INTEGER NOT NULL, `autokey` INTEGER PRIMARY KEY AUTOINCREMENT)",
+        "fields": [
+          {
+            "fieldPath": "eventId",
+            "columnName": "data_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "wholeDay",
+            "columnName": "wholeDay",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "start",
+            "columnName": "start",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "end",
+            "columnName": "end",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "autokey",
+            "columnName": "autokey",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "autokey"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_events_times_data_id",
+            "unique": false,
+            "columnNames": [
+              "data_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_events_times_data_id` ON `${TABLE_NAME}` (`data_id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "events_classes",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`data_id` TEXT NOT NULL, `data_shortcut` TEXT NOT NULL, `data_name` TEXT NOT NULL, PRIMARY KEY(`data_id`))",
+        "fields": [
+          {
+            "fieldPath": "data.id",
+            "columnName": "data_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "data.shortcut",
+            "columnName": "data_shortcut",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "data.name",
+            "columnName": "data_name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "data_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_events_classes_data_id",
+            "unique": false,
+            "columnNames": [
+              "data_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_events_classes_data_id` ON `${TABLE_NAME}` (`data_id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "rel_events_classes",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `data_id` TEXT NOT NULL, PRIMARY KEY(`id`, `data_id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dataId",
+            "columnName": "data_id",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id",
+            "data_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_rel_events_classes_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rel_events_classes_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_rel_events_classes_data_id",
+            "unique": false,
+            "columnNames": [
+              "data_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rel_events_classes_data_id` ON `${TABLE_NAME}` (`data_id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "rel_events_teachers",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `data_id` TEXT NOT NULL, PRIMARY KEY(`id`, `data_id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dataId",
+            "columnName": "data_id",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id",
+            "data_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_rel_events_teachers_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rel_events_teachers_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_rel_events_teachers_data_id",
+            "unique": false,
+            "columnNames": [
+              "data_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rel_events_teachers_data_id` ON `${TABLE_NAME}` (`data_id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "rel_events_rooms",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `data_id` TEXT NOT NULL, PRIMARY KEY(`id`, `data_id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dataId",
+            "columnName": "data_id",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id",
+            "data_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_rel_events_rooms_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rel_events_rooms_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_rel_events_rooms_data_id",
+            "unique": false,
+            "columnNames": [
+              "data_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rel_events_rooms_data_id` ON `${TABLE_NAME}` (`data_id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "rel_events_students",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `data_id` TEXT NOT NULL, PRIMARY KEY(`id`, `data_id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dataId",
+            "columnName": "data_id",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id",
+            "data_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_rel_events_students_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rel_events_students_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_rel_events_students_data_id",
+            "unique": false,
+            "columnNames": [
+              "data_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rel_events_students_data_id` ON `${TABLE_NAME}` (`data_id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "homework",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `dateStart` INTEGER NOT NULL, `dateEnd` INTEGER NOT NULL, `content` TEXT NOT NULL, `notice` TEXT NOT NULL, `done` INTEGER NOT NULL, `closed` INTEGER NOT NULL, `electronic` INTEGER NOT NULL, `finished` INTEGER NOT NULL, `hour` INTEGER NOT NULL, `class_id` TEXT NOT NULL, `group_id` TEXT NOT NULL, `subject_id` TEXT NOT NULL, `teacher_id` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dateStart",
+            "columnName": "dateStart",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dateEnd",
+            "columnName": "dateEnd",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "content",
+            "columnName": "content",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notice",
+            "columnName": "notice",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "done",
+            "columnName": "done",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "closed",
+            "columnName": "closed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "electronic",
+            "columnName": "electronic",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "finished",
+            "columnName": "finished",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hour",
+            "columnName": "hour",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "classId",
+            "columnName": "class_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "groupId",
+            "columnName": "group_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "subjectId",
+            "columnName": "subject_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "teacherId",
+            "columnName": "teacher_id",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_homework_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_homework_id` ON `${TABLE_NAME}` (`id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "rel_homework_attachments",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `data_id` TEXT NOT NULL, PRIMARY KEY(`id`, `data_id`))",
+        "fields": [
+          {
+            "fieldPath": "homeworkId",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "attachmentId",
+            "columnName": "data_id",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id",
+            "data_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_rel_homework_attachments_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rel_homework_attachments_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_rel_homework_attachments_data_id",
+            "unique": false,
+            "columnNames": [
+              "data_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rel_homework_attachments_data_id` ON `${TABLE_NAME}` (`data_id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "marks",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`date` INTEGER NOT NULL, `editDate` INTEGER NOT NULL, `caption` TEXT NOT NULL, `theme` TEXT NOT NULL, `markText` TEXT NOT NULL, `teacherId` TEXT NOT NULL, `type` TEXT NOT NULL, `typeNote` TEXT NOT NULL, `weight` INTEGER, `subjectId` TEXT NOT NULL, `isNew` INTEGER NOT NULL, `isPoints` INTEGER NOT NULL, `calculatedMarkText` TEXT NOT NULL, `classRankText` TEXT NOT NULL, `id` TEXT NOT NULL, `pointsText` TEXT NOT NULL, `maxPoints` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "editDate",
+            "columnName": "editDate",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "caption",
+            "columnName": "caption",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "theme",
+            "columnName": "theme",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "markText",
+            "columnName": "markText",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "teacherId",
+            "columnName": "teacherId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "typeNote",
+            "columnName": "typeNote",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "weight",
+            "columnName": "weight",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "subjectId",
+            "columnName": "subjectId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isNew",
+            "columnName": "isNew",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isPoints",
+            "columnName": "isPoints",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "calculatedMarkText",
+            "columnName": "calculatedMarkText",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "classRankText",
+            "columnName": "classRankText",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pointsText",
+            "columnName": "pointsText",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "maxPoints",
+            "columnName": "maxPoints",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_marks_date",
+            "unique": false,
+            "columnNames": [
+              "date"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_marks_date` ON `${TABLE_NAME}` (`date`)"
+          },
+          {
+            "name": "index_marks_editDate",
+            "unique": false,
+            "columnNames": [
+              "editDate"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_marks_editDate` ON `${TABLE_NAME}` (`editDate`)"
+          },
+          {
+            "name": "index_marks_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_marks_id` ON `${TABLE_NAME}` (`id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "mark_subjects",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`averageText` TEXT NOT NULL, `tempMark` TEXT NOT NULL, `subjectNote` TEXT NOT NULL, `tempMarkNote` TEXT NOT NULL, `pointsOnly` INTEGER NOT NULL, `predictorEnabled` INTEGER NOT NULL, `id` TEXT NOT NULL, `shortcut` TEXT NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "averageText",
+            "columnName": "averageText",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tempMark",
+            "columnName": "tempMark",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "subjectNote",
+            "columnName": "subjectNote",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tempMarkNote",
+            "columnName": "tempMarkNote",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pointsOnly",
+            "columnName": "pointsOnly",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "predictorEnabled",
+            "columnName": "predictorEnabled",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "subject.id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "subject.shortcut",
+            "columnName": "shortcut",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "subject.name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_mark_subjects_id_name",
+            "unique": false,
+            "columnNames": [
+              "id",
+              "name"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_mark_subjects_id_name` ON `${TABLE_NAME}` (`id`, `name`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "subjects",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `shortcut` TEXT NOT NULL, `teacherId` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "shortcut",
+            "columnName": "shortcut",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "teacherId",
+            "columnName": "teacherId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_subjects_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_subjects_id` ON `${TABLE_NAME}` (`id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "teachers",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `shortcut` TEXT NOT NULL, `email` TEXT NOT NULL, `web` TEXT NOT NULL, `phoneSchool` TEXT NOT NULL, `phoneHome` TEXT NOT NULL, `phoneMobile` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "shortcut",
+            "columnName": "shortcut",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "email",
+            "columnName": "email",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "web",
+            "columnName": "web",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "phoneSchool",
+            "columnName": "phoneSchool",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "phoneHome",
+            "columnName": "phoneHome",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "phoneMobile",
+            "columnName": "phoneMobile",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_teachers_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_teachers_id` ON `${TABLE_NAME}` (`id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "themes",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`subjectId` TEXT NOT NULL, `date` INTEGER NOT NULL, `theme` TEXT NOT NULL, `note` TEXT NOT NULL, `hourCaption` TEXT NOT NULL, `lessonLabel` TEXT NOT NULL, `id` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "subjectId",
+            "columnName": "subjectId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "theme",
+            "columnName": "theme",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "note",
+            "columnName": "note",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hourCaption",
+            "columnName": "hourCaption",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lessonLabel",
+            "columnName": "lessonLabel",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_themes_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_themes_id` ON `${TABLE_NAME}` (`id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "timetable_days",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`dayOfWeek` INTEGER NOT NULL, `date` INTEGER NOT NULL, `description` TEXT NOT NULL, `descriptionEmoji` TEXT NOT NULL, `dayType` TEXT NOT NULL, PRIMARY KEY(`date`))",
+        "fields": [
+          {
+            "fieldPath": "dayOfWeek",
+            "columnName": "dayOfWeek",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "descriptionEmoji",
+            "columnName": "descriptionEmoji",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dayType",
+            "columnName": "dayType",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "date"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_timetable_days_date",
+            "unique": false,
+            "columnNames": [
+              "date"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_timetable_days_date` ON `${TABLE_NAME}` (`date`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "timetable_hours",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `caption` TEXT NOT NULL, `begin` TEXT NOT NULL, `end` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "caption",
+            "columnName": "caption",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "begin",
+            "columnName": "begin",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "end",
+            "columnName": "end",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_timetable_hours_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_timetable_hours_id` ON `${TABLE_NAME}` (`id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "timetable_lessons",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`date` INTEGER NOT NULL, `hourId` INTEGER NOT NULL, `subjectId` TEXT NOT NULL, `teacherId` TEXT NOT NULL, `roomId` TEXT NOT NULL, `theme` TEXT NOT NULL, `id` INTEGER NOT NULL, PRIMARY KEY(`date`, `hourId`))",
+        "fields": [
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hourId",
+            "columnName": "hourId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "subjectId",
+            "columnName": "subjectId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "teacherId",
+            "columnName": "teacherId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "roomId",
+            "columnName": "roomId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "theme",
+            "columnName": "theme",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "date",
+            "hourId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_timetable_lessons_date",
+            "unique": false,
+            "columnNames": [
+              "date"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_timetable_lessons_date` ON `${TABLE_NAME}` (`date`)"
+          },
+          {
+            "name": "index_timetable_lessons_hourId",
+            "unique": false,
+            "columnNames": [
+              "hourId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_timetable_lessons_hourId` ON `${TABLE_NAME}` (`hourId`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "timetable_changes",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`subject` TEXT NOT NULL, `date` INTEGER NOT NULL, `hourId` INTEGER NOT NULL, `hours` TEXT NOT NULL, `changeType` TEXT NOT NULL, `description` TEXT NOT NULL, `time` TEXT NOT NULL, `typeShortcut` TEXT NOT NULL, `typeName` TEXT NOT NULL, PRIMARY KEY(`date`, `hourId`))",
+        "fields": [
+          {
+            "fieldPath": "subject",
+            "columnName": "subject",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hourId",
+            "columnName": "hourId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hours",
+            "columnName": "hours",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "changeType",
+            "columnName": "changeType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "time",
+            "columnName": "time",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "typeShortcut",
+            "columnName": "typeShortcut",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "typeName",
+            "columnName": "typeName",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "date",
+            "hourId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_timetable_changes_date",
+            "unique": false,
+            "columnNames": [
+              "date"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_timetable_changes_date` ON `${TABLE_NAME}` (`date`)"
+          },
+          {
+            "name": "index_timetable_changes_hourId",
+            "unique": false,
+            "columnNames": [
+              "hourId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_timetable_changes_hourId` ON `${TABLE_NAME}` (`hourId`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "rel_timetable_cycle",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `data_id` TEXT NOT NULL, PRIMARY KEY(`id`, `data_id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dataId",
+            "columnName": "data_id",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id",
+            "data_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_rel_timetable_cycle_id",
+            "unique": false,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rel_timetable_cycle_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_rel_timetable_cycle_data_id",
+            "unique": false,
+            "columnNames": [
+              "data_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rel_timetable_cycle_data_id` ON `${TABLE_NAME}` (`data_id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "rel_timetable_lessons_cycle",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`date` INTEGER NOT NULL, `hourId` INTEGER NOT NULL, `otherId` TEXT NOT NULL, PRIMARY KEY(`date`, `hourId`, `otherId`))",
+        "fields": [
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hourId",
+            "columnName": "hourId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "otherId",
+            "columnName": "otherId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "date",
+            "hourId",
+            "otherId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_rel_timetable_lessons_cycle_date",
+            "unique": false,
+            "columnNames": [
+              "date"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rel_timetable_lessons_cycle_date` ON `${TABLE_NAME}` (`date`)"
+          },
+          {
+            "name": "index_rel_timetable_lessons_cycle_hourId",
+            "unique": false,
+            "columnNames": [
+              "hourId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rel_timetable_lessons_cycle_hourId` ON `${TABLE_NAME}` (`hourId`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "rel_timetable_lessons_group",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`date` INTEGER NOT NULL, `hourId` INTEGER NOT NULL, `otherId` TEXT NOT NULL, PRIMARY KEY(`date`, `hourId`, `otherId`))",
+        "fields": [
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hourId",
+            "columnName": "hourId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "otherId",
+            "columnName": "otherId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "date",
+            "hourId",
+            "otherId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_rel_timetable_lessons_group_date",
+            "unique": false,
+            "columnNames": [
+              "date"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rel_timetable_lessons_group_date` ON `${TABLE_NAME}` (`date`)"
+          },
+          {
+            "name": "index_rel_timetable_lessons_group_hourId",
+            "unique": false,
+            "columnNames": [
+              "hourId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rel_timetable_lessons_group_hourId` ON `${TABLE_NAME}` (`hourId`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "rel_timetable_lessons_homework",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`date` INTEGER NOT NULL, `hourId` INTEGER NOT NULL, `otherId` TEXT NOT NULL, PRIMARY KEY(`date`, `hourId`, `otherId`))",
+        "fields": [
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hourId",
+            "columnName": "hourId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "otherId",
+            "columnName": "otherId",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "date",
+            "hourId",
+            "otherId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_rel_timetable_lessons_homework_date",
+            "unique": false,
+            "columnNames": [
+              "date"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rel_timetable_lessons_homework_date` ON `${TABLE_NAME}` (`date`)"
+          },
+          {
+            "name": "index_rel_timetable_lessons_homework_hourId",
+            "unique": false,
+            "columnNames": [
+              "hourId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_rel_timetable_lessons_homework_hourId` ON `${TABLE_NAME}` (`hourId`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "user",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` TEXT NOT NULL, `campaignCategory` TEXT NOT NULL, `fullName` TEXT NOT NULL, `schoolName` TEXT NOT NULL, `schoolType` TEXT NOT NULL, `userType` TEXT NOT NULL, `userTypeText` TEXT NOT NULL, `studyYear` INTEGER NOT NULL, `class_id` TEXT NOT NULL, `class_shortcut` TEXT NOT NULL, `class_name` TEXT NOT NULL, `semester_id` INTEGER, `semester_from` INTEGER, `semester_to` INTEGER, PRIMARY KEY(`uid`))",
+        "fields": [
+          {
+            "fieldPath": "uid",
+            "columnName": "uid",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "campaignCategory",
+            "columnName": "campaignCategory",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fullName",
+            "columnName": "fullName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "schoolName",
+            "columnName": "schoolName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "schoolType",
+            "columnName": "schoolType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userType",
+            "columnName": "userType",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userTypeText",
+            "columnName": "userTypeText",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "studyYear",
+            "columnName": "studyYear",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "classData.id",
+            "columnName": "class_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "classData.shortcut",
+            "columnName": "class_shortcut",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "classData.name",
+            "columnName": "class_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "semester.id",
+            "columnName": "semester_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "semester.from",
+            "columnName": "semester_from",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "semester.to",
+            "columnName": "semester_to",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "uid"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "user_modules",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` TEXT NOT NULL, `moduleName` TEXT NOT NULL, `featureName` TEXT NOT NULL, PRIMARY KEY(`userId`, `moduleName`, `featureName`))",
+        "fields": [
+          {
+            "fieldPath": "userId",
+            "columnName": "userId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "moduleName",
+            "columnName": "moduleName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "featureName",
+            "columnName": "featureName",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "userId",
+            "moduleName",
+            "featureName"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "json_storage",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `data` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "data",
+            "columnName": "data",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "data_classes",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`data_id` TEXT NOT NULL, `data_shortcut` TEXT NOT NULL, `data_name` TEXT NOT NULL, PRIMARY KEY(`data_id`))",
+        "fields": [
+          {
+            "fieldPath": "data.id",
+            "columnName": "data_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "data.shortcut",
+            "columnName": "data_shortcut",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "data.name",
+            "columnName": "data_name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "data_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_data_classes_data_id",
+            "unique": false,
+            "columnNames": [
+              "data_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_data_classes_data_id` ON `${TABLE_NAME}` (`data_id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "data_teachers",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`data_id` TEXT NOT NULL, `data_shortcut` TEXT NOT NULL, `data_name` TEXT NOT NULL, PRIMARY KEY(`data_id`))",
+        "fields": [
+          {
+            "fieldPath": "data.id",
+            "columnName": "data_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "data.shortcut",
+            "columnName": "data_shortcut",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "data.name",
+            "columnName": "data_name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "data_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_data_teachers_data_id",
+            "unique": false,
+            "columnNames": [
+              "data_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_data_teachers_data_id` ON `${TABLE_NAME}` (`data_id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "data_rooms",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`data_id` TEXT NOT NULL, `data_shortcut` TEXT NOT NULL, `data_name` TEXT NOT NULL, PRIMARY KEY(`data_id`))",
+        "fields": [
+          {
+            "fieldPath": "data.id",
+            "columnName": "data_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "data.shortcut",
+            "columnName": "data_shortcut",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "data.name",
+            "columnName": "data_name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "data_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_data_rooms_data_id",
+            "unique": false,
+            "columnNames": [
+              "data_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_data_rooms_data_id` ON `${TABLE_NAME}` (`data_id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "data_students",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`data_id` TEXT NOT NULL, `data_shortcut` TEXT NOT NULL, `data_name` TEXT NOT NULL, PRIMARY KEY(`data_id`))",
+        "fields": [
+          {
+            "fieldPath": "data.id",
+            "columnName": "data_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "data.shortcut",
+            "columnName": "data_shortcut",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "data.name",
+            "columnName": "data_name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "data_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_data_students_data_id",
+            "unique": false,
+            "columnNames": [
+              "data_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_data_students_data_id` ON `${TABLE_NAME}` (`data_id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "data_subject",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`data_id` TEXT NOT NULL, `data_shortcut` TEXT NOT NULL, `data_name` TEXT NOT NULL, PRIMARY KEY(`data_id`))",
+        "fields": [
+          {
+            "fieldPath": "data.id",
+            "columnName": "data_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "data.shortcut",
+            "columnName": "data_shortcut",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "data.name",
+            "columnName": "data_name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "data_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_data_subject_data_id",
+            "unique": false,
+            "columnNames": [
+              "data_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_data_subject_data_id` ON `${TABLE_NAME}` (`data_id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "data_groups",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`data_id` TEXT NOT NULL, `data_shortcut` TEXT NOT NULL, `data_name` TEXT NOT NULL, PRIMARY KEY(`data_id`))",
+        "fields": [
+          {
+            "fieldPath": "data.id",
+            "columnName": "data_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "data.shortcut",
+            "columnName": "data_shortcut",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "data.name",
+            "columnName": "data_name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "data_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_data_groups_data_id",
+            "unique": false,
+            "columnNames": [
+              "data_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_data_groups_data_id` ON `${TABLE_NAME}` (`data_id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "data_class_groups",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`data_classId` TEXT NOT NULL, `data_id` TEXT NOT NULL, `data_shortcut` TEXT NOT NULL, `data_name` TEXT NOT NULL, PRIMARY KEY(`data_id`))",
+        "fields": [
+          {
+            "fieldPath": "data.classId",
+            "columnName": "data_classId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "data.id",
+            "columnName": "data_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "data.shortcut",
+            "columnName": "data_shortcut",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "data.name",
+            "columnName": "data_name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "data_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_data_class_groups_data_id",
+            "unique": false,
+            "columnNames": [
+              "data_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_data_class_groups_data_id` ON `${TABLE_NAME}` (`data_id`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "data_cycles",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`data_id` TEXT NOT NULL, `data_shortcut` TEXT NOT NULL, `data_name` TEXT NOT NULL, PRIMARY KEY(`data_id`))",
+        "fields": [
+          {
+            "fieldPath": "data.id",
+            "columnName": "data_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "data.shortcut",
+            "columnName": "data_shortcut",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "data.name",
+            "columnName": "data_name",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "data_id"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_data_cycles_data_id",
+            "unique": false,
+            "columnNames": [
+              "data_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_data_cycles_data_id` ON `${TABLE_NAME}` (`data_id`)"
+          }
+        ],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '84feb73477080c9c85cc6f42db30a86a')"
+    ]
+  }
+}

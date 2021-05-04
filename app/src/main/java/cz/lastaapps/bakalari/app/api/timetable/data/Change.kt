@@ -25,7 +25,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.api.database.APIBase
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.io.Serializable
 import java.time.LocalDate
 

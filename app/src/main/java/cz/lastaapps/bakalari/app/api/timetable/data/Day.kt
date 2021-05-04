@@ -30,7 +30,7 @@ import cz.lastaapps.bakalari.app.api.DataIdList
 import cz.lastaapps.bakalari.app.api.SimpleData
 import cz.lastaapps.bakalari.app.api.database.APIBase
 import cz.lastaapps.bakalari.platform.App
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.io.Serializable
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
