@@ -28,11 +28,11 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import cz.lastaapps.bakalari.api.core.attachment.holders.Attachment
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.attachment.data.Attachment
-import cz.lastaapps.bakalari.app.ui.uitools.customdialog.createDialog
-import cz.lastaapps.bakalari.app.ui.uitools.customdialog.setDialogItems
-import cz.lastaapps.bakalari.app.ui.uitools.customdialog.setDialogTitle
+import cz.lastaapps.bakalari.tools.ui.customdialog.createDialog
+import cz.lastaapps.bakalari.tools.ui.customdialog.setDialogItems
+import cz.lastaapps.bakalari.tools.ui.customdialog.setDialogTitle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

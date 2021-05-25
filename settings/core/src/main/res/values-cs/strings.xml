@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~    Copyright 2021, Petr Laštovička as Lasta apps, All rights reserved
+  ~
+  ~     This file is part of Bakalari extension.
+  ~
+  ~     Bakalari extension is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Bakalari extension is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<resources>
+
+    <string name="sett_general">Obecné</string>
+
+    <string name="sett_notification_settings">Oznámení</string>
+
+    <string name="sett_mobile_data">Mobilní data na pozadí</string>
+    <string name="sett_mobile_data_summary">Používat mobilní data k aktualizaci dat na pozadí</string>
+
+    <string name="sett_dark_mode">Vzhed</string>
+    <!-- Do not change order -->
+    <string-array name="sett_dark_mode_entries">
+        <item>Světlý</item>
+        <item>Tmavý</item>
+        <item>Systémový</item>
+    </string-array>
+
+    <string name="sett_language">Vyberte jazyk</string>
+    <!-- Do not change order -->
+    <string-array name="sett_language_entries">
+        <item>Systémový</item>
+        <item>Čeština</item>
+        <item>English</item>
+    </string-array>
+
+    <string name="sett_download_location">Stahovat do</string>
+
+
+    <!-- Timetable -->
+    <string name="sett_timetable">Rozvrh</string>
+
+    <string name="sett_timetable_day_title">Zobrazit další víkend od</string>
+    <!-- Do not change order -->
+    <string-array name="sett_timetable_day_entries">
+        <item>Soboty</item>
+        <item>Neděle</item>
+        <item>Pondělí</item>
+    </string-array>
+
+    <string name="sett_timetable_notification_title">Zobrazit oznámení s rozvrhem</string>
+
+    <string name="sett_timetable_preview">Zobrazit zítřejší náhled</string>
+    <!-- Do not change order -->
+    <string-array name="sett_timetable_preview_entries">
+        <item>O půlnoci</item>
+        <item>Po poslední hodině</item>
+        <item>Po 1 hodině</item>
+        <item>Po 2 hodinách</item>
+        <item>Po 3 hodinách</item>
+        <item>V 5 hodin</item>
+        <item>V 6 hodin</item>
+        <item>V 7 hodin</item>
+    </string-array>
+
+
+    <!-- Marks -->
+    <string name="sett_marks">Známky</string>
+
+    <string name="sett_marks_new_mark">Zobrazit známku jako novou po</string>
+    <!-- Do not change order -->
+    <string-array name="sett_marks_new_mark_entries">
+        <item>1 den</item>
+        <item>2 dny</item>
+        <item>3 dny</item>
+        <item>4 dny</item>
+    </string-array>
+
+
+    <!-- Events -->
+    <string name="sett_events_category">Události</string>
+
+    <string name="sett_events_show_for_day">Zobrazit zítřejší události</string>
+    <!-- Do not change order -->
+    <string-array name="sett_events_show_for_day_entries">
+        <item>O půlnoci</item>
+        <item>Po poslední hodině</item>
+        <item>Po 1 hodině</item>
+        <item>Po 2 hodinách</item>
+        <item>Po 3 hodinách</item>
+        <item>V 5 hodin</item>
+        <item>V 6 hodin</item>
+        <item>V 7 hodin</item>
+    </string-array>
+
+
+    <!-- Analytics -->
+    <string name="sett_data_collection">Datová analitika</string>
+    <string name="sett_send_town_school">Informace o městu a škole</string>
+    <string name="sett_send_town_school_summary">Přiložit anonymní data o městu a škole pro rychlejší řešení problémů a šíření aplikace</string>
+
+
+    <!-- Others -->
+    <string name="sett_others">Další</string>
+
+    <string name="sett_reset">Obnovit nastavení</string>
+    <string name="sett_reset_summary">Změny se projeví po opuštění nastavení</string>
+
+    <string name="sett_show_whats_new">Novinky</string>
+
+    <string name="sett_about">O aplikaci</string>
+
+    <string name="sett_license">Použité balíčky</string>
+    <string name="select_download_location">Zvolte cílovou složku</string>
+    <string name="sett_timetable_notification_loading">Načítání...</string>
+    <string name="sett_timetable_notification_user_not_found">Uživatel nenalezen</string>
+    <string name="sett_timetable_notification_disabled">Vypnuto</string>
+    <string name="sett_timetable_notification_dialog_title">Vyberte uživatele</string>
+    <string name="sett_user">Uživatelská nastavení</string>
+
+</resources>

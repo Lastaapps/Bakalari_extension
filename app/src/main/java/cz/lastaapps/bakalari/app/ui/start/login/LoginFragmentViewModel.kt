@@ -59,10 +59,7 @@ class LoginFragmentViewModel(app: Application) : AndroidViewModel(app) {
         const val PROGRESS_ERROR = -3
     }
 
-    /**application context*/
-    private val context = app.applicationContext
-
-    val profilePictureUri = MutableLiveData<Uri>(null)
+    val profilePictureUri = MutableLiveData<Uri?>(null)
     val textProfileName = MutableLiveData("")
     val textUrl = MutableLiveData("")
     val textUsername = MutableLiveData("")
@@ -113,7 +110,7 @@ class LoginFragmentViewModel(app: Application) : AndroidViewModel(app) {
 
     init {
         viewModelScope.launch(Dispatchers.Default) {
-            val repo = AccountsDatabase.getDatabase(context).repository
+            val repo = AccountsDatabase.getDatabase(getApplication()).repository
             cancelEnabled.postValue(repo.getAccountsNumber() > 0)
         }
     }
@@ -313,7 +310,8 @@ class LoginFragmentViewModel(app: Application) : AndroidViewModel(app) {
     /**executed when town selection changes*/
     private fun onTownSelected() {
 
-        selectedSchool.value = null
+        //TODO test later
+        //selectedSchool.value = null
 
         val schoolList = getSchoolList(selectedTown.value!!)
         if (schoolList.value != null) {

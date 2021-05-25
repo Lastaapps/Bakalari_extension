@@ -18,6 +18,7 @@
   ~
   -->
 
+<!---->
 <account-authenticator xmlns:android="http://schemas.android.com/apk/res/android"
     android:accountType="@string/authenticator_key"
     android:icon="@drawable/icon"

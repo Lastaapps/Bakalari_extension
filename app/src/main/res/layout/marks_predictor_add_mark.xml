@@ -27,7 +27,7 @@
         <import type="android.view.View"/>
         <variable
             name="markData"
-            type="cz.lastaapps.bakalari.app.api.marks.data.Mark" />
+            type="cz.lastaapps.bakalari.api.core.marks.holders.Mark" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

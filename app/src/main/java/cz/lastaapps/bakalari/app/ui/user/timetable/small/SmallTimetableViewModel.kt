@@ -24,18 +24,19 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import cz.lastaapps.bakalari.app.api.homework.data.HomeworkList
-import cz.lastaapps.bakalari.app.api.timetable.data.Week
-import cz.lastaapps.bakalari.app.api.user.data.User
-import cz.lastaapps.bakalari.app.ui.uitools.EquippedViewModel
-import cz.lastaapps.bakalari.app.ui.uitools.dateToShowInsteadOfTomorrow
+import cz.lastaapps.bakalari.api.core.homework.holders.HomeworkList
+import cz.lastaapps.bakalari.api.core.timetable.holders.Week
+import cz.lastaapps.bakalari.api.core.user.holders.User
 import cz.lastaapps.bakalari.app.ui.user.CurrentUser
 import cz.lastaapps.bakalari.platform.withAppContext
 import cz.lastaapps.bakalari.settings.MySettings
+import cz.lastaapps.bakalari.settings.R
 import cz.lastaapps.bakalari.tools.TimeTools
 import cz.lastaapps.bakalari.tools.TimeTools.toCzechDate
 import cz.lastaapps.bakalari.tools.TimeTools.toCzechZoned
 import cz.lastaapps.bakalari.tools.TimeTools.toMonday
+import cz.lastaapps.bakalari.tools.ui.EquippedViewModel
+import cz.lastaapps.bakalari.tools.ui.dateToShowInsteadOfTomorrow
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -73,7 +74,7 @@ class SmallTimetableViewModel : EquippedViewModel() {
             val lastLessonTime = dateToShowInsteadOfTomorrow(
                 week,
                 MySettings.withAppContext().TIMETABLE_PREVIEW,
-                cz.lastaapps.bakalari.settings.R.array.sett_timetable_preview
+                R.array.sett_timetable_preview
             ) ?: now
 
             val newDate = lastLessonTime.toCzechDate()

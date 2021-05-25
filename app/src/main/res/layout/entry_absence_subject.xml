@@ -30,7 +30,7 @@
 
         <variable
             name="subject"
-            type="cz.lastaapps.bakalari.app.api.absence.data.AbsenceSubject" />
+            type="cz.lastaapps.bakalari.api.core.absence.holders.AbsenceSubject" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

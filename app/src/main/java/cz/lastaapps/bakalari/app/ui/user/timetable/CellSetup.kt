@@ -32,22 +32,22 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
+import cz.lastaapps.bakalari.api.core.SimpleData
+import cz.lastaapps.bakalari.api.core.homework.holders.HomeworkList
+import cz.lastaapps.bakalari.api.core.timetable.holders.Change.Companion.getStringId
+import cz.lastaapps.bakalari.api.core.timetable.holders.Day
+import cz.lastaapps.bakalari.api.core.timetable.holders.Hour
+import cz.lastaapps.bakalari.api.core.timetable.holders.Week
+import cz.lastaapps.bakalari.api.core.user.holders.User
 import cz.lastaapps.bakalari.app.NavGraphUserDirections
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.SimpleData
-import cz.lastaapps.bakalari.app.api.homework.data.HomeworkList
-import cz.lastaapps.bakalari.app.api.timetable.data.Change.Companion.getStringId
-import cz.lastaapps.bakalari.app.api.timetable.data.Day
-import cz.lastaapps.bakalari.app.api.timetable.data.Hour
-import cz.lastaapps.bakalari.app.api.timetable.data.Week
-import cz.lastaapps.bakalari.app.api.user.data.User
 import cz.lastaapps.bakalari.app.databinding.TimetableLessonInfoBinding
-import cz.lastaapps.bakalari.app.ui.uitools.BasicRecyclerAdapter
 import cz.lastaapps.bakalari.app.ui.user.homework.HmwRootFragment
 import cz.lastaapps.bakalari.platform.App
 import cz.lastaapps.bakalari.tools.TimeTools
 import cz.lastaapps.bakalari.tools.TimeTools.toCzechDate
 import cz.lastaapps.bakalari.tools.TimeTools.toDaySeconds
+import cz.lastaapps.bakalari.tools.ui.BasicRecyclerAdapter
 import kotlin.math.max
 
 /**Provides methods for settings up lesson cells*/

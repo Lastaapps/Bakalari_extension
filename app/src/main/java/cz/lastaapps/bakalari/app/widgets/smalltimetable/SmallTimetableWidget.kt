@@ -30,9 +30,9 @@ import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
 import androidx.annotation.StringRes
+import cz.lastaapps.bakalari.api.core.timetable.holders.Day
+import cz.lastaapps.bakalari.api.core.timetable.holders.Week
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.timetable.data.Day
-import cz.lastaapps.bakalari.app.api.timetable.data.Week
 import cz.lastaapps.bakalari.platform.App
 import cz.lastaapps.bakalari.tools.toBytes
 import java.time.LocalDate
@@ -227,7 +227,7 @@ class SmallTimetableWidget : AppWidgetProvider() {
             } else {
 
                 //sets up holiday view
-                views.setTextViewText(R.id.holiday, day.getHolidayDescription())
+                views.setTextViewText(R.id.holiday, day.getHolidayDescription(context))
                 views.setViewVisibility(R.id.holiday, View.VISIBLE)
             }
 

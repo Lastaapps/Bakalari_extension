@@ -26,9 +26,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import cz.lastaapps.bakalari.app.api.timetable.WebTimetableDate
-import cz.lastaapps.bakalari.app.api.timetable.WebTimetableType
-import cz.lastaapps.bakalari.app.api.user.data.User
+import cz.lastaapps.bakalari.api.core.timetable.WebTimetableDate
+import cz.lastaapps.bakalari.api.core.timetable.WebTimetableType
+import cz.lastaapps.bakalari.api.core.user.holders.User
 import cz.lastaapps.bakalari.app.ui.user.CurrentUser
 import cz.lastaapps.bakalari.platform.withAppContext
 import cz.lastaapps.bakalari.settings.MySettings

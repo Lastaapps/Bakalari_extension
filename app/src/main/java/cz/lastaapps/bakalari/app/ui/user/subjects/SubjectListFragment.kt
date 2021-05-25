@@ -28,13 +28,13 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import cz.lastaapps.bakalari.api.core.subjects.holders.Subject
+import cz.lastaapps.bakalari.api.core.subjects.holders.SubjectList
 import cz.lastaapps.bakalari.app.NavGraphUserDirections
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.subjects.data.Subject
-import cz.lastaapps.bakalari.app.api.subjects.data.SubjectList
 import cz.lastaapps.bakalari.app.databinding.TemplateLoadingListBinding
-import cz.lastaapps.bakalari.app.ui.uitools.BasicRecyclerAdapter
 import cz.lastaapps.bakalari.app.ui.uitools.accountsViewModels
+import cz.lastaapps.bakalari.tools.ui.BasicRecyclerAdapter
 
 typealias SubjectAdapter = BasicRecyclerAdapter<Subject>
 

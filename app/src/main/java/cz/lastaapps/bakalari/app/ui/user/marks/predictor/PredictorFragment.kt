@@ -32,9 +32,12 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import cz.lastaapps.bakalari.api.core.DataIdList
+import cz.lastaapps.bakalari.api.core.marks.holders.Mark
+import cz.lastaapps.bakalari.api.core.marks.holders.MarksPair
+import cz.lastaapps.bakalari.api.core.marks.holders.MarksPairList
+import cz.lastaapps.bakalari.api.core.marks.holders.subjects
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.DataIdList
-import cz.lastaapps.bakalari.app.api.marks.data.*
 import cz.lastaapps.bakalari.app.databinding.FragmentMarksPredictorBinding
 import cz.lastaapps.bakalari.app.ui.uitools.accountsViewModels
 import cz.lastaapps.bakalari.app.ui.user.marks.MarksAdapter
@@ -203,7 +206,8 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
     private fun updateNewAverage() {
         val list = DataIdList<Mark>()
 
-        val marks = viewModel.pairSelected.value?.marks ?: MarksList()
+        val marks = viewModel.pairSelected.value?.marks
+            ?: cz.lastaapps.bakalari.api.core.marks.holders.MarksList()
 
         list.addAll(viewModel.predictorMarks)
         list.addAll(marks)

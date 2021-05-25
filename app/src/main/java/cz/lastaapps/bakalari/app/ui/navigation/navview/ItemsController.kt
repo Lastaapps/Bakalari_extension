@@ -26,9 +26,9 @@ import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.navigation.NavigationView
+import cz.lastaapps.bakalari.api.core.user.holders.User
 import cz.lastaapps.bakalari.app.MainActivity
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.user.data.User
 import cz.lastaapps.bakalari.app.ui.uitools.accountsViewModels
 import cz.lastaapps.bakalari.app.ui.uitools.observeForControllerGraphChanges
 import cz.lastaapps.bakalari.app.ui.user.UserViewModel

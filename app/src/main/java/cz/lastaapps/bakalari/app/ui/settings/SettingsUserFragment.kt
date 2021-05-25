@@ -28,9 +28,9 @@ import android.widget.Toast
 import androidx.navigation.findNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import cz.lastaapps.bakalari.api.core.user.holders.User
 import cz.lastaapps.bakalari.app.MainActivity
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.user.data.User
 import cz.lastaapps.bakalari.app.ui.others.LicenseDialog
 import cz.lastaapps.bakalari.app.ui.others.WhatsNew
 import cz.lastaapps.bakalari.app.ui.uitools.accountsViewModels

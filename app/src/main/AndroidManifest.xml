@@ -145,12 +145,6 @@
 
         <!-- Providers and startup -->
 
-        <!-- Disables the default Work initializer -->
-        <provider
-            android:name="androidx.work.impl.WorkManagerInitializer"
-            android:authorities="${applicationId}.workmanager-init"
-            tools:node="remove" />
-
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
@@ -159,11 +153,19 @@
             tools:node="merge">
 
             <meta-data
+                android:name="cz.lastaapps.bakalari.app.initializers.APIInitializer"
+                android:value="androidx.startup" />
+            <meta-data
                 android:name="cz.lastaapps.bakalari.app.initializers.LegacyInitializer"
                 android:value="androidx.startup" />
             <meta-data
                 android:name="cz.lastaapps.bakalari.app.initializers.WorkInitializer"
                 android:value="androidx.startup" />
+            <!-- Disables the default Work initializer -->
+            <meta-data
+                android:name="androidx.work.impl.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
         </provider>
 
     </application>

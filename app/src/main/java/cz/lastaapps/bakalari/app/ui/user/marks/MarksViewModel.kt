@@ -23,15 +23,15 @@ package cz.lastaapps.bakalari.app.ui.user.marks
 import android.content.Context
 import android.content.res.ColorStateList
 import androidx.lifecycle.MutableLiveData
+import cz.lastaapps.bakalari.api.core.DataIdList
+import cz.lastaapps.bakalari.api.core.marks.MarksRepository
+import cz.lastaapps.bakalari.api.core.marks.holders.Mark
+import cz.lastaapps.bakalari.api.core.marks.holders.MarksPair
+import cz.lastaapps.bakalari.api.core.marks.holders.MarksPairList
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.DataIdList
-import cz.lastaapps.bakalari.app.api.marks.MarksRepository
-import cz.lastaapps.bakalari.app.api.marks.data.Mark
-import cz.lastaapps.bakalari.app.api.marks.data.MarksPair
-import cz.lastaapps.bakalari.app.api.marks.data.MarksPairList
-import cz.lastaapps.bakalari.app.ui.uitools.RefreshableListViewModel
 import cz.lastaapps.bakalari.app.ui.user.CurrentUser
 import cz.lastaapps.bakalari.platform.App
+import cz.lastaapps.bakalari.tools.ui.RefreshableListViewModel
 
 /**ViewModel common for all mark fragments
  * holds loaded marks and some data for each fragment*/

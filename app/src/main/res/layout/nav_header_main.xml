@@ -33,7 +33,7 @@
 
         <variable
             name="user"
-            type="cz.lastaapps.bakalari.app.api.user.data.User" />
+            type="cz.lastaapps.bakalari.api.core.user.holders.User" />
 
         <variable
             name="moreProfiles"
@@ -92,7 +92,7 @@
             android:id="@+id/more_info"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{user.classAndRole}"
+            android:text="@{user.getClassAndRole(context)}"
             app:layout_constraintTag="text_group"
             tools:text="1.A - parent" />
 

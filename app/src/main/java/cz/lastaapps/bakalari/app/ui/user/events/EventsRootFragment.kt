@@ -32,16 +32,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
+import cz.lastaapps.bakalari.api.core.SimpleData
+import cz.lastaapps.bakalari.api.core.events.holders.Event
+import cz.lastaapps.bakalari.api.core.events.holders.EventList
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.SimpleData
-import cz.lastaapps.bakalari.app.api.events.data.Event
-import cz.lastaapps.bakalari.app.api.events.data.EventList
 import cz.lastaapps.bakalari.app.databinding.FragmentEventsBinding
-import cz.lastaapps.bakalari.app.ui.uitools.EmptyAdapter
 import cz.lastaapps.bakalari.app.ui.uitools.accountsViewModels
-import cz.lastaapps.bakalari.app.ui.uitools.lastUpdated
 import cz.lastaapps.bakalari.tools.TimeTools
 import cz.lastaapps.bakalari.tools.TimeTools.toCzechDate
+import cz.lastaapps.bakalari.tools.ui.EmptyAdapter
+import cz.lastaapps.bakalari.tools.ui.lastUpdated
 import kotlin.math.max
 
 /**The main fragment for all the events*/
@@ -207,7 +207,7 @@ class EventsRootFragment : Fragment() {
 
         val textFiltered = Event.filterByText(filtered, viewModel.filterText.value ?: "")
 
-        return EventList(textFiltered)
+        return cz.lastaapps.bakalari.api.core.events.holders.EventList(textFiltered)
     }
 
     private fun lastUpdatedText() {

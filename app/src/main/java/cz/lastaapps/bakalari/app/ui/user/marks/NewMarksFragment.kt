@@ -29,9 +29,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.findNavController
+import cz.lastaapps.bakalari.api.core.marks.holders.MarksList
+import cz.lastaapps.bakalari.api.core.marks.holders.MarksPairList
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.marks.data.MarksList
-import cz.lastaapps.bakalari.app.api.marks.data.MarksPairList
 import cz.lastaapps.bakalari.app.databinding.FragmentMarksNewBinding
 import cz.lastaapps.bakalari.app.ui.uitools.accountsViewModels
 

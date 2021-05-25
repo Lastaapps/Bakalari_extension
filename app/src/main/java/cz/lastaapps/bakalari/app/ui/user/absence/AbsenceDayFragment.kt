@@ -27,9 +27,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import cz.lastaapps.bakalari.api.core.DataIdList
+import cz.lastaapps.bakalari.api.core.absence.holders.AbsenceDay
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.DataIdList
-import cz.lastaapps.bakalari.app.api.absence.data.AbsenceDay
 import cz.lastaapps.bakalari.app.databinding.FragmentAbsenceDayBinding
 import cz.lastaapps.bakalari.app.ui.uitools.accountsViewModels
 
@@ -46,7 +46,7 @@ class AbsenceDayFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         Log.i(TAG, "Creating view")
 

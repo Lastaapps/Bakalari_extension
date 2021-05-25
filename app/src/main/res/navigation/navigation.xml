@@ -118,7 +118,7 @@
             android:name="cz.lastaapps.bakalari.app.ui.user.attachment.AttachmentFileExistsDialog">
             <argument
                 android:name="attachment"
-                app:argType="cz.lastaapps.bakalari.app.api.attachment.data.Attachment" />
+                app:argType="cz.lastaapps.bakalari.api.core.attachment.holders.Attachment" />
             <argument
                 android:name="fileName"
                 app:argType="string" />
@@ -131,7 +131,7 @@
                 app:destination="@id/nav_attachment_file_exists" />
             <argument
                 android:name="attachments"
-                app:argType="cz.lastaapps.bakalari.app.api.attachment.data.Attachment[]" />
+                app:argType="cz.lastaapps.bakalari.api.core.attachment.holders.Attachment[]" />
         </dialog>
         <dialog
             android:id="@+id/nav_teacher_info"

@@ -21,9 +21,9 @@
 package cz.lastaapps.bakalari.app.widgets.smalltimetable
 
 import android.content.Context
-import cz.lastaapps.bakalari.app.api.database.APIBase
-import cz.lastaapps.bakalari.app.api.timetable.TimetableRepository
-import cz.lastaapps.bakalari.app.api.timetable.data.Week
+import cz.lastaapps.bakalari.api.core.database.APIBase
+import cz.lastaapps.bakalari.api.core.timetable.TimetableRepository
+import cz.lastaapps.bakalari.api.core.timetable.holders.Week
 import cz.lastaapps.bakalari.platform.App
 import cz.lastaapps.bakalari.tools.TimeTools.toMonday
 import kotlinx.coroutines.CoroutineScope

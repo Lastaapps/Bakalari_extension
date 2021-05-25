@@ -28,8 +28,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.ui.uitools.customdialog.*
 import cz.lastaapps.bakalari.authentication.database.AccountsDatabase
+import cz.lastaapps.bakalari.tools.ui.customdialog.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

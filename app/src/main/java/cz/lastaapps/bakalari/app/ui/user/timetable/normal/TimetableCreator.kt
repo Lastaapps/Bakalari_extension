@@ -25,13 +25,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import cz.lastaapps.bakalari.api.core.DataIdList
+import cz.lastaapps.bakalari.api.core.SimpleData
+import cz.lastaapps.bakalari.api.core.homework.holders.HomeworkList
+import cz.lastaapps.bakalari.api.core.timetable.holders.Hour
+import cz.lastaapps.bakalari.api.core.timetable.holders.Week
+import cz.lastaapps.bakalari.api.core.user.holders.User
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.DataIdList
-import cz.lastaapps.bakalari.app.api.SimpleData
-import cz.lastaapps.bakalari.app.api.homework.data.HomeworkList
-import cz.lastaapps.bakalari.app.api.timetable.data.Hour
-import cz.lastaapps.bakalari.app.api.timetable.data.Week
-import cz.lastaapps.bakalari.app.api.user.data.User
 import cz.lastaapps.bakalari.app.ui.user.timetable.CellSetup
 import cz.lastaapps.bakalari.platform.App
 import kotlinx.coroutines.yield
@@ -295,7 +295,7 @@ class TimetableCreator {
 
                     //updates texts
                     holiday.findViewById<TextView>(R.id.holiday).text =
-                        day.getHolidayDescription(true)
+                        day.getHolidayDescription(table.context, true)
 
                     row.visibility = View.GONE
                     holiday.visibility = View.VISIBLE

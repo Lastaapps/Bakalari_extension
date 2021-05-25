@@ -20,9 +20,9 @@
 
 package cz.lastaapps.bakalari.app.ui.user
 
+import cz.lastaapps.bakalari.api.core.database.APIBase
 import cz.lastaapps.bakalari.app.MainActivity
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.database.APIBase
 import cz.lastaapps.bakalari.app.ui.uitools.observeForControllerGraphChanges
 import cz.lastaapps.bakalari.app.ui.user.home.HomeFragmentArgs
 import kotlinx.coroutines.*

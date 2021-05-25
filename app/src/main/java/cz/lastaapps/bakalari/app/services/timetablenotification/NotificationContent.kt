@@ -23,10 +23,10 @@ package cz.lastaapps.bakalari.app.services.timetablenotification
 import android.content.Context
 import android.text.Html
 import android.util.Log
+import cz.lastaapps.bakalari.api.core.timetable.holders.Hour
+import cz.lastaapps.bakalari.api.core.timetable.holders.Lesson
+import cz.lastaapps.bakalari.api.core.timetable.holders.Week
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.timetable.data.Hour
-import cz.lastaapps.bakalari.app.api.timetable.data.Lesson
-import cz.lastaapps.bakalari.app.api.timetable.data.Week
 import cz.lastaapps.bakalari.tools.TimeTools
 import cz.lastaapps.bakalari.tools.TimeTools.toCzechDate
 import cz.lastaapps.bakalari.tools.TimeTools.toDaySeconds

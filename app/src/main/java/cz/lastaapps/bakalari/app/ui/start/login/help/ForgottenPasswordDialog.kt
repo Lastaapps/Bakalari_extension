@@ -29,7 +29,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.ui.uitools.customdialog.*
+import cz.lastaapps.bakalari.tools.ui.customdialog.*
 
 class ForgottenPasswordDialog : BottomSheetDialogFragment() {
 

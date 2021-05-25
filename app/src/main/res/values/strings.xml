@@ -39,15 +39,6 @@
     <string name="retry">Retry</string>
     <string name="downloading">Downloading</string>
     <string name="share_message">Try this better Bakalari app as I did!</string>
-    <string name="no_items">No items</string>
-
-    <!-- User types -->
-    <string name="role_parent">parent</string>
-    <string name="role_student">student</string>
-    <string name="role_teacher">teacher</string>
-    <string name="role_leading">leading</string>
-    <string name="role_system">system</string>
-    <string name="role_oder">oder</string>
 
 
     <!-- Menu and navigation items -->
@@ -256,14 +247,6 @@
     </string-array>
     <string name="timetable_permanent">Permanent</string>
     <string name="timetable_empty">Empty timetable</string>
-    <string name="timetable_holiday">Holiday</string>
-    <string name="timetable_celebration">Celebration</string>
-
-    <string name="timetable_change_added">Added</string>
-    <string name="timetable_change_removed">Removed</string>
-    <string name="timetable_change_canceled">Canceled</string>
-    <string name="timetable_change_room_changed">Room changed</string>
-    <string name="timetable_change_unknown">Unknown</string>
 
     <!-- Errors-->
     <string name="timetable_failed_to_load">Failed to download timetable</string>
@@ -300,27 +283,6 @@
     <string name="info_change_type">Change type</string>
     <string name="info_time">Time</string>
 
-
-    <!-- Last updated section -->
-    <string name="last_updated_template">Last updated %1$d %2$s ago</string>
-    <string name="last_updated_right_now">Last updated right now</string>
-    <string name="last_updated_in_future">Last updated in the future</string>
-    <plurals name="last_updated_minutes">
-        <item quantity="one">minute</item>
-        <item quantity="other">minutes</item>
-    </plurals>
-    <plurals name="last_updated_hours">
-        <item quantity="one">hour</item>
-        <item quantity="other">hours</item>
-    </plurals>
-    <plurals name="last_updated_days">
-        <item quantity="one">day</item>
-        <item quantity="other">days</item>
-    </plurals>
-    <plurals name="last_updated_weeks">
-        <item quantity="one">week</item>
-        <item quantity="other">weeks</item>
-    </plurals>
 
 
     <!-- User -->

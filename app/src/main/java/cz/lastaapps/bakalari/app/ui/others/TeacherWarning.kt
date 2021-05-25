@@ -27,8 +27,8 @@ import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import cz.lastaapps.bakalari.api.core.user.holders.User
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.user.data.User
 
 /** Show message to teacher accounts that they wouldn't be able to use all the features */
 class TeacherWarning : DialogFragment() {

@@ -25,6 +25,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import androidx.annotation.Keep
 import androidx.startup.Initializer
+import cz.lastaapps.bakalari.api.core.ConnMgr
+import cz.lastaapps.bakalari.api.core.user.UserChangeObserver
 import cz.lastaapps.bakalari.app.MainActivity
 import cz.lastaapps.bakalari.app.NavGraphUserDirections
 import cz.lastaapps.bakalari.app.receivers.UserChangedRefresher
@@ -77,7 +79,7 @@ private fun initPlatform(context: Context) {
         }
 
         //deleted user data when new user object is loaded
-        app.registerReceiver(UserChangedRefresher(), IntentFilter(MainActivity.USER_CHANGED))
+        app.registerReceiver(UserChangedRefresher(), IntentFilter(UserChangeObserver.USER_CHANGED))
     }
 
     App.afterCreateTasks += { context, scope ->
@@ -93,7 +95,7 @@ private fun initLogin(context: Context) = LoginModuleConfig.apply {
     mainActivity = MainActivity::class
 
     onInvalidRefreshToken =
-        { context -> context.sendBroadcast(Intent(MainActivity.INVALID_REFRESH_TOKEN)) }
+        { context -> context.sendBroadcast(Intent(ConnMgr.INVALID_REFRESH_TOKEN)) }
 
     addAccountIntent = {
         val profilesAction = LoadingFragmentDirections.actionLoadingToProfiles()

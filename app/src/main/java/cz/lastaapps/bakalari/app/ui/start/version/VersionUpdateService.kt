@@ -23,8 +23,8 @@ package cz.lastaapps.bakalari.app.ui.start.version
 import android.content.Intent
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import cz.lastaapps.bakalari.api.core.database.APIBase
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.database.APIBase
 import cz.lastaapps.bakalari.authentication.data.BakalariAccount
 import cz.lastaapps.bakalari.authentication.database.AccountsDatabase
 import cz.lastaapps.bakalari.platform.BaseForegroundService

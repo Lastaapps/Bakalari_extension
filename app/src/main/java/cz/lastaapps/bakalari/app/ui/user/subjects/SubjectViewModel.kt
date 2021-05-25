@@ -23,13 +23,13 @@ package cz.lastaapps.bakalari.app.ui.user.subjects
 import android.content.Context
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.viewModelScope
+import cz.lastaapps.bakalari.api.core.subjects.SubjectRepository
+import cz.lastaapps.bakalari.api.core.subjects.holders.SubjectList
+import cz.lastaapps.bakalari.api.core.subjects.holders.TeacherList
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.subjects.SubjectRepository
-import cz.lastaapps.bakalari.app.api.subjects.data.SubjectList
-import cz.lastaapps.bakalari.app.api.subjects.data.TeacherList
-import cz.lastaapps.bakalari.app.ui.uitools.RefreshableViewModel
 import cz.lastaapps.bakalari.app.ui.user.CurrentUser
 import cz.lastaapps.bakalari.app.ui.user.themes.ThemeViewModel
+import cz.lastaapps.bakalari.tools.ui.RefreshableViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.collections.set

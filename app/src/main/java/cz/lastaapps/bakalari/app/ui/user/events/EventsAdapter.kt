@@ -24,12 +24,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import cz.lastaapps.bakalari.api.core.events.holders.EventList
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.events.data.EventList
 import cz.lastaapps.bakalari.app.databinding.EntryEventBinding
 
 /**Adapter showing events in a RecyclerView*/
-class EventsAdapter(var list: EventList = EventList()) :
+class EventsAdapter(var list: EventList = cz.lastaapps.bakalari.api.core.events.holders.EventList()) :
     RecyclerView.Adapter<EventsAdapter.BindingHolder>() {
 
     class BindingHolder(val binding: EntryEventBinding) : RecyclerView.ViewHolder(binding.root)

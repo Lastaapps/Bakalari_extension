@@ -21,7 +21,7 @@
 package cz.lastaapps.bakalari.app.ui.user
 
 import android.content.Context
-import cz.lastaapps.bakalari.app.api.database.APIBase
+import cz.lastaapps.bakalari.api.core.database.APIBase
 import cz.lastaapps.bakalari.authentication.data.BakalariAccount
 import cz.lastaapps.bakalari.authentication.database.AccountsDatabase
 import cz.lastaapps.bakalari.platform.App

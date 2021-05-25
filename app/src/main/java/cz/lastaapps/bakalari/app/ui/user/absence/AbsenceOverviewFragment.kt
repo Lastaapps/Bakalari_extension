@@ -29,9 +29,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.findNavController
+import cz.lastaapps.bakalari.api.core.DataIdList
+import cz.lastaapps.bakalari.api.core.absence.holders.AbsenceDay
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.DataIdList
-import cz.lastaapps.bakalari.app.api.absence.data.AbsenceDay
 import cz.lastaapps.bakalari.app.databinding.TemplateOverviewBinding
 import cz.lastaapps.bakalari.app.ui.uitools.accountsViewModels
 

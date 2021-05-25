@@ -22,38 +22,34 @@
 
 buildscript {
     ext {
-        //TODO test parcelize
-        //kotlin_version = '1.4.10'
-        //kotlin_version = '1.4.30'
         kotlin_version = '1.5.0'
-        ksp_version = "$kotlin_version-1.0.0-alpha09"
+        ksp_version = "$kotlin_version-1.0.0-alpha10"
 
         desugar_jdk_libs_version = '1.1.5'
 
-        firebase_bom_version = '26.7.0'
+        firebase_bom_version = '28.0.1'
 
         andoridx_startup_runtime_version = '1.0.0'
         andoridx_annotation_version = '1.2.0'
-        andoridx_appcompat_version = '1.2.0'
+        andoridx_appcompat_version = '1.3.0'
         andoridx_constraintlayout_version = '2.0.4'
-        andoridx_core_version = '1.6.0-alpha02'
+        andoridx_core_version = '1.6.0-beta01'
         andoridx_datastore_version = '1.0.0-beta01'
         andoridx_emoji_version = '1.1.0'
-        andoridx_fragment_version = '1.3.3'
+        andoridx_fragment_version = '1.3.4'
         andoridx_lifecycle_version = '2.3.1'
         andoridx_navigation_version = '2.3.5'
         andoridx_preference_version = '1.1.1'
         andoridx_swiperefreshlayout_version = '1.1.0'
         andoridx_tracing_version = '1.0.0'
         androidx_vector_version = '1.1.0'
-        andoridx_work_version = '2.5.0'
-        andoridx_room_version = '2.4.0-alpha01'
-        //andoridx_room_version = '2.3.0-alpha04'
+        andoridx_work_version = '2.6.0-alpha02'
+        andoridx_room_version = '2.4.0-alpha02'
 
         google_material_version = '1.3.0'
         google_core_version = '1.8.1'
 
-        kotlinx_coroutines_version = '1.5.0-RC-native-mt'
+        kotlinx_coroutines_version = '1.5.0-native-mt'
 
         flexbox_version = '2.0.1'
         flextools_version = '1.0.1'
@@ -71,10 +67,10 @@ buildscript {
         google_truth_version = '1.1.2'
 
         //root class paths
-        gradle_version = '7.0.0-alpha15'
+        gradle_version = '7.0.0-beta01'
         google_services_version = '4.3.4'
-        firebase_gradle_crashlytics_version = '2.4.1'
-        oss_license_plugin_version = '0.10.2'
+        firebase_gradle_crashlytics_version = '2.5.2'
+        oss_license_plugin_version = '0.10.4'
     }
     repositories {
         google()

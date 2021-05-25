@@ -24,10 +24,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import cz.lastaapps.bakalari.api.core.DataIdList
+import cz.lastaapps.bakalari.api.core.absence.holders.AbsenceRoot
+import cz.lastaapps.bakalari.api.core.absence.holders.AbsenceSubject
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.DataIdList
-import cz.lastaapps.bakalari.app.api.absence.data.AbsenceRoot
-import cz.lastaapps.bakalari.app.api.absence.data.AbsenceSubject
 import cz.lastaapps.bakalari.app.databinding.EntryAbsenceSubjectBinding
 
 class AbsenceSubjectAdapter :

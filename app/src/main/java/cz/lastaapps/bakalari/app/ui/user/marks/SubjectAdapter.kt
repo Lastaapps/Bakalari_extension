@@ -25,8 +25,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import cz.lastaapps.bakalari.api.core.marks.holders.MarksPairList
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.marks.data.MarksPairList
 import cz.lastaapps.bakalari.app.databinding.MarksSubjectBinding
 
 class SubjectAdapter(private var pairs: MarksPairList = MarksPairList()) :

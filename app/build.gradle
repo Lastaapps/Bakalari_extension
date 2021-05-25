@@ -37,7 +37,7 @@ ext.versionMinor = 0
 ext.versionPatch = 0
 ext.versionClassifier = null
 ext.isBeta = true
-ext.minimumSdkVersion = 18
+ext.minimumSdkVersion = 21
 
 android {
     compileSdkVersion 30
@@ -70,7 +70,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -109,10 +110,12 @@ android {
 
 dependencies {
 
+    implementation project(":api:core")
     implementation project(":authentication:core")
     implementation project(":core:core")
     implementation project(":core:platform")
     implementation project(":core:tools")
+    implementation project(":core:tools:ui")
     implementation project(":settings:core")
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])

@@ -35,8 +35,8 @@ import androidx.fragment.app.DialogFragment
 import androidx.navigation.fragment.navArgs
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.databinding.FragmentLoginSearchBinding
-import cz.lastaapps.bakalari.app.ui.uitools.BasicRecyclerAdapter
-import cz.lastaapps.bakalari.app.ui.uitools.searchNeutralText
+import cz.lastaapps.bakalari.tools.searchNeutralText
+import cz.lastaapps.bakalari.tools.ui.BasicRecyclerAdapter
 import java.text.Collator
 import java.util.*
 import kotlin.Comparator

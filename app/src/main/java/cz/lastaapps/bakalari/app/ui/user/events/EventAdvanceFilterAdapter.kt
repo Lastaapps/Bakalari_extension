@@ -25,10 +25,10 @@ import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.view.setMargins
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.observe
+import cz.lastaapps.bakalari.api.core.SimpleData
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.SimpleData
-import cz.lastaapps.bakalari.app.ui.uitools.LifecycleAdapter
-import cz.lastaapps.bakalari.app.ui.uitools.LifecycleViewHolder
+import cz.lastaapps.bakalari.tools.ui.LifecycleAdapter
+import cz.lastaapps.bakalari.tools.ui.LifecycleViewHolder
 
 /**Creates selection to filter items like all, school, free time,...*/
 class EventAdvanceFilterAdapter(

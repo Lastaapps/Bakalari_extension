@@ -26,10 +26,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.ui.uitools.customdialog.createDialog
-import cz.lastaapps.bakalari.app.ui.uitools.customdialog.setDialogMessage
-import cz.lastaapps.bakalari.app.ui.uitools.customdialog.setDialogTitle
-import cz.lastaapps.bakalari.app.ui.uitools.customdialog.setPositiveButton
+import cz.lastaapps.bakalari.tools.ui.customdialog.createDialog
+import cz.lastaapps.bakalari.tools.ui.customdialog.setDialogMessage
+import cz.lastaapps.bakalari.tools.ui.customdialog.setDialogTitle
+import cz.lastaapps.bakalari.tools.ui.customdialog.setPositiveButton
 
 class LaunchDefaultHelpDialog : BottomSheetDialogFragment() {
 

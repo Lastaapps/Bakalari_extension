@@ -31,14 +31,14 @@ import cz.lastaapps.bakalari.app.MainActivity
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.databinding.NavHeaderMainBinding
 import cz.lastaapps.bakalari.app.databinding.NavHeaderProfileItemBinding
-import cz.lastaapps.bakalari.app.ui.uitools.LifecycleAdapter
-import cz.lastaapps.bakalari.app.ui.uitools.LifecycleBindingHolder
 import cz.lastaapps.bakalari.app.ui.uitools.accountsViewModels
 import cz.lastaapps.bakalari.app.ui.uitools.observeForControllerGraphChanges
 import cz.lastaapps.bakalari.app.ui.user.CurrentUser
 import cz.lastaapps.bakalari.app.ui.user.UserViewModel
 import cz.lastaapps.bakalari.authentication.data.BakalariAccount
 import cz.lastaapps.bakalari.authentication.database.AccountsDatabase
+import cz.lastaapps.bakalari.tools.ui.LifecycleAdapter
+import cz.lastaapps.bakalari.tools.ui.LifecycleBindingHolder
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.launch
 

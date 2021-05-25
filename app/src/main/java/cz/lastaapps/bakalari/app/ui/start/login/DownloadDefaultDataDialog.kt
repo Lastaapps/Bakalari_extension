@@ -34,7 +34,7 @@ import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.ui.start.login.LoginFragmentViewModel.Companion.PROGRESS_DONE
 import cz.lastaapps.bakalari.app.ui.start.login.LoginFragmentViewModel.Companion.PROGRESS_ERROR
 import cz.lastaapps.bakalari.app.ui.start.login.LoginFragmentViewModel.Companion.PROGRESS_ZERO
-import cz.lastaapps.bakalari.app.ui.uitools.customdialog.*
+import cz.lastaapps.bakalari.tools.ui.customdialog.*
 
 class DownloadDefaultDataDialog : BottomSheetDialogFragment() {
 

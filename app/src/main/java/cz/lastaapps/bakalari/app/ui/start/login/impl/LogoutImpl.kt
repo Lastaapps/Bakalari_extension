@@ -24,7 +24,7 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationManagerCompat
-import cz.lastaapps.bakalari.app.api.database.APIBase
+import cz.lastaapps.bakalari.api.core.database.APIBase
 import cz.lastaapps.bakalari.app.services.timetablenotification.TTNotifyService
 import cz.lastaapps.bakalari.app.ui.user.CurrentUser
 import cz.lastaapps.bakalari.app.widgets.smalltimetable.SmallTimetableWidget

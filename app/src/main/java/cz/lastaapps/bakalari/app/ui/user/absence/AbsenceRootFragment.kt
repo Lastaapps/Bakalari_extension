@@ -28,12 +28,12 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayoutMediator
+import cz.lastaapps.bakalari.api.core.user.holders.User
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.user.data.User
 import cz.lastaapps.bakalari.app.databinding.TemplateLoadingRootBinding
 import cz.lastaapps.bakalari.app.ui.uitools.accountsViewModels
-import cz.lastaapps.bakalari.app.ui.uitools.lastUpdated
 import cz.lastaapps.bakalari.app.ui.user.UserViewModel
+import cz.lastaapps.bakalari.tools.ui.lastUpdated
 
 
 class AbsenceRootFragment : Fragment() {

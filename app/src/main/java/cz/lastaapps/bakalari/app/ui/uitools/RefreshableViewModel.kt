@@ -18,7 +18,7 @@
  *
  */
 
-package cz.lastaapps.bakalari.app.ui.uitools
+package cz.lastaapps.bakalari.tools.ui
 
 import android.content.Context
 import android.widget.Toast
@@ -27,8 +27,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import cz.lastaapps.bakalari.app.api.database.APIRepo
-import cz.lastaapps.bakalari.app.api.subjects.SubjectRepository
+import cz.lastaapps.bakalari.api.core.database.APIRepo
+import cz.lastaapps.bakalari.api.core.subjects.SubjectRepository
 import cz.lastaapps.bakalari.platform.App
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,6 +36,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+//TODO move to the UI core module later
 abstract class RefreshableViewModel<R : APIRepo<*>>(val TAG: String, protected val repo: R) :
     EquippedViewModel() {
 

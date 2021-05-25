@@ -21,10 +21,10 @@
 package cz.lastaapps.bakalari.app.ui.user
 
 import android.content.Context
+import cz.lastaapps.bakalari.api.core.user.UserRepository
+import cz.lastaapps.bakalari.api.core.user.holders.User
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.user.UserRepository
-import cz.lastaapps.bakalari.app.api.user.data.User
-import cz.lastaapps.bakalari.app.ui.uitools.RefreshableDataViewModel
+import cz.lastaapps.bakalari.tools.ui.RefreshableDataViewModel
 import kotlinx.coroutines.flow.filterNotNull
 
 /**Holds adn loads data about the user*/

@@ -26,9 +26,9 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.databinding.EntryProfileBinding
-import cz.lastaapps.bakalari.app.ui.uitools.LifecycleAdapter
-import cz.lastaapps.bakalari.app.ui.uitools.LifecycleBindingHolder
 import cz.lastaapps.bakalari.authentication.data.BakalariAccount
+import cz.lastaapps.bakalari.tools.ui.LifecycleAdapter
+import cz.lastaapps.bakalari.tools.ui.LifecycleBindingHolder
 
 typealias Holder = LifecycleBindingHolder<EntryProfileBinding>
 

@@ -28,12 +28,12 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import cz.lastaapps.bakalari.api.core.subjects.holders.Teacher
 import cz.lastaapps.bakalari.app.NavGraphUserDirections
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.subjects.data.Teacher
 import cz.lastaapps.bakalari.app.databinding.TemplateLoadingListBinding
-import cz.lastaapps.bakalari.app.ui.uitools.BasicRecyclerAdapter
 import cz.lastaapps.bakalari.app.ui.uitools.accountsViewModels
+import cz.lastaapps.bakalari.tools.ui.BasicRecyclerAdapter
 
 typealias TeacherAdapter = BasicRecyclerAdapter<Teacher>
 

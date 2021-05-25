@@ -24,7 +24,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import cz.lastaapps.bakalari.app.MainActivity
+import cz.lastaapps.bakalari.api.core.user.UserChangeObserver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -38,14 +38,14 @@ class UserChangedRefresher : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
 
-        if (intent.action == MainActivity.USER_CHANGED) {
+        if (intent.action == UserChangeObserver.USER_CHANGED) {
 
             Log.i(TAG, "Refreshing data based on the user object change")
 
             val pending = goAsync()
             CoroutineScope(Dispatchers.Default).launch {
                 try {
-                    //TODO
+                    //TODO user refresh
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

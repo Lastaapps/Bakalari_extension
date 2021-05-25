@@ -26,8 +26,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import cz.lastaapps.bakalari.api.core.absence.holders.AbsenceRoot
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.absence.data.AbsenceRoot
 import cz.lastaapps.bakalari.app.databinding.FragmentAbsenceSubjectBinding
 import cz.lastaapps.bakalari.app.ui.uitools.accountsViewModels
 

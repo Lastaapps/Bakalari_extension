@@ -123,7 +123,7 @@ class HmwRootFragment : Fragment() {
 
         var text = getString(R.string.homework_failed_to_load)
         viewModel.lastUpdated()?.let {
-            text = cz.lastaapps.bakalari.app.ui.uitools.lastUpdated(requireContext(), it)
+            text = cz.lastaapps.bakalari.tools.ui.lastUpdated(requireContext(), it)
         }
 
         binding.lastUpdated.text = text

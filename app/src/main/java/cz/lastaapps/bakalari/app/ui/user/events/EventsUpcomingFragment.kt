@@ -28,17 +28,17 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import cz.lastaapps.bakalari.api.core.events.EventsRepository
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.events.EventsRepository
 import cz.lastaapps.bakalari.app.databinding.TemplateOverviewBinding
 import cz.lastaapps.bakalari.app.ui.uitools.accountsViewModels
-import cz.lastaapps.bakalari.app.ui.uitools.dateToShowInsteadOfTomorrow
 import cz.lastaapps.bakalari.app.ui.user.timetable.TimetableMainViewModel
 import cz.lastaapps.bakalari.app.ui.user.timetable.TimetableViewModel
 import cz.lastaapps.bakalari.platform.withAppContext
 import cz.lastaapps.bakalari.settings.MySettings
 import cz.lastaapps.bakalari.tools.TimeTools
 import cz.lastaapps.bakalari.tools.TimeTools.toCzechDate
+import cz.lastaapps.bakalari.tools.ui.dateToShowInsteadOfTomorrow
 import java.time.ZonedDateTime
 
 /**Shows upcoming event for today or tomorrow based on settings*/

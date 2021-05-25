@@ -25,9 +25,9 @@ import android.os.Build
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationChannelGroupCompat
 import androidx.core.app.NotificationManagerCompat
+import cz.lastaapps.bakalari.api.core.database.APIBase
+import cz.lastaapps.bakalari.api.core.database.APIRepo
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.database.APIBase
-import cz.lastaapps.bakalari.app.api.database.APIRepo
 import cz.lastaapps.bakalari.authentication.data.BakalariAccount
 import cz.lastaapps.bakalari.authentication.database.AccountsDatabase
 import cz.lastaapps.bakalari.platform.withAppContext

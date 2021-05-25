@@ -28,11 +28,11 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import cz.lastaapps.bakalari.api.core.homework.holders.HomeworkList
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.homework.data.HomeworkList
 import cz.lastaapps.bakalari.app.databinding.TemplateLoadingListBinding
-import cz.lastaapps.bakalari.app.ui.uitools.EmptyAdapter
 import cz.lastaapps.bakalari.app.ui.uitools.accountsViewModels
+import cz.lastaapps.bakalari.tools.ui.EmptyAdapter
 
 /**shows old homework list - done and outdated homework*/
 class HmwOldFragment : Fragment() {

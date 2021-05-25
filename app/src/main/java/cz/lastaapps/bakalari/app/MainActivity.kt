@@ -51,7 +51,9 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.google.android.play.core.review.ReviewManagerFactory
-import cz.lastaapps.bakalari.app.api.user.data.User
+import cz.lastaapps.bakalari.api.core.ConnMgr
+import cz.lastaapps.bakalari.api.core.user.UserChangeObserver
+import cz.lastaapps.bakalari.api.core.user.holders.User
 import cz.lastaapps.bakalari.app.send.ReportIssueActivity
 import cz.lastaapps.bakalari.app.send.SendIdeaActivity
 import cz.lastaapps.bakalari.app.ui.navigation.ComplexDeepLinkNavigator
@@ -83,9 +85,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         //intent extra to select default fragment
         const val NAVIGATE = "navigate"
 
-        const val INVALID_REFRESH_TOKEN = "cz.lastaapps.bakalari.app.INVALID_REFRESH_TOKEN"
         const val FULL_STORAGE = "cz.lastaapps.bakalari.app.FULL_STORAGE"
-        const val USER_CHANGED = "cz.lastaapps.bakalari.app.USER_CHANGED"
         const val ATTACHMENT_DOWNLOADED = "cz.lastaapps.bakalari.app.ATTACHMENT_DOWNLOADED"
         const val ATTACHMENT_DOWNLOADED_FILENAME =
             "cz.lastaapps.bakalari.app.ATTACHMENT_DOWNLOADED.FileName"
@@ -165,11 +165,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         //receivers
         //shows popup when refresh token is invalid
-        registerReceiver(invalidRefreshTokenReceiver, IntentFilter(INVALID_REFRESH_TOKEN))
+        registerReceiver(invalidRefreshTokenReceiver, IntentFilter(ConnMgr.INVALID_REFRESH_TOKEN))
         //shows popup when storage is full
         registerReceiver(fullStorageReceiver, IntentFilter(FULL_STORAGE))
         //shows popup when user object changes and the data should be reloaded
-        registerReceiver(userChangedReceiver, IntentFilter(USER_CHANGED))
+        registerReceiver(userChangedReceiver, IntentFilter(UserChangeObserver.USER_CHANGED))
         //shows popup when attachment downloaded with the opinion to open it
         registerReceiver(attachmentDownloaded, IntentFilter(ATTACHMENT_DOWNLOADED))
 
@@ -460,7 +460,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     private val invalidRefreshTokenReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == INVALID_REFRESH_TOKEN) {
+            if (intent.action == ConnMgr.INVALID_REFRESH_TOKEN) {
                 Log.i(TAG, "Showing invalid token message")
 
                 //shows message only once
@@ -502,7 +502,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     private val userChangedReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == USER_CHANGED) {
+            if (intent.action == UserChangeObserver.USER_CHANGED) {
                 Log.i(TAG, "User object changed")
 
                 AlertDialog.Builder(this@MainActivity)

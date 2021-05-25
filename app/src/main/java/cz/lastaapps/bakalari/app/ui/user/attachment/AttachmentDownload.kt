@@ -41,9 +41,9 @@ import androidx.core.app.NotificationCompat
 import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
+import cz.lastaapps.bakalari.api.core.ConnMgr
 import cz.lastaapps.bakalari.app.MainActivity
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.ConnMgr
 import cz.lastaapps.bakalari.app.ui.start.login.impl.getChannelId
 import cz.lastaapps.bakalari.authentication.data.BakalariAccount
 import cz.lastaapps.bakalari.platform.CheckInternet

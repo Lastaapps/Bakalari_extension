@@ -30,16 +30,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import cz.lastaapps.bakalari.api.core.DataIdList
+import cz.lastaapps.bakalari.api.core.attachment.holders.Attachment
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.DataIdList
-import cz.lastaapps.bakalari.app.api.attachment.data.Attachment
-import cz.lastaapps.bakalari.app.ui.uitools.customdialog.createDialog
-import cz.lastaapps.bakalari.app.ui.uitools.customdialog.setDialogButton
-import cz.lastaapps.bakalari.app.ui.uitools.customdialog.setDialogList
-import cz.lastaapps.bakalari.app.ui.uitools.customdialog.setDialogTitle
 import cz.lastaapps.bakalari.app.ui.user.CurrentUser
 import cz.lastaapps.bakalari.platform.withAppContext
 import cz.lastaapps.bakalari.settings.MySettings
+import cz.lastaapps.bakalari.tools.ui.customdialog.createDialog
+import cz.lastaapps.bakalari.tools.ui.customdialog.setDialogButton
+import cz.lastaapps.bakalari.tools.ui.customdialog.setDialogList
+import cz.lastaapps.bakalari.tools.ui.customdialog.setDialogTitle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -78,7 +78,10 @@ class AttachmentDialog : BottomSheetDialogFragment() {
 
         root = createDialog(requireContext(), container)
             .setDialogTitle(R.string.attachment_label)
-            .setDialogButton(R.id.positive, R.string.attachment_change_location) {
+            .setDialogButton(
+                cz.lastaapps.bakalari.tools.ui.R.id.positive,
+                R.string.attachment_change_location
+            ) {
                 MySettings.withAppContext().chooseDownloadDirectory(requireActivity())
                 dismiss()
             }

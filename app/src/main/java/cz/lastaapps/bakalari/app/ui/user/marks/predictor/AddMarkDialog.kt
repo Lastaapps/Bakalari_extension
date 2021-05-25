@@ -26,8 +26,8 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
+import cz.lastaapps.bakalari.api.core.marks.holders.Mark
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.marks.data.Mark
 import cz.lastaapps.bakalari.app.databinding.MarksPredictorAddMarkBinding
 import kotlin.math.max
 

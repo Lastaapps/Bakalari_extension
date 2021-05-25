@@ -25,8 +25,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import cz.lastaapps.bakalari.api.core.attachment.holders.Attachment
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.attachment.data.Attachment
 
 /** Displays attachments*/
 class AttachmentAdapter(

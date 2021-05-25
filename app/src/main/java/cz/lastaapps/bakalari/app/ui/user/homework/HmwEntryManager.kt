@@ -26,9 +26,9 @@ import android.view.View
 import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
+import cz.lastaapps.bakalari.api.core.homework.holders.Homework
 import cz.lastaapps.bakalari.app.NavGraphUserDirections
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.homework.data.Homework
 import cz.lastaapps.bakalari.app.databinding.EntryHomeworkBinding
 import cz.lastaapps.bakalari.tools.TimeTools
 import cz.lastaapps.bakalari.tools.TimeTools.toMidnight
@@ -184,7 +184,7 @@ class HmwEntryManager(
     fun daysLeftText(): String {
         val diff = Duration.between(TimeTools.today, homework.dateEnd.toMidnight())
         return "${diff.toDays()} ${activity.resources.getQuantityString(
-            R.plurals.last_updated_days,
+            cz.lastaapps.bakalari.tools.ui.R.plurals.last_updated_days,
             diff.toDays().toInt()
         )}"
     }

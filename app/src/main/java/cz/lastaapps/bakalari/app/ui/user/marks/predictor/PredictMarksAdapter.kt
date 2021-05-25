@@ -24,9 +24,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import cz.lastaapps.bakalari.api.core.DataIdList
+import cz.lastaapps.bakalari.api.core.marks.holders.Mark
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.DataIdList
-import cz.lastaapps.bakalari.app.api.marks.data.Mark
 import cz.lastaapps.bakalari.app.databinding.MarksPredictorMarkBinding
 
 class PredictMarksAdapter(

@@ -25,8 +25,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavDirections
-import cz.lastaapps.bakalari.app.api.database.APIBase
-import cz.lastaapps.bakalari.app.api.database.APIRepo
+import cz.lastaapps.bakalari.api.core.database.APIBase
+import cz.lastaapps.bakalari.api.core.database.APIRepo
 import cz.lastaapps.bakalari.app.ui.start.version.VersionChecker
 import cz.lastaapps.bakalari.authentication.database.AccountsDatabase
 import kotlinx.coroutines.launch

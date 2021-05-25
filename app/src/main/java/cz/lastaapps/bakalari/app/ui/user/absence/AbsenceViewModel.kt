@@ -25,16 +25,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.viewModelScope
+import cz.lastaapps.bakalari.api.core.DataIdList
+import cz.lastaapps.bakalari.api.core.absence.AbsenceRepository
+import cz.lastaapps.bakalari.api.core.absence.holders.AbsenceDay
+import cz.lastaapps.bakalari.api.core.absence.holders.AbsenceMonth
+import cz.lastaapps.bakalari.api.core.absence.holders.AbsenceRoot
+import cz.lastaapps.bakalari.api.core.absence.holders.AbsenceSubject
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.DataIdList
-import cz.lastaapps.bakalari.app.api.absence.AbsenceRepository
-import cz.lastaapps.bakalari.app.api.absence.data.AbsenceDay
-import cz.lastaapps.bakalari.app.api.absence.data.AbsenceMonth
-import cz.lastaapps.bakalari.app.api.absence.data.AbsenceRoot
-import cz.lastaapps.bakalari.app.api.absence.data.AbsenceSubject
-import cz.lastaapps.bakalari.app.ui.uitools.RefreshableViewModel
 import cz.lastaapps.bakalari.app.ui.user.CurrentUser
-import cz.lastaapps.bakalari.platform.App
+import cz.lastaapps.bakalari.platform.withAppContext
+import cz.lastaapps.bakalari.settings.LocaleManager
+import cz.lastaapps.bakalari.settings.MySettings
+import cz.lastaapps.bakalari.tools.ui.RefreshableViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -98,7 +100,8 @@ class AbsenceViewModel : RefreshableViewModel<AbsenceRepository>(
 
         viewModelScope.launch(Dispatchers.Main) {
             this@updateMonths.distinctUntilChanged().observeForever {
-                months.value = AbsenceMonth.daysToMonths(App.context, firstSeptember, it)
+                val locale = LocaleManager.getLocale(MySettings.withAppContext())
+                months.value = AbsenceMonth.daysToMonths(locale, firstSeptember, it)
             }
         }
         return this

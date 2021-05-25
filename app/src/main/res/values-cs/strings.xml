@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~    Copyright 2021, Petr Laštovička as Lasta apps, All rights reserved
+  ~
+  ~     This file is part of Bakalari extension.
+  ~
+  ~     Bakalari extension is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Bakalari extension is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<resources>
+    <string name="bakalari">Bakaláři</string>
+
+    <!-- Global -->
+    <plurals name="attachment">
+        <item quantity="one">%d příloha</item>
+        <item quantity="few">%d přílohy</item>
+        <item quantity="other">%d příloh</item>
+    </plurals>
+
+    <!-- Timetable -->
+    <string-array name="week_variants">
+        <item>Tento týden</item>
+        <item>Příští týden</item>
+        <item>Minulý týden</item>
+        <item>%d týdny %s</item><!--2-4 weeks-->
+        <item>%d týdnů %s</item><!--5+ weeks-->
+        <item>dopředu</item>
+        <item>nazpět</item>
+    </string-array>
+
+    <!-- Timetable notification -->
+    <string name="timetable_group">skupina</string>
+    <string name="timetable_next">Další</string>
+    <string name="timetable_end">Konec</string>
+    <string name="timetable_interruption">Přestávka</string>//break is keyword
+    <string name="timetable_have_nice_day">Hezký den</string>
+    <string name="timetable_free_lesson">Volná hodina</string>
+    <string name="timetable_last_lesson">Poslední hodina</string>
+    <string name="timetable_until">do</string>
+    <string name="timetable_finally_home">A konečně domů</string>
+    <string name="menu_home">Domů</string>
+    <string name="menu_timetable">Rozvrh</string>
+    <string name="timetable_enjoy_holiday">Užívej svobody!</string>
+
+
+    <plurals name="marks_new_template">
+        <item quantity="one">%d nová známka</item>
+        <item quantity="few">%d nové známky</item>
+        <item quantity="other">%d nových známek</item>
+    </plurals>
+
+    <plurals name="homework_current_homework_template">
+        <item quantity="one">%d úkol</item>
+        <item quantity="few">%d úkoly</item>
+        <item quantity="other">%d úkolů</item>
+    </plurals>
+
+    <plurals name="events_upcoming_any">
+        <item quantity="one">událost</item>
+        <item quantity="few">události</item>
+        <item quantity="other">událostí</item>
+    </plurals>
+
+    <plurals name="absence_overview_template">
+        <item quantity="one">%d neomluvená hodina</item>
+        <item quantity="few">%d neomluvené hodiny</item>
+        <item quantity="other">%d neomluvených hodin</item>
+    </plurals>
+</resources>

@@ -24,12 +24,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import cz.lastaapps.bakalari.api.core.themes.holders.ThemeList
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.themes.data.ThemeList
 import cz.lastaapps.bakalari.app.databinding.EntryThemeBinding
 
 /**Adapter showing themes*/
-class ThemeAdapter(var themeList: ThemeList = cz.lastaapps.bakalari.app.api.themes.data.ThemeList()) :
+class ThemeAdapter(var themeList: ThemeList = ThemeList()) :
     RecyclerView.Adapter<ThemeAdapter.BindingHolder>() {
 
     init {

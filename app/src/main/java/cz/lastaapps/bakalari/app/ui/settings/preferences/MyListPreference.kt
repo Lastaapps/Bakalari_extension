@@ -24,11 +24,11 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.preference.Preference
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import cz.lastaapps.bakalari.app.ui.uitools.BasicRecyclerAdapter
-import cz.lastaapps.bakalari.app.ui.uitools.customdialog.createDialog
-import cz.lastaapps.bakalari.app.ui.uitools.customdialog.setDialogList
-import cz.lastaapps.bakalari.app.ui.uitools.customdialog.setDialogTitle
-import cz.lastaapps.bakalari.app.ui.uitools.customdialog.setNegativeCancel
+import cz.lastaapps.bakalari.tools.ui.BasicRecyclerAdapter
+import cz.lastaapps.bakalari.tools.ui.customdialog.createDialog
+import cz.lastaapps.bakalari.tools.ui.customdialog.setDialogList
+import cz.lastaapps.bakalari.tools.ui.customdialog.setDialogTitle
+import cz.lastaapps.bakalari.tools.ui.customdialog.setNegativeCancel
 
 
 open class MyListPreference<T> : Preference {

@@ -30,11 +30,11 @@ import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import cz.lastaapps.bakalari.api.core.homework.holders.HomeworkList
+import cz.lastaapps.bakalari.api.core.timetable.holders.Day
+import cz.lastaapps.bakalari.api.core.timetable.holders.Week
+import cz.lastaapps.bakalari.api.core.user.holders.User
 import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.api.homework.data.HomeworkList
-import cz.lastaapps.bakalari.app.api.timetable.data.Day
-import cz.lastaapps.bakalari.app.api.timetable.data.Week
-import cz.lastaapps.bakalari.app.api.user.data.User
 import cz.lastaapps.bakalari.platform.App
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -117,7 +117,8 @@ class SmallTimetableView : RelativeLayout {
             table.visibility = View.GONE
             holiday.visibility = View.VISIBLE
 
-            holiday.findViewById<TextView>(R.id.holiday).text = day.getHolidayDescription(true)
+            holiday.findViewById<TextView>(R.id.holiday).text =
+                day.getHolidayDescription(context, true)
         }
     }
 
