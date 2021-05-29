@@ -27,7 +27,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/activity_main_app_and_bottom_bar">
 
-    <!-- TODO try: Do not change to FragmentContainerView - not fixed bug -->
+    <!-- TODO Do not change to FragmentContainerView - not fixed bug -->
     <fragment
         android:id="@+id/nav_host_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"

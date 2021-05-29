@@ -28,7 +28,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import cz.lastaapps.bakalari.api.core.events.EventsRepository
+import cz.lastaapps.bakalari.api.repo.events.EventsRepository
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.databinding.TemplateOverviewBinding
 import cz.lastaapps.bakalari.app.ui.uitools.accountsViewModels

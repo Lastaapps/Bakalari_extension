@@ -28,7 +28,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import cz.lastaapps.bakalari.api.core.homework.holders.HomeworkList
+import cz.lastaapps.bakalari.api.entity.homework.HomeworkList
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.databinding.EntryHomeworkBinding
 

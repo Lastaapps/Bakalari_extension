@@ -21,8 +21,9 @@
 package cz.lastaapps.bakalari.app.ui.user.themes
 
 import android.content.Context
-import cz.lastaapps.bakalari.api.core.themes.ThemesRepository
-import cz.lastaapps.bakalari.api.core.themes.holders.ThemeList
+import cz.lastaapps.bakalari.api.entity.themes.ThemeList
+import cz.lastaapps.bakalari.api.repo.themes.ThemesRepository
+import cz.lastaapps.bakalari.api.repo.themes.themesRepository
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.ui.user.CurrentUser
 import cz.lastaapps.bakalari.tools.ui.RefreshableListViewModel
@@ -30,8 +31,7 @@ import cz.lastaapps.bakalari.tools.ui.RefreshableListViewModel
 /**Holds and loads Theme data for subject given*/
 class ThemeViewModel(private val subjectId: String) :
     RefreshableListViewModel<ThemeList, ThemesRepository>(
-        TAG,
-        CurrentUser.requireDatabase().themesRepository.getRepository(subjectId)
+        TAG, CurrentUser.requireDatabase().themesRepository.getRepository(subjectId)
     ) {
 
     companion object {

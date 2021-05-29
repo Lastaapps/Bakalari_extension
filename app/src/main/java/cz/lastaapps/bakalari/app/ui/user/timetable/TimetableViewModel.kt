@@ -22,8 +22,9 @@ package cz.lastaapps.bakalari.app.ui.user.timetable
 
 import android.content.Context
 import androidx.lifecycle.viewModelScope
-import cz.lastaapps.bakalari.api.core.timetable.TimetableRepository
-import cz.lastaapps.bakalari.api.core.timetable.holders.Week
+import cz.lastaapps.bakalari.api.entity.timetable.Week
+import cz.lastaapps.bakalari.api.repo.timetable.TimetableRepository
+import cz.lastaapps.bakalari.api.repo.timetable.timetableRepository
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.ui.user.CurrentUser
 import cz.lastaapps.bakalari.tools.ui.RefreshableDataViewModel

@@ -29,12 +29,12 @@ plugins {
 }
 
 android {
-    compileSdk 30
-    buildToolsVersion "30.0.3"
+    compileSdkVersion compile_sdk_version
+    buildToolsVersion build_tools_version
 
     defaultConfig {
-        minSdk 21
-        targetSdk 30
+        minSdkVersion min_sdk_version
+        targetSdkVersion target_sdk_version
 
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -42,16 +42,6 @@ android {
         multiDexEnabled true
 
         proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-
-        //TODO remove after a migration to ksp
-        kapt {
-            arguments {
-                arg("room.schemaLocation", "$projectDir/schemas")
-            }
-        }
-        ksp {
-            arg("room.schemaLocation", "$projectDir/schemas")
-        }
     }
     compileOptions {
         coreLibraryDesugaringEnabled true
@@ -59,24 +49,12 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8
     }
 
-    signingConfigs {
-        buildTypes {
-            debug {
-                buildConfigField "java.lang.Long", "BUILD_TIME", "" + System.currentTimeMillis() + "L"
-            }
-            release {
-                buildConfigField "java.lang.Long", "BUILD_TIME", "" + System.currentTimeMillis() + "L"
-            }
-        }
-    }
-
     buildFeatures {
-        buildConfig = true
+        buildConfig = false
         dataBinding = true
     }
 
@@ -91,11 +69,11 @@ dependencies {
     implementation project(":core:core")
     implementation project(":core:platform")
     implementation project(":core:tools")
+    implementation project(':settings:core')
+    implementation project(':api:entity:timetable')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation project(path: ':settings:core')
-    implementation project(path: ':api:core')
-    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$desugar_jdk_libs_version"
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$desugar_version"
 
     implementation "androidx.annotation:annotation:$andoridx_annotation_version"
     implementation "androidx.appcompat:appcompat:$andoridx_appcompat_version"

@@ -23,7 +23,8 @@ package cz.lastaapps.bakalari.app.ui.user.homework
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
-import cz.lastaapps.bakalari.api.core.homework.HomeworkRepository
+import cz.lastaapps.bakalari.api.repo.homework.HomeworkRepository
+import cz.lastaapps.bakalari.api.repo.homework.homeworkRepository
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.ui.user.CurrentUser
 import cz.lastaapps.bakalari.tools.ui.RefreshableViewModel

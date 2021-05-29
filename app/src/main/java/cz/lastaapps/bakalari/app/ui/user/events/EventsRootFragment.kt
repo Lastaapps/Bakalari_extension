@@ -32,9 +32,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
-import cz.lastaapps.bakalari.api.core.SimpleData
-import cz.lastaapps.bakalari.api.core.events.holders.Event
-import cz.lastaapps.bakalari.api.core.events.holders.EventList
+import cz.lastaapps.bakalari.api.entity.core.SimpleData
+import cz.lastaapps.bakalari.api.entity.events.Event
+import cz.lastaapps.bakalari.api.entity.events.EventList
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.databinding.FragmentEventsBinding
 import cz.lastaapps.bakalari.app.ui.uitools.accountsViewModels
@@ -207,7 +207,7 @@ class EventsRootFragment : Fragment() {
 
         val textFiltered = Event.filterByText(filtered, viewModel.filterText.value ?: "")
 
-        return cz.lastaapps.bakalari.api.core.events.holders.EventList(textFiltered)
+        return EventList(textFiltered)
     }
 
     private fun lastUpdatedText() {

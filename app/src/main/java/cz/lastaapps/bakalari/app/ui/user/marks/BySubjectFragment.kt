@@ -29,7 +29,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LifecycleOwner
-import cz.lastaapps.bakalari.api.core.marks.holders.MarksPairList
+import cz.lastaapps.bakalari.api.entity.marks.MarksPairList
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.databinding.TemplateLoadingListBinding
 

@@ -30,10 +30,10 @@ import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import cz.lastaapps.bakalari.api.core.homework.holders.HomeworkList
-import cz.lastaapps.bakalari.api.core.timetable.holders.Day
-import cz.lastaapps.bakalari.api.core.timetable.holders.Week
-import cz.lastaapps.bakalari.api.core.user.holders.User
+import cz.lastaapps.bakalari.api.entity.homework.HomeworkList
+import cz.lastaapps.bakalari.api.entity.timetable.Day
+import cz.lastaapps.bakalari.api.entity.timetable.Week
+import cz.lastaapps.bakalari.api.entity.user.User
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.platform.App
 import java.time.LocalDate

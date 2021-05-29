@@ -103,7 +103,8 @@
         <!-- Services -->
         <service
             android:name=".services.timetablenotification.TTNotifyService"
-            android:enabled="true" />
+            android:enabled="true"
+            android:exported="true" />
         <service
             android:name=".widgets.smalltimetable.SmallTimetableRemoteService"
             android:enabled="true"
@@ -158,14 +159,6 @@
             <meta-data
                 android:name="cz.lastaapps.bakalari.app.initializers.LegacyInitializer"
                 android:value="androidx.startup" />
-            <meta-data
-                android:name="cz.lastaapps.bakalari.app.initializers.WorkInitializer"
-                android:value="androidx.startup" />
-            <!-- Disables the default Work initializer -->
-            <meta-data
-                android:name="androidx.work.impl.WorkManagerInitializer"
-                android:value="androidx.startup"
-                tools:node="remove" />
         </provider>
 
     </application>

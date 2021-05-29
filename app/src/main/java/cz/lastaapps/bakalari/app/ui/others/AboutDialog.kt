@@ -20,8 +20,8 @@
 
 package cz.lastaapps.bakalari.app.ui.others
 
+import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -32,12 +32,12 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.navigation.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import cz.lastaapps.bakalari.app.BuildConfig
 import cz.lastaapps.bakalari.app.R
-import java.time.Instant
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
+import cz.lastaapps.bakalari.tools.getVersionCode
+import cz.lastaapps.bakalari.tools.getVersionName
+import cz.lastaapps.common.Communication
+import cz.lastaapps.common.DeveloperInfo
+import cz.lastaapps.common.PlayStoreReview
 
 class AboutDialog : BottomSheetDialogFragment() {
 
@@ -45,6 +45,7 @@ class AboutDialog : BottomSheetDialogFragment() {
         private val TAG = AboutDialog::class.java.simpleName
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -53,19 +54,14 @@ class AboutDialog : BottomSheetDialogFragment() {
         Log.i(TAG, "Creating view for AboutFragment")
 
         val root = inflater.inflate(R.layout.fragment_about, container, false)
+        val context = requireContext()
 
         //sets for example Lasta apps 2020
-        val buildDate = ZonedDateTime.ofInstant(
-            Instant.ofEpochMilli(BuildConfig.BUILD_TIME), ZoneId.of("UTC")
-        ).withZoneSameInstant(ZoneId.systemDefault())
-        root.findViewById<TextView>(R.id.author).text = String.format(
-            getString(R.string.author_template),
-            buildDate.format(DateTimeFormatter.ofPattern("yyyy"))
-        )
+        root.findViewById<TextView>(R.id.author).text = DeveloperInfo.getNameAndBuildYear(context)
 
         //info about current app version
         root.findViewById<TextView>(R.id.version).text =
-            "${BuildConfig.VERSION_NAME} ${BuildConfig.VERSION_CODE}"
+            "${context.getVersionName()} ${context.getVersionCode()}"
 
         //share app
         root.findViewById<ImageButton>(R.id.share).setOnClickListener {
@@ -82,36 +78,19 @@ class AboutDialog : BottomSheetDialogFragment() {
         }
         //rate app
         root.findViewById<ImageButton>(R.id.rate).setOnClickListener {
-            val url = "https://play.google.com/store/apps/details?id=cz.lastaapps.bakalari.app"
-            val uri = Uri.parse(url)
-            startActivity(Intent(Intent.ACTION_VIEW, uri))
+            PlayStoreReview.doInAppReview(requireActivity())
         }
         //view Facebook page
         root.findViewById<ImageButton>(R.id.facebook).setOnClickListener {
-            val url = "https://www.facebook.com/lastaapps/"
-            var uri = Uri.parse(url)
-            try {
-                val applicationInfo =
-                    requireActivity().packageManager.getApplicationInfo("com.facebook.katana", 0)
-                if (applicationInfo.enabled) {
-                    uri = Uri.parse("fb://facewebmodal/f?href=$url")
-                }
-            } catch (ignored: PackageManager.NameNotFoundException) {
-            }
-            startActivity(Intent(Intent.ACTION_VIEW, uri))
+            Communication.openFacebook(requireContext())
         }
         //show all my apps
         root.findViewById<ImageButton>(R.id.google_play).setOnClickListener {
-            //TODO add play store link
-            val url = "https://play.google.com/store/apps/dev?id=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-            val uri = Uri.parse(url)
-            startActivity(Intent(Intent.ACTION_VIEW, uri))
+            Communication.openPlayStore(requireContext())
         }
         //source code
         root.findViewById<ImageButton>(R.id.github).setOnClickListener {
-            val url = "https://github.com/lastaapps/bakalari_extension"
-            val uri = Uri.parse(url)
-            startActivity(Intent(Intent.ACTION_VIEW, uri))
+            Communication.openProjectsGithub(requireContext(), "bakalari_extension")
         }
         //API link
         root.findViewById<ImageButton>(R.id.api).setOnClickListener {
@@ -132,3 +111,4 @@ class AboutDialog : BottomSheetDialogFragment() {
         return root
     }
 }
+

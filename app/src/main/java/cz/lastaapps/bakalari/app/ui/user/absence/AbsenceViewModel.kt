@@ -25,12 +25,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.viewModelScope
-import cz.lastaapps.bakalari.api.core.DataIdList
-import cz.lastaapps.bakalari.api.core.absence.AbsenceRepository
-import cz.lastaapps.bakalari.api.core.absence.holders.AbsenceDay
-import cz.lastaapps.bakalari.api.core.absence.holders.AbsenceMonth
-import cz.lastaapps.bakalari.api.core.absence.holders.AbsenceRoot
-import cz.lastaapps.bakalari.api.core.absence.holders.AbsenceSubject
+import cz.lastaapps.bakalari.api.entity.absence.AbsenceDay
+import cz.lastaapps.bakalari.api.entity.absence.AbsenceMonth
+import cz.lastaapps.bakalari.api.entity.absence.AbsenceRoot
+import cz.lastaapps.bakalari.api.entity.absence.AbsenceSubject
+import cz.lastaapps.bakalari.api.entity.core.DataIdList
+import cz.lastaapps.bakalari.api.repo.absence.AbsenceRepository
+import cz.lastaapps.bakalari.api.repo.absence.absenceRepository
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.ui.user.CurrentUser
 import cz.lastaapps.bakalari.platform.withAppContext
@@ -45,8 +46,7 @@ import java.time.ZonedDateTime
 private typealias MonthData = MutableLiveData<DataIdList<AbsenceMonth>>
 
 class AbsenceViewModel : RefreshableViewModel<AbsenceRepository>(
-    TAG,
-    CurrentUser.requireDatabase().absenceRepository
+    TAG, CurrentUser.requireDatabase().absenceRepository
 ) {
 
     companion object {

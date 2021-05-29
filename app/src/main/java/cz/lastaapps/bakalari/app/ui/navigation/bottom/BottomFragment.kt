@@ -33,7 +33,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import cz.lastaapps.bakalari.api.core.user.holders.User
+import cz.lastaapps.bakalari.api.entity.user.User
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.ui.uitools.accountsViewModels
 import cz.lastaapps.bakalari.app.ui.uitools.observeForControllerGraphChanges

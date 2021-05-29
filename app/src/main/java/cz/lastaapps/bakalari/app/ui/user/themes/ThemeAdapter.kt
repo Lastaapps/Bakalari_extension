@@ -24,7 +24,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import cz.lastaapps.bakalari.api.core.themes.holders.ThemeList
+import cz.lastaapps.bakalari.api.entity.themes.ThemeList
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.databinding.EntryThemeBinding
 

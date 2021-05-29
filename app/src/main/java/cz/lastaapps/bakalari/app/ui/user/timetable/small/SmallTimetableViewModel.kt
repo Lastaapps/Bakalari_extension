@@ -24,9 +24,12 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import cz.lastaapps.bakalari.api.core.homework.holders.HomeworkList
-import cz.lastaapps.bakalari.api.core.timetable.holders.Week
-import cz.lastaapps.bakalari.api.core.user.holders.User
+import cz.lastaapps.bakalari.api.entity.homework.HomeworkList
+import cz.lastaapps.bakalari.api.entity.timetable.Week
+import cz.lastaapps.bakalari.api.entity.user.User
+import cz.lastaapps.bakalari.api.repo.homework.homeworkRepository
+import cz.lastaapps.bakalari.api.repo.timetable.timetableRepository
+import cz.lastaapps.bakalari.api.repo.user.userRepository
 import cz.lastaapps.bakalari.app.ui.user.CurrentUser
 import cz.lastaapps.bakalari.platform.withAppContext
 import cz.lastaapps.bakalari.settings.MySettings

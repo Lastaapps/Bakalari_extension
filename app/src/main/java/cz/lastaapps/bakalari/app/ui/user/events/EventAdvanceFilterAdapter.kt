@@ -25,7 +25,7 @@ import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.core.view.setMargins
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.observe
-import cz.lastaapps.bakalari.api.core.SimpleData
+import cz.lastaapps.bakalari.api.entity.core.SimpleData
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.tools.ui.LifecycleAdapter
 import cz.lastaapps.bakalari.tools.ui.LifecycleViewHolder

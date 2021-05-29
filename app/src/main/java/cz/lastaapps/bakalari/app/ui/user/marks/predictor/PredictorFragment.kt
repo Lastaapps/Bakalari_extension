@@ -32,11 +32,8 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import cz.lastaapps.bakalari.api.core.DataIdList
-import cz.lastaapps.bakalari.api.core.marks.holders.Mark
-import cz.lastaapps.bakalari.api.core.marks.holders.MarksPair
-import cz.lastaapps.bakalari.api.core.marks.holders.MarksPairList
-import cz.lastaapps.bakalari.api.core.marks.holders.subjects
+import cz.lastaapps.bakalari.api.entity.core.DataIdList
+import cz.lastaapps.bakalari.api.entity.marks.*
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.databinding.FragmentMarksPredictorBinding
 import cz.lastaapps.bakalari.app.ui.uitools.accountsViewModels
@@ -207,7 +204,7 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
         val list = DataIdList<Mark>()
 
         val marks = viewModel.pairSelected.value?.marks
-            ?: cz.lastaapps.bakalari.api.core.marks.holders.MarksList()
+            ?: MarksList()
 
         list.addAll(viewModel.predictorMarks)
         list.addAll(marks)

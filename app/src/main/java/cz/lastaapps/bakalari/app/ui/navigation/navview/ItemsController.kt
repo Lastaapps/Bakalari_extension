@@ -26,7 +26,7 @@ import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.navigation.NavigationView
-import cz.lastaapps.bakalari.api.core.user.holders.User
+import cz.lastaapps.bakalari.api.entity.user.User
 import cz.lastaapps.bakalari.app.MainActivity
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.ui.uitools.accountsViewModels
@@ -52,7 +52,8 @@ class ItemsController(fragmentActivity: FragmentActivity) {
                 clear()
                 userViewModel?.data?.removeObservers { activity.lifecycle }
                 userViewModel = null
-            })
+            }
+        )
     }
 
     private fun createViewModel() {

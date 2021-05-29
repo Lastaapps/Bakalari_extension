@@ -30,9 +30,10 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDeepLinkBuilder
 import androidx.navigation.NavDirections
-import cz.lastaapps.bakalari.api.core.database.APIBase
-import cz.lastaapps.bakalari.api.core.database.APIRepo
-import cz.lastaapps.bakalari.api.core.timetable.holders.Week
+import cz.lastaapps.bakalari.api.database.APIBase
+import cz.lastaapps.bakalari.api.entity.timetable.Week
+import cz.lastaapps.bakalari.api.repo.core.APIRepo
+import cz.lastaapps.bakalari.api.repo.timetable.timetableRepository
 import cz.lastaapps.bakalari.app.MainActivity
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.ui.navigation.ComplexDeepLinkNavigator

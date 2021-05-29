@@ -28,7 +28,7 @@
 
         <variable
             name="markData"
-            type="cz.lastaapps.bakalari.api.core.marks.holders.Mark" />
+            type="cz.lastaapps.bakalari.api.entity.marks.Mark" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

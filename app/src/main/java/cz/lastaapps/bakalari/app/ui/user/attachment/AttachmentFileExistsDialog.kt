@@ -28,7 +28,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import cz.lastaapps.bakalari.api.core.attachment.holders.Attachment
+import cz.lastaapps.bakalari.api.entity.attachment.Attachment
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.tools.ui.customdialog.createDialog
 import cz.lastaapps.bakalari.tools.ui.customdialog.setDialogItems

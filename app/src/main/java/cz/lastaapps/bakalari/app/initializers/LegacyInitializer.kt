@@ -25,8 +25,9 @@ import android.content.Intent
 import android.content.IntentFilter
 import androidx.annotation.Keep
 import androidx.startup.Initializer
-import cz.lastaapps.bakalari.api.core.ConnMgr
-import cz.lastaapps.bakalari.api.core.user.UserChangeObserver
+import androidx.work.WorkManagerInitializer
+import cz.lastaapps.bakalari.api.io.ConnMgr
+import cz.lastaapps.bakalari.api.repo.user.UserChangeObserver
 import cz.lastaapps.bakalari.app.MainActivity
 import cz.lastaapps.bakalari.app.NavGraphUserDirections
 import cz.lastaapps.bakalari.app.receivers.UserChangedRefresher
@@ -65,7 +66,7 @@ class LegacyInitializer : InitializerTemplate<Any> {
 
         //all the app's initializers
         return listOf<KClass<out Initializer<*>>>(
-            //TODO add Work initializer
+            WorkManagerInitializer::class,
         ).map { it.java }
     }
 }

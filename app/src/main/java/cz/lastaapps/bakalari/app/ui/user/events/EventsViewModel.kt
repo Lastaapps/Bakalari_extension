@@ -22,16 +22,16 @@ package cz.lastaapps.bakalari.app.ui.user.events
 
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
-import cz.lastaapps.bakalari.api.core.SimpleData
-import cz.lastaapps.bakalari.api.core.events.EventsRepository
-import cz.lastaapps.bakalari.api.core.events.holders.EventList
+import cz.lastaapps.bakalari.api.entity.core.SimpleData
+import cz.lastaapps.bakalari.api.entity.events.EventList
+import cz.lastaapps.bakalari.api.repo.events.EventsRepository
+import cz.lastaapps.bakalari.api.repo.events.eventsRepository
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.ui.user.CurrentUser
 import cz.lastaapps.bakalari.tools.ui.RefreshableListViewModel
 
 class EventsViewModel : RefreshableListViewModel<EventList, EventsRepository>(
-    TAG,
-    CurrentUser.requireDatabase().eventsRepository
+    TAG, CurrentUser.requireDatabase().eventsRepository
 ) {
 
     companion object {

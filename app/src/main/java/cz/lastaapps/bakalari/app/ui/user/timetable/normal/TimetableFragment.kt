@@ -30,10 +30,10 @@ import androidx.annotation.UiThread
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import cz.lastaapps.bakalari.api.core.SimpleData
-import cz.lastaapps.bakalari.api.core.timetable.WebTimetableDate
-import cz.lastaapps.bakalari.api.core.timetable.WebTimetableType
-import cz.lastaapps.bakalari.api.core.timetable.holders.Week
+import cz.lastaapps.bakalari.api.entity.core.SimpleData
+import cz.lastaapps.bakalari.api.entity.timetable.Week
+import cz.lastaapps.bakalari.api.repo.timetable.WebTimetableDate
+import cz.lastaapps.bakalari.api.repo.timetable.WebTimetableType
 import cz.lastaapps.bakalari.app.MainActivity
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.databinding.FragmentTimetableBinding

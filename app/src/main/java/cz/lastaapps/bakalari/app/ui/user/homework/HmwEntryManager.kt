@@ -26,7 +26,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
-import cz.lastaapps.bakalari.api.core.homework.holders.Homework
+import cz.lastaapps.bakalari.api.entity.homework.Homework
 import cz.lastaapps.bakalari.app.NavGraphUserDirections
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.databinding.EntryHomeworkBinding

@@ -22,7 +22,7 @@ package cz.lastaapps.bakalari.tools.ui
 
 import android.content.Context
 import android.content.res.Configuration
-import cz.lastaapps.bakalari.api.core.timetable.holders.Week
+import cz.lastaapps.bakalari.api.entity.timetable.Week
 import cz.lastaapps.bakalari.platform.withAppContext
 import cz.lastaapps.bakalari.settings.MySettings
 import cz.lastaapps.bakalari.tools.TimeTools

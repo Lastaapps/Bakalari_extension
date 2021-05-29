@@ -24,9 +24,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import cz.lastaapps.bakalari.api.core.DataIdList
-import cz.lastaapps.bakalari.api.core.absence.holders.AbsenceDataHolder
-import cz.lastaapps.bakalari.api.core.absence.holders.AbsenceRoot
+import cz.lastaapps.bakalari.api.entity.absence.AbsenceRoot
+import cz.lastaapps.bakalari.api.entity.absence.AbsenceWrapper
+import cz.lastaapps.bakalari.api.entity.core.DataIdList
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.databinding.EntryAbsenceDayBinding
 
@@ -38,12 +38,12 @@ class AbsenceDayAdapter :
         setHasStableIds(true)
     }
 
-    private var list: DataIdList<AbsenceDataHolder>
+    private var list: DataIdList<AbsenceWrapper>
 
     constructor(root: AbsenceRoot) : this(root.days)
 
-    constructor(list: DataIdList<*> = DataIdList<AbsenceDataHolder>()) : super() {
-        this.list = list as DataIdList<AbsenceDataHolder>
+    constructor(list: DataIdList<*> = DataIdList<AbsenceWrapper>()) : super() {
+        this.list = list as DataIdList<AbsenceWrapper>
     }
 
     class BindingHolder(val binding: EntryAbsenceDayBinding) : RecyclerView.ViewHolder(binding.root)
@@ -69,8 +69,8 @@ class AbsenceDayAdapter :
         update(root.days)
     }
 
-    fun update(list: DataIdList<*> = DataIdList<AbsenceDataHolder>()) {
-        this.list = list as DataIdList<AbsenceDataHolder>
+    fun update(list: DataIdList<*> = DataIdList<AbsenceWrapper>()) {
+        this.list = list as DataIdList<AbsenceWrapper>
         notifyDataSetChanged()
     }
 

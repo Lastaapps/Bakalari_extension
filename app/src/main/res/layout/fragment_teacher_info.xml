@@ -28,11 +28,11 @@
 
         <variable
             name="simpleTeacher"
-            type="cz.lastaapps.bakalari.api.core.SimpleData" />
+            type="cz.lastaapps.bakalari.api.entity.core.SimpleData" />
 
         <variable
             name="fullTeacher"
-            type="cz.lastaapps.bakalari.api.core.subjects.holders.Teacher" />
+            type="cz.lastaapps.bakalari.api.entity.subjects.Teacher" />
     </data>
 
     <FrameLayout

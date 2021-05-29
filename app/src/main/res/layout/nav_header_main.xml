@@ -33,7 +33,7 @@
 
         <variable
             name="user"
-            type="cz.lastaapps.bakalari.api.core.user.holders.User" />
+            type="cz.lastaapps.bakalari.api.entity.user.User" />
 
         <variable
             name="moreProfiles"

@@ -23,6 +23,7 @@ package cz.lastaapps.bakalari.app.ui.user
 import android.content.Context
 import android.util.Log
 import androidx.work.*
+import cz.lastaapps.bakalari.api.repo.timetable.timetableRepository
 import cz.lastaapps.bakalari.app.services.timetablenotification.TTNotifyService
 import cz.lastaapps.bakalari.app.widgets.WidgetUpdater
 import cz.lastaapps.bakalari.app.workers.WifiChargerWorker

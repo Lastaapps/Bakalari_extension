@@ -28,11 +28,11 @@
 
         <variable
             name="subject"
-            type="cz.lastaapps.bakalari.api.core.subjects.holders.Subject" />
+            type="cz.lastaapps.bakalari.api.entity.subjects.Subject" />
 
         <variable
             name="teacher"
-            type="cz.lastaapps.bakalari.api.core.subjects.holders.Teacher" />
+            type="cz.lastaapps.bakalari.api.entity.subjects.Teacher" />
 
         <variable
             name="subjectViewModel"

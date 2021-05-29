@@ -27,7 +27,7 @@
 
         <variable
             name="pair"
-            type="cz.lastaapps.bakalari.api.core.marks.holders.MarksPair" />
+            type="cz.lastaapps.bakalari.api.entity.marks.MarksPair" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

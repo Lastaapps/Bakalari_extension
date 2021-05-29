@@ -35,7 +35,6 @@ import androidx.lifecycle.lifecycleScope
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.IgnoreExtraProperties
-import cz.lastaapps.bakalari.app.BuildConfig
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.databinding.ActivityReportBinding
 import cz.lastaapps.bakalari.app.ui.user.CurrentUser
@@ -44,6 +43,8 @@ import cz.lastaapps.bakalari.platform.withAppContext
 import cz.lastaapps.bakalari.settings.MySettings
 import cz.lastaapps.bakalari.tools.BaseActivity
 import cz.lastaapps.bakalari.tools.TimeTools
+import cz.lastaapps.bakalari.tools.getVersionCode
+import cz.lastaapps.bakalari.tools.getVersionName
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -173,8 +174,8 @@ class ReportIssueActivity : BaseActivity() {
                 message = message,
                 phoneType = getDeviceName(),
                 androidVersion = Build.VERSION.SDK_INT,
-                appVersionCode = BuildConfig.VERSION_CODE,
-                appVersionName = BuildConfig.VERSION_NAME,
+                appVersionCode = getVersionCode(),
+                appVersionName = getVersionName(),
             )
 
             val account = CurrentUser.accountUUID.value?.let {
@@ -276,7 +277,7 @@ class ReportIssueActivity : BaseActivity() {
         var userHash: String? = "",
         var phoneType: String? = "",
         var androidVersion: Int? = -1,
-        var appVersionCode: Int? = -1,
+        var appVersionCode: Long? = -1,
         var appVersionName: String? = "",
         var school: String? = "",
         var town: String? = "",

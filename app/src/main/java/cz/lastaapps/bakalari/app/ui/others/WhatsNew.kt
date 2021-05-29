@@ -26,9 +26,9 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.edit
-import cz.lastaapps.bakalari.app.BuildConfig
 import cz.lastaapps.bakalari.app.R
-import java.util.*
+import cz.lastaapps.bakalari.tools.getVersionCode
+import cz.lastaapps.bakalari.tools.getVersionName
 
 class WhatsNew(val context: Context) {
 
@@ -41,7 +41,7 @@ class WhatsNew(val context: Context) {
 
     /**@return If What's new message was shown*/
     fun shouldShow(): Boolean {
-        return BuildConfig.VERSION_CODE > getSP().getLong(
+        return context.getVersionCode() > getSP().getLong(
             LAST_VERSION_SHOWN, 0
         )
     }
@@ -59,7 +59,7 @@ class WhatsNew(val context: Context) {
             }
             setTitle(R.string.whats_new_title)
             //shows beta updates to beta users only
-            if (!BuildConfig.VERSION_NAME.toLowerCase(Locale.ROOT).contains("beta")) {
+            if (!context.getVersionName().lowercase().contains("beta")) {
                 setMessage(R.string.whats_new)
             } else {
                 setMessage(R.string.whats_new_beta)
@@ -69,7 +69,7 @@ class WhatsNew(val context: Context) {
 
         //message was seen
         getSP().edit {
-            putLong(LAST_VERSION_SHOWN, BuildConfig.VERSION_CODE.toLong())
+            putLong(LAST_VERSION_SHOWN, context.getVersionCode())
         }
     }
 

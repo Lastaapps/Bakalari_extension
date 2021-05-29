@@ -30,8 +30,8 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import cz.lastaapps.bakalari.api.core.SimpleData
-import cz.lastaapps.bakalari.api.core.homework.holders.Homework
+import cz.lastaapps.bakalari.api.entity.core.SimpleData
+import cz.lastaapps.bakalari.api.entity.homework.Homework
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.databinding.FragmentHomeworkSearchBinding
 import cz.lastaapps.bakalari.app.ui.uitools.accountsViewModels

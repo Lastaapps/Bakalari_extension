@@ -31,7 +31,14 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import cz.lastaapps.bakalari.api.core.database.APIBase
+import cz.lastaapps.bakalari.api.database.APIBase
+import cz.lastaapps.bakalari.api.repo.absence.absenceRepository
+import cz.lastaapps.bakalari.api.repo.events.eventsRepository
+import cz.lastaapps.bakalari.api.repo.homework.homeworkRepository
+import cz.lastaapps.bakalari.api.repo.marks.marksRepository
+import cz.lastaapps.bakalari.api.repo.subjects.subjectTeacherRepository
+import cz.lastaapps.bakalari.api.repo.themes.themesRepository
+import cz.lastaapps.bakalari.api.repo.timetable.timetableRepository
 import cz.lastaapps.bakalari.app.ui.start.login.impl.LoginService
 import cz.lastaapps.bakalari.authentication.TokensAPI
 import cz.lastaapps.bakalari.authentication.data.BakalariAccount

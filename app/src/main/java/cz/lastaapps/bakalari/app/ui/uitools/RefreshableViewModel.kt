@@ -27,8 +27,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import cz.lastaapps.bakalari.api.core.database.APIRepo
-import cz.lastaapps.bakalari.api.core.subjects.SubjectRepository
+import cz.lastaapps.bakalari.api.repo.core.APIRepo
+import cz.lastaapps.bakalari.api.repo.subjects.SubjectRepository
 import cz.lastaapps.bakalari.platform.App
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -23,7 +23,7 @@ package cz.lastaapps.bakalari.app.widgets.smalltimetable
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.widget.RemoteViews
-import cz.lastaapps.bakalari.api.core.timetable.TimetableMainRepository
+import cz.lastaapps.bakalari.api.repo.timetable.TimetableMainRepository
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.widgets.WidgetConfigure
 import java.time.LocalDate

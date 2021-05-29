@@ -28,7 +28,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayoutMediator
-import cz.lastaapps.bakalari.api.core.user.holders.User
+import cz.lastaapps.bakalari.api.entity.user.User
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.databinding.TemplateLoadingRootBinding
 import cz.lastaapps.bakalari.app.ui.uitools.accountsViewModels

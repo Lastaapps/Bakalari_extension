@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+  ~    Copyright 2021, Petr Laštovička as Lasta apps, All rights reserved
   ~
   ~     This file is part of Bakalari extension.
   ~
@@ -221,7 +221,7 @@
             app:layout_constraintTop_toBottomOf="@+id/buttons_bottom"
             tools:text="Lasta apps YYYY" />
 
-        <TextView
+        <cz.lastaapps.com
             android:id="@+id/version"
             style="@style/AppTheme.Text"
             android:layout_width="wrap_content"

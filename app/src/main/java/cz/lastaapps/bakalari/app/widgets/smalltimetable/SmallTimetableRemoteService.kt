@@ -25,8 +25,8 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.widget.RemoteViewsService
-import cz.lastaapps.bakalari.api.core.timetable.holders.Day
-import cz.lastaapps.bakalari.api.core.timetable.holders.Week
+import cz.lastaapps.bakalari.api.entity.timetable.Day
+import cz.lastaapps.bakalari.api.entity.timetable.Week
 import cz.lastaapps.bakalari.platform.withAppContext
 import cz.lastaapps.bakalari.settings.LocaleManager
 import cz.lastaapps.bakalari.settings.MySettings

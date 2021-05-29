@@ -28,7 +28,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import cz.lastaapps.bakalari.api.core.subjects.holders.Teacher
+import cz.lastaapps.bakalari.api.entity.subjects.Teacher
 import cz.lastaapps.bakalari.app.NavGraphUserDirections
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.databinding.TemplateLoadingListBinding

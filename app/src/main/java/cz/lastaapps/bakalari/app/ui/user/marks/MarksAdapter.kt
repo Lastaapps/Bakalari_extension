@@ -24,9 +24,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import cz.lastaapps.bakalari.api.core.marks.holders.MarksList
-import cz.lastaapps.bakalari.api.core.marks.holders.MarksPairList
-import cz.lastaapps.bakalari.api.core.marks.holders.findSubject
+import cz.lastaapps.bakalari.api.entity.marks.MarksList
+import cz.lastaapps.bakalari.api.entity.marks.MarksPairList
+import cz.lastaapps.bakalari.api.entity.marks.findSubject
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.databinding.MarksRowBinding
 
@@ -44,7 +44,7 @@ class MarksAdapter : RecyclerView.Adapter<MarksAdapter.DataBindingHolder> {
     private var marks: MarksList
 
     /**Shows selected marks only*/
-    constructor(marks: MarksList = cz.lastaapps.bakalari.api.core.marks.holders.MarksList()) : super() {
+    constructor(marks: MarksList = MarksList()) : super() {
         this.marks = marks
     }
 

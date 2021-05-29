@@ -30,8 +30,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import cz.lastaapps.bakalari.api.core.DataIdList
-import cz.lastaapps.bakalari.api.core.attachment.holders.Attachment
+import cz.lastaapps.bakalari.api.entity.attachment.Attachment
+import cz.lastaapps.bakalari.api.entity.core.DataIdList
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.ui.user.CurrentUser
 import cz.lastaapps.bakalari.platform.withAppContext

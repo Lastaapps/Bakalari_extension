@@ -26,11 +26,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
 import android.widget.BaseAdapter
-import cz.lastaapps.bakalari.api.core.homework.holders.HomeworkList
-import cz.lastaapps.bakalari.api.core.timetable.holders.Day
-import cz.lastaapps.bakalari.api.core.timetable.holders.Lesson
-import cz.lastaapps.bakalari.api.core.timetable.holders.Week
-import cz.lastaapps.bakalari.api.core.user.holders.User
+import cz.lastaapps.bakalari.api.entity.homework.HomeworkList
+import cz.lastaapps.bakalari.api.entity.timetable.Day
+import cz.lastaapps.bakalari.api.entity.timetable.Lesson
+import cz.lastaapps.bakalari.api.entity.timetable.Week
+import cz.lastaapps.bakalari.api.entity.user.User
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.ui.user.timetable.CellSetup
 import cz.lastaapps.bakalari.platform.App

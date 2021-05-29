@@ -35,11 +35,11 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import cz.lastaapps.bakalari.api.core.SimpleData
-import cz.lastaapps.bakalari.api.core.subjects.holders.SubjectList
-import cz.lastaapps.bakalari.api.core.subjects.holders.Teacher
-import cz.lastaapps.bakalari.api.core.timetable.WebTimetableDate
-import cz.lastaapps.bakalari.api.core.timetable.WebTimetableType
+import cz.lastaapps.bakalari.api.entity.core.SimpleData
+import cz.lastaapps.bakalari.api.entity.subjects.SubjectList
+import cz.lastaapps.bakalari.api.entity.subjects.Teacher
+import cz.lastaapps.bakalari.api.repo.timetable.WebTimetableDate
+import cz.lastaapps.bakalari.api.repo.timetable.WebTimetableType
 import cz.lastaapps.bakalari.app.NavGraphUserDirections
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.databinding.FragmentTeacherInfoBinding

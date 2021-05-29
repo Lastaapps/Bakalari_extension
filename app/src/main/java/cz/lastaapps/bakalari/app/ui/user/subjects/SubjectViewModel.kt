@@ -23,9 +23,10 @@ package cz.lastaapps.bakalari.app.ui.user.subjects
 import android.content.Context
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.viewModelScope
-import cz.lastaapps.bakalari.api.core.subjects.SubjectRepository
-import cz.lastaapps.bakalari.api.core.subjects.holders.SubjectList
-import cz.lastaapps.bakalari.api.core.subjects.holders.TeacherList
+import cz.lastaapps.bakalari.api.entity.subjects.SubjectList
+import cz.lastaapps.bakalari.api.entity.subjects.TeacherList
+import cz.lastaapps.bakalari.api.repo.subjects.SubjectRepository
+import cz.lastaapps.bakalari.api.repo.subjects.subjectTeacherRepository
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.ui.user.CurrentUser
 import cz.lastaapps.bakalari.app.ui.user.themes.ThemeViewModel
@@ -35,8 +36,7 @@ import kotlinx.coroutines.launch
 import kotlin.collections.set
 
 class SubjectViewModel : RefreshableViewModel<SubjectRepository>(
-    TAG,
-    CurrentUser.requireDatabase().subjectTeacherRepository
+    TAG, CurrentUser.requireDatabase().subjectTeacherRepository
 ) {
 
     companion object {

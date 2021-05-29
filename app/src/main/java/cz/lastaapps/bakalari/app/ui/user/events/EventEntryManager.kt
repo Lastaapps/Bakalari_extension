@@ -29,7 +29,7 @@ import android.text.style.ClickableSpan
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.navigation.findNavController
-import cz.lastaapps.bakalari.api.core.events.holders.Event
+import cz.lastaapps.bakalari.api.entity.events.Event
 import cz.lastaapps.bakalari.app.NavGraphUserDirections
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.databinding.EntryEventBinding

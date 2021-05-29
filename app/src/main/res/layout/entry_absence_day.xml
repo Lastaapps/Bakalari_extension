@@ -26,7 +26,7 @@
 
         <variable
             name="day"
-            type="cz.lastaapps.bakalari.api.core.absence.holders.AbsenceDataHolder" />
+            type="cz.lastaapps.bakalari.api.entity.absence.AbsenceWrapper" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -31,26 +31,31 @@ plugins {
     id 'androidx.navigation.safeargs.kotlin'
 }
 
-//TODO change
-ext.versionMajor = 1
-ext.versionMinor = 0
-ext.versionPatch = 0
-ext.versionClassifier = null
-ext.isBeta = true
-ext.minimumSdkVersion = 21
-
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.3"
+
+    if (targets_preview) {
+        compileSdkVersion compile_sdk_version
+        buildToolsVersion build_tools_version
+
+        defaultConfig.targetSdkVersion target_sdk_version
+    } else {
+        compileSdkVersion legacy_compile_sdk_version
+        buildToolsVersion legacy_build_tools_version
+
+        defaultConfig.targetSdkVersion legacy_target_sdk_version
+    }
+
     defaultConfig {
         applicationId 'cz.lastaapps.bakalari.app'
-        targetSdkVersion 30
-        minSdkVersion 21
-        versionCode generateVersionCode() // 210010203
-        versionName generateVersionName() // 1.2.3-SNAPSHOT
+        minSdkVersion min_sdk_version
+        versionCode app_version_code
+        versionName app_version_name
+
+        resConfigs "en", "cs"
 
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
         multiDexEnabled true
 
@@ -67,13 +72,14 @@ android {
     buildTypes {
         debug {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         release {
             minifyEnabled true
             shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    buildFeatures {
+        buildConfig = false
     }
     compileOptions {
         coreLibraryDesugaringEnabled true
@@ -86,19 +92,8 @@ android {
         jvmTarget = JavaVersion.VERSION_1_8
     }
 
-    signingConfigs {
-        buildTypes {
-            debug {
-                buildConfigField "java.lang.Long", "BUILD_TIME", "" + System.currentTimeMillis() + "L"
-            }
-            release {
-                buildConfigField "java.lang.Long", "BUILD_TIME", "" + System.currentTimeMillis() + "L"
-            }
-        }
-    }
-
     buildFeatures {
-        buildConfig = true
+        buildConfig = false
         dataBinding = true
     }
 
@@ -110,18 +105,19 @@ android {
 
 dependencies {
 
-    implementation project(":api:core")
+    implementation project(":api:wrapper")
     implementation project(":authentication:core")
     implementation project(":core:core")
     implementation project(":core:platform")
     implementation project(":core:tools")
     implementation project(":core:tools:ui")
     implementation project(":settings:core")
+    implementation project(":lastaapps:common")
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$desugar_jdk_libs_version"
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$desugar_version"
 
     implementation "androidx.annotation:annotation:$andoridx_annotation_version"
     implementation "androidx.appcompat:appcompat:$andoridx_appcompat_version"

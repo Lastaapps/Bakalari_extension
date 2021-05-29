@@ -31,8 +31,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
-import cz.lastaapps.bakalari.api.core.user.holders.User
-import cz.lastaapps.bakalari.api.core.web.LoginToken
+import cz.lastaapps.bakalari.api.entity.user.User
+import cz.lastaapps.bakalari.api.repo.web.LoginToken
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.databinding.FragmentHomeBinding
 import cz.lastaapps.bakalari.app.ui.uitools.accountsViewModels

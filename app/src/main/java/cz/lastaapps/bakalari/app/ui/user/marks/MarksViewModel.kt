@@ -23,11 +23,12 @@ package cz.lastaapps.bakalari.app.ui.user.marks
 import android.content.Context
 import android.content.res.ColorStateList
 import androidx.lifecycle.MutableLiveData
-import cz.lastaapps.bakalari.api.core.DataIdList
-import cz.lastaapps.bakalari.api.core.marks.MarksRepository
-import cz.lastaapps.bakalari.api.core.marks.holders.Mark
-import cz.lastaapps.bakalari.api.core.marks.holders.MarksPair
-import cz.lastaapps.bakalari.api.core.marks.holders.MarksPairList
+import cz.lastaapps.bakalari.api.entity.core.DataIdList
+import cz.lastaapps.bakalari.api.entity.marks.Mark
+import cz.lastaapps.bakalari.api.entity.marks.MarksPair
+import cz.lastaapps.bakalari.api.entity.marks.MarksPairList
+import cz.lastaapps.bakalari.api.repo.marks.MarksRepository
+import cz.lastaapps.bakalari.api.repo.marks.marksRepository
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.ui.user.CurrentUser
 import cz.lastaapps.bakalari.platform.App
@@ -36,8 +37,7 @@ import cz.lastaapps.bakalari.tools.ui.RefreshableListViewModel
 /**ViewModel common for all mark fragments
  * holds loaded marks and some data for each fragment*/
 class MarksViewModel : RefreshableListViewModel<MarksPairList, MarksRepository>(
-    TAG,
-    CurrentUser.requireDatabase().marksRepository
+    TAG, CurrentUser.requireDatabase().marksRepository
 ) {
     companion object {
         private val TAG = MarksViewModel::class.java.simpleName

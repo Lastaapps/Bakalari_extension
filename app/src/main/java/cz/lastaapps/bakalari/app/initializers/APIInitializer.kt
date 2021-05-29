@@ -22,7 +22,7 @@ package cz.lastaapps.bakalari.app.initializers
 
 import android.content.Context
 import androidx.startup.Initializer
-import cz.lastaapps.bakalari.api.core.ModuleConfig
+import cz.lastaapps.bakalari.api.entity.core.ModuleConfig
 import cz.lastaapps.bakalari.platform.InitializerTemplate
 import cz.lastaapps.bakalari.platform.withAppContext
 import cz.lastaapps.bakalari.settings.MySettings

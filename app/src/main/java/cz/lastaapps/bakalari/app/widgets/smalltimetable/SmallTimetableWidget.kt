@@ -30,8 +30,8 @@ import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
 import androidx.annotation.StringRes
-import cz.lastaapps.bakalari.api.core.timetable.holders.Day
-import cz.lastaapps.bakalari.api.core.timetable.holders.Week
+import cz.lastaapps.bakalari.api.entity.timetable.Day
+import cz.lastaapps.bakalari.api.entity.timetable.Week
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.platform.App
 import cz.lastaapps.bakalari.tools.toBytes

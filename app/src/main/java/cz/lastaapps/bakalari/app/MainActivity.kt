@@ -26,14 +26,12 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.MainThread
 import androidx.appcompat.app.AlertDialog
@@ -50,10 +48,9 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
-import com.google.android.play.core.review.ReviewManagerFactory
-import cz.lastaapps.bakalari.api.core.ConnMgr
-import cz.lastaapps.bakalari.api.core.user.UserChangeObserver
-import cz.lastaapps.bakalari.api.core.user.holders.User
+import cz.lastaapps.bakalari.api.entity.user.User
+import cz.lastaapps.bakalari.api.io.ConnMgr
+import cz.lastaapps.bakalari.api.repo.user.UserChangeObserver
 import cz.lastaapps.bakalari.app.send.ReportIssueActivity
 import cz.lastaapps.bakalari.app.send.SendIdeaActivity
 import cz.lastaapps.bakalari.app.ui.navigation.ComplexDeepLinkNavigator
@@ -69,6 +66,8 @@ import cz.lastaapps.bakalari.app.ui.user.CurrentUserHandler
 import cz.lastaapps.bakalari.app.ui.user.UserViewModel
 import cz.lastaapps.bakalari.authentication.database.AccountsDatabase
 import cz.lastaapps.bakalari.tools.BaseActivity
+import cz.lastaapps.common.Communication
+import cz.lastaapps.common.PlayStoreReview
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.consumeEach
@@ -364,42 +363,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 startActivity(shareIntent)
             }
             R.id.nav_rate -> {
-
-                val manager = ReviewManagerFactory.create(this@MainActivity)
-
-                //redirects to the play store, required under LOLLIPOP 5.0 and when Google play
-                //API fails
-                val oldRequest = {
-                    val url =
-                        "https://play.google.com/store/apps/details?id=cz.lastaapps.bakalari.app"
-                    val uri = Uri.parse(url)
-                    startActivity(Intent(Intent.ACTION_VIEW, uri))
-                }
-
-                //version check
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                    oldRequest()
-                    return true
-                }
-
-                //Google play in app review
-                val request = manager.requestReviewFlow()
-                request.addOnCompleteListener { request ->
-                    if (request.isSuccessful) {
-
-                        val reviewInfo = request.result
-                        val flow = manager.launchReviewFlow(this@MainActivity, reviewInfo)
-                        flow.addOnCompleteListener {
-                            Toast.makeText(
-                                this@MainActivity,
-                                R.string.thanks_review,
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                    } else {
-                        oldRequest()
-                    }
-                }
+                PlayStoreReview.doInAppReview(this)
             }
             R.id.nav_idea -> {
                 val intent = Intent(this, SendIdeaActivity::class.java)
@@ -413,29 +377,13 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 findNavController().navigate(R.id.nav_about)
             }
             R.id.nav_facebook -> {
-                val url = "https://www.facebook.com/lastaapps/"
-                var uri = Uri.parse(url)
-                try {
-                    val applicationInfo =
-                        packageManager.getApplicationInfo("com.facebook.katana", 0)
-                    if (applicationInfo.enabled) {
-                        uri = Uri.parse("fb://facewebmodal/f?href=$url")
-                    }
-                } catch (ignored: PackageManager.NameNotFoundException) {
-                }
-                startActivity(Intent(Intent.ACTION_VIEW, uri))
+                Communication.openFacebook(this)
             }
             R.id.nav_google_play -> {
-                //TODO app play store link
-                val url =
-                    "https://play.google.com/store/apps/dev?id=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-                val uri = Uri.parse(url)
-                startActivity(Intent(Intent.ACTION_VIEW, uri))
+                Communication.openPlayStore(this)
             }
             R.id.nav_github -> {
-                val url = "https://github.com/lastaapps/bakalari_extension"
-                val uri = Uri.parse(url)
-                startActivity(Intent(Intent.ACTION_VIEW, uri))
+                Communication.openProjectsGithub(this, "bakalari_extension")
             }
             R.id.nav_api -> {
                 val url = "https://github.com/bakalari-api"
