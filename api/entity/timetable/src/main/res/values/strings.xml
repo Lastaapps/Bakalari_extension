@@ -24,6 +24,7 @@
     <string name="timetable_change_removed">Removed</string>
     <string name="timetable_change_canceled">Canceled</string>
     <string name="timetable_change_room_changed">Room changed</string>
+    <string name="timetable_change_substitution">Substitution</string>
     <string name="timetable_change_unknown">Unknown</string>
 
     <string name="timetable_holiday">Holiday</string>

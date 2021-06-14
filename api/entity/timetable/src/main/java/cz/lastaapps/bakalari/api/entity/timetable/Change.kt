@@ -60,6 +60,9 @@ data class Change(
     /**Room changed*/
     fun isRoomChanged(): Boolean = changeType == ROOM_CHANGED
 
+    /**Substitution*/
+    fun isSubstitution(): Boolean = changeType == SUBSTITUTION
+
     /**if error is not one of the known ones*/
     //TODO report
     fun isUnknown(): Boolean = changeType !in allChangeTypes
@@ -73,7 +76,8 @@ data class Change(
         const val REMOVED = "Removed"
         const val CANCELED = "Canceled"
         const val ROOM_CHANGED = "RoomChanged"
-        val allChangeTypes = listOf(ADDED, REMOVED, CANCELED, ROOM_CHANGED)
+        const val SUBSTITUTION = "Substitution"
+        val allChangeTypes = listOf(ADDED, REMOVED, CANCELED, ROOM_CHANGED, SUBSTITUTION)
 
         fun Change?.getStringId(): Int? {
             return when (this?.changeType) {
@@ -82,6 +86,7 @@ data class Change(
                 REMOVED -> R.string.timetable_change_removed
                 CANCELED -> R.string.timetable_change_canceled
                 ROOM_CHANGED -> R.string.timetable_change_room_changed
+                SUBSTITUTION -> R.string.timetable_change_substitution
                 else -> R.string.timetable_change_unknown
             }
         }
