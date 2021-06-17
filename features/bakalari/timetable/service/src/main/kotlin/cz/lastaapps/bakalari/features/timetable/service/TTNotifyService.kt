@@ -18,26 +18,19 @@
  *
  */
 
-package cz.lastaapps.bakalari.app.services.timetablenotification
+package cz.lastaapps.bakalari.features.timetable.service
 
 import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.os.Bundle
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavDeepLinkBuilder
-import androidx.navigation.NavDirections
 import cz.lastaapps.bakalari.api.database.APIBase
 import cz.lastaapps.bakalari.api.entity.timetable.Week
 import cz.lastaapps.bakalari.api.repo.core.APIRepo
 import cz.lastaapps.bakalari.api.repo.timetable.timetableRepository
-import cz.lastaapps.bakalari.app.MainActivity
-import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.ui.navigation.ComplexDeepLinkNavigator
-import cz.lastaapps.bakalari.app.ui.start.loading.LoadingFragmentDirections
 import cz.lastaapps.bakalari.authentication.database.AccountsDatabase
 import cz.lastaapps.bakalari.platform.App
 import cz.lastaapps.bakalari.platform.BaseService
@@ -157,18 +150,21 @@ class TTNotifyService : BaseService() {
 
         val accountRepo = AccountsDatabase.getDatabase(this).repository
         if (!accountRepo.exitsUUID(uuid)) {
+            //TODO route navigation
+            /*
             val settingsPendingIntent = NavDeepLinkBuilder(this)
                 .setComponentName(MainActivity::class.java)
                 .setGraph(R.navigation.navigation)
                 .setDestination(R.id.nav_settings_root)
                 //.setArguments(bundle)
                 .createPendingIntent()
+            */
 
             replaceNotification(
                 generateNotification(
                     getString(R.string.timetable_notification_user_deleted),
                     getString(R.string.timetable_notification_open_settings),
-                    settingsPendingIntent,
+                    null//settingsPendingIntent,
                 )
             )
             stopForeground(false)
@@ -307,8 +303,9 @@ class TTNotifyService : BaseService() {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(false)
             .setContentIntent(pendingIntent)
-            .setSmallIcon(R.drawable.nav_timetable)
+            .setSmallIcon(cz.lastaapps.bakalari.features.core.R.drawable.nav_timetable)
             .setStyle(NotificationCompat.BigTextStyle())
+
         return builder.build()
     }
 
@@ -379,6 +376,8 @@ class TTNotifyService : BaseService() {
     private fun getTimetableOpenPendingIntent(): PendingIntent? {
         val uuid = observerUUID ?: return null
 
+        //TODO route navigation
+        /*
         val intent = ComplexDeepLinkNavigator.createIntent(this, MainActivity::class.java, listOf(
             LoadingFragmentDirections.actionLoadingToUser(uuid),
             object : NavDirections {
@@ -393,6 +392,8 @@ class TTNotifyService : BaseService() {
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT
         )
+         */
+        return null
     }
 
     /**Sets pending intent into AlarmManager which updated data during day*/

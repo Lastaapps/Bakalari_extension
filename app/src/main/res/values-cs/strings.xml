@@ -40,20 +40,6 @@
         <item>nazpět</item>
     </string-array>
 
-    <!-- Timetable notification -->
-    <string name="timetable_group">skupina</string>
-    <string name="timetable_next">Další</string>
-    <string name="timetable_end">Konec</string>
-    <string name="timetable_interruption">Přestávka</string>//break is keyword
-    <string name="timetable_have_nice_day">Hezký den</string>
-    <string name="timetable_free_lesson">Volná hodina</string>
-    <string name="timetable_last_lesson">Poslední hodina</string>
-    <string name="timetable_until">do</string>
-    <string name="timetable_finally_home">A konečně domů</string>
-    <string name="menu_home">Domů</string>
-    <string name="menu_timetable">Rozvrh</string>
-    <string name="timetable_enjoy_holiday">Užívej svobody!</string>
-
 
     <plurals name="marks_new_template">
         <item quantity="one">%d nová známka</item>

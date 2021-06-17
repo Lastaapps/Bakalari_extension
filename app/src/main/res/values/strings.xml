@@ -223,23 +223,6 @@
     <string name="timetable_no_timetable">No timetable</string>
     <string name="timetable_download_failed_open_app">Failed to download timetable, open app</string>
 
-    <!-- Timetable notification -->
-    <string name="timetable_group">group</string>
-    <string name="timetable_next">Next</string>
-    <string name="timetable_end">End</string>
-    <string name="timetable_interruption">Break</string>//break is keyword
-    <string name="timetable_have_nice_day">Have a nice day</string>
-    <string name="timetable_free_lesson">Free lesson</string>
-    <string name="timetable_last_lesson">Last lesson</string>
-    <string name="timetable_until">until</string>
-    <string name="timetable_finally_home">And finally home</string>
-    <string name="timetable_enjoy_holiday">Enjoy freedom!</string>
-    <string name="timetable_preparing">Preparing timetable</string>
-    <string name="timetable_should_not_take_long">This shouldn\'t be there more than few seconds</string>
-    <string name="timetable_notification_cannot_download">Cannot download timetable</string>
-    <string name="timetable_notification_connect_to_internet">Connect to internet</string>
-    <string name="timetable_notification_user_deleted">User not found</string>
-    <string name="timetable_notification_open_settings">Click to open settings and choose another one</string>
 
     <!-- Timetable lesson info -->
     <string name="info_name">Name</string>
@@ -441,12 +424,7 @@
     <string name="teacher_warning_button">OK</string>
 
     <!--Notification channels-->
-
-    <string name="channel_timetable_id">TIMETABLE_CHANNEL</string>
-    <string name="channel_timetable_name">Current lesson</string>
-    <string name="channel_timetable_description">The notification showing current and next lesson
-        - it\'s class, teacher, etc.</string>
-    <string name="channel_attachment_downloading_id">ATTACHMENT_DOWNLOADING_CHANNEL</string>
+    <string name="channel_attachment_downloading_id" translatable="false">ATTACHMENT_DOWNLOADING_CHANNEL</string>
     <string name="channel_attachment_downloading_name">Attachment downloads</string>
     <string name="channel_attachment_downloading_description">Shows downloaded attachments to open them fast</string>
 

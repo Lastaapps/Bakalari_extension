@@ -84,7 +84,7 @@ abstract class BaseForegroundService : BaseService() {
             .setContentTitle(title)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setAutoCancel(false)
-            .setSmallIcon(cz.lastaapps.bakalari.core.R.drawable.icon)
+            .setSmallIcon(cz.lastaapps.bakalari.app.core.R.drawable.icon)
 
         return builder.build()
     }

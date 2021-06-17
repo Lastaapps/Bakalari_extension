@@ -22,16 +22,11 @@
 <resources>
     <item name="appwidget_host_id" type="id" />
 
-    <item name="notification_id_timetable_notification_service" type="id" />
-
     <item name="notification_id_login_service" type="id" />
     <item name="notification_id_logout_service" type="id" />
     <item name="notification_id_version_update" type="id" />
 
     <item name="request_code_login_image" type="id" />
     <item name="request_code_small_timetable_widget" type="id" />
-    <item name="request_code_tt_timetable_open_pending_intent" type="id" />
-    <item name="request_code_tt_receiver_normal" type="id" />
-    <item name="request_code_tt_receiver_daily" type="id" />
 
 </resources>

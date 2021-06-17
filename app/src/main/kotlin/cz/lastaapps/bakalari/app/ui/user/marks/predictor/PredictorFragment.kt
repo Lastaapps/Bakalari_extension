@@ -220,7 +220,7 @@ class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.O
                     ColorStateList.valueOf(
                         ContextCompat.getColor(
                             requireContext(),
-                            cz.lastaapps.bakalari.core.R.color.primary_text_light
+                            cz.lastaapps.bakalari.app.core.R.color.primary_text_light
                         )
                     )
                 }

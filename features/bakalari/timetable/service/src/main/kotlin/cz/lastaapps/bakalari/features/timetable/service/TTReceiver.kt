@@ -18,14 +18,13 @@
  *
  */
 
-package cz.lastaapps.bakalari.app.services.timetablenotification
+package cz.lastaapps.bakalari.features.timetable.service
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.PowerManager
 import android.util.Log
-import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.tools.normalizeID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -54,7 +53,7 @@ class TTReceiver : BroadcastReceiver() {
         val wl =
             pm.newWakeLock(
                 PowerManager.PARTIAL_WAKE_LOCK,
-                "cz.lastaapps.bakalari.app.services.timetablenotification:TTReceiver"
+                "${TTReceiver::class.qualifiedName}:TTReceiver"
             )
 
         //it can take sometimes long

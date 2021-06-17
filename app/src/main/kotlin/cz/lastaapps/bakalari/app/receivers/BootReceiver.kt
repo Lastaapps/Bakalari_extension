@@ -24,7 +24,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import cz.lastaapps.bakalari.app.services.timetablenotification.TTNotifyService
 import cz.lastaapps.bakalari.app.widgets.smalltimetable.SmallTimetableWidget
 
 /**Updates services and widgets on startup*/
@@ -38,7 +37,7 @@ class BootReceiver : BroadcastReceiver() {
         if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
             Log.i(TAG, "Boot completed intent received")
 
-            TTNotifyService.startService(context)
+            cz.lastaapps.bakalari.features.timetable.service.TTNotifyService.startService(context)
             SmallTimetableWidget.update(context)
         }
     }

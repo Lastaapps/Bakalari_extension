@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~    Copyright 2021, Petr Laštovička as Lasta apps, All rights reserved
   ~
   ~     This file is part of Bakalari extension.
   ~
@@ -21,20 +20,8 @@
 
 <resources>
 
-    <color name="side_nav_bar_start">#C6B654</color>
-    <color name="side_nav_bar_center">#A3943F</color>
-    <color name="side_nav_bar_end">#D7CA6C</color>
+    <color name="icons_dark">#FFF</color>
+    <color name="icons_light">#000</color>
+    <color name="icons_module_stroke">#000</color>
 
-    <color name="light">#000</color>
-    <color name="dark">#FFF</color>
-    <color name="gray_background">#888</color>
-
-    <color name="github_background">#000</color>
-    <color name="github_foreground">#FFF</color>
-
-    <color name="border">#777</color>
-
-    <color name="timetable_absence">#388E3C</color>
-    <color name="timetable_current">#FBC02D</color>
-    <color name="timetable_change">#D32F2F</color>
 </resources>

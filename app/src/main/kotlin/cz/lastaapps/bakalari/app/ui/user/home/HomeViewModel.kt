@@ -23,7 +23,6 @@ package cz.lastaapps.bakalari.app.ui.user.home
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import cz.lastaapps.bakalari.app.services.timetablenotification.TTNotifyService
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -35,7 +34,7 @@ class HomeViewModel(private val app: Application) : AndroidViewModel(app) {
         if (job != null) return
 
         job = viewModelScope.launch {
-            TTNotifyService.startService(app.applicationContext)
+            cz.lastaapps.bakalari.features.timetable.service.TTNotifyService.startService(app.applicationContext)
         }
     }
 

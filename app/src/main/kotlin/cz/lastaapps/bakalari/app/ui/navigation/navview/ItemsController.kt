@@ -32,6 +32,7 @@ import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.ui.uitools.accountsViewModels
 import cz.lastaapps.bakalari.app.ui.uitools.observeForControllerGraphChanges
 import cz.lastaapps.bakalari.app.ui.user.UserViewModel
+import cz.lastaapps.bakalari.features.core.R as R2
 
 class ItemsController(fragmentActivity: FragmentActivity) {
 
@@ -64,28 +65,28 @@ class ItemsController(fragmentActivity: FragmentActivity) {
     }
 
     private val itemList = listOf(
-        Data(null, R.id.nav_home, R.string.menu_home, R.drawable.nav_home),
+        Data(null, R.id.nav_home, R.string.menu_home, R2.drawable.nav_home),
         Data(
             User.TIMETABLE,
             R.id.nav_timetable,
             R.string.menu_timetable,
-            R.drawable.nav_timetable,
+            R2.drawable.nav_timetable,
         ),
-        Data(User.MARKS, R.id.nav_marks, R.string.menu_marks, R.drawable.nav_marks),
-        Data(User.HOMEWORK, R.id.nav_homework, R.string.menu_homework, R.drawable.nav_homework),
-        Data(User.EVENTS, R.id.nav_events, R.string.menu_events, R.drawable.nav_events),
-        Data(User.ABSENCE, R.id.nav_absence, R.string.menu_absence, R.drawable.nav_absence),
+        Data(User.MARKS, R.id.nav_marks, R.string.menu_marks, R2.drawable.nav_marks),
+        Data(User.HOMEWORK, R.id.nav_homework, R.string.menu_homework, R2.drawable.nav_homework),
+        Data(User.EVENTS, R.id.nav_events, R.string.menu_events, R2.drawable.nav_events),
+        Data(User.ABSENCE, R.id.nav_absence, R.string.menu_absence, R2.drawable.nav_absence),
         Data(
             User.SUBJECTS,
             R.id.nav_teacher_list,
             R.string.menu_teacher_list,
-            R.drawable.nav_teacher,
+            R2.drawable.nav_teacher,
         ),
         Data(
             User.SUBJECTS,
             R.id.nav_subject_list,
             R.string.menu_subject_list,
-            R.drawable.nav_subject,
+            R2.drawable.nav_subject,
         ),
     )
 

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~    Copyright 2021, Petr Laštovička as Lasta apps, All rights reserved
+  ~
+  ~     This file is part of Bakalari extension.
+  ~
+  ~     Bakalari extension is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Bakalari extension is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<resources>
+
+    <string name="channel_timetable_id" translatable="false">TIMETABLE_CHANNEL</string>
+    <string name="channel_timetable_name">Current lesson</string>
+    <string name="channel_timetable_description">The notification showing current and next lesson
+        - it\'s class, teacher, etc.</string>
+
+    <!-- Timetable notification -->
+    <string name="timetable_group">group</string>
+    <string name="timetable_next">Next</string>
+    <string name="timetable_end">End</string>
+    <string name="timetable_interruption">Break</string>//break is keyword
+    <string name="timetable_have_nice_day">Have a nice day</string>
+    <string name="timetable_free_lesson">Free lesson</string>
+    <string name="timetable_last_lesson">Last lesson</string>
+    <string name="timetable_until">until</string>
+    <string name="timetable_finally_home">And finally home</string>
+    <string name="timetable_enjoy_holiday">Enjoy freedom!</string>
+    <string name="timetable_preparing">Preparing timetable</string>
+    <string name="timetable_should_not_take_long">This shouldn\'t be there more than few seconds</string>
+    <string name="timetable_notification_cannot_download">Cannot download timetable</string>
+    <string name="timetable_notification_connect_to_internet">Connect to internet</string>
+    <string name="timetable_notification_user_deleted">User not found</string>
+    <string name="timetable_notification_open_settings">Click to open settings and choose another one</string>
+
+</resources>

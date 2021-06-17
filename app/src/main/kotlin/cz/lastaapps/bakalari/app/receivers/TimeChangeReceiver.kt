@@ -24,7 +24,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import cz.lastaapps.bakalari.app.services.timetablenotification.TTNotifyService
 import cz.lastaapps.bakalari.app.widgets.smalltimetable.SmallTimetableWidget
 import cz.lastaapps.bakalari.authentication.database.AccountsDatabase
 import kotlinx.coroutines.CoroutineScope
@@ -43,7 +42,7 @@ class TimeChangeReceiver : BroadcastReceiver() {
             Log.i(TAG, "Time changed, updating timetable notification")
 
             //updates services and widgets
-            TTNotifyService.startService(context)
+            cz.lastaapps.bakalari.features.timetable.service.TTNotifyService.startService(context)
             SmallTimetableWidget.update(context)
 
             val holder = goAsync()

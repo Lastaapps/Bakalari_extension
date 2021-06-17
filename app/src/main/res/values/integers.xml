@@ -20,13 +20,4 @@
 
 <resources>
     <integer name="homework_visible_lines">5</integer>
-
-    <!-- Sizes of stoke in nav icons -->
-    <integer name="icons_stoke_thick">3</integer>
-    <integer name="icons_stoke_medium">2</integer>
-    <integer name="icons_stoke_light">1</integer>
-    <integer name="icons_stroke_border">2</integer>
-    <integer name="icons_stoke_thick_nav">3</integer>
-    <integer name="icons_stoke_medium_nav">2</integer>
-    <integer name="icons_stoke_light_nav">1</integer>
 </resources>

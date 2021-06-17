@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~    Copyright 2020, Petr Laštovička as Lasta apps, All rights reserved
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~    Copyright 2021, Petr Laštovička as Lasta apps, All rights reserved
   ~
   ~     This file is part of Bakalari extension.
   ~
@@ -21,20 +20,16 @@
 
 <resources>
 
-    <color name="side_nav_bar_start">#C6B654</color>
-    <color name="side_nav_bar_center">#A3943F</color>
-    <color name="side_nav_bar_end">#D7CA6C</color>
+    <!-- Timetable notification -->
+    <string name="timetable_group">skupina</string>
+    <string name="timetable_next">Další</string>
+    <string name="timetable_end">Konec</string>
+    <string name="timetable_interruption">Přestávka</string>//break is keyword
+    <string name="timetable_have_nice_day">Hezký den</string>
+    <string name="timetable_free_lesson">Volná hodina</string>
+    <string name="timetable_last_lesson">Poslední hodina</string>
+    <string name="timetable_until">do</string>
+    <string name="timetable_finally_home">A konečně domů</string>
+    <string name="timetable_enjoy_holiday">Užívej svobody!</string>
 
-    <color name="light">#000</color>
-    <color name="dark">#FFF</color>
-    <color name="gray_background">#888</color>
-
-    <color name="github_background">#000</color>
-    <color name="github_foreground">#FFF</color>
-
-    <color name="border">#777</color>
-
-    <color name="timetable_absence">#388E3C</color>
-    <color name="timetable_current">#FBC02D</color>
-    <color name="timetable_change">#D32F2F</color>
 </resources>

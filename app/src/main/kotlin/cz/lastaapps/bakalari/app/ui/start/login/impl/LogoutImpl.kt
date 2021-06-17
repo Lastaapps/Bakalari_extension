@@ -25,7 +25,6 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationManagerCompat
 import cz.lastaapps.bakalari.api.database.APIBase
-import cz.lastaapps.bakalari.app.services.timetablenotification.TTNotifyService
 import cz.lastaapps.bakalari.app.ui.user.CurrentUser
 import cz.lastaapps.bakalari.app.widgets.smalltimetable.SmallTimetableWidget
 import cz.lastaapps.bakalari.authentication.data.BakalariAccount
@@ -67,7 +66,7 @@ class LogoutImpl(val context: Context, val account: BakalariAccount) {
     suspend fun updateServices() {
         withContext(Dispatchers.Main) {
             Log.v(TAG, "Updating services and widgets")
-            TTNotifyService.startService(context)
+            cz.lastaapps.bakalari.features.timetable.service.TTNotifyService.startService(context)
             SmallTimetableWidget.update(context)
         }
     }

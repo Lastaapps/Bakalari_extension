@@ -104,9 +104,11 @@ dependencies {
     implementation project(":core:platform")
     implementation project(":core:tools")
     implementation project(":core:tools:ui")
-    implementation project(":settings:core")
-    implementation project(":lastaapps:common")
+    implementation project(":features:bakalari:core")
+    implementation project(":features:bakalari:timetable:service")
     implementation project(":features:report")
+    implementation project(":lastaapps:common")
+    implementation project(":settings:core")
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 

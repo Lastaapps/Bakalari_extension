@@ -95,16 +95,8 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver
-            android:name=".services.timetablenotification.TTReceiver"
-            android:enabled="true"
-            android:exported="true" />
 
         <!-- Services -->
-        <service
-            android:name=".services.timetablenotification.TTNotifyService"
-            android:enabled="true"
-            android:exported="true" />
         <service
             android:name=".widgets.smalltimetable.SmallTimetableRemoteService"
             android:enabled="true"

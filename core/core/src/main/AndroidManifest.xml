@@ -18,6 +18,6 @@
   ~
   -->
 
-<manifest package="cz.lastaapps.bakalari.core">
+<manifest package="cz.lastaapps.bakalari.app.core">
 
 </manifest>

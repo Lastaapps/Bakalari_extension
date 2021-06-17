@@ -28,6 +28,7 @@ import cz.lastaapps.bakalari.platform.App
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import java.util.*
 
+@Deprecated(message = "replace with navigation args in routes")
 object CurrentUser {
 
     val accountUUID = ConflatedBroadcastChannel<UUID?>(null)

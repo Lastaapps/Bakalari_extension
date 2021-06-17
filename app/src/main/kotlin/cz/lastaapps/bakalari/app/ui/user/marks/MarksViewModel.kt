@@ -70,7 +70,7 @@ class MarksViewModel : RefreshableListViewModel<MarksPairList, MarksRepository>(
 
     //color of new average
     val newAverageColor =
-        MutableLiveData(ColorStateList.valueOf(App.getColor(cz.lastaapps.bakalari.core.R.color.primary_text_light)))
+        MutableLiveData(ColorStateList.valueOf(App.getColor(cz.lastaapps.bakalari.app.core.R.color.primary_text_light)))
 
     /**Which subject was selected in predictor*/
     val predictorSelected = MutableLiveData(0)

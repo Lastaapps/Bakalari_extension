@@ -104,7 +104,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onCreate(savedInstanceState: Bundle?) {
 
         //used to remove splashscreen
-        setTheme(cz.lastaapps.bakalari.core.R.style.AppTheme_NoActionBar)
+        setTheme(cz.lastaapps.bakalari.app.core.R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
 
         Log.i(TAG, "Creating MainActivity")
@@ -219,7 +219,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                         )
                             .setContentText("Pokus")
                             .setContentIntent(pending)
-                            .setSmallIcon(cz.lastaapps.bakalari.core.R.drawable.icon)
+                            .setSmallIcon(cz.lastaapps.bakalari.app.core.R.drawable.icon)
                             .setAutoCancel(false)
                             .build()
 
