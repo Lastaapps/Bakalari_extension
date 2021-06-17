@@ -34,7 +34,7 @@ import java.net.URLEncoder
 class Networking(private val context: Context, private val url: String) {
 
     companion object {
-        private val TAG = Networking::class.simpleName
+        private val TAG get() = Networking::class.simpleName
 
         const val LOGIN_WRONG = -1
         const val LOGIN_OK = 1

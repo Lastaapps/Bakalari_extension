@@ -47,7 +47,7 @@ import kotlin.math.min
  */
 object ConnMgr {
 
-    private val TAG = ConnMgr::class.java.simpleName
+    private val TAG get() = ConnMgr::class.java.simpleName
 
     const val INVALID_REFRESH_TOKEN = "cz.lastaapps.bakalari.api.entity.core.INVALID_REFRESH_TOKEN"
 

@@ -26,7 +26,7 @@ import org.json.JSONObject
 
 /**decodes Theme json*/
 object SubjectParser {
-    private val TAG = SubjectParser::class.java.simpleName
+    private val TAG get() = SubjectParser::class.java.simpleName
 
     /**Parses subjects from json, scheme on https://github.com/bakalari-api/bakalari-api-v3*/
     fun parseJson(root: JSONObject): SubjectTeacherLists {

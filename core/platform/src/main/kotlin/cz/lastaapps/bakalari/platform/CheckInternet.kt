@@ -31,7 +31,7 @@ import java.net.URL
 
 /**Methods related to connecting to internet*/
 object CheckInternet {
-    private val TAG = CheckInternet::class.java.simpleName
+    private val TAG get() = CheckInternet::class.java.simpleName
 
     /**
      * Checks connection to school server, if there is no URL available, to www.google.com

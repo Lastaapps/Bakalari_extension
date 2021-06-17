@@ -40,7 +40,7 @@ class ThemesRepository(
     //: APIAssetRepo<ThemeList>(TAG, database, "themes.json", 1000) {
 
     companion object {
-        private val TAG = ThemesRepository::class.java.simpleName
+        private val TAG get() = ThemesRepository::class.java.simpleName
     }
 
     private val dao = database.themeDao()

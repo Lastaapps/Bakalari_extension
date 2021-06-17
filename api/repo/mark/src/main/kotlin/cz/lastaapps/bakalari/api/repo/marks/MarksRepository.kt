@@ -37,7 +37,7 @@ class MarksRepository(database: cz.lastaapps.bakalari.api.database.APIBase) :
 //    : RefreshingAssetRepo<MarksSubjectMarksLists>(TAG, database, "marks.json", 1000) {
 
     companion object {
-        private val TAG = MarksRepository::class.java.simpleName
+        private val TAG get() = MarksRepository::class.java.simpleName
     }
 
     fun getAllPairs() = dao.getAllPairs().distinctUntilChanged().map {

@@ -39,7 +39,7 @@ import cz.lastaapps.bakalari.app.ui.uitools.accountsViewModels
  * shown new marks*/
 class NewMarksFragment : Fragment() {
     companion object {
-        private val TAG = NewMarksFragment::class.java.simpleName
+        private val TAG get() = NewMarksFragment::class.java.simpleName
     }
 
     //views

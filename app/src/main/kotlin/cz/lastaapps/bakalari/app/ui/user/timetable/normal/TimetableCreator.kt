@@ -40,7 +40,7 @@ import java.time.format.DateTimeFormatter
 /**Creates normal timetable cell structure*/
 class TimetableCreator {
     companion object {
-        private val TAG = TimetableCreator::class.java.simpleName
+        private val TAG get() = TimetableCreator::class.java.simpleName
 
         fun prepareTimetable(root: View, totalHeight: Int, days: Int, lessons: Int) {
             Log.i(TAG, "Preparing timetable views")

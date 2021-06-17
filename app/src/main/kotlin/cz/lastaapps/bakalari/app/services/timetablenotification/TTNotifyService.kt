@@ -65,7 +65,7 @@ import kotlin.math.floor
 class TTNotifyService : BaseService() {
 
     companion object {
-        private val TAG = TTNotifyService::class.java.simpleName
+        private val TAG get() = TTNotifyService::class.java.simpleName
         private val NOTIFICATION_ID =
             R.id.notification_id_timetable_notification_service.normalizeID()
 

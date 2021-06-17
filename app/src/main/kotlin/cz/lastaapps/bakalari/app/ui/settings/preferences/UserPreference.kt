@@ -52,7 +52,7 @@ class UserPreference : MyListPreference<UserPreference.AdapterDataHolder> {
     constructor(context: Context?) : super(context)
 
     companion object {
-        private val TAG = UserPreference::class.simpleName
+        private val TAG get() = UserPreference::class.simpleName
     }
 
     val activity = context as FragmentActivity

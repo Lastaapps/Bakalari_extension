@@ -36,7 +36,7 @@ class LoginService : BaseForegroundService() {
 
     companion object {
 
-        private val TAG = LoginService::class.simpleName
+        private val TAG get() = LoginService::class.simpleName
         private const val ACCOUNT_KEY = "ACCOUNT_KEY"
 
         private const val BROADCAST_ID = "LOGIN"

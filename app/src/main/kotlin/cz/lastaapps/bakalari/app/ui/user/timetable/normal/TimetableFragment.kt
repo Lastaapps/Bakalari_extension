@@ -58,7 +58,7 @@ import kotlin.math.abs
 class TimetableFragment : Fragment() {
 
     companion object {
-        private val TAG = TimetableFragment::class.java.simpleName
+        private val TAG get() = TimetableFragment::class.java.simpleName
     }
 
     private var updatingJob: Job? = null

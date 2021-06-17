@@ -50,7 +50,7 @@ import java.lang.Integer.min
 class BottomFragment : Fragment() {
 
     companion object {
-        private val TAG = BottomFragment::class.java.simpleName
+        private val TAG get() = BottomFragment::class.java.simpleName
 
         //for the state variable
         const val MINIMIZED = 0

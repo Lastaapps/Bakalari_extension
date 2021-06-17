@@ -56,7 +56,7 @@ import java.time.ZonedDateTime
 class SendIdeaFragment : Fragment() {
 
     companion object {
-        private val TAG = SendIdeaFragment::class.java.simpleName
+        private val TAG get() = SendIdeaFragment::class.java.simpleName
         private const val SP_KEY = "SEND_IDEA"
         private const val SP_DATE_KEY = "LAST_SENT"
     }

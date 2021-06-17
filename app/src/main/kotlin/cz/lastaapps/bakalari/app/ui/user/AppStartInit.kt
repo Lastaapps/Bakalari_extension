@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit
 class AppStartInit(val context: Context) {
 
     companion object {
-        private val TAG = AppStartInit::class.java.simpleName
+        private val TAG get() = AppStartInit::class.java.simpleName
     }
 
     /**Inits services, widgets and alarms*/

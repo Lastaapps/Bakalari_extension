@@ -26,7 +26,7 @@ import cz.lastaapps.bakalari.tools.TimeTools.toCommon
 import org.json.JSONObject
 
 object ThemesParser {
-    private val TAG = ThemesParser::class.java.simpleName
+    private val TAG get() = ThemesParser::class.java.simpleName
 
     /**Parses themes json*/
     fun parseJson(root: JSONObject): ThemeList {

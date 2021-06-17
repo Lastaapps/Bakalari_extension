@@ -41,7 +41,7 @@ import cz.lastaapps.bakalari.tools.ui.EmptyAdapter
 class HmwSearchFragment : Fragment() {
 
     companion object {
-        private val TAG = HmwSearchFragment::class.java.simpleName
+        private val TAG get() = HmwSearchFragment::class.java.simpleName
     }
 
     lateinit var binding: FragmentHomeworkSearchBinding

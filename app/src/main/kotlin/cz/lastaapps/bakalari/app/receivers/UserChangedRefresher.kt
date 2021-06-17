@@ -33,7 +33,7 @@ import kotlinx.coroutines.launch
 class UserChangedRefresher : BroadcastReceiver() {
 
     companion object {
-        private val TAG = UserChangedRefresher::class.java.simpleName
+        private val TAG get() = UserChangedRefresher::class.java.simpleName
     }
 
     override fun onReceive(context: Context, intent: Intent) {

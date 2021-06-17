@@ -44,7 +44,7 @@ private typealias PairAdapter = ArrayAdapter<PairHolder>
 
 class PredictorFragment : Fragment(), AdapterView.OnItemSelectedListener, View.OnClickListener {
     companion object {
-        private val TAG = PredictorFragment::class.java.simpleName
+        private val TAG get() = PredictorFragment::class.java.simpleName
     }
 
     //layout

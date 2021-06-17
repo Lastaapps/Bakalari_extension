@@ -37,7 +37,7 @@ import cz.lastaapps.bakalari.tools.ui.EmptyAdapter
 /** Shows current and not done yet homework list*/
 class HmwCurrentFragment : Fragment() {
     companion object {
-        private val TAG = HmwCurrentFragment::class.java.simpleName
+        private val TAG get() = HmwCurrentFragment::class.java.simpleName
     }
 
     lateinit var binding: TemplateLoadingListBinding

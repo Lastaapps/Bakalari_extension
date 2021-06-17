@@ -52,7 +52,7 @@ import kotlinx.coroutines.*
 class TeacherInfoDialog : BottomSheetDialogFragment() {
 
     companion object {
-        private val TAG = TeacherInfoDialog::class.java.simpleName
+        private val TAG get() = TeacherInfoDialog::class.java.simpleName
     }
 
     private lateinit var binding: FragmentTeacherInfoBinding

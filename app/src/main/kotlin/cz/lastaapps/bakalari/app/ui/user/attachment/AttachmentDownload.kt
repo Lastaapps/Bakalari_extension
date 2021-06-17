@@ -63,7 +63,7 @@ import java.io.OutputStream
  * different version for android 10+ and older versions*/
 object AttachmentDownload {
 
-    private val TAG = AttachmentDownload::class.java.simpleName
+    private val TAG get() = AttachmentDownload::class.java.simpleName
 
     /**@return if file with name given exists*/
     fun exists(context: Context, fileName: String): Boolean {

@@ -33,7 +33,7 @@ import cz.lastaapps.bakalari.tools.getVersionName
 class WhatsNew(val context: Context) {
 
     companion object {
-        private val TAG = WhatsNew::class.java.simpleName
+        private val TAG get() = WhatsNew::class.java.simpleName
 
         private const val SP_KEY = "WHATS_NEW"
         private const val LAST_VERSION_SHOWN = "LAST_VERSION_SHOWN"

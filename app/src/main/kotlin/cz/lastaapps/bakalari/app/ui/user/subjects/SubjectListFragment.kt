@@ -41,7 +41,7 @@ typealias SubjectAdapter = BasicRecyclerAdapter<Subject>
 /**Shows subjects and on click their info*/
 class SubjectListFragment : Fragment() {
     companion object {
-        private val TAG = SubjectListFragment::class.java.simpleName
+        private val TAG get() = SubjectListFragment::class.java.simpleName
     }
 
     private lateinit var binding: TemplateLoadingListBinding

@@ -63,7 +63,7 @@ import java.time.ZonedDateTime
 class LoginFragment : Fragment() {
 
     companion object {
-        private val TAG = LoginFragment::class.java.simpleName
+        private val TAG get() = LoginFragment::class.java.simpleName
 
         private val IMAGE_REQUEST_CODE = R.id.request_code_login_image.normalizeID()
     }

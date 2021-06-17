@@ -30,7 +30,7 @@ import org.json.JSONObject
 import java.time.LocalDate
 
 object TimetableParser {
-    private val TAG = TimetableParser::class.java.simpleName
+    private val TAG get() = TimetableParser::class.java.simpleName
 
     /**Parses timetable from json, scheme on https://github.com/bakalari-api/bakalari-api-v3
      * @param loadedForDate which date was put into TTStorage or to API request*/

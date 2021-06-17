@@ -41,7 +41,7 @@ class SubjectRepository(database: APIBase) :
     ) {
     //: APIAssetRepo<SubjectTeacherLists>(TAG, database, "subjects.json", 1000) {
     companion object {
-        private val TAG = SubjectRepository::class.java.simpleName
+        private val TAG get() = SubjectRepository::class.java.simpleName
 
         const val LOADING = 0
         const val FAILED = -1

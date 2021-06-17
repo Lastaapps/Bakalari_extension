@@ -47,7 +47,7 @@ import kotlinx.coroutines.launch
 class AttachmentDialog : BottomSheetDialogFragment() {
 
     companion object {
-        val TAG = AttachmentDialog::class.simpleName
+        val TAG get() = AttachmentDialog::class.simpleName
     }
 
     private val args: AttachmentDialogArgs by navArgs()

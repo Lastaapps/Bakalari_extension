@@ -62,7 +62,7 @@ import java.util.*
 class ReportIssueFragment : Fragment() {
 
     companion object {
-        private val TAG = ReportIssueFragment::class.java.simpleName
+        private val TAG get() = ReportIssueFragment::class.java.simpleName
 
         private const val SP_KEY = "REPORT_ISSUE"
         private const val SP_DATE_KEY = "LAST_SENT"

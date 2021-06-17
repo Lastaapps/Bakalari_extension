@@ -27,7 +27,7 @@ import org.json.JSONObject
 
 object WebModulesParser {
 
-    private val TAG = WebModulesParser::class.java.simpleName
+    private val TAG get() = WebModulesParser::class.java.simpleName
 
     fun parse(jsonObject: JSONObject): WebRoot {
 

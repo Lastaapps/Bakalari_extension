@@ -42,7 +42,7 @@ import cz.lastaapps.common.PlayStoreReview
 class AboutDialog : BottomSheetDialogFragment() {
 
     companion object {
-        private val TAG = AboutDialog::class.java.simpleName
+        private val TAG get() = AboutDialog::class.java.simpleName
     }
 
     @SuppressLint("SetTextI18n")

@@ -41,7 +41,7 @@ class UserRepository(database: cz.lastaapps.bakalari.api.database.APIBase) :
     //: APIAssetRepo<User>(TAG, database, "user.json", 500) {
 
     companion object {
-        private val TAG = UserRepository::class.java.simpleName
+        private val TAG get() = UserRepository::class.java.simpleName
     }
 
     private val dao = database.userDao()

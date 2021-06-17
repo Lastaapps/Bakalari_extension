@@ -50,7 +50,7 @@ class MySettings private constructor(inputContext: Context) {
 
 
     companion object {
-        private val TAG = MySettings::class.java.simpleName
+        private val TAG get() = MySettings::class.java.simpleName
         val FILE_SELECT_CODE = R.id.request_code_settings_download_location.normalizeID()
 
         @Deprecated(

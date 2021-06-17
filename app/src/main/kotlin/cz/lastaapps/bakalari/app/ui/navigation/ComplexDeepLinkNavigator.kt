@@ -36,7 +36,7 @@ import java.io.Serializable
 class ComplexDeepLinkNavigator(private val navController: NavController) {
 
     companion object {
-        private val TAG = ComplexDeepLinkNavigator::class.simpleName
+        private val TAG get() = ComplexDeepLinkNavigator::class.simpleName
 
         private const val KEY_ACTION = "ACTIONS"
 

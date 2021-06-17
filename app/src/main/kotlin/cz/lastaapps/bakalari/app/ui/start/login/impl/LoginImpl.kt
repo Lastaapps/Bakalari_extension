@@ -37,7 +37,7 @@ import cz.lastaapps.bakalari.settings.MySettings
 class LoginImpl(val context: Context, val account: BakalariAccount) {
 
     companion object {
-        private val TAG = LogoutImpl::class.simpleName
+        private val TAG get() = LogoutImpl::class.simpleName
     }
 
     private val ATTACHMENT_CHANNEL_ID =

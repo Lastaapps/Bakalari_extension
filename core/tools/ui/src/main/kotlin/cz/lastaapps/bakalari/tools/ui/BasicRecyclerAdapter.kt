@@ -33,7 +33,7 @@ class BasicRecyclerAdapter<E>(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
-        private val TAG = BasicRecyclerAdapter::class.java.simpleName
+        private val TAG get() = BasicRecyclerAdapter::class.java.simpleName
     }
 
     var onItemClicked: ((E) -> Unit)? = null

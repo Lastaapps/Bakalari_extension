@@ -31,7 +31,7 @@ import org.json.JSONObject
 import java.time.ZonedDateTime
 
 object EventsParser {
-    private val TAG = EventsParser::class.java.simpleName
+    private val TAG get() = EventsParser::class.java.simpleName
 
     /**Parses marks from json, scheme on https://github.com/bakalari-api/bakalari-api-v3*/
     fun parseJson(root: JSONObject): EventList {

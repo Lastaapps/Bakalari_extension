@@ -40,7 +40,7 @@ class MarksViewModel : RefreshableListViewModel<MarksPairList, MarksRepository>(
     TAG, CurrentUser.requireDatabase().marksRepository
 ) {
     companion object {
-        private val TAG = MarksViewModel::class.java.simpleName
+        private val TAG get() = MarksViewModel::class.java.simpleName
     }
 
     val pairs by lazy { repo.getAllPairs().asLiveData() }

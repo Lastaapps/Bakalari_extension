@@ -37,7 +37,7 @@ import cz.lastaapps.bakalari.settings.MySettings
 open class BaseActivity : AppCompatActivity() {
 
     companion object {
-        private val TAG = BaseActivity::class.java.simpleName
+        private val TAG get() = BaseActivity::class.java.simpleName
     }
 
     override fun attachBaseContext(newBase: Context) {

@@ -30,7 +30,7 @@ import org.json.JSONException
 import org.json.JSONObject
 
 object UserParser {
-    private val TAG = UserParser::class.java.simpleName
+    private val TAG get() = UserParser::class.java.simpleName
 
     /**Parses marks from json, scheme on https://github.com/bakalari-api/bakalari-api-v3*/
     fun parseJson(root: JSONObject): User {

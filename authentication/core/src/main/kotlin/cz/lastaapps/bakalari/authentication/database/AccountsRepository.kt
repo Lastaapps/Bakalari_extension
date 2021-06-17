@@ -35,7 +35,7 @@ import java.util.*
 class AccountsRepository(private val database: AccountsDatabase, private val dao: AccountsDao) {
 
     companion object {
-        private val TAG = AccountsRepository::class.simpleName
+        private val TAG get() = AccountsRepository::class.simpleName
     }
 
     suspend fun addAccount(context: Context, account: BakalariAccount) {

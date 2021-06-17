@@ -97,7 +97,7 @@ data class Mark(
 
     companion object {
 
-        private val TAG = Mark::class.java.simpleName
+        private val TAG get() = Mark::class.java.simpleName
 
         /**generates mark with some default data*/
         val default: Mark

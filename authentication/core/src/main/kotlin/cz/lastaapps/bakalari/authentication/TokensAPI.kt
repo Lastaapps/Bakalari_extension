@@ -39,7 +39,7 @@ import kotlin.collections.HashMap
 class TokensAPI(private val context: Context) {
 
     companion object {
-        private val TAG = TokensAPI::class.simpleName
+        private val TAG get() = TokensAPI::class.simpleName
 
         const val SUCCESS = 0
         const val OLD_TOKENS = 1

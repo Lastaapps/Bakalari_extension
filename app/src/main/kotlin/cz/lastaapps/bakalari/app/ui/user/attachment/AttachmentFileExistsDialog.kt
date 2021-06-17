@@ -40,7 +40,7 @@ import kotlinx.coroutines.launch
 class AttachmentFileExistsDialog : BottomSheetDialogFragment() {
 
     companion object {
-        private val TAG = AttachmentFileExistsDialog::class.java.simpleName
+        private val TAG get() = AttachmentFileExistsDialog::class.java.simpleName
     }
 
     private val args: AttachmentFileExistsDialogArgs by navArgs()

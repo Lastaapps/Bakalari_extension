@@ -63,7 +63,7 @@ class WidgetUpdater : BroadcastReceiver() {
 
     companion object {
 
-        private val TAG = WidgetUpdater::class.java.simpleName
+        private val TAG get() = WidgetUpdater::class.java.simpleName
         private val REQUEST_CODE = R.id.request_code_small_timetable_widget.normalizeID()
 
         /**call #update and #setup methods*/

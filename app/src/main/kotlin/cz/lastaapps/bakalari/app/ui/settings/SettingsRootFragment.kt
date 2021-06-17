@@ -36,7 +36,7 @@ import cz.lastaapps.bakalari.settings.MySettings
 class SettingsRootFragment : PreferenceFragmentCompat() {
 
     companion object {
-        private val TAG = SettingsRootFragment::class.java.simpleName
+        private val TAG get() = SettingsRootFragment::class.java.simpleName
     }
 
     private val viewModel: SettingsViewModel by settingsViewModels()

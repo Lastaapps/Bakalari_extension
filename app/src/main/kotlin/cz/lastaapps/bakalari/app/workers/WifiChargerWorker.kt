@@ -30,7 +30,7 @@ class WifiChargerWorker(context: Context, workerParameters: WorkerParameters) :
     CoroutineWorker(context, workerParameters) {
 
     companion object {
-        private val TAG = WifiChargerWorker::class.java.simpleName
+        private val TAG get() = WifiChargerWorker::class.java.simpleName
     }
 
     override suspend fun doWork(): Result {

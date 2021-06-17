@@ -35,7 +35,7 @@ import kotlinx.coroutines.launch
 class TimeChangeReceiver : BroadcastReceiver() {
 
     companion object {
-        private val TAG = TimeChangeReceiver::class.java.simpleName
+        private val TAG get() = TimeChangeReceiver::class.java.simpleName
     }
 
     override fun onReceive(context: Context, intent: Intent) {

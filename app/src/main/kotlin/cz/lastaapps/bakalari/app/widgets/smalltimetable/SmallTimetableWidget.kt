@@ -75,7 +75,7 @@ class SmallTimetableWidget : AppWidgetProvider() {
 
     companion object {
 
-        private val TAG = SmallTimetableWidget::class.java.simpleName
+        private val TAG get() = SmallTimetableWidget::class.java.simpleName
 
         /**Updates SmallTimetable widgets*/
         fun update(context: Context) {

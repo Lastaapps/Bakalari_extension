@@ -37,7 +37,7 @@ class AbsenceRepository(database: cz.lastaapps.bakalari.api.database.APIBase) :
     //: APIAssetRepo<AbsenceRoot>(TAG, database, "absence_student.json", 1000) {
 
     companion object {
-        private val TAG = AbsenceRepository::class.java.simpleName
+        private val TAG get() = AbsenceRepository::class.java.simpleName
     }
 
     private val dao = database.absenceDao()

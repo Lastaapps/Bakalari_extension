@@ -36,7 +36,7 @@ import cz.lastaapps.bakalari.app.R
 class LoadingFragment : Fragment() {
 
     companion object {
-        private val TAG = LoadingFragment::class.java.simpleName
+        private val TAG get() = LoadingFragment::class.java.simpleName
     }
 
     private val viewModel: LoadingViewModel by activityViewModels()

@@ -41,7 +41,7 @@ typealias TeacherAdapter = BasicRecyclerAdapter<Teacher>
 class TeacherListFragment : Fragment() {
 
     companion object {
-        private val TAG = TeacherListFragment::class.java.simpleName
+        private val TAG get() = TeacherListFragment::class.java.simpleName
     }
 
     private lateinit var binding: TemplateLoadingListBinding

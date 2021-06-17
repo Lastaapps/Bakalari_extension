@@ -30,7 +30,7 @@ import cz.lastaapps.bakalari.platform.App
 /**Backs up login (sort off), license and preferences to Google drive*/
 class MyBackupAgent : BackupAgent() {
     companion object {
-        private val TAG = MyBackupAgent::class.java.simpleName
+        private val TAG get() = MyBackupAgent::class.java.simpleName
     }
 
     //backup app immediately

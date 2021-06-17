@@ -49,7 +49,7 @@ import kotlin.reflect.KClass
 class LegacyInitializer : InitializerTemplate<Any> {
 
     @Suppress("PrivatePropertyName")
-    private val TAG = this::class.simpleName
+    private val TAG get() = this::class.simpleName
 
     override fun create(context: Context): Any {
         logCreate()

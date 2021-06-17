@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
 class TTReceiver : BroadcastReceiver() {
 
     companion object {
-        private val TAG = TTReceiver::class.java.simpleName
+        private val TAG get() = TTReceiver::class.java.simpleName
 
         /**Used for updating during day*/
         val REQUEST_CODE = R.id.request_code_tt_receiver_normal.normalizeID()

@@ -31,7 +31,7 @@ import java.util.*
 /**Updates context with new language based on Settings*/
 object LocaleManager {
 
-    private val TAG = LocaleManager::class.simpleName
+    private val TAG get() = LocaleManager::class.simpleName
 
     /**returns locale set by user*/
     fun getLocale(settings: MySettings): Locale {

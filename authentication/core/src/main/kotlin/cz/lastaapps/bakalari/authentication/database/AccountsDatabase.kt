@@ -48,7 +48,7 @@ abstract class AccountsDatabase : RoomDatabase() {
 
         const val BAKALARI_ACCOUNT = "Bakalari_account"
 
-        private val TAG = AccountsDatabase::class.simpleName
+        private val TAG get() = AccountsDatabase::class.simpleName
         private const val DATABASE_NAME = "ACCOUNTS"
 
         private var instance: AccountsDatabase? = null

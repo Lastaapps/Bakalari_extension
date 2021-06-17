@@ -49,7 +49,7 @@ import kotlin.math.min
 class AttachmentDownloadedDialog : BottomSheetDialogFragment() {
 
     companion object {
-        private val TAG = AttachmentDownloadedDialog::class.java.simpleName
+        private val TAG get() = AttachmentDownloadedDialog::class.java.simpleName
     }
 
     private val args: AttachmentDownloadedDialogArgs by navArgs()

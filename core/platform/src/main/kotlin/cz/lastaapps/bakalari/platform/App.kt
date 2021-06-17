@@ -43,7 +43,7 @@ import kotlinx.coroutines.launch
 class App : Application() {
 
     companion object {
-        private val TAG = App::class.simpleName
+        private val TAG get() = App::class.simpleName
 
         //used during backup
         @SuppressLint("StaticFieldLeak")

@@ -35,7 +35,7 @@ import cz.lastaapps.bakalari.tools.TimeTools.toDaySeconds
 class NotificationContent(val context: Context) {
 
     companion object {
-        private val TAG = NotificationContent::class.java.simpleName
+        private val TAG get() = NotificationContent::class.java.simpleName
     }
 
     //strings in message

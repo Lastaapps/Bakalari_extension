@@ -31,7 +31,7 @@ import kotlin.reflect.KClass
 class APIInitializer : InitializerTemplate<Any> {
 
     @Suppress("PrivatePropertyName")
-    private val TAG = this::class.simpleName
+    private val TAG get() = this::class.simpleName
 
     override fun create(context: Context): Any {
         logCreate()

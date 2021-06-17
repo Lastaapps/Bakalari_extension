@@ -45,7 +45,7 @@ import java.time.ZonedDateTime
 class EventsUpcomingFragment : Fragment() {
 
     companion object {
-        private val TAG = EventsUpcomingFragment::class.simpleName
+        private val TAG get() = EventsUpcomingFragment::class.simpleName
     }
 
     private lateinit var binding: TemplateOverviewBinding

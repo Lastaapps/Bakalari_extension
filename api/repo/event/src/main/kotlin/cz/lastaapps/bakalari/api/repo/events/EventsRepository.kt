@@ -38,7 +38,7 @@ private typealias JSONList = List<Pair<EventsRepository.EventType, JSONObject>>
 class EventsRepository(database: APIBase) : RefreshingRepo<EventList, JSONList>(TAG, database) {
 
     companion object {
-        private val TAG = EventsRepository::class.java.simpleName
+        private val TAG get() = EventsRepository::class.java.simpleName
     }
 
     enum class EventType(val url: String, val group: Int) {

@@ -37,7 +37,7 @@ import kotlinx.coroutines.withContext
 class MainViewModel : ViewModel() {
 
     companion object {
-        private val TAG = MainViewModel::class.java.simpleName
+        private val TAG get() = MainViewModel::class.java.simpleName
 
         //values for result
         const val UNKNOWN = 0

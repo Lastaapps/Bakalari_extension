@@ -31,7 +31,7 @@ import cz.lastaapps.bakalari.app.widgets.smalltimetable.SmallTimetableWidget
 class BootReceiver : BroadcastReceiver() {
 
     companion object {
-        private val TAG = BootReceiver::class.java.simpleName
+        private val TAG get() = BootReceiver::class.java.simpleName
     }
 
     override fun onReceive(context: Context, intent: Intent) {

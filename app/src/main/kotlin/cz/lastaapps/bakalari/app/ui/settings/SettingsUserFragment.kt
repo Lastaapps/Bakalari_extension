@@ -47,7 +47,7 @@ import cz.lastaapps.bakalari.settings.R as SettR
 class SettingsUserFragment : PreferenceFragmentCompat() {
 
     companion object {
-        private val TAG = SettingsUserFragment::class.java.simpleName
+        private val TAG get() = SettingsUserFragment::class.java.simpleName
     }
 
     private val viewModel: SettingsViewModel by settingsViewModels()

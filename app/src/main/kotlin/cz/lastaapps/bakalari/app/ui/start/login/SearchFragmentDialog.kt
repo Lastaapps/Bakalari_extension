@@ -47,7 +47,7 @@ import kotlin.collections.ArrayList
 class SearchFragmentDialog : DialogFragment() {
 
     companion object {
-        private val TAG = SearchFragmentDialog::class.java.simpleName
+        private val TAG get() = SearchFragmentDialog::class.java.simpleName
     }
 
     private val viewModel: LoginFragmentViewModel by loginViewModels()

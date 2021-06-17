@@ -38,7 +38,7 @@ import cz.lastaapps.bakalari.app.ui.uitools.accountsViewModels
 class HmwOverview : Fragment() {
 
     companion object {
-        private val TAG = HmwOverview::class.simpleName
+        private val TAG get() = HmwOverview::class.simpleName
     }
 
     private lateinit var binding: TemplateOverviewBinding

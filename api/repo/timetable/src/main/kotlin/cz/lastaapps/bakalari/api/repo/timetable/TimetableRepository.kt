@@ -42,7 +42,7 @@ class TimetableRepository(
     ) {
 
     companion object {
-        private val TAG = TimetableRepository::class.java.simpleName
+        private val TAG get() = TimetableRepository::class.java.simpleName
     }
 
     private val dao = database.timetableDao()

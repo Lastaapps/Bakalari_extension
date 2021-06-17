@@ -38,7 +38,7 @@ class HomeworkRepository(database: cz.lastaapps.bakalari.api.database.APIBase) :
     RefreshingRepoJSON<HomeworkList>(TAG, database) {
 
     companion object {
-        private val TAG = HomeworkRepository::class.java.simpleName
+        private val TAG get() = HomeworkRepository::class.java.simpleName
     }
 
     private val dao = database.homeworkDao()

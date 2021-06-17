@@ -35,7 +35,7 @@ class UserViewModel : RefreshableDataViewModel<User, UserRepository>(
 ) {
 
     companion object {
-        private val TAG = UserViewModel::class.java.simpleName
+        private val TAG get() = UserViewModel::class.java.simpleName
     }
 
     override val data = repo.getUser().filterNotNull().asLiveData()

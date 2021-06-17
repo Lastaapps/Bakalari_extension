@@ -98,7 +98,7 @@ abstract class APIBase : RoomDatabase() {
 
     companion object {
 
-        private val TAG = APIBase::class.java.simpleName
+        private val TAG get() = APIBase::class.java.simpleName
 
         @Volatile
         private var instancesMap = HashMap<UUID, APIBase>()

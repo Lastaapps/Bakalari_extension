@@ -60,7 +60,7 @@ import kotlinx.coroutines.runBlocking
 class SubjectInfoFragment : Fragment() {
 
     companion object {
-        private val TAG = SubjectInfoFragment::class.java.simpleName
+        private val TAG get() = SubjectInfoFragment::class.java.simpleName
 
         private const val SUBJECT_EXTRA = "SUBJECT_EXTRA"
 

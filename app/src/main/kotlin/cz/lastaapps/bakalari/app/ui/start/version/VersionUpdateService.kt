@@ -39,7 +39,7 @@ class VersionUpdateService(
 ) : BaseForegroundService() {
 
     companion object {
-        private val TAG = VersionUpdateService::class.simpleName
+        private val TAG get() = VersionUpdateService::class.simpleName
 
         val broadcastId = TAG
         const val RESULT_KEY = "RESULT"

@@ -31,7 +31,7 @@ import org.json.JSONObject
 /**Parses absence json*/
 object AbsenceParser {
 
-    private val TAG = AbsenceParser::class.java.simpleName
+    private val TAG get() = AbsenceParser::class.java.simpleName
 
     /**parses json into object structures*/
     fun parseJson(json: JSONObject): AbsenceRoot {

@@ -35,7 +35,7 @@ import kotlinx.coroutines.withContext
 class LogoutImpl(val context: Context, val account: BakalariAccount) {
 
     companion object {
-        private val TAG = LogoutImpl::class.simpleName
+        private val TAG get() = LogoutImpl::class.simpleName
     }
 
     private val notMgr = NotificationManagerCompat.from(context)

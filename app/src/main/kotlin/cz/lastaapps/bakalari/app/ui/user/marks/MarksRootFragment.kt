@@ -38,7 +38,7 @@ import cz.lastaapps.bakalari.tools.ui.lastUpdated
  * contains ViewPaper with oder mark related fragments - by date, by subject and predictor*/
 class MarksRootFragment : Fragment() {
     companion object {
-        private val TAG = MarksRootFragment::class.java.simpleName
+        private val TAG get() = MarksRootFragment::class.java.simpleName
     }
 
     //root view

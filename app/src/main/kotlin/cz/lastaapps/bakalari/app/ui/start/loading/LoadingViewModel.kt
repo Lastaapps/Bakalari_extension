@@ -37,7 +37,7 @@ class LoadingViewModel(app: Application) : AndroidViewModel(app) {
     private val context = app.applicationContext
 
     companion object {
-        private val TAG = LoadingViewModel::class.simpleName
+        private val TAG get() = LoadingViewModel::class.simpleName
     }
 
     private val accountsDatabase = AccountsDatabase.getDatabase(app)

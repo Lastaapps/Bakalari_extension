@@ -40,7 +40,7 @@ class VersionViewModel(private val app: Application) : AndroidViewModel(app) {
     private val context = app.applicationContext
 
     companion object {
-        private val TAG = VersionViewModel::class.simpleName
+        private val TAG get() = VersionViewModel::class.simpleName
     }
 
     val process = MutableLiveData(VersionProgressState.STATE_READY)

@@ -55,7 +55,7 @@ open class WidgetConfigure(private val config: WidgetConfigurePreferences) : App
     View.OnClickListener {
 
     companion object {
-        private val TAG = WidgetConfigure::class.java.simpleName
+        private val TAG get() = WidgetConfigure::class.java.simpleName
     }
 
     //id of the widget from intent

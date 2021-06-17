@@ -143,7 +143,7 @@ class LicenseDialog : BottomSheetDialogFragment() {
     }
 
     companion object {
-        private val TAG = LicenseDialog::class.java.simpleName
+        private val TAG get() = LicenseDialog::class.java.simpleName
 
         private const val SP_KEY = "LICENSE"
         private const val SP_AGREED = "1.0"

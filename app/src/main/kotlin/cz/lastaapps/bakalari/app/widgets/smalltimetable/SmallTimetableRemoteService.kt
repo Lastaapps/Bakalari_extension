@@ -35,7 +35,7 @@ import cz.lastaapps.bakalari.tools.toSerializable
 class SmallTimetableRemoteService : RemoteViewsService() {
 
     companion object {
-        private val TAG = SmallTimetableRemoteService::class.java.simpleName
+        private val TAG get() = SmallTimetableRemoteService::class.java.simpleName
 
         //date for witch should be data loaded
         const val WEEK_EXTRA = "WEEK_EXTRA"

@@ -35,7 +35,7 @@ import cz.lastaapps.bakalari.app.databinding.TemplateLoadingListBinding
  * placed in MarksRootFragment*/
 class ByDateFragment : Fragment() {
     companion object {
-        private val TAG = ByDateFragment::class.java.simpleName
+        private val TAG get() = ByDateFragment::class.java.simpleName
     }
 
     //root view

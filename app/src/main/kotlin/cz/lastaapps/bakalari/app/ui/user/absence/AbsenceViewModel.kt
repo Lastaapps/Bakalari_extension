@@ -50,7 +50,7 @@ class AbsenceViewModel : RefreshableViewModel<AbsenceRepository>(
 ) {
 
     companion object {
-        private val TAG = AbsenceViewModel::class.java.simpleName
+        private val TAG get() = AbsenceViewModel::class.java.simpleName
     }
 
     private lateinit var months: MonthData

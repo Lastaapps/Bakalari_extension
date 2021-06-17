@@ -78,7 +78,7 @@ import java.util.*
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     companion object {
-        private val TAG = MainActivity::class.java.simpleName
+        private val TAG get() = MainActivity::class.java.simpleName
 
         //intent extra to select default fragment
         const val NAVIGATE = "navigate"

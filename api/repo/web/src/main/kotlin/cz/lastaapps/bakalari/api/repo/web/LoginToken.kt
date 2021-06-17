@@ -30,7 +30,7 @@ import kotlinx.coroutines.yield
 /**Obtains login required to onetime browser login and url to put into browser*/
 object LoginToken {
 
-    private val TAG = LoginToken::class.java.simpleName
+    private val TAG get() = LoginToken::class.java.simpleName
 
     suspend fun loadFromServer(appContext: Context, account: BakalariAccount): String? {
 

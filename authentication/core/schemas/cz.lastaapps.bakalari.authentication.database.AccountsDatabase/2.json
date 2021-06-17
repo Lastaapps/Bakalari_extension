@@ -2,30 +2,12 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "222dd8928d513bec48f131140725af20",
+    "identityHash": "35738b5892b6568eee63aecf2e243ea1",
     "entities": [
       {
         "tableName": "Bakalari_account",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`loginInfo` TEXT NOT NULL, `tokens` TEXT NOT NULL, `profile` TEXT NOT NULL, `uuid` TEXT NOT NULL, `userName` TEXT NOT NULL, `password` TEXT, `savePassword` INTEGER NOT NULL, `url` TEXT NOT NULL, `townName` TEXT, `schoolName` TEXT, `refreshToken` TEXT NOT NULL, `accessToken` TEXT NOT NULL, `tokenExpiration` INTEGER NOT NULL, `tokenType` TEXT NOT NULL, `userId` TEXT NOT NULL, `apiVersion` TEXT NOT NULL, `appVersion` TEXT NOT NULL, `idToken` TEXT NOT NULL, `scope` TEXT NOT NULL, `confirmed` INTEGER NOT NULL, `dateCreated` INTEGER NOT NULL, `profileName` TEXT NOT NULL, `imageUri` TEXT, `order` INTEGER NOT NULL, `autoLaunch` INTEGER NOT NULL, PRIMARY KEY(`uuid`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uuid` TEXT NOT NULL, `userName` TEXT NOT NULL, `password` TEXT, `savePassword` INTEGER NOT NULL, `url` TEXT NOT NULL, `townName` TEXT, `schoolName` TEXT, `refreshToken` TEXT NOT NULL, `accessToken` TEXT NOT NULL, `tokenExpiration` INTEGER NOT NULL, `tokenType` TEXT NOT NULL, `userId` TEXT NOT NULL, `apiVersion` TEXT NOT NULL, `appVersion` TEXT NOT NULL, `idToken` TEXT NOT NULL, `scope` TEXT NOT NULL, `confirmed` INTEGER NOT NULL, `dateCreated` INTEGER NOT NULL, `profileName` TEXT NOT NULL, `imageUri` TEXT, `order` INTEGER NOT NULL, `autoLaunch` INTEGER NOT NULL, PRIMARY KEY(`uuid`))",
         "fields": [
-          {
-            "fieldPath": "loginInfo",
-            "columnName": "loginInfo",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "tokens",
-            "columnName": "tokens",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "profile",
-            "columnName": "profile",
-            "affinity": "TEXT",
-            "notNull": true
-          },
           {
             "fieldPath": "uuid",
             "columnName": "uuid",
@@ -172,7 +154,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '222dd8928d513bec48f131140725af20')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '35738b5892b6568eee63aecf2e243ea1')"
     ]
   }
 }

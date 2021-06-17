@@ -33,7 +33,7 @@ class LogoutService : BaseForegroundService() {
 
     companion object {
 
-        private val TAG = LoginService::class.simpleName
+        private val TAG get() = LoginService::class.simpleName
         private const val ACCOUNT_KEY = "ACCOUNT_KEY"
         private const val CHANNEL_ID = "LOGOUT_SERVICE"
 

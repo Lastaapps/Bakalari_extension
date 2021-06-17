@@ -56,7 +56,7 @@ class LoginViewModel(val app: Application) : AndroidViewModel(app) {
     private val context = app.applicationContext
 
     companion object {
-        private val TAG = LoginViewModel::class.simpleName
+        private val TAG get() = LoginViewModel::class.simpleName
     }
 
     private var loginJob: Job? = null

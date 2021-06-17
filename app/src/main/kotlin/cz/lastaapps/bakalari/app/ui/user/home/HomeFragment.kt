@@ -50,7 +50,7 @@ import kotlinx.coroutines.withContext
 class HomeFragment : Fragment() {
 
     companion object {
-        private val TAG = HomeFragment::class.java.simpleName
+        private val TAG get() = HomeFragment::class.java.simpleName
     }
 
     private lateinit var binding: FragmentHomeBinding

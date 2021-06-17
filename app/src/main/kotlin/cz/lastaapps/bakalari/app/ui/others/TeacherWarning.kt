@@ -58,7 +58,7 @@ class TeacherWarning : DialogFragment() {
     }
 
     companion object {
-        private val TAG = TeacherWarning::class.java.simpleName
+        private val TAG get() = TeacherWarning::class.java.simpleName
         private const val SP_KEY = "TEACHER_WARNING"
         private const val SP_SHOWN = "SHOWN"
 

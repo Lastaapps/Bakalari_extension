@@ -52,7 +52,7 @@ import kotlin.collections.HashMap
 class LoginFragmentViewModel(app: Application) : AndroidViewModel(app) {
 
     companion object {
-        private val TAG = LoginFragmentViewModel::class.java.simpleName
+        private val TAG get() = LoginFragmentViewModel::class.java.simpleName
 
         const val PROGRESS_ZERO = -1
         const val PROGRESS_DONE = -2

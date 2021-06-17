@@ -28,7 +28,7 @@ import cz.lastaapps.bakalari.authentication.data.BakalariAccount
 class WebModulesLoader {
     companion object {
 
-        private val TAG = WebModulesLoader::class.java.simpleName
+        private val TAG get() = WebModulesLoader::class.java.simpleName
 
         suspend fun loadFromServer(
             appContext: Context,
