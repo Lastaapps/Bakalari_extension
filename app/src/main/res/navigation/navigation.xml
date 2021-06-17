@@ -246,7 +246,7 @@
         <fragment
             android:id="@+id/nav_profiles"
             android:name="cz.lastaapps.bakalari.app.ui.start.profiles.ProfilesFragment"
-            android:label="ProfilesFragment"
+            android:label="@string/menu_profiles"
             tools:layout="@layout/fragment_profile">
             <action
                 android:id="@+id/action_login"
@@ -286,11 +286,15 @@
     <fragment
         android:id="@+id/versionUpdatedFragment"
         android:name="cz.lastaapps.bakalari.app.ui.start.version.VersionUpdatedFragment"
-        android:label="VersionUpdatedFragment" />
+        android:label="@string/menu_version_update" >
+    </fragment>
     <action
         android:id="@+id/action_loading"
         app:destination="@id/nav_loading"
         app:launchSingleTop="true"
         app:popUpTo="@id/nav_loading" />
+
+    <include app:graph="@navigation/report_navigation"/>
+    <include app:graph="@navigation/idea_navigation"/>
 
 </navigation>

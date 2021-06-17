@@ -49,7 +49,7 @@ class EventAdvanceFilterAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LifecycleViewHolder {
         return object : LifecycleViewHolder(AppCompatCheckBox(parent.context).apply {
             (layoutParams as? ViewGroup.MarginLayoutParams)
-                ?.setMargins(resources.getDimensionPixelSize(R.dimen.margin_basic))
+                ?.setMargins(resources.getDimensionPixelSize(cz.lastaapps.bakalari.core.R.dimen.margin_basic))
         }) {}
     }
 

@@ -254,13 +254,15 @@ class BottomFragment : Fragment() {
             R.id.nav_attachment,
             R.id.nav_attachment_downloaded,
             R.id.nav_attachment_file_exists,
-            R.id.nav_teacher_info
+            R.id.nav_teacher_info,
+            cz.lastaapps.bakalari.report.R.id.report_issue_fragment,
+            cz.lastaapps.bakalari.report.R.id.send_idea_fragment,
         )
         //always expanded
         val expanded = arrayOf(R.id.nav_home)
         //retains last state
         val doNothing = arrayOf(0)
-        //animalized with the option to expand and minimize again
+        //minimized with the option to expand and minimize again
         val minimized = arrayOf(0) //all the others
 
         when {

@@ -100,7 +100,7 @@
                     android:layout_margin="@dimen/idea_margin"
 
                     app:backgroundTint="@color/github_background"
-                    app:srcCompat="@drawable/github" />
+                    app:srcCompat="@drawable/ic_github" />
 
             </RelativeLayout>
 
@@ -123,65 +123,87 @@
                 android:layout_height="wrap_content"
                 android:text="@string/report_data_collected" />
 
-            <CheckBox
-                android:id="@+id/include_timetable"
+            <LinearLayout
+                android:id="@+id/user_info_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/report_include_timetable"
-                android:layout_margin="@dimen/margin_basic" />
+                android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/report_include_timetable_warning"
-                android:paddingStart="@dimen/report_warning_margin"
-                android:paddingEnd="@dimen/report_warning_margin" />
+                <CheckBox
+                    android:id="@+id/include_timetable"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_basic"
+                    android:text="@string/report_include_timetable" />
 
-            <CheckBox
-                android:id="@+id/include_marks"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/report_include_marks"
-                android:layout_margin="@dimen/margin_basic" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/report_warning_margin"
+                    android:paddingEnd="@dimen/report_warning_margin"
+                    android:text="@string/report_include_timetable_warning" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/report_include_marks_warning"
-                android:paddingStart="@dimen/report_warning_margin"
-                android:paddingEnd="@dimen/report_warning_margin" />
+                <CheckBox
+                    android:id="@+id/include_marks"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_basic"
+                    android:text="@string/report_include_marks" />
 
-            <CheckBox
-                android:id="@+id/include_homework"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/report_include_homework"
-                android:layout_margin="@dimen/margin_basic" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/report_warning_margin"
+                    android:paddingEnd="@dimen/report_warning_margin"
+                    android:text="@string/report_include_marks_warning" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/report_include_homework_warning"
-                android:paddingStart="@dimen/report_warning_margin"
-                android:paddingEnd="@dimen/report_warning_margin" />
+                <CheckBox
+                    android:id="@+id/include_homework"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_basic"
+                    android:text="@string/report_include_homework" />
 
-            <CheckBox
-                android:id="@+id/include_subject"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/report_include_subject"
-                android:layout_margin="@dimen/margin_basic" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/report_warning_margin"
+                    android:paddingEnd="@dimen/report_warning_margin"
+                    android:text="@string/report_include_homework_warning" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/report_include_subject_warning"
-                android:paddingStart="@dimen/report_warning_margin"
-                android:paddingEnd="@dimen/report_warning_margin" />
+                <CheckBox
+                    android:id="@+id/include_subject"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_basic"
+                    android:text="@string/report_include_subject" />
 
-            <View
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/bottom_sheet_bottom_margin" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/report_warning_margin"
+                    android:paddingEnd="@dimen/report_warning_margin"
+                    android:text="@string/report_include_subject_warning" />
+
+                <CheckBox
+                    android:id="@+id/include_school"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/report_include_include_school" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/report_warning_margin"
+                    android:paddingEnd="@dimen/report_warning_margin"
+                    android:text="@string/report_include_include_school_warning" />
+
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="64dp" />
+
+            </LinearLayout>
+
         </LinearLayout>
 
     </ScrollView>

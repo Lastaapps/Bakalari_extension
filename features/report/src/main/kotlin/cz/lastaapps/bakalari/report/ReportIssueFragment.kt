@@ -18,7 +18,7 @@
  *
  */
 
-package cz.lastaapps.bakalari.app.send
+package cz.lastaapps.bakalari.report
 
 import android.content.Context
 import android.content.Intent
@@ -27,21 +27,22 @@ import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
-import android.widget.EditText
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.IgnoreExtraProperties
-import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.databinding.ActivityReportBinding
-import cz.lastaapps.bakalari.app.ui.user.CurrentUser
+import cz.lastaapps.bakalari.api.database.APIBase
 import cz.lastaapps.bakalari.authentication.database.AccountsDatabase
-import cz.lastaapps.bakalari.platform.withAppContext
-import cz.lastaapps.bakalari.settings.MySettings
-import cz.lastaapps.bakalari.tools.BaseActivity
+import cz.lastaapps.bakalari.report.databinding.FragmentReportBinding
 import cz.lastaapps.bakalari.tools.TimeTools
 import cz.lastaapps.bakalari.tools.getVersionCode
 import cz.lastaapps.bakalari.tools.getVersionName
@@ -52,34 +53,42 @@ import java.io.IOException
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.util.*
 
 /**
  * Sends error report to Firebase database
  * Limited to 1 per day
  */
-class ReportIssueActivity : BaseActivity() {
+class ReportIssueFragment : Fragment() {
 
     companion object {
-        private val TAG = ReportIssueActivity::class.java.simpleName
+        private val TAG = ReportIssueFragment::class.java.simpleName
 
         private const val SP_KEY = "REPORT_ISSUE"
         private const val SP_DATE_KEY = "LAST_SENT"
     }
 
-    private lateinit var binding: ActivityReportBinding
-
+    private lateinit var binding: FragmentReportBinding
     private lateinit var database: DatabaseReference
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private val args by navArgs<ReportIssueFragmentArgs>()
 
-        Log.i(TAG, "Creating activity")
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+
+        Log.i(TAG, "Creating fragment, the uuid is ${args?.uuid}")
 
         //checks if there was send message today
         if (timeCheck()) {
-            binding = DataBindingUtil.setContentView(this, R.layout.activity_report)
+            binding = DataBindingUtil.inflate(inflater, R.layout.fragment_report, container, false);
+            binding.lifecycleOwner = this
 
             database = FirebaseDatabase.getInstance().reference
+
+            binding.userInfoList.visibility = if (args?.uuid != null) View.VISIBLE else View.GONE
 
             //sends data to Firebase
             binding.reportFab.setOnClickListener {
@@ -87,7 +96,7 @@ class ReportIssueActivity : BaseActivity() {
                 lifecycleScope.launch(Dispatchers.Default) {
                     send()
 
-                    getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
+                    requireContext().getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
                         .edit()
                         .putLong(
                             SP_DATE_KEY,
@@ -103,22 +112,25 @@ class ReportIssueActivity : BaseActivity() {
                 val uri = Uri.parse(url)
                 startActivity(Intent(Intent.ACTION_VIEW, uri))
             }
+
+            return binding.root
         } else {
 
             Log.i(TAG, "Time check failed")
 
             //If limit per day was reached
-            AlertDialog.Builder(this)
+            AlertDialog.Builder(requireContext())
                 .setMessage(R.string.report_overload)
                 .setPositiveButton(R.string.report_go_back) { dialog, _ ->
                     dialog.dismiss()
-                    finish()
+                    findNavController().navigateUp()
                 }
                 .setCancelable(false)
                 .create()
                 .show()
-        }
 
+            return null
+        }
     }
 
     /**
@@ -126,7 +138,10 @@ class ReportIssueActivity : BaseActivity() {
      */
     private fun timeCheck(): Boolean {
 
-        val lastSent = getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
+        if (BuildConfig.DEBUG)
+            return true
+
+        val lastSent = requireContext().getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
             .getLong(SP_DATE_KEY, 0)
 
         val date = ZonedDateTime.ofInstant(Instant.ofEpochMilli(lastSent), TimeTools.UTC)
@@ -144,13 +159,13 @@ class ReportIssueActivity : BaseActivity() {
     private suspend fun send() {
         Log.i(TAG, "Sending data")
 
-        val email = findViewById<EditText>(R.id.email).text.trim().toString()
-        val message = findViewById<EditText>(R.id.message).text.trim().toString()
+        val email = binding.email.text.trim().toString()
+        val message = binding.message.text.trim().toString()
 
         if (message == "") {
             withContext(Dispatchers.Main) {
                 Toast.makeText(
-                    this@ReportIssueActivity,
+                    requireContext(),
                     R.string.idea_empty,
                     Toast.LENGTH_LONG
                 ).show()
@@ -163,8 +178,7 @@ class ReportIssueActivity : BaseActivity() {
                     database.push().key.toString()
 
             //if user allowed to send town and school for analytics
-            val sett = MySettings.withAppContext()
-            val canSendSchool = sett.getSP().getBoolean(sett.SEND_TOWN_SCHOOL, false)
+            val canSendSchool = binding.includeSchool.isChecked
 
             //data to be sent
             val data = Message(
@@ -174,12 +188,12 @@ class ReportIssueActivity : BaseActivity() {
                 message = message,
                 phoneType = getDeviceName(),
                 androidVersion = Build.VERSION.SDK_INT,
-                appVersionCode = getVersionCode(),
-                appVersionName = getVersionName(),
+                appVersionCode = requireContext().getVersionCode(),
+                appVersionName = requireContext().getVersionName(),
             )
 
-            val account = CurrentUser.accountUUID.value?.let {
-                AccountsDatabase.getDatabase(this).repository.getByUUID(it)
+            val account = args?.uuid?.let {
+                AccountsDatabase.getDatabase(requireContext()).repository.getByUUID(it)
             }
             account?.let {
                 data.userHash =
@@ -190,24 +204,26 @@ class ReportIssueActivity : BaseActivity() {
                 data.bakalariVersion = account.apiVersion
             }
 
-            addJSONs(data)
+            args?.uuid?.let {
+                addJSONs(data, it)
+            }
 
             //sends data
             database.child("report").child(id).setValue(data)
 
             withContext(Dispatchers.Main) {
                 Toast.makeText(
-                    this@ReportIssueActivity,
+                    requireContext(),
                     R.string.idea_thanks,
                     Toast.LENGTH_LONG
                 ).show()
-                finish()
+                findNavController().navigateUp()
             }
 
         } catch (e: IOException) {
             withContext(Dispatchers.Main) {
                 Toast.makeText(
-                    this@ReportIssueActivity,
+                    requireContext(),
                     R.string.report_no_internet,
                     Toast.LENGTH_LONG
                 ).show()
@@ -215,9 +231,9 @@ class ReportIssueActivity : BaseActivity() {
         }
     }
 
-    private suspend fun addJSONs(data: Message) {
+    private suspend fun addJSONs(data: Message, uuid: UUID) {
 
-        CurrentUser.database?.jsonStorageRepository?.let { repo ->
+        APIBase.getDatabaseBlocking(requireContext(), uuid)?.jsonStorageRepository?.let { repo ->
 
             if (binding.includeTimetable.isChecked)
                 data.timetables = repo.getAllTimetables().map { it.toString().removeNames() }

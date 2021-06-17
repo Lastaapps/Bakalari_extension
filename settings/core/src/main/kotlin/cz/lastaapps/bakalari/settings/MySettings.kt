@@ -30,7 +30,9 @@ import android.content.res.Resources
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.fragment.app.FragmentActivity
 import androidx.preference.PreferenceManager
 import cz.lastaapps.bakalari.tools.TimeTools.toMidnight
 import cz.lastaapps.bakalari.tools.normalizeID
@@ -260,34 +262,28 @@ class MySettings private constructor(inputContext: Context) {
 
     /**Pops up dialog, in which user chooses default download location*/
     @SuppressLint("InlinedApi")
-    fun chooseDownloadDirectory(activity: Activity) {
+    fun chooseDownloadDirectory(activity: FragmentActivity) {
 
         Toast.makeText(activity, R.string.select_download_location, Toast.LENGTH_LONG).show()
 
-        //    For the Samsung My files
-        //    val intent = Intent("com.sec.android.app.myfiles.PICK_DATA")
-        //    intent.putExtra("CONTENT_TYPE", DocumentsContract.Document.MIME_TYPE_DIR)
-        //    intent.addCategory(Intent.CATEGORY_DEFAULT)
-        //    startActivityForResult(intent, REQUEST_CODE)
+        val downloadReceiver = activity.registerForActivityResult(DownloadLocationContract()) { uri ->
+            uri?.let {
 
-        val intent = when (Build.VERSION.SDK_INT) {
+                setDownloadLocation(uri.toString())
 
-            in 21..28 -> Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-
-            else -> Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
-                flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or
-                        Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    activity.contentResolver.takePersistableUriPermission(
+                        uri,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                    )
+                }
             }
         }
-        //intent.addCategory(Intent.CATEGORY_OPENABLE)
 
         try {
             //response
-            activity.startActivityForResult(
-                //Intent.createChooser(intent, "Select a File to Upload"),
-                intent,
-                FILE_SELECT_CODE
-            )
+            downloadReceiver.launch("");
+
         } catch (ex: ActivityNotFoundException) {
             // Potentially direct the user to the Market with a Dialog
             Toast.makeText(

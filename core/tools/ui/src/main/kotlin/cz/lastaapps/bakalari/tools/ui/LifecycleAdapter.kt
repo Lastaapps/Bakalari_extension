@@ -36,6 +36,11 @@ abstract class LifecycleAdapter<T : LifecycleViewHolder> : RecyclerView.Adapter<
 
     override fun onViewDetachedFromWindow(holder: T) {
         super.onViewDetachedFromWindow(holder)
+        //holder.onDisappear()
+    }
+
+    override fun onViewRecycled(holder: T) {
+        super.onViewRecycled(holder)
         holder.onDisappear()
     }
 }
@@ -44,19 +49,20 @@ abstract class LifecycleAdapter<T : LifecycleViewHolder> : RecyclerView.Adapter<
 open class LifecycleViewHolder(itemView: View) :
     RecyclerView.ViewHolder(itemView), LifecycleOwner {
 
-    private val lifecycleRegistry by lazy { LifecycleRegistry(this@LifecycleViewHolder) }
+    private val lifecycleRegistry = LifecycleRegistry(this)
 
     init {
         lifecycleRegistry.currentState = Lifecycle.State.INITIALIZED
+        lifecycleRegistry.currentState = Lifecycle.State.CREATED
     }
 
     fun onAppear() {
-        lifecycleRegistry.currentState = Lifecycle.State.CREATED
         lifecycleRegistry.currentState = Lifecycle.State.STARTED
     }
 
     fun onDisappear() {
-        lifecycleRegistry.currentState = Lifecycle.State.DESTROYED
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+        //lifecycleRegistry.currentState = Lifecycle.State.DESTROYED
     }
 
     override fun getLifecycle(): Lifecycle = lifecycleRegistry

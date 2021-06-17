@@ -18,21 +18,16 @@
  *
  */
 
-package cz.lastaapps.bakalari.tools
+package cz.lastaapps.bakalari.platform
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.platform.withAppContext
 import cz.lastaapps.bakalari.settings.LocaleManager
 import cz.lastaapps.bakalari.settings.MySettings
 
@@ -74,28 +69,6 @@ open class BaseActivity : AppCompatActivity() {
             }
         } else
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
-
-    //TODO move into a fragment
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-
-        if (requestCode == MySettings.FILE_SELECT_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                val uri = data!!.data!!
-
-                Log.i(TAG, "Folder selected, uri: $uri")
-
-                MySettings.withAppContext().setDownloadLocation(uri.toString())
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    contentResolver.takePersistableUriPermission(
-                        uri,
-                        Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                    )
-                }
-            }
-        } else
-            super.onActivityResult(requestCode, resultCode, data)
     }
 
     /**Updates navigation appbar's titles with new language*/

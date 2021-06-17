@@ -44,6 +44,7 @@
     <!-- Menu and navigation items -->
     <string name="menu_home">Home</string>
     <string name="menu_login">Login to Bakaláři</string>
+    <string name="menu_profiles">Profiles</string>
     <string name="menu_timetable">Timetable</string>
     <string name="menu_marks">Marks</string>
     <string name="menu_homework">Homework</string>
@@ -66,6 +67,7 @@
     <string name="menu_github">See code on Github</string>
     <string name="menu_api">Bakalari API doc</string>
     <string name="menu_license">License notices</string>
+    <string name="menu_version_update">Version update</string>
     <string name="menu_open_web">Open web</string>
     <string name="menu_timetable_old">Old timetable</string>
 
@@ -165,39 +167,6 @@
     <string name="login_services_in_notification_title">Logging in…</string>
     <string name="login_services_out_channel_name">Log out</string>
     <string name="login_services_out_notification_title">Logging out…</string>
-
-
-    <!-- Send idea and report issue -->
-    <string name="idea_label">Send an idea</string>
-    <string name="idea_email_label">Email, so I can reply you</string>
-    <string name="idea_email_prompt">Email (Optional)</string>
-    <string name="idea_message_label">What\'s on your mind</string>
-    <string name="idea_message_prompt">Message</string>
-    <string name="idea_empty">Message cannot be empty</string>
-    <string name="idea_thanks">Thank you for your feedback :)</string>
-    <string name="idea_overload">You can send only 1 idea per day because of server overload protection</string>
-    <string name="idea_go_back">Close</string>
-    <string name="idea_no_internet">Cannot connect to internet</string>
-
-    <string name="report_label">Report an issue</string>
-    <string name="report_email_label">Email, so i can reply you</string>
-    <string name="report_email_prompt">Email (Optional)</string>
-    <string name="report_message_label">Describe the error (English or Czech please)</string>
-    <string name="report_message_prompt">Error description</string>
-    <string name="report_empty">Report cannot be empty</string>
-    <string name="report_thanks">Thank you for your feedback :)</string>
-    <string name="report_overload">You can report only 1 issue per day because of server overload protection</string>
-    <string name="report_no_internet">Cannot connect to internet</string>
-    <string name="report_data_collected">App will send some data to diagnose the issue, namely school\'s url, name, town and Bakalari version, account type(parent, pupil, teacher), android version, phone type, app version and phone\'s id</string>
-    <string name="report_go_back">Close</string>
-    <string name="report_include_timetable">Include timetables</string>
-    <string name="report_include_timetable_warning">Contains your timetable with names removed</string>
-    <string name="report_include_marks">Include marks</string>
-    <string name="report_include_marks_warning">Contains marks and subjects info</string>
-    <string name="report_include_homework">Include homework list</string>
-    <string name="report_include_homework_warning">Contains homework\'s tasks, states and dates</string>
-    <string name="report_include_subject">Include subject list</string>
-    <string name="report_include_subject_warning">Contains subjects and teachers info without names</string>
 
 
     <!-- About -->
@@ -443,15 +412,6 @@
 
     <!-- Web module -->
     <string name="web_module_no_internet">Cannot connect to the server</string>
-
-
-    <!-- Permissions -->
-    <string name="permission_granted">Permission granted!</string>
-    <string name="permission_denied">Function wouldn\'t work.</string>
-    <string name="permission_required">App needs permission to do this.</string>
-    <string name="permission_disabled">Permission needed, turn it on in settings.</string>
-    <string name="permission_open_setting">Open settings</string>
-    <string name="permission_ignore">Ignore and cancel</string>
 
 
     <!-- Invalid refresh token dialog data -->

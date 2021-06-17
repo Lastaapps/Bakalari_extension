@@ -26,12 +26,12 @@
         <item name="android:background">@drawable/border</item>
     </style>
     
-    <style name="Timetable.Main" parent="TextAppearance.AppCompat">
+    <style name="Timetable.Main" parent="TextAppearance.MaterialComponents.Body1">
         <item name="android:textSize">@dimen/timetable_main</item>
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
-    <style name="Timetable.Secondary" parent="TextAppearance.AppCompat">
+    <style name="Timetable.Secondary" parent="TextAppearance.MaterialComponents.Body1">
         <item name="android:textSize">@dimen/timetable_secondary</item>
     </style>
 
@@ -89,7 +89,7 @@
         <item name="android:layout_margin">@dimen/timetable_bottom_margin</item>
     </style>
 
-    <style name="Timetable.Info" parent="Theme.AppCompat.DayNight.Dialog.MinWidth">
+    <style name="Timetable.Info" parent="Theme.MaterialComponents.DayNight.Dialog.MinWidth">
 
     </style>
 </resources>

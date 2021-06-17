@@ -26,4 +26,13 @@
         Used to make some processes like log in/out or version update harder for the system to stop
     </string>
 
+
+    <!-- Permissions -->
+    <string name="permission_granted">Permission granted!</string>
+    <string name="permission_denied">Function wouldn\'t work.</string>
+    <string name="permission_required">App needs permission to do this.</string>
+    <string name="permission_disabled">Permission needed, turn it on in settings.</string>
+    <string name="permission_open_setting">Open settings</string>
+    <string name="permission_ignore">Ignore and cancel</string>
+
 </resources>

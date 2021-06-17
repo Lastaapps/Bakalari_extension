@@ -25,6 +25,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
@@ -32,8 +33,8 @@ import androidx.navigation.fragment.findNavController
 import cz.lastaapps.bakalari.app.NavGraphRootDirections
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.databinding.FragmentProfileBinding
-import cz.lastaapps.bakalari.app.send.ReportIssueActivity
 import cz.lastaapps.bakalari.app.ui.start.login.profilesViewModels
+import cz.lastaapps.bakalari.app.ui.user.CurrentUser
 import cz.lastaapps.bakalari.authentication.data.BakalariAccount
 import java.util.*
 
@@ -82,8 +83,8 @@ class ProfilesFragment : Fragment() {
 
         //opens bug report
         binding.reportIssue.setOnClickListener {
-            val intent = Intent(requireContext(), ReportIssueActivity::class.java)
-            startActivity(intent)
+            val args = bundleOf("uuid" to null)
+            findNavController().navigate(cz.lastaapps.bakalari.report.R.id.report_navigation, args)
         }
 
         //shows the description on the auto launch function

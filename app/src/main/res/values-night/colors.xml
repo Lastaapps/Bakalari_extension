@@ -20,16 +20,10 @@
   -->
 
 <resources>
-    <color name="colorPrimary">#C50</color>
-    <color name="colorPrimaryDark">#DE690C</color>
-    <color name="colorAccent">#0430D2</color>
 
     <color name="side_nav_bar_start">#C6B654</color>
     <color name="side_nav_bar_center">#A3943F</color>
     <color name="side_nav_bar_end">#D7CA6C</color>
-
-    <color name="primary_text_light">#FFFF</color>
-    <color name="primary_text_dark">#F000</color>
 
     <color name="light">#000</color>
     <color name="dark">#FFF</color>
@@ -44,8 +38,6 @@
 
     <color name="border">#777</color>
 
-    <color name="last_updated_text_color">#333</color>
-    <color name="last_updated_background_color">#CCC</color>
     <color name="timetable_absence">#388E3C</color>
     <color name="timetable_current">#FBC02D</color>
     <color name="timetable_change">#D32F2F</color>

@@ -20,19 +20,12 @@
   -->
 
 <resources>
-    <color name="colorPrimary">#3AF</color>
-    <color name="colorPrimaryDark">#2196F3</color>
-    <color name="colorAccent">#FBC02D</color>
 
     <color name="side_nav_bar_start">#3949AB</color>
     <color name="side_nav_bar_center">#5C6BC0</color>
     <color name="side_nav_bar_end">#283593</color>
     <color name="bottom_nav_background">#AAA</color>
     <color name="bottom_nav_foreground">#00ACC1</color>
-
-    <color name="primary_text_light">#F000</color>
-    <color name="primary_text_dark">#FFFF</color>
-    <color name="link">#2962FF</color>
 
     <color name="light">#FFF</color>
     <color name="dark">#000</color>
@@ -47,9 +40,6 @@
     <color name="icons_nav_stroke">#000</color>
 
     <color name="border">#777</color>
-
-    <color name="last_updated_text_color">#CCC</color>
-    <color name="last_updated_background_color">#333</color>
 
     <color name="timetable_absence">#00C853</color>
     <color name="timetable_current">#FDD835</color>

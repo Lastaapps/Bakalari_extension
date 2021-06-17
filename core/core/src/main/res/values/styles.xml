@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~    Copyright 2021, Petr Laštovička as Lasta apps, All rights reserved
+  ~
+  ~     This file is part of Bakalari extension.
+  ~
+  ~     Bakalari extension is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     Bakalari extension is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with Bakalari extension.  If not, see <https://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<resources>
+
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="SplashScreen">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.Text" parent="Theme.MaterialComponents">
+        <item name="android:textColorPrimary">@color/primary_text_light</item>
+        <item name="android:textSize">@dimen/primary_text</item>
+    </style>
+
+    <style name="AppTheme.Text.Bigger" parent="AppTheme.Text">
+        <item name="android:textSize">@dimen/primary_text_bigger</item>
+    </style>
+
+    <style name="AppTheme.Text.Bold" parent="Theme.MaterialComponents">
+        <item name="android:textColorPrimary">@color/primary_text_light</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/primary_text_bold</item>
+    </style>
+
+    <style name="AppTheme.Text.Secondary" parent="Theme.MaterialComponents">
+        <item name="android:textSize">@dimen/primary_text</item>
+    </style>
+
+    <style name="AppTheme.Heading" parent="AppTheme.Text">
+        <item name="android:textSize">@dimen/heading_text_size</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="AppTheme.Secondary" parent="AppTheme.Text">
+        <item name="android:textColorPrimary">@android:color/secondary_text_light</item>
+    </style>
+
+
+    <style name="AppTheme.Clickable" parent="AppTheme.Text">
+        <item name="android:textColor">@color/link</item>
+    </style>
+
+    <!-- Used in about fragment -->
+    <style name="AppTheme.ImageButton">
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:background">@android:color/transparent</item>
+
+        <item name="android:maxWidth">@dimen/image_button</item>
+        <item name="android:maxHeight">@dimen/image_button</item>
+        <item name="android:layout_width">@dimen/image_button</item>
+        <item name="android:layout_height">@dimen/image_button</item>
+
+        <item name="android:layout_margin">@dimen/margin_basic</item>
+    </style>
+
+    <style name="AppTheme.SmallImageButton">
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:background">@android:color/transparent</item>
+
+        <item name="android:maxWidth" >@dimen/small_image_button</item>
+        <item name="android:maxHeight">@dimen/small_image_button</item>
+        <item name="android:layout_width">@dimen/small_image_button</item>
+        <item name="android:layout_height">@dimen/small_image_button</item>
+
+        <item name="android:layout_margin">@dimen/margin_basic</item>
+    </style>
+
+    <style name="AppTheme.Transparent" parent="AppTheme.NoActionBar">
+        <item name="android:windowBackground">#1000</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowShowWallpaper">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <style name="AppTheme.Dialog" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="android:padding">10dp</item>
+    </style>
+
+    <style name="AppTheme.Dialog.Title" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="android:textColor">@color/primary_text_light</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="AppTheme.Dialog.Message" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="android:textColor">@color/primary_text_light</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="AppTheme.Dialog.Button" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="android:textAllCaps">true</item>
+        <item name="backgroundColor">#0000</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:padding">10dp</item>
+    </style>
+
+    <style name="AppTheme.LastUpdate" parent="">
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">@dimen/last_updated_text_size</item>
+        <item name="android:textColor">@color/last_updated_text_color</item>
+        <item name="android:background">@color/last_updated_background_color</item>
+    </style>
+
+</resources>

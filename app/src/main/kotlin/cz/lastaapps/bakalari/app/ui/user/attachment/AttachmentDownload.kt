@@ -64,7 +64,6 @@ import java.io.OutputStream
 object AttachmentDownload {
 
     private val TAG = AttachmentDownload::class.java.simpleName
-    const val ATTACHMENT_DOWNLOAD_CHANEL = "ATTACHMENT_DOWNLOAD_CHANEL"
 
     /**@return if file with name given exists*/
     fun exists(context: Context, fileName: String): Boolean {
@@ -160,6 +159,7 @@ object AttachmentDownload {
                         )
 
                 //adds file to system media store (gallery for images)
+                @Suppress("DEPRECATION")
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
                     request.allowScanningByMediaScanner()
 
@@ -210,7 +210,7 @@ object AttachmentDownload {
             } else {
                 Log.i(TAG, "Write storage permission not granted")
 
-                Toast.makeText(activity, R.string.permission_required, Toast.LENGTH_LONG)
+                Toast.makeText(activity, cz.lastaapps.bakalari.platform.R.string.permission_required, Toast.LENGTH_LONG)
                     .show()
 
                 if (ActivityCompat.shouldShowRequestPermissionRationale(
@@ -225,10 +225,10 @@ object AttachmentDownload {
                 } else {
                     //asks user to grant permission in settings
                     AlertDialog.Builder(activity)
-                        .setNegativeButton(R.string.permission_ignore) { dialog, _ ->
+                        .setNegativeButton(cz.lastaapps.bakalari.platform.R.string.permission_ignore) { dialog, _ ->
                             dialog.dismiss()
                         }
-                        .setPositiveButton(R.string.permission_open_setting) { dialog, _ ->
+                        .setPositiveButton(cz.lastaapps.bakalari.platform.R.string.permission_open_setting) { dialog, _ ->
                             val intent =
                                 Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                             val uri = Uri.fromParts(
@@ -240,7 +240,7 @@ object AttachmentDownload {
                             activity.startActivity(intent)
                             dialog.dismiss()
                         }
-                        .setMessage(R.string.permission_disabled)
+                        .setMessage(cz.lastaapps.bakalari.platform.R.string.permission_disabled)
                         .setCancelable(true)
                         .create()
                         .show()
@@ -255,7 +255,7 @@ object AttachmentDownload {
     }
 
     /**@return the file uri to download file to*/
-    private fun getCacheUri(context: Context, fileName: String): Uri? {
+    private fun getCacheUri(context: Context, fileName: String): Uri {
         return File(context.externalCacheDir, fileName).toUri()
     }
 

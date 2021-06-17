@@ -33,22 +33,6 @@
     <dimen name="nav_header_end_margin">8dp</dimen>
     <dimen name="nav_header_components_margin">8dp</dimen>
 
-    <dimen name="icon_size">64sp</dimen>
-    <dimen name="padding_basic">10dp</dimen>
-    <dimen name="margin_basic">5dp</dimen>
-
-    <dimen name="heading_text_size">32sp</dimen>
-    <dimen name="primary_text">12sp</dimen>
-    <dimen name="primary_text_bigger">16sp</dimen>
-    <dimen name="primary_text_bold">14sp</dimen>
-
-    <dimen name="bottom_sheet_bottom_margin">48dp</dimen>
-
-    <dimen name="image_button">64dp</dimen>
-    <dimen name="small_image_button">40dp</dimen>
-
-    <dimen name="last_updated_text_size">12sp</dimen>
-
     <dimen name="bottom_fragment_bottom_margin">8dp</dimen>
     <dimen name="bottom_image_width">30dp</dimen>
     <dimen name="bottom_column_width">60dp</dimen>
@@ -61,10 +45,6 @@
     <dimen name="login_margin_between">8dp</dimen>
     <dimen name="login_margin_between_button">10dp</dimen>
     <dimen name="login_margin_top">96dp</dimen>
-
-    <!-- Send idea and report issue-->
-    <dimen name="idea_margin">10dp</dimen>
-    <dimen name="report_warning_margin">15dp</dimen>
 
     <!-- Widget -->
     <dimen name="widget_margin">5dp</dimen>

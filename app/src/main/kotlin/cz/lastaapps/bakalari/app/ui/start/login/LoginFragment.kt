@@ -31,6 +31,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
@@ -39,9 +40,10 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
+import cz.lastaapps.bakalari.app.NavGraphRootDirections
 import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.databinding.FragmentLoginBinding
-import cz.lastaapps.bakalari.app.send.ReportIssueActivity
+import cz.lastaapps.bakalari.app.ui.user.CurrentUser
 import cz.lastaapps.bakalari.authentication.data.BakalariAccount
 import cz.lastaapps.bakalari.authentication.data.LoginInfo
 import cz.lastaapps.bakalari.authentication.data.Profile
@@ -114,8 +116,8 @@ class LoginFragment : Fragment() {
 
         //opens bug report
         binding.reportIssue.setOnClickListener {
-            val intent = Intent(requireContext(), ReportIssueActivity::class.java)
-            startActivity(intent)
+            val args = bundleOf("uuid" to null)
+            findNavController().navigate(cz.lastaapps.bakalari.report.R.id.report_navigation, args)
         }
 
         binding.townSelected.setOnClickListener {

@@ -30,7 +30,7 @@ import cz.lastaapps.bakalari.authentication.data.BakalariAccount
 import cz.lastaapps.bakalari.tools.ui.LifecycleAdapter
 import cz.lastaapps.bakalari.tools.ui.LifecycleBindingHolder
 
-typealias Holder = LifecycleBindingHolder<EntryProfileBinding>
+private typealias Holder = LifecycleBindingHolder<EntryProfileBinding>
 
 class ProfileAdapter(
     private val viewModel: ProfilesViewModel,

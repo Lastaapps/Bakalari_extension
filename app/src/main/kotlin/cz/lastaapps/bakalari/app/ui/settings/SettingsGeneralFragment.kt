@@ -26,6 +26,9 @@ import android.net.Uri
 import android.os.*
 import android.provider.Settings
 import android.util.Log
+import androidx.activity.result.ActivityResultCallback
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import cz.lastaapps.bakalari.app.MainActivity
@@ -33,6 +36,7 @@ import cz.lastaapps.bakalari.app.R
 import cz.lastaapps.bakalari.app.ui.uitools.settingsViewModels
 import cz.lastaapps.bakalari.platform.App
 import cz.lastaapps.bakalari.platform.withAppContext
+import cz.lastaapps.bakalari.settings.DownloadLocationContract
 import cz.lastaapps.bakalari.settings.MySettings
 
 
@@ -45,6 +49,7 @@ class SettingsGeneralFragment : PreferenceFragmentCompat() {
     companion object {
         private val TAG = SettingsGeneralFragment::class.java.simpleName
     }
+
 
     private val viewModel: SettingsViewModel by settingsViewModels()
     private lateinit var sett: MySettings
@@ -138,7 +143,6 @@ class SettingsGeneralFragment : PreferenceFragmentCompat() {
 
             Log.i(TAG, "Download location changing")
 
-            sett.chooseDownloadDirectory(requireActivity())
 
             true
         }

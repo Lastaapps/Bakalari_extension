@@ -27,6 +27,7 @@ plugins {
 
     id 'kotlin-parcelize'
 
+    id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
     id 'androidx.navigation.safeargs.kotlin'
 }
@@ -58,16 +59,6 @@ android {
         proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
         multiDexEnabled true
-
-        //TODO remove after a migration to ksp
-        kapt {
-            arguments {
-                arg("room.schemaLocation", "$projectDir/schemas")
-            }
-        }
-        ksp {
-            arg("room.schemaLocation", "$projectDir/schemas")
-        }
     }
     buildTypes {
         debug {
@@ -115,6 +106,7 @@ dependencies {
     implementation project(":core:tools:ui")
     implementation project(":settings:core")
     implementation project(":lastaapps:common")
+    implementation project(":features:report")
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -141,8 +133,6 @@ dependencies {
     implementation "androidx.work:work-runtime-ktx:$andoridx_work_version"
 
     implementation "androidx.room:room-runtime:$andoridx_room_version"
-    kapt "androidx.room:room-compiler:$andoridx_room_version"
-    //ksp "androidx.room:room-compiler:$andoridx_room_version"
     implementation "androidx.room:room-ktx:$andoridx_room_version"
     androidTestImplementation "androidx.room:room-testing:$andoridx_room_version"
 
@@ -176,18 +166,3 @@ dependencies {
 }
 
 
-private Integer generateVersionCode() {
-    return ext.minimumSdkVersion * 10000000 + ext.versionMajor * 10000 + ext.versionMinor * 100 + ext.versionPatch
-}
-
-private String generateVersionName() {
-    String versionName = "${ext.versionMajor}.${ext.versionMinor}.${ext.versionPatch}"
-    if (ext.versionClassifier == null && ext.isBeta) {
-        ext.versionClassifier = "BETA"
-    }
-
-    if (ext.versionClassifier != null) {
-        versionName += "-" + ext.versionClassifier
-    }
-    return versionName
-}

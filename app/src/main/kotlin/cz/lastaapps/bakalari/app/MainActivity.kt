@@ -38,6 +38,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
@@ -51,8 +52,6 @@ import com.google.android.material.navigation.NavigationView
 import cz.lastaapps.bakalari.api.entity.user.User
 import cz.lastaapps.bakalari.api.io.ConnMgr
 import cz.lastaapps.bakalari.api.repo.user.UserChangeObserver
-import cz.lastaapps.bakalari.app.send.ReportIssueActivity
-import cz.lastaapps.bakalari.app.send.SendIdeaActivity
 import cz.lastaapps.bakalari.app.ui.navigation.ComplexDeepLinkNavigator
 import cz.lastaapps.bakalari.app.ui.navigation.navview.ItemsController
 import cz.lastaapps.bakalari.app.ui.navigation.navview.NavHeaderController
@@ -65,7 +64,7 @@ import cz.lastaapps.bakalari.app.ui.user.CurrentUser
 import cz.lastaapps.bakalari.app.ui.user.CurrentUserHandler
 import cz.lastaapps.bakalari.app.ui.user.UserViewModel
 import cz.lastaapps.bakalari.authentication.database.AccountsDatabase
-import cz.lastaapps.bakalari.tools.BaseActivity
+import cz.lastaapps.bakalari.platform.BaseActivity
 import cz.lastaapps.common.Communication
 import cz.lastaapps.common.PlayStoreReview
 import kotlinx.coroutines.CoroutineScope
@@ -105,7 +104,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onCreate(savedInstanceState: Bundle?) {
 
         //used to remove splashscreen
-        setTheme(R.style.AppTheme_NoActionBar)
+        setTheme(cz.lastaapps.bakalari.core.R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
 
         Log.i(TAG, "Creating MainActivity")
@@ -366,12 +365,12 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 PlayStoreReview.doInAppReview(this)
             }
             R.id.nav_idea -> {
-                val intent = Intent(this, SendIdeaActivity::class.java)
-                startActivity(intent)
+                val args = bundleOf("uuid" to CurrentUser.accountUUID.value)
+                findNavController().navigate(cz.lastaapps.bakalari.report.R.id.idea_navigation, args)
             }
             R.id.nav_report -> {
-                val intent = Intent(this, ReportIssueActivity::class.java)
-                startActivity(intent)
+                val args = bundleOf("uuid" to CurrentUser.accountUUID.value)
+                findNavController().navigate(cz.lastaapps.bakalari.report.R.id.report_navigation, args)
             }
             R.id.nav_about -> {
                 findNavController().navigate(R.id.nav_about)

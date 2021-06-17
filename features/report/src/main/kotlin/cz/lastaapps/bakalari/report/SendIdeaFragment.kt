@@ -18,26 +18,32 @@
  *
  */
 
-package cz.lastaapps.bakalari.app.send
+package cz.lastaapps.bakalari.report
 
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.widget.EditText
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import com.google.firebase.FirebaseApp
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.IgnoreExtraProperties
-import cz.lastaapps.bakalari.app.R
-import cz.lastaapps.bakalari.app.ui.user.CurrentUser
 import cz.lastaapps.bakalari.authentication.database.AccountsDatabase
-import cz.lastaapps.bakalari.tools.BaseActivity
+import cz.lastaapps.bakalari.report.databinding.FragmentSendIdeaBinding
 import cz.lastaapps.bakalari.tools.TimeTools
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
 import java.time.Instant
 import java.time.ZoneId
@@ -47,50 +53,58 @@ import java.time.ZonedDateTime
  * Sends idea to Firebase database
  * Limited to 1 per day
  */
-class SendIdeaActivity : BaseActivity() {
+class SendIdeaFragment : Fragment() {
 
     companion object {
-        private val TAG = SendIdeaActivity::class.java.simpleName
+        private val TAG = SendIdeaFragment::class.java.simpleName
         private const val SP_KEY = "SEND_IDEA"
         private const val SP_DATE_KEY = "LAST_SENT"
     }
 
     private lateinit var database: DatabaseReference
+    private lateinit var binding: FragmentSendIdeaBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private val args by navArgs<SendIdeaFragmentArgs>()
 
-        Log.i(TAG, "Creating activity")
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+
+        Log.i(TAG, "Creating fragment, the uuid is ${args?.uuid}")
 
         if (timeCheck()) {
-            setContentView(R.layout.activity_send_idea)
+            binding = DataBindingUtil.inflate(inflater, R.layout.fragment_send_idea, container, false)
 
             database = FirebaseDatabase.getInstance().reference
 
             //sends data to Firebase
-            val fab = findViewById<FloatingActionButton>(R.id.idea_fab)
-            fab.setOnClickListener {
+            binding.ideaFab.setOnClickListener {
                 lifecycleScope.launch(Dispatchers.Default) {
-                    getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
+                    send()
+
+                    requireContext().getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
                         .edit()
                         .putLong(
                             SP_DATE_KEY,
                             ZonedDateTime.now(ZoneId.of("UTC")).toInstant().toEpochMilli()
                         )
                         .apply()
-                    send()
                 }
             }
+
+            return binding.root
         } else {
             Log.i(TAG, "Error check failed")
 
             //If limit per day was reached
-            AlertDialog.Builder(this)
+            AlertDialog.Builder(requireContext())
                 .setMessage(R.string.idea_overload)
                 .setPositiveButton(R.string.idea_go_back) { dialog, _ ->
                     run {
                         dialog.dismiss()
-                        finish()
+                        findNavController().navigateUp()
                     }
                 }
                 .setCancelable(false)
@@ -98,13 +112,18 @@ class SendIdeaActivity : BaseActivity() {
                 .show()
         }
 
+        return null
     }
 
     /**
      * @return If message was sent today, or if user is moving through time in settings
      */
     private fun timeCheck(): Boolean {
-        val lastSent = getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
+
+        if (BuildConfig.DEBUG)
+            return true
+
+        val lastSent = requireContext().getSharedPreferences(SP_KEY, Context.MODE_PRIVATE)
             .getLong(SP_DATE_KEY, 0)
 
         val cal = ZonedDateTime.ofInstant(Instant.ofEpochMilli(lastSent), TimeTools.UTC)
@@ -122,8 +141,8 @@ class SendIdeaActivity : BaseActivity() {
     private suspend fun send() {
         Log.i(TAG, "Sending data")
 
-        val email = findViewById<EditText>(R.id.email).text.trim().toString()
-        val message = findViewById<EditText>(R.id.message).text.trim().toString()
+        val email = binding.email.text.trim().toString()
+        val message = binding.message.text.trim().toString()
 
         if (message != "") {
             try {
@@ -138,8 +157,8 @@ class SendIdeaActivity : BaseActivity() {
                     message = message,
                 )
 
-                val account = CurrentUser.accountUUID.value?.let {
-                    AccountsDatabase.getDatabase(this).repository.getByUUID(it)
+                val account = args?.uuid?.let {
+                    AccountsDatabase.getDatabase(requireContext()).repository.getByUUID(it)
                 }
                 account?.let {
                     data.userHash =
@@ -150,13 +169,20 @@ class SendIdeaActivity : BaseActivity() {
                 //posts data
                 database.child("idea").child(id).setValue(data)
 
-                Toast.makeText(this, R.string.idea_thanks, Toast.LENGTH_LONG).show()
-                finish()
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), R.string.idea_thanks, Toast.LENGTH_LONG).show()
+                    findNavController().navigateUp()
+                }
             } catch (e: IOException) {
-                Toast.makeText(this, R.string.idea_no_internet, Toast.LENGTH_LONG).show()
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), R.string.idea_no_internet, Toast.LENGTH_LONG)
+                        .show()
+                }
             }
         } else {
-            Toast.makeText(this, R.string.idea_empty, Toast.LENGTH_LONG).show()
+            withContext(Dispatchers.Main) {
+                Toast.makeText(requireContext(), R.string.idea_empty, Toast.LENGTH_LONG).show()
+            }
         }
     }
 

@@ -27,7 +27,14 @@ Bakaláři API: https://github.com/bakalari-api/bakalari-api-v3
 ### Přispívání do kódu
 
 Pokud vás aplikace zaujme a budete chtít přidat funkci, opravit chybu či zlepšit vzhled, jste
-vítáni. Primárně se ale prosím zaměřte na body z `TODO` seznamu.
+vítáni. Primárně se ale prosím zaměřte na body z `TODO` seznamu. Příspěvky mohou být odmítnuty, pokud:
+
+- kód nebude psán v Kotlinu
+- nové sekce UI nebudou v Jetpack Compose
+- kód nebude modularizovaný a dělen do vrstev
+- kód bude padat a podobné jasné věci
+
+
 
 ### TODO
 

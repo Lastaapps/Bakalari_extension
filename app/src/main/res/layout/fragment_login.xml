@@ -219,7 +219,6 @@
 
                 android:layout_marginStart="@dimen/login_margin_sides"
                 android:layout_marginEnd="@dimen/login_margin_sides"
-                android:hint="@string/login_prompt_url"
                 app:layout_constraintEnd_toEndOf="parent"
 
                 app:layout_constraintStart_toStartOf="parent"
